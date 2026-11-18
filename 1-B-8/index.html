@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>1.B.8 Proportional Reasoning: Solving Problems · MathMastery</title>
+<!-- Fonts: a book serif for prose, a clean sans for UI, a mono for numbers -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<!-- MathJax renders the few formulas on the page (SVG output needs no external stylesheet) -->
+<script>
+  window.MathJax = { tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] }, svg: { fontCache: 'global' } };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<style>
+/* ===================== Theme ===================== */
+:root{
+  --bg:#f7f5ef; --paper:#ffffff; --ink:#1f1e1d; --muted:#6b6a66; --line:#e4e0d5; --line2:#c9c5b8;
+  --accent:#534AB7; --accent-bg:#EEEDFE;
+  --pos:#1D9E75; --neg:#D85A30; --pt:#7F77DD; --pt-soft:#AFA9EC; --pt-dark:#534AB7;
+  --pos-new:#9FE1CB; --neg-new:#F0997B; --ok:#3B6D11; --ok-bg:#EAF3DE; --bad:#A32D2D; --bad-bg:#FCEBEB; --note-bg:#FAF3E3; --note-line:#E7C98A;
+  --serif:"Source Serif 4", Georgia, "Times New Roman", serif;
+  --sans:"IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#191817; --paper:#232220; --ink:#ecebe6; --muted:#a3a29c; --line:#383733; --line2:#55534e;
+    --accent:#AFA9EC; --accent-bg:#2c2852; --pt-dark:#CECBF6; --pt-soft:#6f68b8; --pos-new:#5DCAA5; --neg-new:#F5C4B3;
+    --ok:#C0DD97; --ok-bg:#24400d; --bad:#F7C1C1; --bad-bg:#5a1c1c; --note-bg:#2b261b; --note-line:#6b5626;
+  }
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.7 var(--serif);-webkit-font-smoothing:antialiased}
+
+/* ===================== Layout ===================== */
+.topbar{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1000px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:14px;font:500 13px/1 var(--sans);color:var(--muted)}
+.brand{color:var(--ink);font-weight:600;letter-spacing:.02em}
+.brand b{color:var(--accent)}
+.crumbs{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pid{font-family:var(--mono);color:var(--accent);background:var(--accent-bg);padding:4px 8px;border-radius:6px}
+.prose{max-width:720px;margin:0 auto;padding:0 20px}
+.wide{max-width:1000px;margin:0 auto;padding:0 20px}
+
+/* ===================== Hero ===================== */
+.hero{padding:48px 0 12px}
+.kicker{font:600 13px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1{font:700 46px/1.1 var(--serif);margin:12px 0 14px;letter-spacing:-.01em}
+.dek{font-size:21px;color:var(--muted);margin:0 0 22px;font-style:italic}
+.tiers{display:flex;gap:6px;flex-wrap:wrap;font:500 13px/1 var(--sans);margin-bottom:8px}
+.tier{padding:7px 12px;border-radius:999px;border:1px solid var(--line2);color:var(--muted)}
+.tier.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.tier small{opacity:.7;margin-left:4px}
+
+/* ===================== Text elements ===================== */
+h2{font:700 28px/1.25 var(--serif);margin:56px 0 10px;display:flex;gap:12px;align-items:baseline}
+h2 .n{font:600 14px/1 var(--mono);color:var(--accent);min-width:28px}
+p{margin:0 0 16px}
+em.key{font-style:normal;background:linear-gradient(transparent 62%,var(--accent-bg) 62%);padding:0 2px}
+.goals{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:18px 22px;margin:22px 0 0;font:15.5px/1.6 var(--sans)}
+.goals h3{font:600 12px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
+.goals ul{margin:0;padding-left:20px}
+.note{background:var(--note-bg);border-left:4px solid var(--note-line);border-radius:0 10px 10px 0;padding:14px 18px;margin:20px 0;font:15.5px/1.6 var(--sans)}
+.note b{font-weight:600}
+.notice{list-style:none;padding:0;margin:8px 0 18px;counter-reset:n}
+.notice li{position:relative;padding:12px 0 12px 46px;border-top:1px solid var(--line)}
+.notice li:last-child{border-bottom:1px solid var(--line)}
+.notice li::before{counter-increment:n;content:counter(n);position:absolute;left:4px;top:13px;width:26px;height:26px;border-radius:50%;background:var(--accent-bg);color:var(--accent);font:600 13px/26px var(--mono);text-align:center}
+.goes{list-style:none;padding:0;margin:8px 0 18px}
+.goes li{padding:12px 0;border-top:1px solid var(--line)}
+.goes li:last-child{border-bottom:1px solid var(--line)}
+.math{overflow-x:auto;margin:12px 0 18px;padding:14px 18px;background:var(--paper);border:1px solid var(--line);border-radius:12px}
+.math .cap{font:14px/1.5 var(--sans);color:var(--muted);margin-top:4px}
+.mono{font-family:var(--mono);font-size:.92em;white-space:nowrap}
+.pos{color:var(--pos);font-weight:600}.neg{color:var(--neg);font-weight:600}.pt{color:var(--pt-dark);font-weight:600}
+
+/* ===================== Vocabulary ===================== */
+.vocab{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin:14px 0 8px}
+.term{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font:14.5px/1.5 var(--sans)}
+.term b{display:block;font:600 15px/1.3 var(--serif);margin-bottom:4px}
+
+/* ===================== Interactive cards ===================== */
+.card{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:18px 20px 20px;margin:26px 0;box-shadow:0 1px 0 var(--line),0 12px 32px -22px rgba(0,0,0,.25);font-family:var(--sans)}
+.card-h{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.card-h .tag{font:600 11px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--accent);background:var(--accent-bg);padding:5px 8px;border-radius:6px}
+.card-h h3{font:600 18px/1.3 var(--sans);margin:0}
+.card-h .sub{color:var(--muted);font-size:14.5px;flex-basis:100%}
+.panel-label{font:600 11px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:12px 0 4px;display:flex;justify-content:space-between}
+.panel-label span:last-child{letter-spacing:0;text-transform:none;font-weight:500}
+svg.nl{display:block;width:100%;height:auto;border:1px solid var(--line);border-radius:12px;background:var(--bg);touch-action:manipulation}
+svg.clickable{cursor:pointer}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:12px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0}
+button{font:500 14px/1 var(--sans);padding:9px 14px;border-radius:9px;border:1px solid var(--line2);background:var(--paper);color:var(--ink);cursor:pointer;transition:background .15s,border-color .15s}
+button:hover{border-color:var(--ink)}
+button.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+button.preset.on{background:var(--accent-bg);border-color:var(--accent);color:var(--accent)}
+button:disabled{opacity:.45;cursor:default}
+.desc{min-height:24px;color:var(--muted);font-size:14.5px;margin:2px 0 6px}
+.inputs{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;margin:12px 0 4px}
+.field{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.field input{width:92px;font:500 18px/1 var(--mono);padding:9px 10px;border-radius:9px;border:2px solid var(--line2);background:var(--bg);color:var(--ink);text-align:center}
+.field input:focus{outline:none;border-color:var(--accent)}
+.field i,.eq i,.sym{font:italic 600 1.15em var(--serif);text-transform:none;letter-spacing:0;color:var(--pt-dark)}
+.field.start input{border-color:var(--pt-soft)}
+.field.slide input{border-color:var(--pt)}
+.eq{font:500 20px/1 var(--mono);padding:10px 14px;background:var(--bg);border-radius:10px;border:1px solid var(--line)}
+.err{color:var(--bad);font-size:14px;min-height:20px;margin:2px 0}
+.readout{margin-top:12px;padding:12px 14px;background:var(--bg);border-radius:10px;border:1px solid var(--line);font-size:15px;line-height:1.55;min-height:48px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:12px;font-size:13px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{display:inline-block;width:14px;height:14px;border-radius:50%}
+.sw.pos{background:var(--pos)}.sw.neg{border:2.4px solid var(--neg)}
+.sw.x{position:relative;background:var(--pos);opacity:.45}.sw.x::after{content:'✕';position:absolute;inset:-1px 0 0 0;color:var(--neg);font:700 13px/1 var(--sans);text-align:center}
+.sw.posnew{background:var(--pos-new);border:1.5px solid var(--pos)}.sw.negnew{border:2.4px solid var(--neg-new)}.sw.pt{background:var(--pt)}
+.sw.mv{width:22px;height:4px;border-radius:2px;background:var(--pt-soft)}
+.sw.rl{width:22px;height:0;border-top:2px dashed var(--ink);border-radius:0;opacity:.7}
+.feedback{margin-top:10px;padding:12px 14px;border-radius:10px;font-size:15px;line-height:1.55;display:none}
+.feedback.ok{display:block;background:var(--ok-bg);color:var(--ok)}
+.feedback.bad{display:block;background:var(--bad-bg);color:var(--bad)}
+.feedback.info{display:block;background:var(--accent-bg);color:var(--accent)}
+.score{margin-left:auto;font:600 14px/1 var(--mono);color:var(--muted)}
+
+/* ===================== Footer nav ===================== */
+.pager{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:56px 0 18px;font-family:var(--sans)}
+.pager a,.pager div{display:block;padding:16px 18px;border:1px solid var(--line);border-radius:14px;background:var(--paper);color:var(--ink);text-decoration:none}
+.pager small{display:block;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.pager .next{text-align:right}
+.pager .soon{opacity:.6}
+.meta{font:13px/1.6 var(--sans);color:var(--muted);text-align:center;padding:10px 0 50px}
+
+@media (max-width:720px){
+  body{font-size:17px}
+  h1{font-size:34px}
+  .dek{font-size:18px}
+  h2{font-size:24px}
+  .card{padding:14px 12px 16px;border-radius:14px}
+  .crumbs{display:none}
+  svg.nl{min-width:640px}
+}
+</style>
+<meta name="mm-site" content="1">
+<style>
+/* ===================== Navigation: Contents menu and Previous/Next ===================== */
+.topbar-in{position:relative}
+.tocbtn{font:500 13px/1 var(--sans);padding:7px 11px;border-radius:8px;border:1px solid var(--line2);background:var(--paper);color:var(--ink);cursor:pointer}
+.tocbtn:hover,.tocbtn[aria-expanded="true"]{border-color:var(--accent);color:var(--accent)}
+.tocpanel{position:absolute;top:calc(100% + 6px);right:20px;width:440px;max-height:72vh;overflow:auto;background:var(--paper);border:1px solid var(--line);border-radius:14px;box-shadow:0 22px 48px -20px rgba(0,0,0,.4);padding:14px 14px 10px;display:none;z-index:20;font-family:var(--sans)}
+.tocpanel.open{display:block}
+.tocch{font:600 12px/1.3 var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin:2px 6px 4px}
+.toctier{font:600 11px/1.3 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:12px 6px 4px}
+.tocrow{display:flex;gap:10px;align-items:baseline;padding:7px 8px;border-radius:8px;color:var(--ink);text-decoration:none;font:14.5px/1.35 var(--sans)}
+a.tocrow:hover{background:var(--accent-bg)}
+.tocrow .tid{font:500 12.5px var(--mono);color:var(--accent);min-width:44px}
+.tocrow.cur{background:var(--accent-bg);font-weight:600}
+.tocrow.coming{color:var(--muted)}.tocrow.coming .tid{color:var(--muted)}
+.tocrow small{margin-left:auto;color:var(--muted);font-size:12px;white-space:nowrap}
+.pager .soon{opacity:1}
+.pager .soon .dimtxt{opacity:.6;display:block}
+.pager a:hover{border-color:var(--accent)}
+.pager .skip{display:inline-block;margin-top:8px;padding:0;border:none;background:none;color:var(--accent);font-size:14px;font-weight:500;text-decoration:none}
+.pager .skip:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<style>
+/* ===================== Page-specific styles (1.B.8) ===================== */
+/* three methods get their own colors: A find-the-one (purple), B ratio table (teal), C proportion (orange); the answer is green */
+:root{ --mA:#6A5FD0; --mA-soft:#ECEAFD; --mB:#0F8A7A; --mB-soft:#DDF3EF; --mC:#C2571A; --mC-soft:#FBE7DA; --ans:#2E7D32; --ans-soft:#E3F2E1; --known:#6b6a66; --pa:#2F7FC1; --pb:#C98A0B; }
+@media (prefers-color-scheme:dark){ :root{ --mA:#AFA9EC; --mA-soft:#2c2852; --mB:#5DCAB5; --mB-soft:#123b35; --mC:#F0A070; --mC-soft:#4a2a14; --ans:#9BD99F; --ans-soft:#1e3b20; --known:#a3a29c; --pa:#7FB8E6; --pb:#F0C24B; } }
+.methods{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:10px}
+.method{border:1px solid var(--line);border-radius:14px;padding:12px 14px;background:var(--bg);font-size:14.5px;line-height:1.5;min-height:300px}
+.method h4{margin:0 0 2px;font:600 12px var(--sans);letter-spacing:.1em;text-transform:uppercase}
+.method .how{color:var(--muted);font-size:13px;margin-bottom:8px}
+.mA h4{color:var(--mA)}.mB h4{color:var(--mB)}.mC h4{color:var(--mC)}
+.mA{border-top:4px solid var(--mA)}.mB{border-top:4px solid var(--mB)}.mC{border-top:4px solid var(--mC)}
+.step{padding:6px 0;border-top:1px dashed var(--line);transition:opacity .3s}
+.step.hide{opacity:0}
+.step b.res{font-family:var(--mono)}
+.question{font:18px/1.55 var(--serif);padding:12px 16px;border-radius:12px;background:var(--paper);border:1px solid var(--line);margin:8px 0}
+.answer{margin-top:12px;padding:12px 16px;border-radius:12px;background:var(--ans-soft);color:var(--ans);font-size:15.5px;transition:opacity .3s}
+.answer.hide{opacity:0}
+.frac{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;margin:0 4px;font-family:var(--mono)}
+.frac span:first-child{border-bottom:1.5px solid currentColor;padding:0 4px}
+.frac span:last-child{padding:0 4px}
+.qm{color:var(--bad);font-weight:700}
+table.st{border-collapse:separate;border-spacing:0;width:100%;font:14px var(--mono);margin:4px 0}
+table.st th{font:600 11px var(--sans);text-transform:uppercase;letter-spacing:.04em;color:var(--muted);padding:4px;border-bottom:1px solid var(--line)}
+table.st td{padding:5px 4px;text-align:center;border-bottom:1px solid var(--line)}
+table.st td.op{color:var(--mB);font-weight:700;font-size:12.5px;text-align:left;white-space:nowrap}
+table.st tr.known td{color:var(--known)} table.st tr.goal td{color:var(--ans);font-weight:700}
+.dirbtns button.on,.buybtns button.on{background:var(--accent-bg);border-color:var(--accent);color:var(--accent)}
+.buy{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:10px}
+.prod{border:1px solid var(--line);border-radius:14px;padding:12px 14px;background:var(--bg)}
+.prod h4{margin:0 0 8px;font:600 15px var(--sans)}
+.prod.pA h4{color:var(--pa)}.prod.pB h4{color:var(--pb)}
+.prod .inputs{margin:0}
+.bar{height:22px;border-radius:6px;margin:6px 0 2px}
+.bar.a{background:var(--pa)}.bar.b{background:var(--pb)}
+.traps{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin-top:10px}
+.trap{border:1px solid var(--line);border-radius:14px;padding:12px 14px;background:var(--bg);font-size:14.5px;line-height:1.5}
+.trap .row{margin:8px 0 0}
+.trap .why{margin-top:8px;padding:8px 10px;border-radius:9px;display:none}
+.trap .why.ok{display:block;background:var(--ok-bg);color:var(--ok)}
+.trap .why.bad{display:block;background:var(--bad-bg);color:var(--bad)}
+.chain{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin:12px 0 18px;font:600 16px var(--mono)}
+.chain .box{padding:10px 14px;border-radius:12px;border:2px solid var(--line2);background:var(--paper)}
+.chain .op{padding:8px 12px;border-radius:10px;background:var(--mA-soft);color:var(--mA);border:2px solid var(--mA)}
+.chain .ar{color:var(--muted)}
+.choice{display:flex;gap:8px;margin:0}.choice button{min-width:150px}
+.qtext{font:17px/1.55 var(--serif);margin:4px 0 10px}
+</style>
+
+<!-- ===================== Top bar ===================== -->
+<div class="topbar"><div class="topbar-in">
+  <span class="brand">Math<b>Mastery</b></span>
+  <span class="crumbs">Chapter 1 · Numbers &amp; Arithmetic › Basics</span>
+  <span class="pid">1.B.8</span>
+</div></div>
+
+<!-- ===================== Hero ===================== -->
+<header class="prose hero">
+  <div class="kicker">Chapter 1 · Numbers &amp; Arithmetic</div>
+  <h1>Proportional Reasoning: Solving Problems</h1>
+  <p class="dek">Recipes, maps, prices and speeds are all the same problem in different clothes. Check that the situation really is proportional, then pick any of three tools. They always agree.</p>
+  <div class="tiers" aria-label="Tier">
+    <span class="tier on">Basics <small>you are here</small></span>
+    <span class="tier">Undergraduate</span>
+    <span class="tier">Masters</span>
+  </div>
+  <div class="goals">
+    <h3>On this page</h3>
+    <ul>
+      <li>Ask the first question: <b>is this a proportional relationship</b>, or would scaling give a wrong answer?</li>
+      <li>Solve the same problem three ways: <b>find the one</b>, a <b>ratio table</b>, and a <b>proportion</b> equation.</li>
+      <li>Compare deals with <b>unit prices</b>, the constant of proportionality in dollars per unit.</li>
+      <li>Chain two proportional steps together, like map distance → miles → hours.</li>
+    </ul>
+  </div>
+</header>
+
+<main>
+<!-- ===================== §1 The toolkit ===================== -->
+<section class="prose">
+  <h2><span class="n">1</span>The toolkit</h2>
+  <p>Every page in this group gave you a tool. Here they are side by side:</p>
+  <ol class="notice">
+    <li><b>Find the one (unit rate).</b> Divide to get the amount for exactly 1, the <b>constant of proportionality</b> <i class="sym">k</i>, then multiply up to what you need (1.B.5).</li>
+    <li><b>Ratio table or double number line.</b> Scale both columns by the same number, in friendly steps, until you reach the row you want (1.B.4).</li>
+    <li><b>Proportion.</b> Write two equal ratios with a ? for the unknown, then solve. Cross products make it quick: if <span class="frac"><span>a</span><span>b</span></span> = <span class="frac"><span>c</span><span>d</span></span>, then a × d = b × c (1.B.4).</li>
+  </ol>
+  <p>But before any of them, ask the question that keeps you out of trouble: <em class="key">is this really a proportional relationship?</em> If doubling one amount doesn’t double the other, none of these tools apply. Section 4 is full of situations like that.</p>
+</section>
+
+<!-- ===================== Explorer: one problem, three methods ===================== -->
+<section class="wide">
+  <div class="card" id="explorer">
+    <div class="card-h">
+      <span class="tag">Explore</span><h3>One problem, three methods</h3>
+      <span class="sub">Pick a problem, or change the numbers, then press Play to solve it three ways at once.</span>
+    </div>
+    <div class="row" id="presets"></div>
+    <div class="question" id="question"></div>
+    <div class="inputs">
+      <label class="field"><span id="l0">known x</span><input id="inX0" type="text" inputmode="decimal" autocomplete="off"></label>
+      <label class="field"><span id="l1">known y</span><input id="inY0" type="text" inputmode="decimal" autocomplete="off"></label>
+      <label class="field"><span id="l2">target</span><input id="inT" type="text" inputmode="decimal" autocomplete="off"></label>
+      <div class="row dirbtns" id="modes" style="margin:0"></div>
+      <div class="row" style="margin:0"><button class="primary" id="play">Play</button><button id="reset">Reset</button></div>
+    </div>
+    <div class="err" id="exErr"></div>
+    <div class="methods">
+      <div class="method mA"><h4>A · Find the one</h4><div class="how">unit rate, then multiply or divide</div>
+        <svg class="nl" id="dnl" viewBox="0 0 340 214" role="img" aria-label="Double number line"></svg>
+        <div id="mA"></div></div>
+      <div class="method mB"><h4>B · Ratio table</h4><div class="how">scale both columns in friendly steps</div><div id="mB"></div></div>
+      <div class="method mC"><h4>C · Proportion</h4><div class="how">two equal ratios, then cross products</div><div id="mC"></div></div>
+    </div>
+    <div class="answer hide" id="answer"></div>
+  </div>
+</section>
+
+<!-- ===================== §2 Better buy ===================== -->
+<section class="prose">
+  <h2><span class="n">2</span>The better buy</h2>
+  <p>Stores sell the same thing in different sizes, and the bigger box isn’t always the better deal. To compare fairly, find the price of <b>one</b> unit of each: the <b>unit price</b>. It’s the constant of proportionality between amount and cost, in dollars per ounce (or per egg, or per pound). <em class="key">The lower unit price is the better buy.</em></p>
+</section>
+<section class="wide">
+  <div class="card" id="buyCard">
+    <div class="card-h"><span class="tag">Compare</span><h3>Which is the better deal?</h3><span class="sub">Pick an item or type your own sizes and prices.</span></div>
+    <div class="row buybtns" id="buyPresets"></div>
+    <div class="buy">
+      <div class="prod pA"><h4>Option A</h4><div class="inputs">
+        <label class="field"><span id="bU1">size</span><input id="aS" type="text" inputmode="decimal" autocomplete="off"></label>
+        <label class="field"><span>price ($)</span><input id="aP" type="text" inputmode="decimal" autocomplete="off"></label></div>
+        <div id="aOut"></div></div>
+      <div class="prod pB"><h4>Option B</h4><div class="inputs">
+        <label class="field"><span id="bU2">size</span><input id="bS" type="text" inputmode="decimal" autocomplete="off"></label>
+        <label class="field"><span>price ($)</span><input id="bP" type="text" inputmode="decimal" autocomplete="off"></label></div>
+        <div id="bOut"></div></div>
+    </div>
+    <div class="err" id="buyErr"></div>
+    <div class="readout" id="buyOut"></div>
+  </div>
+</section>
+
+<!-- ===================== §3 Multi-step ===================== -->
+<section class="prose">
+  <h2><span class="n">3</span>Two steps in a row</h2>
+  <p>Some problems need two proportional steps, one after the other. A trail map says <b>1 inch = 2 miles</b>. The trail is <b>3 inches</b> long on the map, and you hike at <b>2.5 miles per hour</b>. How long will the hike take?</p>
+  <div class="chain"><span class="box">3 in</span><span class="ar">→</span><span class="op">× 2 mi per in</span><span class="ar">→</span><span class="box">6 mi</span><span class="ar">→</span><span class="op">÷ 2.5 mi per h</span><span class="ar">→</span><span class="box" style="border-color:var(--ans);color:var(--ans)">2.4 h</span></div>
+  <p>Each arrow is one of the machines from 1.B.5. The first converts map inches to real miles (multiply by the scale). The second turns miles into hours (divide by the speed, since you know miles and want hours). Then 2.4 hours is 2 hours and 0.4 × 60 = 24 minutes. <em class="key">Keep track of the units after every step, and you’ll always know whether to multiply or divide next.</em></p>
+</section>
+
+<!-- ===================== §4 Can you scale it? ===================== -->
+<section class="prose">
+  <h2><span class="n">4</span>Can you scale it?</h2>
+  <p>Proportional reasoning is powerful, and that’s what makes it dangerous: it will happily give you a confident wrong answer if the situation isn’t proportional. Before scaling, check: <b>does zero go with zero?</b> And <b>does doubling one amount double the other?</b> Decide for each situation below.</p>
+</section>
+<section class="wide">
+  <div class="card"><div class="card-h"><span class="tag">Think</span><h3>Scale it, or not?</h3><span class="sub">Each card shows its answer after you choose.</span></div>
+    <div class="traps" id="traps"></div>
+  </div>
+</section>
+
+<!-- ===================== §5 In symbols ===================== -->
+<section class="prose">
+  <h2><span class="n">5</span>Now, in symbols</h2>
+  <p>In the explorer, the known pair was (\(x_0\), \(y_0\)) and the unknown was the ?. Method A finds \(k\) and uses the equation for a <b>proportional relationship</b>:</p>
+  <div class="math">\[ k = \frac{y_0}{x_0}, \qquad y = k \cdot x, \qquad x = \frac{y}{k} \]<div class="cap">The constant of proportionality \(k\) is the unit rate: how much \(y\) for one \(x\).</div></div>
+  <p>Method C writes a <b>proportion</b> and solves it with cross products:</p>
+  <div class="math">\[ \frac{y_0}{x_0} = \frac{y}{x} \quad\Longrightarrow\quad y_0 \cdot x = x_0 \cdot y \]<div class="cap">Recipe example: \(\tfrac{3}{4} = \tfrac{?}{10}\), so \(4 \cdot ? = 3 \cdot 10 = 30\), and \(? = 7.5\) cups.</div></div>
+  <p>Method B is the same idea done in steps: every row of a ratio table is \((n\,x_0,\; n\,y_0)\) for some multiplier \(n\).</p>
+</section>
+
+<!-- ===================== §6 Where this goes ===================== -->
+<section class="prose">
+  <h2><span class="n">6</span>Where this goes</h2>
+  <ul class="goes">
+    <li><b>Next (1.B.9):</b> stepping back to see the whole number system, from counting numbers to fractions to numbers that can’t be written as fractions at all, and why each kind had to be invented.</li>
+    <li><b>Later in this book:</b> <b>percent</b> is proportional reasoning with 100 as the “one”. <b>Similar triangles</b> in Geometry use proportions to measure things you can’t reach, like the height of a tree from its shadow. The painters problem (more workers, less time) is an <b>inverse proportion</b>, <i class="sym">y</i> = <i class="sym">k</i> ÷ <i class="sym">x</i>, which you’ll meet in Algebra.</li>
+    <li><b>In the world:</b> comparing prices at the store, reading a map or a blueprint, scaling a recipe, planning how long a trip will take, and mixing anything from paint to plant fertilizer.</li>
+  </ul>
+</section>
+
+<!-- ===================== §7 Vocabulary ===================== -->
+<section class="prose">
+  <h2><span class="n">7</span>Words to know</h2>
+  <div class="vocab">
+    <div class="term"><b>Proportional relationship</b>Two amounts linked by <i class="sym">y</i> = <i class="sym">k</i> · <i class="sym">x</i>: zero goes with zero and doubling one doubles the other. Check this before scaling anything.</div>
+    <div class="term"><b>Constant of proportionality</b>The unit rate <i class="sym">k</i> = <i class="sym">y</i> ÷ <i class="sym">x</i>: cups per person, miles per inch, dollars per ounce.</div>
+    <div class="term"><b>Proportion</b>An equation saying two ratios are equal, like 3/4 = 7.5/10. Solve one with cross products.</div>
+    <div class="term"><b>Unit rate</b>The amount for exactly one: 60 miles per 1 hour.</div>
+    <div class="term"><b>Unit price</b>The cost of one unit: dollars per ounce. The lower unit price is the better buy.</div>
+    <div class="term"><b>Scale</b>The ratio between a map or model and the real thing, like 1 inch = 5 miles or 1 : 24.</div>
+    <div class="term"><b>Cross products</b>In a/b = c/d, the products a × d and b × c. They’re equal exactly when the ratios are equal.</div>
+    <div class="term"><b>Inverse proportion</b>When one amount goes up as the other goes down in a matched way (more painters, less time). Not proportional, so don’t scale it directly.</div>
+  </div>
+</section>
+
+<!-- ===================== Quiz ===================== -->
+<section class="prose"><h2><span class="n">8</span>Check yourself</h2>
+  <p>Four kinds of questions: one-step word problems, better buys, “can you scale it?”, and two-step problems. Use any method you like.</p>
+</section>
+<section class="wide">
+  <div class="card" id="quiz">
+    <div class="card-h"><span class="tag">Quiz</span><h3 id="qTitle"></h3><span class="score" id="score">Score: 0 / 0</span></div>
+    <div class="question" id="qText"></div>
+    <div class="inputs">
+      <label class="field" id="qField"><span id="qLabel">Answer</span><input id="qIn" type="text" inputmode="decimal" autocomplete="off"></label>
+      <div class="choice" id="qChoice"><button id="qA"></button><button id="qB"></button></div>
+      <div class="row" style="margin:0">
+        <button class="primary" id="qCheck">Check</button>
+        <button id="qShow">Show answer</button>
+        <button id="qNew">New question</button>
+      </div>
+    </div>
+    <div class="err" id="qErr"></div>
+    <div class="feedback" id="qFb" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ===================== Pager (filled in by the shared navigation) ===================== -->
+<nav class="wide">
+  <div class="pager"></div>
+  <div class="meta">1.B.8 · Prerequisites: 1.B.4, 1.B.5, 1.B.6, 1.B.7 · Leads to: 1.B.9, percent, Geometry (similar triangles), Algebra (inverse proportion)</div>
+</nav>
+</main>
+
+<script>
+/* =====================================================================
+   1. HELPERS
+   ===================================================================== */
+const NS = 'http://www.w3.org/2000/svg';
+const $ = id => document.getElementById(id);
+function mk(tag, attrs, parent){                       // create an SVG element with attributes
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function txt(parent, x, y, s, cls, extra){             // create an SVG text element
+  const t = mk('text', Object.assign({ x, y, class: cls || '' }, extra || {}), parent);
+  t.textContent = s;
+  return t;
+}
+const isInt = x => Math.abs(x - Math.round(x)) < 1e-9;
+const near = (p, q, tol) => Math.abs(p - q) <= (tol || 1e-6) * Math.max(1, Math.abs(q));
+function fmt(x){                                        // whole numbers plain, halves as ½, else up to 2 decimals
+  if (isInt(x)) return String(Math.round(x));
+  if (isInt(x * 2)) { const w = Math.floor(x); return (w ? w : '') + '½'; }
+  return String(Math.round(x * 100) / 100);
+}
+const money = (x, d) => '$' + x.toFixed(d === undefined ? 2 : d);
+function parseNum(s){                                   // integers, decimals, fractions, mixed numbers, ½, $
+  s = String(s).trim().replace(/[−–]/g, '-').replace(/^\+/, '').replace(/^\$/, '').replace(/,/g, '');
+  s = s.replace(/^(\d+)\s*½$/, '$1.5').replace(/^½$/, '0.5');
+  if (/^-?\d+(\.\d+)?$|^-?\.\d+$/.test(s)) return parseFloat(s);
+  let m = s.match(/^(\d+)\s+(\d+)\s*\/\s*(\d+)$/);
+  if (m && +m[3] !== 0) return +m[1] + (+m[2]) / (+m[3]);
+  m = s.match(/^(-?\d+)\s*\/\s*(\d+)$/);
+  if (m && +m[2] !== 0) return +m[1] / +m[2];
+  return NaN;
+}
+const gcd = (a, b) => b ? gcd(b, a % b) : a;
+const frac = (a, b) => `<span class="frac"><span>${a}</span><span>${b}</span></span>`;
+
+const svgCss = document.createElement('style');
+svgCss.textContent = `
+  .lnX{stroke:var(--pb);stroke-width:2.2} .lnY{stroke:var(--pa);stroke-width:2.2}
+  .tk{stroke:var(--muted);stroke-width:1.2}
+  .lb{font:500 11.5px var(--mono);text-anchor:middle} .lbX{fill:var(--pb)} .lbY{fill:var(--pa)}
+  .side{font:600 11px var(--sans)}
+  .pK{stroke:var(--known);stroke-width:2.2} .pOne{stroke:var(--mA);stroke-width:3} .pAns{stroke:var(--ans);stroke-width:3}
+  .dK{fill:var(--known)} .dOne{fill:var(--mA)} .dAns{fill:var(--ans)}
+  .jump{fill:none;stroke-width:2.2;stroke-linecap:round} .jA{stroke:var(--mA)} .jAns{stroke:var(--ans)}
+  .jl{font:700 12.5px var(--mono);text-anchor:middle;paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+  .tag{font:600 10.5px var(--sans);text-anchor:middle}
+  .qmk{fill:var(--bad);font:700 14px var(--mono);text-anchor:middle}
+`;
+document.head.appendChild(svgCss);
+
+/* =====================================================================
+   2. PROBLEMS (x = first amount, y = second amount; mode 'y' finds y, mode 'x' finds x)
+   ===================================================================== */
+const PROBS = [
+  { name: 'Recipe', xs: ['person', 'people'], ys: ['cup of flour', 'cups of flour'], x0: 4, y0: 3, mode: 'y', t: 10,
+    q: (p) => `A recipe for <b>${fmt(p.x0)} people</b> uses <b>${fmt(p.y0)} cups of flour</b>. How much flour for <b>${fmt(p.t)} people</b>?`,
+    q2: (p) => `A recipe for <b>${fmt(p.x0)} people</b> uses <b>${fmt(p.y0)} cups of flour</b>. How many people can you serve with <b>${fmt(p.t)} cups</b>?`,
+    sense: 'More people need more flour, so the answer should be bigger.', sense2: 'More flour serves more people.' },
+  { name: 'Map', xs: ['inch on the map', 'inches on the map'], ys: ['mile', 'miles'], x0: 1, y0: 5, mode: 'y', t: 3.5,
+    q: (p) => `On a map, <b>${fmt(p.x0)} inch${p.x0 === 1 ? '' : 'es'}</b> stand${p.x0 === 1 ? 's' : ''} for <b>${fmt(p.y0)} miles</b>. Two towns are <b>${fmt(p.t)} inches</b> apart on the map. How far apart are they really?`,
+    q2: (p) => `On a map, <b>${fmt(p.x0)} inch${p.x0 === 1 ? '' : 'es'}</b> stand${p.x0 === 1 ? 's' : ''} for <b>${fmt(p.y0)} miles</b>. How long is a <b>${fmt(p.t)}-mile</b> road on the map?`,
+    sense: 'Real distances are much longer than map distances.', sense2: 'Map distances are much shorter than real ones.' },
+  { name: 'Map, backwards', xs: ['inch on the map', 'inches on the map'], ys: ['mile', 'miles'], x0: 1, y0: 5, mode: 'x', t: 40, alias: 1 },
+  { name: 'Model car', xs: ['inch on the model', 'inches on the model'], ys: ['real inch', 'real inches'], x0: 1, y0: 24, mode: 'y', t: 7,
+    q: (p) => `A model car is built at a scale of <b>1 : ${fmt(p.y0 / p.x0)}</b>. The model is <b>${fmt(p.t)} inches</b> long. How long is the real car, in inches?`,
+    q2: (p) => `A model car is built at a scale of <b>1 : ${fmt(p.y0 / p.x0)}</b>. The real car is <b>${fmt(p.t)} inches</b> long. How long is the model?`,
+    sense: 'The real car is 24 times as long as the model.', sense2: 'The model is 24 times shorter than the real car.' },
+  { name: 'Train distance', xs: ['hour', 'hours'], ys: ['mile', 'miles'], x0: 2.5, y0: 150, mode: 'y', t: 4,
+    q: (p) => `A train goes <b>${fmt(p.y0)} miles</b> in <b>${fmt(p.x0)} hours</b> at a steady speed. How far does it go in <b>${fmt(p.t)} hours</b>?`,
+    q2: (p) => `A train goes <b>${fmt(p.y0)} miles</b> in <b>${fmt(p.x0)} hours</b> at a steady speed. How long does it take to go <b>${fmt(p.t)} miles</b>?`,
+    sense: 'A longer time at the same speed means a longer distance.', sense2: 'A longer distance at the same speed takes more time.' },
+  { name: 'Train time', xs: ['hour', 'hours'], ys: ['mile', 'miles'], x0: 2.5, y0: 150, mode: 'x', t: 210, alias: 4 },
+];
+const base = p => p.alias !== undefined ? PROBS[p.alias] : p;
+const ex = { i: 0, x0: 4, y0: 3, mode: 'y', t: 10, stage: 3, timer: 0 };
+
+/* =====================================================================
+   3. METHOD B: friendly ratio-table steps from g0 to t
+   ===================================================================== */
+// Returns rows [{g, op}] going from the known amount to the target, via the biggest common "chunk"
+function tableSteps(g0, t){
+  let sc = 1;
+  for (const s of [1, 2, 4, 10, 20, 100]){ if (isInt(g0 * s) && isInt(t * s)){ sc = s; break; } sc = 0; }
+  if (!sc) return [{ g: g0, op: '' }, { g: 1, op: `÷ ${fmt(g0)}` }, { g: t, op: `× ${fmt(t)}` }];   // fall back through 1
+  const a = Math.round(g0 * sc), b = Math.round(t * sc), g = gcd(a, b);
+  const rows = [{ g: g0, op: '' }];
+  if (a / g !== 1) rows.push({ g: g / sc, op: `÷ ${a / g}` });
+  if (b / g !== 1) rows.push({ g: t, op: `× ${b / g}` });
+  return rows;
+}
+
+/* =====================================================================
+   4. DRAW THE THREE METHODS
+   ===================================================================== */
+// Method A visual: a small double number line with jumps ÷ (above) to 1, then × (below) to the answer
+function renderDNL(svg, p, x, y, stage){
+  svg.innerHTML = '';
+  const g = mk('g', {}, svg);
+  const L = 44, R = 326, yT = 70, yB = 128;
+  const xmax = Math.max(p.x0, x, 1) * 1.08;
+  const X = v => L + v / xmax * (R - L);
+  txt(g, 4, yT + 4, 'x', 'side', { style: 'fill:var(--pb);font-style:italic;font-family:var(--serif);font-size:15px' });
+  txt(g, 4, yB + 4, 'y', 'side', { style: 'fill:var(--pa);font-style:italic;font-family:var(--serif);font-size:15px' });
+  mk('line', { x1: L, y1: yT, x2: R, y2: yT, class: 'lnX' }, g);
+  mk('line', { x1: L, y1: yB, x2: R, y2: yB, class: 'lnY' }, g);
+  const pair = (v, yv, cls, dcls, lx, ly, tag, tagCls) => {
+    mk('line', { x1: X(v), y1: yT, x2: X(v), y2: yB, class: cls }, g);
+    mk('circle', { cx: X(v), cy: yT, r: 4.5, class: dcls }, g); mk('circle', { cx: X(v), cy: yB, r: 4.5, class: dcls }, g);
+    txt(g, X(v), yT - 8, lx, 'lb lbX'); txt(g, X(v), yB + 17, ly, 'lb lbY');
+    if (tag) txt(g, X(v), yB + 32, tag, 'tag', { style: `fill:var(${tagCls})` });
+  };
+  mk('line', { x1: X(0), y1: yT - 5, x2: X(0), y2: yB + 5, class: 'tk' }, g);
+  txt(g, X(0), yT - 8, '0', 'lb lbX'); txt(g, X(0), yB + 17, '0', 'lb lbY');
+  pair(p.x0, p.y0, 'pK', 'dK', fmt(p.x0), fmt(p.y0), 'known', '--known');
+  const k = p.y0 / p.x0;
+  if (stage >= 1){
+    // jump from the known x down (or up) to 1, drawn above the top line
+    if (!near(p.x0, 1)){
+      const x0 = X(p.x0), x1 = X(1), xc = (x0 + x1) / 2;
+      mk('path', { d: `M${x0},${yT - 20} Q${xc},${yT - 58} ${x1},${yT - 20}`, class: 'jump jA' }, g);
+      txt(g, xc, yT - 42, p.x0 >= 1 ? `÷ ${fmt(p.x0)}` : `× ${fmt(1 / p.x0)}`, 'jl', { style: 'fill:var(--mA)' });
+    }
+    pair(1, k, 'pOne', 'dOne', '1', fmt(k), near(p.x0, 1) ? '' : 'one', '--mA');
+  }
+  if (stage >= 2){
+    // jump from 1 to the answer, drawn below the bottom line (so the two jumps never cross)
+    const x0 = X(1), x1 = X(x), xc = (x0 + x1) / 2;
+    if (!near(x, 1)){
+      mk('path', { d: `M${x0},${yB + 36} Q${xc},${yB + 66} ${x1},${yB + 36}`, class: 'jump jAns' }, g);
+      txt(g, xc, yB + 57, `× ${fmt(x)}`, 'jl', { style: 'fill:var(--ans)' });
+    }
+    pair(x, y, 'pAns', 'dAns', p.mode === 'x' && stage < 3 ? '?' : fmt(x), p.mode === 'y' && stage < 3 ? '?' : fmt(y), '', '');
+  }
+}
+function drawEx(){
+  const p = Object.assign({}, base(PROBS[ex.i]), { x0: ex.x0, y0: ex.y0, mode: ex.mode, t: ex.t });
+  const k = p.y0 / p.x0;
+  const x = p.mode === 'y' ? p.t : p.t / k, y = p.mode === 'y' ? p.t * k : p.t;   // the full solution
+  const ans = p.mode === 'y' ? y : x;
+  const ansUnit = p.mode === 'y' ? p.ys[near(y, 1) ? 0 : 1] : p.xs[near(x, 1) ? 0 : 1];
+  const xu = v => p.xs[near(v, 1) ? 0 : 1], yu = v => p.ys[near(v, 1) ? 0 : 1];
+  $('question').innerHTML = (p.mode === 'y' ? p.q : p.q2)(p);
+  const st = ex.stage;
+  // ---- Method A: find the one
+  renderDNL($('dnl'), p, x, y, st);
+  $('mA').innerHTML =
+    `<div class="step ${st >= 1 ? '' : 'hide'}"><b>1.</b> One ${p.xs[0]}: ${fmt(p.y0)} ÷ ${fmt(p.x0)} = <b class="res">${fmt(k)}</b> ${yu(k)}. That’s <i class="sym">k</i>.</div>` +
+    `<div class="step ${st >= 2 ? '' : 'hide'}"><b>2.</b> ${p.mode === 'y'
+        ? `${fmt(p.t)} ${xu(p.t)}: ${fmt(p.t)} × ${fmt(k)} = <b class="res">${fmt(y)}</b>`
+        : `${fmt(p.t)} ${yu(p.t)} ÷ ${fmt(k)} per ${p.xs[0]} = <b class="res">${fmt(x)}</b>`}</div>`;
+  // ---- Method B: ratio table
+  const gcol = p.mode === 'y' ? 'x' : 'y';
+  const steps = tableSteps(p.mode === 'y' ? p.x0 : p.y0, p.t);
+  let tb = `<table class="st"><tr><th></th><th>${p.xs[1]}</th><th>${p.ys[1]}</th></tr>`;
+  steps.forEach((r, j) => {
+    const xv = gcol === 'x' ? r.g : r.g / k, yv = gcol === 'x' ? r.g * k : r.g;
+    const last = j === steps.length - 1, show = j === 0 || st >= (last ? 2 : 1);
+    const hideVal = last && st < 3;
+    tb += `<tr class="${j === 0 ? 'known' : last ? 'goal' : ''}" style="${show ? '' : 'opacity:0'}"><td class="op">${r.op ? r.op + ' both' : 'known'}</td>` +
+          `<td>${hideVal && p.mode === 'x' ? '?' : fmt(xv)}</td><td>${hideVal && p.mode === 'y' ? '?' : fmt(yv)}</td></tr>`;
+  });
+  tb += `</table>`;
+  const muls = steps.slice(1).map(r => r.op).join(', then ');
+  $('mB').innerHTML = tb + `<div class="step ${st >= 2 ? '' : 'hide'}">Whatever happens to one column happens to the other: ${muls || 'no steps needed'}.</div>`;
+  // ---- Method C: proportion
+  const unk = '<span class="qm">?</span>';
+  const left = frac(fmt(p.y0), fmt(p.x0));
+  const right = p.mode === 'y' ? frac(unk, fmt(p.t)) : frac(fmt(p.t), unk);
+  $('mC').innerHTML =
+    `<div class="step">Set up <span style="white-space:nowrap">${p.ys[1]} over ${p.xs[1]}</span>:<div style="font-size:18px;margin:6px 0">${left} = ${right}</div></div>` +
+    `<div class="step ${st >= 1 ? '' : 'hide'}"><b>Cross products:</b> ${p.mode === 'y' ? `${fmt(p.x0)} × ? = ${fmt(p.y0)} × ${fmt(p.t)} = ${fmt(p.y0 * p.t)}` : `${fmt(p.y0)} × ? = ${fmt(p.x0)} × ${fmt(p.t)} = ${fmt(p.x0 * p.t)}`}</div>` +
+    `<div class="step ${st >= 2 ? '' : 'hide'}"><b>Divide:</b> ? = ${p.mode === 'y' ? `${fmt(p.y0 * p.t)} ÷ ${fmt(p.x0)}` : `${fmt(p.x0 * p.t)} ÷ ${fmt(p.y0)}`} = <b class="res">${fmt(ans)}</b></div>`;
+  // ---- Agreement
+  const a = $('answer'); a.className = 'answer' + (st >= 3 ? '' : ' hide');
+  let extra = '';
+  if (base(PROBS[ex.i]).name === 'Model car' && p.mode === 'y') extra = ` That’s ${fmt(y / 12)} feet.`;
+  if (p.xs[0] === 'hour' && p.mode === 'x') { const h = Math.floor(x + 1e-9), m = Math.round((x - h) * 60); extra = ` That’s ${h} hour${h === 1 ? '' : 's'}${m ? ' ' + m + ' minutes' : ''}.`; }
+  a.innerHTML = `<b>All three methods agree: ${fmt(ans)} ${ansUnit}.</b>${extra} Sense check: ${p.mode === 'x' ? base(PROBS[ex.i]).sense2 : base(PROBS[ex.i]).sense}`;
+}
+
+/* =====================================================================
+   5. EXPLORER CONTROLS
+   ===================================================================== */
+PROBS.forEach((p, i) => {
+  const b = document.createElement('button');
+  b.className = 'preset'; b.textContent = p.name; b.onclick = () => choose(i);
+  $('presets').appendChild(b);
+});
+['y', 'x'].forEach(m => {
+  const b = document.createElement('button');
+  b.dataset.m = m;
+  b.onclick = () => {
+    if (ex.mode === m) return;
+    const k = ex.y0 / ex.x0;                                   // keep the same situation, just ask for the other amount
+    ex.t = Math.round((m === 'y' ? ex.t / k : ex.t * k) * 100) / 100;
+    ex.mode = m; $('inT').value = fmt(ex.t); labels(); stop(); ex.stage = 0; drawEx(); play();
+  };
+  $('modes').appendChild(b);
+});
+function labels(){
+  const p = base(PROBS[ex.i]);
+  [...$('presets').children].forEach((b, j) => b.classList.toggle('on', j === ex.i));
+  [...$('modes').children].forEach(b => { b.classList.toggle('on', b.dataset.m === ex.mode); b.textContent = b.dataset.m === 'y' ? `find ${p.ys[1].split(' ')[0]}` : `find ${p.xs[1].split(' ')[0]}`; });
+  $('l0').innerHTML = `known ${p.xs[1]}`; $('l1').innerHTML = `known ${p.ys[1]}`;
+  $('l2').innerHTML = ex.mode === 'y' ? `${p.xs[1]} wanted` : `${p.ys[1]} given`;
+}
+function choose(i){
+  const p = PROBS[i], b = base(p);
+  Object.assign(ex, { i, x0: b.x0, y0: b.y0, mode: p.mode, t: p.t });
+  $('inX0').value = fmt(ex.x0); $('inY0').value = fmt(ex.y0); $('inT').value = fmt(ex.t);
+  $('exErr').textContent = ''; labels(); stop(); ex.stage = 0; drawEx(); play();
+}
+function readEx(){
+  const x0 = parseNum($('inX0').value), y0 = parseNum($('inY0').value), t = parseNum($('inT').value);
+  if ([x0, y0, t].some(isNaN)){ $('exErr').textContent = 'Fill in every box with a number.'; return false; }
+  if (x0 <= 0 || y0 <= 0 || t <= 0){ $('exErr').textContent = 'Use amounts bigger than 0.'; return false; }
+  if (x0 > 10000 || y0 > 10000 || t > 10000){ $('exErr').textContent = 'Keep the numbers to 10,000 or less.'; return false; }
+  $('exErr').textContent = ''; Object.assign(ex, { x0, y0, t }); return true;
+}
+['inX0', 'inY0', 'inT'].forEach(id => {
+  $(id).addEventListener('input', () => { stop(); if (readEx()){ ex.stage = 3; drawEx(); } });
+  $(id).addEventListener('focus', e => e.target.select());
+  $(id).addEventListener('keydown', e => { if (e.key === 'Enter') play(); });
+});
+// Play reveals the solution one stage at a time in all three methods together
+function play(){
+  if (!readEx()) return;
+  stop(); if (ex.stage >= 3) ex.stage = 0;
+  drawEx(); $('play').textContent = 'Playing…';
+  const tick = () => { ex.stage++; drawEx(); if (ex.stage < 3) ex.timer = setTimeout(tick, 1300); else $('play').textContent = 'Replay'; };
+  ex.timer = setTimeout(tick, 900);
+}
+function stop(){ clearTimeout(ex.timer); $('play').textContent = ex.stage >= 3 ? 'Replay' : 'Play'; }
+$('play').onclick = play;
+$('reset').onclick = () => { stop(); ex.stage = 0; $('play').textContent = 'Play'; drawEx(); };
+
+/* =====================================================================
+   6. BETTER BUY
+   ===================================================================== */
+const BUYS = [
+  { n: 'Cereal', u: 'oz', a: [12, 3.00], b: [20, 4.50] },
+  { n: 'Eggs', u: 'eggs', a: [12, 3.60], b: [18, 5.04] },
+  { n: 'Juice', u: 'fl oz', a: [64, 3.50], b: [128, 7.20] },
+  { n: 'Rice', u: 'lb', a: [2, 3.18], b: [5, 7.45] },
+];
+let buyI = 0;
+BUYS.forEach((b, i) => { const el = document.createElement('button'); el.className = 'preset'; el.textContent = b.n; el.onclick = () => setBuy(i); $('buyPresets').appendChild(el); });
+function setBuy(i){
+  buyI = i; const b = BUYS[i];
+  [...$('buyPresets').children].forEach((el, j) => el.classList.toggle('on', j === i));
+  $('aS').value = b.a[0]; $('aP').value = b.a[1].toFixed(2); $('bS').value = b.b[0]; $('bP').value = b.b[1].toFixed(2);
+  $('bU1').textContent = $('bU2').textContent = `size (${b.u})`;
+  drawBuy();
+}
+function drawBuy(){
+  const u = BUYS[buyI].u, us = u === 'eggs' ? 'egg' : u;
+  const aS = parseNum($('aS').value), aP = parseNum($('aP').value), bS = parseNum($('bS').value), bP = parseNum($('bP').value);
+  if ([aS, aP, bS, bP].some(v => isNaN(v) || v <= 0)){ $('buyErr').textContent = 'Fill in every size and price with a number bigger than 0.'; return; }
+  $('buyErr').textContent = '';
+  const ua = aP / aS, ub = bP / bS, mx = Math.max(ua, ub);
+  const card = (S, P, up, cls) => `<div style="font-size:14.5px;margin-top:8px">Unit price: ${money(P)} ÷ ${fmt(S)} = <b style="font-family:var(--mono)">${money(up, 3)}</b> per ${us}</div>` +
+    `<div class="bar ${cls}" style="width:${Math.max(8, up / mx * 100)}%"></div>`;
+  $('aOut').innerHTML = card(aS, aP, ua, 'a'); $('bOut').innerHTML = card(bS, bP, ub, 'b');
+  let h;
+  if (Math.abs(ua - ub) < 0.0005) h = `<b>It’s a tie.</b> Both cost ${money(ua, 3)} per ${us}: the prices are proportional to the sizes.`;
+  else {
+    const best = ua < ub ? 'A' : 'B', lo = Math.min(ua, ub), hi = Math.max(ua, ub);
+    const bigger = (best === 'A' ? aS > bS : bS > aS);
+    h = `<b>Option ${best} is the better buy</b>: ${money(lo, 3)} vs ${money(hi, 3)} per ${us}. ` +
+        `For ${fmt(Math.max(aS, bS))} ${u}, you’d save ${money((hi - lo) * Math.max(aS, bS))}. ` +
+        (bigger ? `Here the bigger size is the better deal.` : `Notice the <b>bigger</b> size is <b>not</b> the better deal here: always check the unit price.`);
+  }
+  $('buyOut').innerHTML = h;
+}
+['aS', 'aP', 'bS', 'bP'].forEach(id => { $(id).addEventListener('input', drawBuy); $(id).addEventListener('focus', e => e.target.select()); });
+
+/* =====================================================================
+   7. CAN YOU SCALE IT? (trap cards)
+   ===================================================================== */
+const TRAPS = [
+  { q: 'Gas costs $35 for 10 gallons. So 4 gallons cost $14.', yes: true, why: 'Proportional: the price per gallon ($3.50) stays the same, and 0 gallons cost $0.' },
+  { q: 'One painter paints a room in 6 hours. So 3 painters take 18 hours.', yes: false, why: 'Not proportional: more painters means <b>less</b> time. That’s an inverse proportion: 3 painters take about 6 ÷ 3 = 2 hours.' },
+  { q: 'A phone plan costs $20 a month plus $0.10 per text. 100 texts cost $30, so 200 texts cost $60.', yes: false, why: 'Not proportional: the $20 monthly fee doesn’t double. 200 texts cost $20 + $20 = $40.' },
+  { q: 'A cake for 4 people bakes for 30 minutes. So a cake for 8 people bakes for 60 minutes.', yes: false, why: 'Not proportional: the ingredients double, but baking time depends on the pan and oven, not just the amount. You might bake a second cake at the same time.' },
+  { q: 'On a map, 1 cm = 25 km. So 6 cm = 150 km.', yes: true, why: 'Proportional: a map scale multiplies every distance by the same number, and 0 cm on the map is 0 km.' },
+  { q: 'Sam is 10 and his sister is 5. When Sam is 20, his sister will be 10.', yes: false, why: 'Not proportional: ages go up by <b>adding</b> years, not multiplying. She’ll always be 5 years younger, so she’ll be 15.' },
+  { q: 'A square with sides 2 inches has an area of 4 square inches. So a square with sides 4 inches has an area of 8.', yes: false, why: 'Not proportional: doubling the side makes the square 2 times as wide <b>and</b> 2 times as tall, so the area is 4 × 4 = 16 square inches.' },
+  { q: 'A printer prints 30 pages in 2 minutes. So it prints 75 pages in 5 minutes.', yes: true, why: 'Proportional: a steady 15 pages per minute, and 0 minutes means 0 pages.' },
+];
+$('traps').innerHTML = TRAPS.map((t, i) => `<div class="trap" data-i="${i}"><div>${t.q}</div>
+  <div class="row"><button data-a="1">Proportional: scale it</button><button data-a="0">Not proportional</button></div><div class="why"></div></div>`).join('');
+$('traps').querySelectorAll('.trap').forEach(card => {
+  card.querySelectorAll('button').forEach(btn => btn.onclick = () => {
+    const t = TRAPS[+card.dataset.i], ok = (btn.dataset.a === '1') === t.yes;
+    const w = card.querySelector('.why'); w.className = 'why ' + (ok ? 'ok' : 'bad');
+    w.innerHTML = `<b>${ok ? 'Right.' : 'Not quite.'}</b> ${t.why}`;
+  });
+});
+
+/* =====================================================================
+   8. QUIZ
+   ===================================================================== */
+const rnd = arr => arr[Math.floor(Math.random() * arr.length)];
+const randInt = (lo, hi) => lo + Math.floor(Math.random() * (hi - lo + 1));
+const qz = { counted: false, done: false, right: 0, total: 0 };
+// One-step word problems: each returns {text, ans, unit, x0, y0, t, mode}
+const WORD = [
+  () => { const p = rnd([2, 4, 6]), c = rnd([2, 3, 5]), n = rnd([3, 5, 8, 9, 10, 12].filter(v => v !== p));
+          return { text: `A recipe for ${p} people uses ${c} cups of rice. How many cups for ${n} people?`, ans: c * n / p, unit: 'cups', x0: p, y0: c, t: n, mode: 'y' }; },
+  () => { const s = rnd([2, 5, 10, 20, 25]), d = rnd([1.5, 2, 3, 4.5, 6]);
+          return { text: `On a map, 1 inch = ${s} miles. Two cities are ${fmt(d)} inches apart on the map. How many real miles apart are they?`, ans: s * d, unit: 'miles', x0: 1, y0: s, t: d, mode: 'y' }; },
+  () => { const v = rnd([40, 50, 60]), h = rnd([2, 3, 4]), d = v * rnd([1.5, 2.5, 5, 6]);
+          return { text: `A bus travels ${v * h} miles in ${h} hours at a steady speed. How many hours to travel ${fmt(d)} miles?`, ans: d / v, unit: 'hours', x0: h, y0: v * h, t: d, mode: 'x' }; },
+  () => { const n = rnd([3, 4, 5, 6]), cost = rnd([1.5, 2, 2.5, 4]), m = rnd([7, 9, 10, 12, 15].filter(v => v !== n));
+          return { text: `${n} notebooks cost $${(n * cost).toFixed(2)}. At the same price each, how much do ${m} notebooks cost (in dollars)?`, ans: m * cost, unit: 'dollars', x0: n, y0: n * cost, t: m, mode: 'y' }; },
+];
+const MULTI = [
+  () => { let s, d, v; do { s = rnd([2, 3, 5]); d = rnd([2, 3, 4, 6]); v = rnd([2, 3, 4]); } while (!isInt(d * s / v * 2));   // keep answers to whole or half hours
+          return { text: `A trail map uses 1 inch = ${s} miles. The trail is ${d} inches on the map. You hike at ${v} miles per hour. How many hours will the hike take?`,
+                   ans: d * s / v, unit: 'hours', step1: d * s, s1u: 'miles', hint: `First convert map inches to real miles (× ${s}), then divide by the speed.` }; },
+  () => { let p, c, n, price; do { p = rnd([4, 6]); c = rnd([2, 3]); n = rnd([10, 12, 18]); price = rnd([0.5, 0.75, 1.25]); } while (!isInt(c * n / p * price * 100 + 1e-9));   // whole cents
+          return { text: `A recipe for ${p} people uses ${c} cups of flour. Flour costs $${price.toFixed(2)} per cup. How much will the flour cost to serve ${n} people (in dollars)?`,
+                   ans: c * n / p * price, unit: 'dollars', step1: c * n / p, s1u: 'cups', hint: `First scale the flour to ${n} people, then multiply the cups by the price per cup.` }; },
+];
+function setMode(choice){
+  $('qField').style.display = choice ? 'none' : ''; $('qCheck').style.display = choice ? 'none' : '';
+  $('qChoice').style.display = choice ? '' : 'none';
+}
+function newQuestion(){
+  Object.assign(qz, { counted: false, done: false });
+  $('qErr').textContent = ''; $('qFb').className = 'feedback'; $('qFb').innerHTML = ''; $('qIn').value = '';
+  qz.type = rnd(['word', 'word', 'buy', 'scale', 'multi']);
+  if (qz.type === 'word'){ Object.assign(qz, rnd(WORD)()); $('qTitle').textContent = 'Solve the word problem'; $('qText').innerHTML = qz.text; $('qLabel').textContent = qz.unit; setMode(false); }
+  else if (qz.type === 'multi'){ Object.assign(qz, rnd(MULTI)()); $('qTitle').textContent = 'Two steps in a row'; $('qText').innerHTML = qz.text; $('qLabel').textContent = qz.unit; setMode(false); }
+  else if (qz.type === 'buy'){
+    let aS, aP, bS, bP, ua, ub;
+    do { aS = rnd([8, 10, 12, 16]); bS = rnd([20, 24, 32, 40]); aP = +(aS * rnd([0.2, 0.25, 0.3, 0.35])).toFixed(2); bP = +(bS * rnd([0.18, 0.22, 0.28, 0.32])).toFixed(2); ua = aP / aS; ub = bP / bS; }
+    while (Math.abs(ua - ub) / Math.min(ua, ub) < 0.06);
+    Object.assign(qz, { aS, aP, bS, bP, ua, ub });
+    $('qTitle').textContent = 'Which is the better buy?';
+    $('qText').innerHTML = `Peanut butter: <b style="color:var(--pa)">A</b> is ${aS} oz for $${aP.toFixed(2)}. <b style="color:var(--pb)">B</b> is ${bS} oz for $${bP.toFixed(2)}. Which is the better buy?`;
+    $('qA').textContent = 'A is the better buy'; $('qB').textContent = 'B is the better buy'; setMode(true);
+  } else {
+    qz.trap = rnd(TRAPS);
+    $('qTitle').textContent = 'Can you scale it?';
+    $('qText').innerHTML = qz.trap.q;
+    $('qA').textContent = 'Proportional: scale it'; $('qB').textContent = 'Not proportional'; setMode(true);
+  }
+}
+function countQ(ok){ if (qz.counted) return; qz.counted = true; qz.total++; if (ok) qz.right++; $('score').textContent = `Score: ${qz.right} / ${qz.total}`; }
+function checkQ(){
+  const v = parseNum($('qIn').value);
+  if ($('qIn').value.trim() === '' || isNaN(v)){ $('qErr').textContent = 'Type a number (decimals, fractions like 7/2, or 3½ are fine).'; return; }
+  $('qErr').textContent = '';
+  let ok = false, msg;
+  if (near(v, qz.ans, 0.005)){ ok = true; msg = `<b>Right: ${fmt(qz.ans)} ${qz.unit}.</b>`; }
+  else if (qz.type === 'word'){
+    const k = qz.y0 / qz.x0;
+    const trap = qz.mode === 'y' ? qz.y0 + (qz.t - qz.x0) : qz.x0 + (qz.t - qz.y0);
+    const flipped = qz.mode === 'y' ? qz.t / k : qz.t * k;
+    if (near(v, trap, 0.005)) msg = `<b>That’s the adding trap.</b> You added the difference instead of scaling. Find the amount for one first, then multiply.`;
+    else if (near(v, flipped, 0.005)) msg = `<b>You ${qz.mode === 'y' ? 'divided' : 'multiplied'} where you needed to ${qz.mode === 'y' ? 'multiply' : 'divide'}.</b> Sense check: should the answer be bigger or smaller than ${fmt(qz.y0)}?`;
+    else if (near(v, k, 0.005) || near(v, 1 / k, 0.005)) msg = `<b>That’s the unit rate, the amount for one.</b> Good first step! Now use it for ${fmt(qz.t)}.`;
+    else msg = `<b>Not quite.</b> Try “find the one”: divide ${fmt(qz.y0)} by ${fmt(qz.x0)}, then use that rate.`;
+  } else {
+    if (near(v, qz.step1, 0.005)) msg = `<b>That’s the answer to step 1 (${fmt(qz.step1)} ${qz.s1u}).</b> One more step: ${qz.hint}`;
+    else msg = `<b>Not quite.</b> ${qz.hint}`;
+  }
+  countQ(ok);
+  if (ok) qz.done = true;
+  $('qFb').className = 'feedback ' + (ok ? 'ok' : 'bad'); $('qFb').innerHTML = msg;
+}
+function explainChoice(){
+  if (qz.type === 'buy'){
+    const best = qz.ua < qz.ub ? 'A' : 'B';
+    return `Unit prices: A is $${qz.aP.toFixed(2)} ÷ ${qz.aS} = ${money(qz.ua, 3)} per oz; B is $${qz.bP.toFixed(2)} ÷ ${qz.bS} = ${money(qz.ub, 3)} per oz. <b>${best}</b> costs less per ounce.`;
+  }
+  return qz.trap.why;
+}
+function answerChoice(first){
+  if (qz.done) return;
+  const ok = qz.type === 'buy' ? (qz.ua < qz.ub) === first : qz.trap.yes === first;
+  countQ(ok); qz.done = true;
+  $('qFb').className = 'feedback ' + (ok ? 'ok' : 'bad'); $('qFb').innerHTML = `<b>${ok ? 'Right.' : 'Not this time.'}</b> ${explainChoice()}`;
+}
+function showQ(){
+  countQ(false); qz.done = true; $('qErr').textContent = '';
+  const fb = $('qFb'); fb.className = 'feedback info';
+  if (qz.type === 'buy' || qz.type === 'scale'){ fb.innerHTML = explainChoice(); return; }
+  if (qz.type === 'word') fb.innerHTML = `The answer is <b>${fmt(qz.ans)} ${qz.unit}</b>. Unit rate: ${fmt(qz.y0)} ÷ ${fmt(qz.x0)} = ${fmt(qz.y0 / qz.x0)}, then ${qz.mode === 'y' ? `× ${fmt(qz.t)}` : `${fmt(qz.t)} ÷ ${fmt(qz.y0 / qz.x0)}`}.`;
+  else fb.innerHTML = `The answer is <b>${fmt(qz.ans)} ${qz.unit}</b>. Step 1 gives ${fmt(qz.step1)} ${qz.s1u}; step 2 finishes it. ${qz.hint}`;
+}
+$('qCheck').onclick = checkQ; $('qA').onclick = () => answerChoice(true); $('qB').onclick = () => answerChoice(false);
+$('qShow').onclick = showQ; $('qNew').onclick = newQuestion;
+$('qIn').addEventListener('input', () => { $('qErr').textContent = ''; });
+$('qIn').addEventListener('focus', e => e.target.select());
+$('qIn').addEventListener('keydown', e => { if (e.key === 'Enter') checkQ(); });
+
+/* =====================================================================
+   9. START
+   ===================================================================== */
+Object.assign(ex, { i: 0, x0: 4, y0: 3, mode: 'y', t: 10, stage: 3 });
+$('inX0').value = '4'; $('inY0').value = '3'; $('inT').value = '10'; labels(); drawEx(); $('play').textContent = 'Replay';
+setBuy(0);
+newQuestion();
+</script>
+<script>
+/* MathMastery table of contents: the single source of truth for page order, titles and links.
+   - built: true  -> the page exists in the site build (GitHub)
+   - url          -> the page's published Claude artifact (used when not in site mode)
+   - ext: true    -> an existing standalone explorer linked as-is: always opens its url, in both builds
+   Add a page here, rebuild every page, and the Contents menu and Previous/Next update everywhere. */
+window.MM_TOC = [
+  { ch: 1, title: 'Numbers & Arithmetic', pages: [
+    { id: '1.B.1', title: 'Counting and the Number Line',            built: true, url: 'https://claude.ai/artifact/Ms2KnDNrzSW8oPYWgvfwQK' },
+    { id: '1.B.2', title: 'Multiplication as Stretching' },
+    { id: '1.B.3', title: 'Fractions, Decimals, and the Gaps Between Them' },
+    { id: '1.B.4', title: 'Equivalent Ratios',                       built: true, url: 'https://claude.ai/artifact/8RtDdq54Mbx1eML3iH4sDF' },
+    { id: '1.B.5', title: 'The Constant of Proportionality',         built: true, url: 'https://claude.ai/artifact/6CRFQvbG3Dkin62BeT9PKL' },
+    { id: '1.B.6', title: 'Graphing Proportional Relationships',     built: true, url: 'https://claude.ai/artifact/Dk2wz7bzT1rKY3QduyGiKM' },
+    { id: '1.B.7', title: 'Converting Customary and Metric Units',   built: true, url: 'https://claude.ai/artifact/FXQApxvApHWy3Y4ao9oF9o' },
+    { id: '1.B.8', title: 'Proportional Reasoning: Solving Problems', built: true, url: 'https://claude.ai/artifact/5BczAcmrhUzUdGzmV9sUiN' },
+    { id: '1.B.9', title: 'Why We Invented Each New Kind of Number' },
+  ]},
+  { ch: 3, title: 'Algebra', pages: [
+    { id: '3.B.1', title: 'Variables and Expressions' },
+    { id: '3.B.2', title: 'Solving Equations' },
+    { id: '3.B.3', title: 'Functions' },
+    { id: '3.B.4', title: 'Exponents and Exponential Growth' },
+    { id: '3.B.5', title: 'Logarithms (Log Explorer)', ext: true, url: 'https://claude.ai/artifact/GkbAXj1R4V1LharhQ9WgZP' },
+  ]},
+  { ch: 5, title: 'Trigonometry', pages: [
+    { id: '5.B.1', title: 'Angles and Radians' },
+    { id: '5.B.2', title: 'Sine, Cosine and Tangent on the Unit Circle (Trig Explorer)', ext: true, url: 'https://claude.ai/artifact/4xY54b5XpeoyG9FocJ9ZFZ' },
+    { id: '5.B.3', title: 'Laws of Sines and Cosines (Trig Explorer, Any triangle tab)', ext: true, url: 'https://claude.ai/artifact/4xY54b5XpeoyG9FocJ9ZFZ' },
+    { id: '5.B.4', title: 'Waves and Periodic Functions' },
+  ]},
+  { ch: 7, title: 'Linear Algebra', pages: [
+    { id: '7.B.1', title: 'Vectors: Arrows and Lists' },
+    { id: '7.B.2', title: 'Linear Combinations and Span' },
+    { id: '7.B.3', title: 'The Dot Product' },
+    { id: '7.B.4', title: 'A Matrix Is a Move (Matrix Transformer)', ext: true, url: 'https://claude.ai/artifact/UPYx73qewW2rkDX2VR4YTS' },
+    { id: '7.B.5', title: 'Matrix Multiplication: One Move After Another' },
+    { id: '7.B.6', title: 'The Determinant' },
+    { id: '7.B.7', title: 'Inverse Matrices' },
+  ]},
+  { ch: 8, title: 'Calculus', pages: [
+    { id: '8.B.1', title: 'Limits' },
+    { id: '8.B.2', title: 'Derivatives' },
+    { id: '8.B.3', title: 'Integrals' },
+    { id: '8.U.1', title: 'Infinite Series' },
+    { id: '8.U.2', title: 'Power Series' },
+    { id: '8.U.3', title: 'Taylor Approximations (Taylor Explorer)', ext: true, url: 'https://claude.ai/artifact/NbkDNnFSAGmLb5UqG4MBiB' },
+  ]},
+];
+
+/* MathMastery navigation: a Contents menu in the top bar and live Previous/Next cards.
+   Works in two places without edits:
+   - as published Claude artifacts: links use each page's artifact url
+   - on the GitHub site: a <meta name="mm-site"> tag (added by build_page.py --site) switches every link
+     to a relative path like ../1-B-4/index.html */
+(function(){
+  const SITE = !!document.querySelector('meta[name="mm-site"]');            // which kind of build is this?
+  const TIERS = { B: 'Basics', U: 'Undergraduate', M: 'Masters' };
+  // Flatten the table of contents into one ordered list of pages
+  const pages = [];
+  (window.MM_TOC || []).forEach(ch => ch.pages.forEach(p => pages.push(Object.assign({ ch: ch.ch, chTitle: ch.title }, p))));
+  const ready = p => p.ext ? !!p.url : (SITE ? !!p.built : !!p.url);          // can we link to this page?
+  const href = p => (p.ext || !SITE) ? p.url : `../${p.id.replace(/\./g, '-')}/index.html`;   // explorers always use their own url
+  const pidEl = document.querySelector('.pid');
+  const curId = pidEl ? pidEl.textContent.trim() : '';
+  const cur = pages.findIndex(p => p.id === curId);
+  const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+
+  /* ---------- Contents menu in the top bar ---------- */
+  const bar = document.querySelector('.topbar-in');
+  if (bar){
+    const btn = document.createElement('button');
+    btn.className = 'tocbtn'; btn.type = 'button'; btn.setAttribute('aria-expanded', 'false');
+    btn.innerHTML = '☰&nbsp; Contents';
+    bar.insertBefore(btn, pidEl || null);
+    const panel = document.createElement('div');
+    panel.className = 'tocpanel'; panel.setAttribute('role', 'menu');
+    let h = '';
+    (window.MM_TOC || []).forEach(ch => {
+      h += `<div class="tocch">Chapter ${ch.ch} · ${esc(ch.title)}</div>`;
+      let lastTier = '';
+      ch.pages.forEach(p => {
+        const tier = p.id.split('.')[1];
+        if (tier !== lastTier){ h += `<div class="toctier">${TIERS[tier] || tier}</div>`; lastTier = tier; }
+        const isCur = p.id === curId;
+        const inner = `<span class="tid">${p.id}</span><span>${esc(p.title)}</span>${isCur ? '<small>you are here</small>' : (p.ext ? '<small>explorer ↗</small>' : (ready(p) ? '' : '<small>coming</small>'))}`;
+        h += ready(p) && !isCur
+          ? `<a class="tocrow" href="${href(p)}">${inner}</a>`
+          : `<div class="tocrow ${isCur ? 'cur' : 'coming'}">${inner}</div>`;
+      });
+    });
+    panel.innerHTML = h;
+    bar.appendChild(panel);
+    const setOpen = open => { panel.classList.toggle('open', open); btn.setAttribute('aria-expanded', String(open)); };
+    btn.addEventListener('click', e => { e.stopPropagation(); setOpen(!panel.classList.contains('open')); });
+    document.addEventListener('click', e => { if (!panel.contains(e.target)) setOpen(false); });   // click outside closes
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') setOpen(false); });
+  }
+
+  /* ---------- Previous / Next cards ---------- */
+  const pager = document.querySelector('.pager');
+  if (pager && cur >= 0){
+    // The nearest page in a direction that can actually be opened (for "skip ahead" links)
+    const nearestReady = (from, step) => { for (let j = from; j >= 0 && j < pages.length; j += step) if (ready(pages[j])) return pages[j]; return null; };
+    const card = (p, dir) => {
+      const head = `<small>${dir < 0 ? '← Previous' : 'Next →'}</small>`;
+      const cls = dir > 0 ? 'next' : '';
+      if (!p) return `<div class="${cls} soon"><span class="dimtxt">${head}${dir < 0 ? 'Start of the book' : 'End of what’s written so far'}</span></div>`;
+      if (ready(p)) return `<a class="${cls}" href="${href(p)}">${head}${p.id} ${esc(p.title)}</a>`;
+      const alt = nearestReady(pages.indexOf(p) + dir, dir);
+      const skip = alt ? `<a class="skip" href="${href(alt)}">${dir < 0 ? '← Back to' : 'Skip ahead to'} ${alt.id} ${esc(alt.title)}${dir > 0 ? ' →' : ''}</a>` : '';
+      return `<div class="${cls} soon"><span class="dimtxt">${head}${p.id} ${esc(p.title)} (coming)</span>${skip}</div>`;
+    };
+    pager.innerHTML = card(pages[cur - 1], -1) + card(pages[cur + 1], 1);
+  }
+})();
+</script>
+</body>
+</html>

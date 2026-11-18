@@ -1,0 +1,707 @@
+<style>
+/* ===================== Page-specific styles (1.B.5) ===================== */
+/* x = the first amount (amber), y = the second amount (blue), k = the constant (purple) */
+:root{ --qx:#C98A0B; --qx-soft:#FBEFC9; --qy:#2F7FC1; --qy-soft:#DCEBF8; --k:#6A5FD0; --k-soft:#ECEAFD; }
+@media (prefers-color-scheme:dark){ :root{ --qx:#F0C24B; --qx-soft:#4a3a0b; --qy:#7FB8E6; --qy-soft:#173750; --k:#AFA9EC; --k-soft:#2c2852; } }
+.qx{color:var(--qx);font-weight:600}.qy{color:var(--qy);font-weight:600}.kk{color:var(--k);font-weight:700}
+.field.fx input{border-color:var(--qx)}.field.fy input{border-color:var(--qy)}.field.fk input{border-color:var(--k)}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
+table.rt{border-collapse:separate;border-spacing:0;width:100%;font:15px var(--mono);background:var(--bg);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+table.rt th{font:600 12px var(--sans);letter-spacing:.04em;text-transform:uppercase;color:var(--muted);padding:9px 10px;text-align:center;border-bottom:1px solid var(--line)}
+table.rt th i{text-transform:none;font:italic 600 15px var(--serif)}
+table.rt td{padding:7px 10px;text-align:center;border-bottom:1px solid var(--line)}
+table.rt tr:last-child td{border-bottom:none}
+table.rt td.cx{color:var(--qx);font-weight:600}table.rt td.cy{color:var(--qy);font-weight:600}
+table.rt td.ck{color:var(--k);font-weight:700;background:var(--k-soft)}
+table.rt td.bad{color:var(--bad);font-weight:700;background:var(--bad-bg)}
+table.rt td.good{color:var(--ok);font-weight:700;background:var(--ok-bg)}
+table.rt tr.on td{box-shadow:inset 0 0 0 9999px rgba(127,119,221,.10)}
+table.rt td .tag2{display:inline-block;font:600 10px var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-left:6px}
+table.edit input{width:70px;font:500 15px var(--mono);padding:5px;border-radius:7px;border:1.5px solid var(--line2);background:var(--paper);color:var(--ink);text-align:center}
+table.edit td.cx input{border-color:var(--qx)}table.edit td.cy input{border-color:var(--qy)}
+.choice{display:flex;gap:8px;margin:0}
+.choice button{min-width:150px}
+.qtext{font:17px/1.55 var(--serif);margin:4px 0 10px}
+.steps{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:10px 0}
+.stepbox{border:1px solid var(--line);border-radius:12px;padding:10px 14px;background:var(--bg);font-size:14.5px;line-height:1.5}
+.stepbox b.h{display:block;font:600 11px var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--k);margin-bottom:3px}
+.stepbox.dim{opacity:.45}
+</style>
+
+<!-- ===================== Top bar ===================== -->
+<div class="topbar"><div class="topbar-in">
+  <span class="brand">Math<b>Mastery</b></span>
+  <span class="crumbs">Chapter 1 · Numbers &amp; Arithmetic › Basics</span>
+  <span class="pid">1.B.5</span>
+</div></div>
+
+<!-- ===================== Hero ===================== -->
+<header class="prose hero">
+  <div class="kicker">Chapter 1 · Numbers &amp; Arithmetic</div>
+  <h1>The Constant of Proportionality</h1>
+  <p class="dek">In every proportional relationship, one number never changes: how much of the second amount goes with exactly one of the first. Find that number, and you can answer any question about the relationship.</p>
+  <div class="tiers" aria-label="Tier">
+    <span class="tier on">Basics <small>you are here</small></span>
+    <span class="tier">Undergraduate</span>
+    <span class="tier">Masters</span>
+  </div>
+  <div class="goals">
+    <h3>On this page</h3>
+    <ul>
+      <li>Find the <b>constant of proportionality</b> <i class="sym">k</i> by asking “how much for <b>one</b>?”</li>
+      <li>Use <i class="sym">k</i> as a machine: multiply any amount <i class="sym">x</i> by <i class="sym">k</i> to get <i class="sym">y</i>.</li>
+      <li>Write a <b>proportional relationship</b> as an equation: <i class="sym">y</i> = <i class="sym">k</i> · <i class="sym">x</i>.</li>
+      <li>Tell whether a table is proportional or not, and say why.</li>
+    </ul>
+  </div>
+</header>
+
+<main>
+<!-- ===================== §1 One number that never changes ===================== -->
+<section class="prose">
+  <h2><span class="n">1</span>One number that never changes</h2>
+  <p>Remember the lemonade from 1.B.4: <span class="qx">2 scoops</span> of mix for every <span class="qy">3 cups</span> of water. Here is part of its ratio table again, with one new column. In that column, divide the cups by the scoops in each row:</p>
+</section>
+<section class="wide">
+  <div class="card">
+    <div class="card-h"><span class="tag">Picture</span><h3>Divide across every row</h3><span class="sub">Every row is a different size of the same recipe, and every row gives the same answer.</span></div>
+    <table class="rt" id="introTable" style="max-width:640px;margin:0 auto"></table>
+  </div>
+</section>
+<section class="prose">
+  <p>Every row gives <b class="kk">1½</b>. That isn’t a coincidence. It’s the recipe itself, boiled down to one number: <em class="key">1½ cups of water for every 1 scoop of mix.</em> When two amounts are in a <b>proportional relationship</b>, dividing the second by the first always gives the same number. That number is called the <b>constant of proportionality</b>, and we write it as <i class="sym">k</i>.</p>
+  <p>We’ll call the first amount <i class="sym">x</i> (here, <span class="qx">scoops</span>) and the second amount <i class="sym">y</i> (here, <span class="qy">cups</span>). Then <i class="sym">k</i> = <i class="sym">y</i> ÷ <i class="sym">x</i> in every row.</p>
+</section>
+
+<!-- ===================== §2 Find the one ===================== -->
+<section class="prose">
+  <h2><span class="n">2</span>Find the one</h2>
+  <p>Here is the most useful question you can ask about a proportional relationship: <em class="key">how much goes with one?</em> The answer is <i class="sym">k</i>.</p>
+  <p>On a double number line you can see it happen. Start from any pair you know, say 2 scoops with 3 cups. To get down to <b>1</b> scoop, divide by 2. Whatever you do to one line, you do to the other, so divide the cups by 2 as well: 3 ÷ 2 = 1½. The cups that sit over “1 scoop” are <i class="sym">k</i>.</p>
+  <p>The same idea works for speed. A car drives <span class="qy">180 miles</span> in <span class="qx">3 hours</span>. How far in <b>one</b> hour? 180 ÷ 3 = 60. So <i class="sym">k</i> = 60 miles per hour. That’s what the speedometer shows: <b>the constant of proportionality between time and distance.</b></p>
+
+  <h2><span class="n">3</span>The × <i class="sym" style="font-size:1em">k</i> machine</h2>
+  <p>Once you know <i class="sym">k</i>, you don’t need the table anymore. Every <i class="sym">x</i> turns into its <i class="sym">y</i> the same way: <em class="key">multiply by k.</em> Think of <i class="sym">k</i> as a machine. Feed in 5 scoops and out come 5 × 1½ = 7½ cups. Feed in 4 hours of driving at 60 miles per hour, and out come 240 miles.</p>
+  <p>In the explorer below, Play runs both steps: first <b>find the one</b> (divide down to 1), then <b>run the machine</b> (multiply up to the amount you want).</p>
+</section>
+
+<section class="wide">
+  <div class="card" id="explorer">
+    <div class="card-h">
+      <span class="tag">Explore</span><h3>Find <i class="sym" style="font-size:1em">k</i>, then use it</h3>
+      <span class="sub">Pick a situation, or type a pair you know and the amount you want, then press Play.</span>
+    </div>
+    <div class="row" id="presets"></div>
+    <div class="desc" id="presetDesc"></div>
+    <div class="inputs">
+      <label class="field fx"><span id="lblX0">Known <i>x</i></span><input id="inX0" type="text" inputmode="decimal" autocomplete="off"></label>
+      <label class="field fy"><span id="lblY0">Known <i>y</i></span><input id="inY0" type="text" inputmode="decimal" autocomplete="off"></label>
+      <label class="field fx"><span id="lblX">Want <i>x</i></span><input id="inX" type="text" inputmode="decimal" autocomplete="off"></label>
+      <div class="row" style="margin:0"><button class="primary" id="play">Play</button><button id="reset">Reset</button></div>
+    </div>
+    <div class="err" id="exErr"></div>
+
+    <div class="panel-label"><span>Double number line</span><span id="dnlCap"></span></div>
+    <svg class="nl" id="dnl" viewBox="0 0 1000 300" role="img" aria-label="Double number line"></svg>
+    <div class="steps">
+      <div class="stepbox" id="step1"></div>
+      <div class="stepbox" id="step2"></div>
+    </div>
+    <div class="split">
+      <div>
+        <div class="panel-label"><span>The machine</span><span><i class="sym">y</i> = <i class="sym">k</i> · <i class="sym">x</i></span></div>
+        <svg class="nl" id="machine" viewBox="0 0 560 170" role="img" aria-label="Multiply by k machine"></svg>
+      </div>
+      <div>
+        <div class="panel-label"><span>Ratio table</span><span><i class="sym">y</i> ÷ <i class="sym">x</i> in every row</span></div>
+        <table class="rt" id="rt"></table>
+      </div>
+    </div>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--qx)"></i><i class="sym">x</i>, the first amount</span>
+      <span><i class="sw" style="background:var(--qy)"></i><i class="sym">y</i>, the second amount</span>
+      <span><i class="sw" style="background:var(--k)"></i><i class="sym">k</i>, the <i class="sym">y</i> that goes with <i class="sym">x</i> = 1</span>
+      <span><svg width="26" height="12" viewBox="0 0 26 12" aria-hidden="true"><path d="M2,11 Q13,-3 24,11" fill="none" stroke="var(--muted)" stroke-width="2.2"/></svg>a jump: divide or multiply both lines by the same number</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §4 In symbols ===================== -->
+<section class="prose">
+  <h2><span class="n">4</span>Now, in symbols</h2>
+  <p>The explorer labeled the first amount <i class="sym">x</i>, the second amount <i class="sym">y</i>, and the number over “1” on the bottom line <i class="sym">k</i>. The machine turned every <i class="sym">x</i> into its <i class="sym">y</i> by multiplying by <i class="sym">k</i>. As an equation:</p>
+  <div class="math">\[ y = k \cdot x \]<div class="cap">For the lemonade, \(y = 1\tfrac{1}{2}\,x\). For the car, \(y = 60\,x\). The equation <i>is</i> the machine.</div></div>
+  <p>And to find <i class="sym">k</i> from any pair you know, divide, exactly like the new column in the ratio table:</p>
+  <div class="math">\[ k = \frac{y}{x} \]<div class="cap">“How much \(y\) for one \(x\).” This is why \(k\) has units like <i>cups per scoop</i> or <i>miles per hour</i>: the word “per” means “for each one.”</div></div>
+  <p>A <b>proportion</b> (from 1.B.4) says two ratios are equal, like \(\tfrac{3}{2} = \tfrac{9}{6}\). Every row of a proportional table gives you one, because every row’s \(y \div x\) is the same \(k\).</p>
+</section>
+
+<!-- ===================== §5 Proportional or not ===================== -->
+<section class="prose">
+  <h2><span class="n">5</span>Proportional or not?</h2>
+  <p>Not every pair of amounts that grow together is proportional. Take a taxi that charges <b>$3 just to get in</b>, plus $2 per mile. One mile costs $5, two miles cost $7. Divide: 5 ÷ 1 = 5, but 7 ÷ 2 = 3½. The answer changes, so there is no single <i class="sym">k</i>. <em class="key">The taxi fare is not proportional to the miles.</em></p>
+  <p>Two quick tests for a table:</p>
+  <ol class="notice">
+    <li><b>Divide across every row.</b> If <i class="sym">y</i> ÷ <i class="sym">x</i> gives the same number every time, the relationship is proportional, and that number is <i class="sym">k</i>.</li>
+    <li><b>Check zero.</b> In a proportional relationship, 0 of the first amount always goes with 0 of the second: no scoops, no cups; no driving, no miles. The taxi fails this test: at 0 miles you still pay $3.</li>
+  </ol>
+  <p>Notice the adding trap from 1.B.4 is hiding here too. A relationship like “my age and my cousin’s age” (always 3 years apart) grows together, but by <i>adding</i>, not multiplying, so it isn’t proportional either.</p>
+</section>
+<section class="wide">
+  <div class="card" id="checker">
+    <div class="card-h">
+      <span class="tag">Try it</span><h3>The proportionality checker</h3>
+      <span class="sub">Pick a table or type your own numbers. The checker divides across every row and tells you what it finds.</span>
+    </div>
+    <div class="row" id="ckPresets"></div>
+    <div class="split">
+      <div><table class="rt edit" id="ckTable"></table></div>
+      <div class="readout" id="ckOut" style="margin-top:0"></div>
+    </div>
+    <div class="err" id="ckErr"></div>
+  </div>
+</section>
+
+<!-- ===================== §6 Where this goes ===================== -->
+<section class="prose">
+  <h2><span class="n">6</span>Where this goes</h2>
+  <ul class="goes">
+    <li><b>Next (1.B.6):</b> plot the rows of a proportional table as points and they fall on a straight line through 0. The constant of proportionality <i class="sym">k</i> turns out to be how <b>steep</b> that line is.</li>
+    <li><b>Later in this book:</b> <i class="sym">k</i> grows up into the <b>slope</b> of a line in Algebra and the <b>rate of change</b> in Calculus. The taxi, a proportional part plus a starting amount, is your first <b>linear function</b> that isn’t proportional. And the ×<i class="sym">k</i> machine is the simplest example of a <b>function</b>: a rule that turns every input into exactly one output.</li>
+    <li><b>In the world:</b> speed (miles per hour), unit prices at the store (dollars per pound), recipes (cups per scoop), and fuel use (miles per gallon) are all constants of proportionality. Any time you hear the word <b>per</b>, look for a <i class="sym">k</i>.</li>
+  </ul>
+</section>
+
+<!-- ===================== §7 Vocabulary ===================== -->
+<section class="prose">
+  <h2><span class="n">7</span>Words to know</h2>
+  <div class="vocab">
+    <div class="term"><b>Constant of proportionality</b>The number <i class="sym">k</i> you multiply <i class="sym">x</i> by to get <i class="sym">y</i>, the same for every pair. It’s how much <i class="sym">y</i> goes with one <i class="sym">x</i>: <i class="sym">k</i> = <i class="sym">y</i> ÷ <i class="sym">x</i>.</div>
+    <div class="term"><b>Proportional relationship</b>Two amounts where <i class="sym">y</i> ÷ <i class="sym">x</i> is always the same number, so <i class="sym">y</i> = <i class="sym">k</i> · <i class="sym">x</i>. Zero goes with zero, and doubling one doubles the other.</div>
+    <div class="term"><b>Proportion</b>A statement that two ratios are equal, like 3/2 = 9/6. Any two rows of a proportional table make one.</div>
+    <div class="term"><b>Unit rate</b>How much of one amount goes with exactly 1 of the other: 1½ cups per scoop, 60 miles per hour. In a proportional relationship, the unit rate is <i class="sym">k</i>.</div>
+    <div class="term"><b>Per</b>“For each one.” Miles <b>per</b> hour means miles for each one hour.</div>
+    <div class="term"><b>Not proportional</b>Two amounts where <i class="sym">y</i> ÷ <i class="sym">x</i> changes, or 0 doesn’t go with 0, like a taxi fare with a starting fee.</div>
+  </div>
+</section>
+
+<!-- ===================== Quiz ===================== -->
+<section class="prose"><h2><span class="n">8</span>Check yourself</h2>
+  <p>Three kinds of questions: use <i class="sym">k</i> to find a missing amount, find the <i class="sym">k</i> in <i class="sym">y</i> = <i class="sym">k</i> · <i class="sym">x</i>, and decide whether a table is proportional.</p>
+</section>
+<section class="wide">
+  <div class="card" id="quiz">
+    <div class="card-h"><span class="tag">Quiz</span><h3 id="qTitle"></h3><span class="score" id="score">Score: 0 / 0</span></div>
+    <div class="qtext" id="qText"></div>
+    <svg class="nl" id="qSvg" viewBox="0 0 560 170" role="img" aria-label="Quiz machine" style="max-width:640px;margin:0 auto"></svg>
+    <table class="rt" id="qTable" style="max-width:520px;margin:0 auto"></table>
+    <div class="inputs">
+      <label class="field" id="qField"><span id="qLabel">Answer</span><input id="qIn" type="text" inputmode="decimal" autocomplete="off"></label>
+      <div class="choice" id="qChoice"><button id="qYes">Proportional</button><button id="qNo">Not proportional</button></div>
+      <div class="row" style="margin:0">
+        <button class="primary" id="qCheck">Check</button>
+        <button id="qShow">Show answer</button>
+        <button id="qNew">New question</button>
+      </div>
+    </div>
+    <div class="err" id="qErr"></div>
+    <div class="feedback" id="qFb" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ===================== Pager ===================== -->
+<nav class="wide">
+  <div class="pager">
+    <div class="soon"><small>← Previous</small>1.B.4 Equivalent ratios</div>
+    <div class="next soon"><small>Next →</small>1.B.6 Graphing proportional relationships <span style="color:var(--muted)">(coming)</span></div>
+  </div>
+  <div class="meta">1.B.5 · Prerequisites: 1.B.2, 1.B.3, 1.B.4 · Leads to: 1.B.6, 1.B.7, 1.B.8, Algebra (slope, linear functions)</div>
+</nav>
+</main>
+
+<script>
+/* =====================================================================
+   1. HELPERS
+   ===================================================================== */
+const NS = 'http://www.w3.org/2000/svg';
+const $ = id => document.getElementById(id);
+function mk(tag, attrs, parent){                       // create an SVG element with attributes
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function txt(parent, x, y, s, cls, extra){             // create an SVG text element
+  const t = mk('text', Object.assign({ x, y, class: cls || '' }, extra || {}), parent);
+  t.textContent = s;
+  return t;
+}
+const isInt = x => Math.abs(x - Math.round(x)) < 1e-9;
+const near = (p, q) => Math.abs(p - q) < 1e-6 * Math.max(1, Math.abs(q));     // equality with rounding slack
+const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+const ease = t => t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+// Format a number: whole numbers plain, halves with ½, otherwise up to 2 decimals
+function fmt(x){
+  if (isInt(x)) return String(Math.round(x));
+  if (isInt(x * 2)) { const w = Math.floor(x); return (w ? w : '') + '½'; }
+  return String(Math.round(x * 100) / 100);
+}
+// Parse typed input: integers, decimals, fractions (3/4), mixed numbers (1 1/2), ½, an optional $ sign
+function parseNum(s){
+  s = String(s).trim().replace(/[−–]/g, '-').replace(/^\+/, '').replace(/^\$/, '');
+  s = s.replace(/^(\d+)\s*½$/, '$1.5').replace(/^½$/, '0.5');
+  if (/^-?\d+(\.\d+)?$|^-?\.\d+$/.test(s)) return parseFloat(s);
+  let m = s.match(/^(\d+)\s+(\d+)\s*\/\s*(\d+)$/);
+  if (m && +m[3] !== 0) return +m[1] + (+m[2]) / (+m[3]);
+  m = s.match(/^(-?\d+)\s*\/\s*(\d+)$/);
+  if (m && +m[2] !== 0) return +m[1] / +m[2];
+  return NaN;
+}
+
+// SVG classes (CSS variables, so light and dark mode both work)
+const svgCss = document.createElement('style');
+svgCss.textContent = `
+  .lineX{stroke:var(--qx);stroke-width:2.5} .lineY{stroke:var(--qy);stroke-width:2.5}
+  .tickX{stroke:var(--qx);stroke-width:1.6} .tickY{stroke:var(--qy);stroke-width:1.6}
+  .lblX{fill:var(--qx);font:500 12.5px var(--mono);text-anchor:middle} .lblY{fill:var(--qy);font:500 12.5px var(--mono);text-anchor:middle}
+  .rowlbl{font:600 13px var(--sans)} .rX{fill:var(--qx)} .rY{fill:var(--qy)}
+  .conn{stroke:var(--line2);stroke-width:1;stroke-dasharray:3 3}
+  .known{stroke:var(--muted);stroke-width:2.5} .knownDot{fill:var(--muted);stroke:var(--paper);stroke-width:2}
+  .unit{stroke:var(--k);stroke-width:3.5} .unitDot{fill:var(--k);stroke:var(--paper);stroke-width:2}
+  .goal{stroke:var(--ink);stroke-width:2.5} .goalDot{fill:var(--ink);stroke:var(--paper);stroke-width:2}
+  .tagTxt{font:600 12px var(--sans);text-anchor:middle}
+  .tKnown{fill:var(--muted)} .tUnit{fill:var(--k)} .tGoal{fill:var(--ink)}
+  .jump{fill:none;stroke-width:2.4;stroke-linecap:round} .jDiv{stroke:var(--k)} .jMul{stroke:var(--ink)}
+  .jhead{} .jhDiv{fill:var(--k)} .jhMul{fill:var(--ink)}
+  .jlbl{font:600 14px var(--mono);text-anchor:middle;paint-order:stroke;stroke:var(--bg);stroke-width:5px;stroke-linejoin:round}
+  .jlDiv{fill:var(--k)} .jlMul{fill:var(--ink)}
+  .val{font:700 13px var(--mono);text-anchor:middle;paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+  .vX{fill:var(--qx)} .vY{fill:var(--qy)} .vK{fill:var(--k)}
+  .pill{stroke-width:2} .pX{fill:var(--qx-soft);stroke:var(--qx)} .pY{fill:var(--qy-soft);stroke:var(--qy)}
+  .pillTxt{font:700 17px var(--mono);text-anchor:middle} .pillSub{font:500 12px var(--sans);text-anchor:middle;fill:var(--muted)}
+  .mbox{fill:var(--k-soft);stroke:var(--k);stroke-width:2.5}
+  .mTxt{fill:var(--k);font:700 22px var(--mono);text-anchor:middle}
+  .arr{stroke:var(--muted);stroke-width:2;fill:none} .arrH{fill:var(--muted)}
+  .sym{font:italic 600 17px var(--serif)} .sX{fill:var(--qx)} .sY{fill:var(--qy)} .sK{fill:var(--k)}
+  .qmark{fill:var(--bad);font:700 20px var(--mono);text-anchor:middle}
+`;
+document.head.appendChild(svgCss);
+
+/* =====================================================================
+   2. CONTEXTS AND PRESETS
+   ===================================================================== */
+// Each context names its two amounts (singular/plural) and the unit of k
+const CTX = {
+  lemon: { x: ['scoop', 'scoops'], y: ['cup', 'cups'], k: 'cups per scoop', name: 'Lemonade' },
+  car:   { x: ['hour', 'hours'],   y: ['mile', 'miles'], k: 'miles per hour', name: 'Car' },
+  bike:  { x: ['hour', 'hours'],   y: ['mile', 'miles'], k: 'miles per hour', name: 'Bike' },
+  walk:  { x: ['hour', 'hours'],   y: ['mile', 'miles'], k: 'miles per hour', name: 'Walking' },
+};
+const unit = (c, which, v) => CTX[c][which][near(v, 1) ? 0 : 1];      // "1 scoop" vs "3 scoops"
+const PRESETS = [
+  { name: 'Lemonade',       c: 'lemon', x0: 2, y0: 3,   x: 5,   d: 'The 1.B.4 recipe: 2 scoops for 3 cups. Find the cups for 1 scoop, then for 5 scoops.' },
+  { name: 'From a big batch', c: 'lemon', x0: 6, y0: 9, x: 4,   d: 'Start from a different row, 6 : 9. Dividing down to one gives the same k = 1½.' },
+  { name: 'Car',            c: 'car',   x0: 3, y0: 180, x: 5,   d: 'A car drives 180 miles in 3 hours. k is the speed: miles for one hour.' },
+  { name: 'Bike',           c: 'bike',  x0: 2, y0: 24,  x: 3.5, d: 'A bike rides 24 miles in 2 hours. How far in 3½ hours?' },
+  { name: 'Walking',        c: 'walk',  x0: 4, y0: 12,  x: 1.5, d: 'You walk 12 miles in 4 hours. How far in an hour and a half?' },
+  { name: 'Already one',    c: 'lemon', x0: 1, y0: 1.5, x: 3,   d: 'If you already know the pair for 1, that number is k. Skip straight to the machine.' },
+];
+const ex = { c: 'lemon', x0: 2, y0: 3, x: 5, e: 1, raf: 0, playing: false };
+
+/* =====================================================================
+   3. INTRO TABLE (§1)
+   ===================================================================== */
+(function introTable(){
+  let h = `<tr><th>Batches</th><th>Scoops <i>x</i></th><th>Cups <i>y</i></th><th>Cups ÷ scoops = <i>y</i> ÷ <i>x</i></th></tr>`;
+  [1, 2, 3, 4, 6].forEach(n => {
+    h += `<tr><td>${n}</td><td class="cx">${2 * n}</td><td class="cy">${3 * n}</td><td class="ck">${3 * n} ÷ ${2 * n} = 1½</td></tr>`;
+  });
+  $('introTable').innerHTML = h;
+})();
+
+/* =====================================================================
+   4. DOUBLE NUMBER LINE WITH "FIND THE ONE" AND "MACHINE" JUMPS
+   ===================================================================== */
+// A curved jump between two values on one line. above=true draws it over the line.
+// p in [0,1] is how much of the jump is drawn (for animation).
+function jump(g, X, y, from, to, above, cls, label, p, h){
+  if (p <= 0 || near(from, to)) return;
+  const x0 = X(from), x1 = X(to), xc = (x0 + x1) / 2;
+  const dy = above ? -1 : 1, y0 = y + dy * 26, yc = y0 + dy * h;
+  const path = mk('path', { d: `M${x0},${y0} Q${xc},${yc} ${x1},${y0}`, class: 'jump ' + (cls === 'div' ? 'jDiv' : 'jMul'), pathLength: 1 }, g);
+  path.setAttribute('stroke-dasharray', '1'); path.setAttribute('stroke-dashoffset', String(1 - p));   // draw it progressively
+  if (p >= 0.98){
+    // Arrowhead along the curve's final direction
+    const vx = x1 - xc, vy = y0 - yc, L = Math.hypot(vx, vy), ux = vx / L, uy = vy / L;
+    const bx = x1 - ux * 10, by = y0 - uy * 10;
+    mk('polygon', { points: `${x1},${y0} ${bx - uy * 5},${by + ux * 5} ${bx + uy * 5},${by - ux * 5}`, class: cls === 'div' ? 'jhDiv' : 'jhMul' }, g);
+  }
+  if (p > 0.4) txt(g, xc, (y0 + yc) / 2 + (above ? -2 : 12), label, 'jlbl ' + (cls === 'div' ? 'jlDiv' : 'jlMul'));
+}
+// Draw the explorer's double number line at animation progress e (0..1)
+function renderDNL(svg, s, e){
+  svg.innerHTML = '';
+  const g = mk('g', {}, svg);
+  const k = s.y0 / s.x0;
+  const max = Math.max(4, Math.ceil(Math.max(s.x0, s.x)) + (isInt(Math.max(s.x0, s.x)) ? 1 : 0));
+  const L = 110, R = 975, yT = 120, yB = 180;
+  const X = v => L + (v / max) * (R - L);                  // one shared scale: x on top, y = k·x below
+  txt(g, 10, yT + 5, CTX[s.c].x[1], 'rowlbl rX'); txt(g, 10, yB + 5, CTX[s.c].y[1], 'rowlbl rY');
+  txt(g, 86, yT + 5, 'x', 'sym sX'); txt(g, 86, yB + 5, 'y', 'sym sY');
+  mk('line', { x1: L, y1: yT, x2: R, y2: yT, class: 'lineX' }, g);
+  mk('line', { x1: L, y1: yB, x2: R, y2: yB, class: 'lineY' }, g);
+  for (let h = 0; h <= max * 2; h++){                       // ticks every half, labels on whole numbers
+    const v = h / 2, x = X(v), whole = isInt(v);
+    if (whole) mk('line', { x1: x, y1: yT + 7, x2: x, y2: yB - 7, class: 'conn' }, g);
+    mk('line', { x1: x, y1: yT - (whole ? 6 : 3), x2: x, y2: yT + (whole ? 6 : 3), class: 'tickX' }, g);
+    mk('line', { x1: x, y1: yB - (whole ? 6 : 3), x2: x, y2: yB + (whole ? 6 : 3), class: 'tickY' }, g);
+    if (whole){ txt(g, x, yT - 12, fmt(v), 'lblX'); txt(g, x, yB + 22, fmt(k * v), 'lblY'); }
+  }
+  // Animation phases: 0–0.45 divide down to one; 0.45–0.55 pause on k; 0.55–1 multiply up to x
+  const p1 = clamp(e / 0.45, 0, 1), p2 = clamp((e - 0.55) / 0.45, 0, 1);
+  const skip1 = near(s.x0, 1), skip2 = near(s.x, 1);
+  const tag = (v, label, cls) => txt(g, X(v) + 8, (yT + yB) / 2 + 4, label, 'tagTxt ' + cls, { 'text-anchor': 'start', style: 'paint-order:stroke;stroke:var(--bg);stroke-width:5px' });
+  const pair = (v, cls, dotCls) => {                          // a highlighted vertical pair at x = v
+    mk('line', { x1: X(v), y1: yT, x2: X(v), y2: yB, class: cls }, g);
+    mk('circle', { cx: X(v), cy: yT, r: 6.5, class: dotCls }, g);
+    mk('circle', { cx: X(v), cy: yB, r: 6.5, class: dotCls }, g);
+  };
+  pair(s.x0, 'known', 'knownDot');
+  tag(s.x0, 'known', 'tKnown');
+  // Arc heights: on the same side of 1, nest the shorter jump under the longer one so they never cross
+  const sD = Math.abs(s.x0 - 1), sM = Math.abs(s.x - 1), sameSide = (s.x0 - 1) * (s.x - 1) > 0;
+  let hD = 64, hM = 64;
+  if (sameSide && sD > 0 && sM > 0){
+    if (sM > sD){ hD = clamp(140 / (1.4 * sM / sD), 16, 64); hM = clamp(hD * 1.4 * sM / sD, 24, 140); }
+    else       { hM = clamp(hD * 0.65 * sM / sD, 14, 64); }
+  }
+  // Step 1 jumps: divide both lines by x0 (or multiply, if x0 is less than 1)
+  const f1 = s.x0 >= 1 ? '÷ ' + fmt(s.x0) : '× ' + fmt(1 / s.x0);
+  if (!skip1){
+    jump(g, X, yT, s.x0, 1, true, 'div', f1, p1, hD);
+    jump(g, X, yB, s.x0, 1, false, 'div', f1, p1, hD);
+  }
+  if (skip1 || p1 >= 1){
+    pair(1, 'unit', 'unitDot');
+    tag(1, 'k = ' + fmt(k), 'tUnit');
+  }
+  // Step 2 jumps: multiply both lines by the wanted x
+  if (!skip2 && !near(s.x, s.x0) || (near(s.x, s.x0) && !skip2)){
+    jump(g, X, yT, 1, s.x, true, 'mul', '× ' + fmt(s.x), p2, hM);
+    jump(g, X, yB, 1, s.x, false, 'mul', '× ' + fmt(s.x), p2, hM);
+  }
+  if (p2 >= 1 || skip2 && e >= 1){
+    pair(s.x, 'goal', 'goalDot');
+    if (!isInt(s.x)){ txt(g, X(s.x), yT - 12, fmt(s.x), 'val vX'); txt(g, X(s.x), yB + 22, fmt(k * s.x), 'val vY'); }
+    tag(s.x, 'answer', 'tGoal');
+  }
+}
+
+/* =====================================================================
+   5. THE ×k MACHINE
+   ===================================================================== */
+// Draw x -> [× k] -> y. hide = 'x' | 'k' | 'y' | null puts a ? in that slot.
+function renderMachine(svg, c, x, k, y, hide, lit){
+  svg.innerHTML = '';
+  const g = mk('g', {}, svg);
+  const pill = (cx, cls, val, sub, sym, symCls, hidden) => {
+    mk('rect', { x: cx - 70, y: 52, width: 140, height: 56, rx: 28, class: 'pill ' + cls }, g);
+    if (hidden) txt(g, cx, 88, '?', 'qmark'); else txt(g, cx, 87, val, 'pillTxt');
+    txt(g, cx, 130, sub, 'pillSub');
+    txt(g, cx, 38, sym, 'sym ' + symCls);
+  };
+  pill(90, 'pX', fmt(x), CTX[c].x[1], 'x', 'sX', hide === 'x');
+  // Machine box
+  mk('line', { x1: 162, y1: 80, x2: 200, y2: 80, class: 'arr' }, g);
+  mk('polygon', { points: '206,80 196,74 196,86', class: 'arrH' }, g);
+  const box = mk('rect', { x: 208, y: 40, width: 144, height: 80, rx: 14, class: 'mbox' }, g);
+  if (lit) box.setAttribute('style', 'filter:drop-shadow(0 0 8px var(--k))');
+  txt(g, 280, 30, 'k', 'sym sK');
+  if (hide === 'k') txt(g, 280, 90, '× ?', 'mTxt'); else txt(g, 280, 90, '× ' + fmt(k), 'mTxt');
+  txt(g, 280, 140, CTX[c].k, 'pillSub');
+  mk('line', { x1: 354, y1: 80, x2: 392, y2: 80, class: 'arr' }, g);
+  mk('polygon', { points: '398,80 388,74 388,86', class: 'arrH' }, g);
+  pill(470, 'pY', fmt(y), CTX[c].y[1], 'y', 'sY', hide === 'y');
+}
+
+/* =====================================================================
+   6. RATIO TABLE with the y ÷ x column
+   ===================================================================== */
+function renderTable(s){
+  const k = s.y0 / s.x0;
+  const xs = [...new Set([1, 2, 3, 4, s.x0, s.x].map(v => Math.round(v * 1000) / 1000))].sort((p, q) => p - q);
+  let h = `<tr><th>${CTX[s.c].x[1]} <i>x</i></th><th>${CTX[s.c].y[1]} <i>y</i></th><th><i>y</i> ÷ <i>x</i></th></tr>`;
+  xs.forEach(v => {
+    const tag = near(v, s.x0) ? 'known' : near(v, 1) ? 'one' : near(v, s.x) ? 'answer' : '';
+    h += `<tr class="${tag ? 'on' : ''}"><td class="cx">${fmt(v)}${tag ? `<span class="tag2">${tag}</span>` : ''}</td><td class="cy">${fmt(k * v)}</td><td class="ck">${fmt(k)}</td></tr>`;
+  });
+  $('rt').innerHTML = h;
+}
+
+/* =====================================================================
+   7. EXPLORER: inputs, steps, animation
+   ===================================================================== */
+PRESETS.forEach((p, i) => {
+  const b = document.createElement('button');
+  b.className = 'preset'; b.textContent = p.name;
+  b.onclick = () => choosePreset(i);
+  $('presets').appendChild(b);
+});
+function markPreset(i){
+  [...$('presets').children].forEach((b, j) => b.classList.toggle('on', j === i));
+  $('presetDesc').textContent = i === null ? `Custom numbers (${CTX[ex.c].name.toLowerCase()} units).` : PRESETS[i].d;
+}
+function setLabels(){
+  const c = CTX[ex.c];
+  $('lblX0').innerHTML = `Known ${c.x[1]} <i>x</i>`; $('lblY0').innerHTML = `Known ${c.y[1]} <i>y</i>`; $('lblX').innerHTML = `Want ${c.x[1]} <i>x</i>`;
+  $('dnlCap').textContent = `${c.x[1]} on top, ${c.y[1]} below`;
+}
+function choosePreset(i){
+  const p = PRESETS[i];
+  Object.assign(ex, { c: p.c, x0: p.x0, y0: p.y0, x: p.x });
+  $('inX0').value = fmt(p.x0); $('inY0').value = fmt(p.y0); $('inX').value = fmt(p.x);
+  $('exErr').textContent = ''; markPreset(i); setLabels();
+  stopEx(); ex.e = 0; drawEx(); playEx();
+}
+function readEx(){
+  const x0 = parseNum($('inX0').value), y0 = parseNum($('inY0').value), x = parseNum($('inX').value), err = $('exErr');
+  if ([x0, y0, x].some(isNaN)){ err.textContent = 'Fill in every box with a number.'; return false; }
+  if (x0 <= 0 || y0 <= 0 || x <= 0){ err.textContent = 'Use amounts bigger than 0.'; return false; }
+  if (x0 > 10 || x > 10){ err.textContent = 'Keep the x amounts to 10 or less so they fit on the line.'; return false; }
+  if (!isInt(x0 * 2) || !isInt(x * 2)){ err.textContent = 'Use whole numbers or halves for the x amounts (like 3 or 2½).'; return false; }
+  err.textContent = '';
+  Object.assign(ex, { x0, y0, x });
+  return true;
+}
+['inX0', 'inY0', 'inX'].forEach(id => {
+  $(id).addEventListener('input', () => { $('exErr').textContent = ''; markPreset(null); stopEx(); if (readEx()){ ex.e = 0; drawEx(); } });
+  $(id).addEventListener('focus', e => e.target.select());
+  $(id).addEventListener('keydown', e => { if (e.key === 'Enter') playEx(); });
+});
+function drawEx(){
+  const s = ex, k = s.y0 / s.x0, c = CTX[s.c];
+  renderDNL($('dnl'), s, s.e);
+  const lit = s.e > 0.55;
+  renderMachine($('machine'), s.c, s.x, k, k * s.x, s.e >= 1 ? null : (s.e >= 0.45 ? 'y' : 'k'), lit);
+  renderTable(s);
+  // Step boxes under the double number line
+  const f1 = s.x0 >= 1 ? `divide both by ${fmt(s.x0)}` : `multiply both by ${fmt(1 / s.x0)}`;
+  $('step1').className = 'stepbox' + (s.e < 0.02 ? ' dim' : '');
+  $('step1').innerHTML = near(s.x0, 1)
+    ? `<b class="h">Step 1 · find the one</b>The known pair is already for 1 ${c.x[0]}: <b class="kk">k = ${fmt(k)}</b> ${c.k}.`
+    : `<b class="h">Step 1 · find the one</b>${fmt(s.x0)} ${unit(s.c, 'x', s.x0)} → ${fmt(s.y0)} ${unit(s.c, 'y', s.y0)}. To get to 1 ${c.x[0]}, ${f1}: 1 ${c.x[0]} → ${fmt(k)} ${unit(s.c, 'y', k)}. So <b class="kk">k = ${fmt(k)}</b> ${c.k}.`;
+  $('step2').className = 'stepbox' + (s.e < 0.55 ? ' dim' : '');
+  $('step2').innerHTML = `<b class="h">Step 2 · run the machine</b>${fmt(s.x)} ${unit(s.c, 'x', s.x)} × ${fmt(k)} = <b class="qy">${fmt(k * s.x)} ${unit(s.c, 'y', k * s.x)}</b>. In symbols: <i class="sym">y</i> = ${fmt(k)} · ${fmt(s.x)} = ${fmt(k * s.x)}.`;
+}
+function playEx(){
+  if (ex.playing){ stopEx(); return; }
+  if (!readEx()) return;
+  if (ex.e >= 1) ex.e = 0;
+  ex.playing = true; $('play').textContent = 'Pause';
+  let last = performance.now();
+  const step = now => {
+    ex.e = Math.min(1, ex.e + (now - last) / 3600); last = now;
+    drawEx();
+    if (ex.e < 1 && ex.playing) ex.raf = requestAnimationFrame(step); else stopEx();
+  };
+  ex.raf = requestAnimationFrame(step);
+}
+function stopEx(){ ex.playing = false; cancelAnimationFrame(ex.raf); $('play').textContent = ex.e >= 1 ? 'Replay' : 'Play'; }
+$('play').onclick = playEx;
+$('reset').onclick = () => { stopEx(); ex.e = 0; $('play').textContent = 'Play'; drawEx(); };
+
+/* =====================================================================
+   8. PROPORTIONALITY CHECKER
+   ===================================================================== */
+const CK = [
+  { name: 'Lemonade', xl: 'Scoops', yl: 'Cups', rows: [[2, 3], [4, 6], [6, 9], [8, 12]] },
+  { name: 'Car at 60 mi/h', xl: 'Hours', yl: 'Miles', rows: [[1, 60], [2, 120], [3, 180], [5, 300]] },
+  { name: 'Taxi ($3 + $2/mile)', xl: 'Miles', yl: 'Dollars', rows: [[1, 5], [2, 7], [3, 9], [4, 11]] },
+  { name: 'Ages (3 years apart)', xl: 'My age', yl: 'Cousin', rows: [[5, 8], [10, 13], [15, 18], [20, 23]] },
+  { name: 'Your own', xl: 'x', yl: 'y', rows: [[1, 4], [2, 8], [3, 12], [5, 20]] },
+];
+let ckIdx = 0;
+CK.forEach((p, i) => {
+  const b = document.createElement('button');
+  b.className = 'preset'; b.textContent = p.name;
+  b.onclick = () => { ckIdx = i; buildCk(); };
+  $('ckPresets').appendChild(b);
+});
+// Build an editable table; every edit re-checks
+function buildCk(){
+  [...$('ckPresets').children].forEach((b, j) => b.classList.toggle('on', j === ckIdx));
+  const p = CK[ckIdx];
+  let h = `<tr><th>${p.xl} <i>x</i></th><th>${p.yl} <i>y</i></th><th><i>y</i> ÷ <i>x</i></th></tr>`;
+  p.rows.forEach((r, i) => {
+    h += `<tr><td class="cx"><input data-r="${i}" data-c="0" value="${r[0]}" inputmode="decimal"></td><td class="cy"><input data-r="${i}" data-c="1" value="${r[1]}" inputmode="decimal"></td><td id="ckq${i}"></td></tr>`;
+  });
+  $('ckTable').innerHTML = h;
+  $('ckTable').querySelectorAll('input').forEach(inp => {
+    inp.addEventListener('input', runCk);
+    inp.addEventListener('focus', e => e.target.select());
+  });
+  runCk();
+}
+function runCk(){
+  const inputs = [...$('ckTable').querySelectorAll('input')];
+  const rows = [[], [], [], []];
+  for (const inp of inputs) rows[+inp.dataset.r][+inp.dataset.c] = parseNum(inp.value);
+  if (rows.some(r => r.some(isNaN))){ $('ckErr').textContent = 'Fill in every cell with a number.'; return; }
+  if (rows.some(r => r[0] === 0)){ $('ckErr').textContent = 'x can’t be 0 in this table (you can’t divide by 0).'; return; }
+  $('ckErr').textContent = '';
+  const q = rows.map(r => r[1] / r[0]), k = q[0];
+  const same = q.every(v => near(v, k));
+  q.forEach((v, i) => { const td = $('ckq' + i); td.textContent = fmt(v); td.className = near(v, k) ? 'good' : 'bad'; });
+  let h;
+  if (same){
+    h = `<b class="verdict-same" style="color:var(--ok)">Proportional.</b> Every row gives <i class="sym">y</i> ÷ <i class="sym">x</i> = <b class="kk">${fmt(k)}</b>, so the constant of proportionality is <i class="sym">k</i> = ${fmt(k)} and the equation is <b><i class="sym">y</i> = ${fmt(k)} · <i class="sym">x</i></b>. Zero would go with zero.`;
+  } else {
+    // Not proportional: look for a steady step plus a starting amount (like the taxi)
+    const sorted = rows.slice().sort((p, r) => p[0] - r[0]);
+    const m = (sorted[1][1] - sorted[0][1]) / (sorted[1][0] - sorted[0][0]);
+    const linear = sorted.every((r, i) => i === 0 || near((r[1] - sorted[i - 1][1]) / (r[0] - sorted[i - 1][0]), m));
+    const start = sorted[0][1] - m * sorted[0][0];
+    h = `<b style="color:var(--bad)">Not proportional.</b> <i class="sym">y</i> ÷ <i class="sym">x</i> changes from row to row (the red cells), so there is no single <i class="sym">k</i>.`;
+    if (linear && !near(start, 0)){
+      h += ` It does grow by a steady ${fmt(m)} for each 1 of <i class="sym">x</i>, but there’s a <b>starting amount of ${fmt(start)}</b>: at <i class="sym">x</i> = 0, <i class="sym">y</i> would be ${fmt(start)}, not 0. That’s why it fails.`;
+      if (near(m, 1)) h += ` Here the amounts just stay ${fmt(start)} apart: that’s adding, not multiplying.`;
+    } else {
+      h += ` Try changing a cell so every row divides to the same number.`;
+    }
+  }
+  $('ckOut').innerHTML = h;
+}
+
+/* =====================================================================
+   9. QUIZ
+   ===================================================================== */
+const rnd = arr => arr[Math.floor(Math.random() * arr.length)];
+const randInt = (lo, hi) => lo + Math.floor(Math.random() * (hi - lo + 1));
+const qz = { counted: false, done: false, right: 0, total: 0 };
+// Question pools for the two contexts the page uses
+function scenario(){
+  if (Math.random() < 0.45) return { c: 'lemon', k: rnd([1.5, 2, 2.5, 3, 4]) };
+  const c = rnd(['car', 'bike', 'walk']);
+  return { c, k: c === 'car' ? rnd([40, 50, 55, 60, 65]) : c === 'bike' ? rnd([8, 10, 12, 15]) : rnd([2, 3, 4]) };
+}
+function newQuestion(){
+  Object.assign(qz, { counted: false, done: false });
+  $('qErr').textContent = ''; $('qFb').className = 'feedback'; $('qFb').innerHTML = ''; $('qIn').value = '';
+  qz.type = rnd(['use', 'use', 'eq', 'eq', 'prop']);
+  const showInput = qz.type !== 'prop';
+  $('qField').style.display = showInput ? '' : 'none'; $('qCheck').style.display = showInput ? '' : 'none';
+  $('qChoice').style.display = showInput ? 'none' : '';
+  $('qSvg').style.display = showInput ? '' : 'none'; $('qTable').style.display = showInput ? 'none' : '';
+  if (qz.type === 'use'){
+    Object.assign(qz, scenario());
+    const c = CTX[qz.c];
+    qz.x = randInt(2, 8); qz.y = qz.k * qz.x; qz.hide = Math.random() < 0.6 ? 'y' : 'x';
+    $('qTitle').textContent = 'Use k to find the missing amount';
+    $('qText').innerHTML = qz.c === 'lemon'
+      ? `A lemonade recipe uses <b class="kk">${fmt(qz.k)} cups per scoop</b> (<i class="sym">k</i> = ${fmt(qz.k)}). ` + (qz.hide === 'y' ? `How many <b>cups</b> go with <b>${qz.x} scoops</b>?` : `How many <b>scoops</b> go with <b>${fmt(qz.y)} cups</b>?`)
+      : `A ${CTX[qz.c].name.toLowerCase() === 'walking' ? 'walker' : CTX[qz.c].name.toLowerCase()} moves at <b class="kk">${fmt(qz.k)} miles per hour</b> (<i class="sym">k</i> = ${fmt(qz.k)}). ` + (qz.hide === 'y' ? `How many <b>miles</b> in <b>${qz.x} hours</b>?` : `How many <b>hours</b> to go <b>${fmt(qz.y)} miles</b>?`);
+    $('qLabel').innerHTML = qz.hide === 'y' ? `${c.y[1]} <i>y</i>` : `${c.x[1]} <i>x</i>`;
+    $('qField').className = 'field ' + (qz.hide === 'y' ? 'fy' : 'fx');
+    renderMachine($('qSvg'), qz.c, qz.x, qz.k, qz.y, qz.hide, false);
+  } else if (qz.type === 'eq'){
+    Object.assign(qz, scenario());
+    qz.x = randInt(2, 6); qz.y = qz.k * qz.x;
+    $('qTitle').textContent = 'Write the equation y = k · x';
+    $('qText').innerHTML = qz.c === 'lemon'
+      ? `A lemonade recipe uses <b>${fmt(qz.y)} cups</b> of water for <b>${qz.x} scoops</b> of mix. Write the equation <i class="sym">y</i> = <i class="sym">k</i> · <i class="sym">x</i>, where <i class="sym">x</i> is scoops and <i class="sym">y</i> is cups. What is <i class="sym">k</i>?`
+      : `A ${qz.c === 'walk' ? 'walker' : qz.c} goes <b>${fmt(qz.y)} miles</b> in <b>${qz.x} hours</b>. Write the equation <i class="sym">y</i> = <i class="sym">k</i> · <i class="sym">x</i>, where <i class="sym">x</i> is hours and <i class="sym">y</i> is miles. What is <i class="sym">k</i>?`;
+    $('qLabel').innerHTML = 'k in y = k · x';
+    $('qField').className = 'field fk';
+    renderMachine($('qSvg'), qz.c, qz.x, qz.k, qz.y, 'k', false);
+  } else {
+    // Proportional or not: a true k·x table, a starting-amount table, or an "add" table
+    qz.kind = rnd(['yes', 'yes', 'start', 'add']);
+    const k = rnd([2, 3, 4, 5]), c0 = randInt(1, 6);
+    const xs = [1, 2, 3, 4].map(v => v * rnd([1, 2]) ).sort((p, q) => p - q);
+    const uniq = [...new Set(xs)]; while (uniq.length < 4) uniq.push(uniq[uniq.length - 1] + 1);
+    qz.rows = uniq.map(x => [x, qz.kind === 'yes' ? k * x : qz.kind === 'start' ? k * x + c0 : x + c0]);
+    qz.k = k; qz.c0 = c0;
+    $('qTitle').textContent = 'Proportional or not?';
+    $('qText').innerHTML = `Is <i class="sym">y</i> proportional to <i class="sym">x</i> in this table?`;
+    drawPropTable(false);
+  }
+}
+function drawPropTable(reveal){
+  let h = `<tr><th><i>x</i></th><th><i>y</i></th>${reveal ? '<th><i>y</i> ÷ <i>x</i></th>' : ''}</tr>`;
+  const k0 = qz.rows[0][1] / qz.rows[0][0];
+  qz.rows.forEach(r => {
+    const q = r[1] / r[0];
+    h += `<tr><td class="cx">${r[0]}</td><td class="cy">${r[1]}</td>${reveal ? `<td class="${near(q, k0) ? 'good' : 'bad'}">${fmt(q)}</td>` : ''}</tr>`;
+  });
+  $('qTable').innerHTML = h;
+}
+function countQ(ok){
+  if (qz.counted) return;
+  qz.counted = true; qz.total++; if (ok) qz.right++;
+  $('score').textContent = `Score: ${qz.right} / ${qz.total}`;
+}
+function checkQ(){
+  const v = parseNum($('qIn').value);
+  if ($('qIn').value.trim() === '' || isNaN(v)){ $('qErr').textContent = 'Type a number (fractions like 3/2 or 1½ are fine).'; return; }
+  $('qErr').textContent = '';
+  let ok = false, msg;
+  if (qz.type === 'use'){
+    const ans = qz.hide === 'y' ? qz.y : qz.x;
+    if (near(v, ans)){ ok = true; msg = qz.hide === 'y'
+      ? `<b>Right.</b> Run the machine: ${qz.x} × ${fmt(qz.k)} = <b>${fmt(qz.y)}</b>.`
+      : `<b>Right.</b> Run the machine backwards: ${fmt(qz.y)} ÷ ${fmt(qz.k)} = <b>${qz.x}</b>. Check: ${qz.x} × ${fmt(qz.k)} = ${fmt(qz.y)}.`; }
+    else if (qz.hide === 'x' && near(v, qz.y * qz.k)) msg = `<b>You multiplied, but this time the machine runs backwards.</b> You know <i class="sym">y</i> and need <i class="sym">x</i>: what times ${fmt(qz.k)} gives ${fmt(qz.y)}? Divide.`;
+    else if (qz.hide === 'y' && near(v, qz.x / qz.k)) msg = `<b>You divided, but <i class="sym">k</i> is the multiplier.</b> <i class="sym">y</i> = <i class="sym">k</i> · <i class="sym">x</i>, so multiply ${qz.x} by ${fmt(qz.k)}.`;
+    else if (near(v, qz.x + qz.k) || near(v, qz.y - qz.k)) msg = `<b>That’s adding, not multiplying.</b> <i class="sym">k</i> is “how much for each one,” so it gets multiplied by the number of ${qz.hide === 'y' ? CTX[qz.c].x[1] : CTX[qz.c].x[1]}.`;
+    else msg = `<b>Not quite.</b> <i class="sym">k</i> = ${fmt(qz.k)} means ${fmt(qz.k)} ${CTX[qz.c].y[1]} for each 1 ${CTX[qz.c].x[0]}. ${qz.hide === 'y' ? 'Multiply by the number of ' + CTX[qz.c].x[1] + '.' : 'How many ' + CTX[qz.c].x[1] + ' make ' + fmt(qz.y) + '?'}`;
+  } else {
+    if (near(v, qz.k)){ ok = true; msg = `<b>Right.</b> <i class="sym">k</i> = <i class="sym">y</i> ÷ <i class="sym">x</i> = ${fmt(qz.y)} ÷ ${qz.x} = <b>${fmt(qz.k)}</b>, so the equation is <i class="sym">y</i> = ${fmt(qz.k)} · <i class="sym">x</i> (${CTX[qz.c].k}).`; }
+    else if (near(v, qz.x / qz.y)) msg = `<b>That’s flipped: you did <i class="sym">x</i> ÷ <i class="sym">y</i>.</b> <i class="sym">k</i> is how much <i class="sym">y</i> for one <i class="sym">x</i> (${CTX[qz.c].k}), so divide <i class="sym">y</i> by <i class="sym">x</i>.`;
+    else if (near(v, qz.y)) msg = `<b>That’s the total <i class="sym">y</i>, not the amount for one.</b> Find how much goes with just 1 ${CTX[qz.c].x[0]}.`;
+    else if (near(v, qz.x * qz.y)) msg = `<b>You multiplied.</b> To get down to 1 ${CTX[qz.c].x[0]}, divide <i class="sym">y</i> by <i class="sym">x</i>.`;
+    else msg = `<b>Not quite.</b> Ask “how much for one?”: divide the ${CTX[qz.c].y[1]} by the ${CTX[qz.c].x[1]}.`;
+  }
+  countQ(ok);
+  if (ok){ qz.done = true; renderMachine($('qSvg'), qz.c, qz.x, qz.k, qz.y, null, true); }
+  $('qFb').className = 'feedback ' + (ok ? 'ok' : 'bad'); $('qFb').innerHTML = msg;
+}
+function explainProp(){
+  if (qz.kind === 'yes') return `Every row gives <i class="sym">y</i> ÷ <i class="sym">x</i> = ${qz.k}, so it’s proportional with <i class="sym">k</i> = ${qz.k}: <i class="sym">y</i> = ${qz.k} · <i class="sym">x</i>.`;
+  if (qz.kind === 'start') return `<i class="sym">y</i> ÷ <i class="sym">x</i> changes (look at the red cells). Each step adds ${qz.k}, but there’s a starting amount of ${qz.c0}, like the taxi’s fee: at <i class="sym">x</i> = 0, <i class="sym">y</i> would be ${qz.c0}, not 0.`;
+  return `<i class="sym">y</i> is always <i class="sym">x</i> + ${qz.c0}: the two amounts stay ${qz.c0} apart. That’s adding, not multiplying, so <i class="sym">y</i> ÷ <i class="sym">x</i> changes from row to row.`;
+}
+function answerProp(sayYes){
+  if (qz.done) return;
+  const ok = (qz.kind === 'yes') === sayYes;
+  countQ(ok); qz.done = true; drawPropTable(true);
+  $('qFb').className = 'feedback ' + (ok ? 'ok' : 'bad');
+  $('qFb').innerHTML = `<b>${ok ? 'Right.' : 'Not this time.'}</b> ${explainProp()}`;
+}
+function showQ(){
+  countQ(false); qz.done = true; $('qErr').textContent = '';
+  $('qFb').className = 'feedback info';
+  if (qz.type === 'prop'){ drawPropTable(true); $('qFb').innerHTML = `<b>${qz.kind === 'yes' ? 'Proportional.' : 'Not proportional.'}</b> ${explainProp()}`; return; }
+  renderMachine($('qSvg'), qz.c, qz.x, qz.k, qz.y, null, true);
+  if (qz.type === 'use') $('qFb').innerHTML = qz.hide === 'y' ? `The answer is <b>${fmt(qz.y)}</b>: ${qz.x} × ${fmt(qz.k)} = ${fmt(qz.y)}.` : `The answer is <b>${qz.x}</b>: ${fmt(qz.y)} ÷ ${fmt(qz.k)} = ${qz.x}.`;
+  else $('qFb').innerHTML = `<i class="sym">k</i> = ${fmt(qz.y)} ÷ ${qz.x} = <b>${fmt(qz.k)}</b>, so <i class="sym">y</i> = ${fmt(qz.k)} · <i class="sym">x</i>.`;
+}
+$('qCheck').onclick = checkQ;
+$('qYes').onclick = () => answerProp(true);
+$('qNo').onclick = () => answerProp(false);
+$('qShow').onclick = showQ;
+$('qNew').onclick = newQuestion;
+$('qIn').addEventListener('input', () => { $('qErr').textContent = ''; });
+$('qIn').addEventListener('focus', e => e.target.select());
+$('qIn').addEventListener('keydown', e => { if (e.key === 'Enter') checkQ(); });
+
+/* =====================================================================
+   10. START
+   ===================================================================== */
+markPreset(0); setLabels();
+$('inX0').value = '2'; $('inY0').value = '3'; $('inX').value = '5';
+ex.e = 1; drawEx(); $('play').textContent = 'Replay';
+buildCk();
+newQuestion();
+</script>
+</body>
+</html>

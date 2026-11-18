@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>1.B.6 Graphing Proportional Relationships · MathMastery</title>
+<!-- Fonts: a book serif for prose, a clean sans for UI, a mono for numbers -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<!-- MathJax renders the few formulas on the page (SVG output needs no external stylesheet) -->
+<script>
+  window.MathJax = { tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] }, svg: { fontCache: 'global' } };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<style>
+/* ===================== Theme ===================== */
+:root{
+  --bg:#f7f5ef; --paper:#ffffff; --ink:#1f1e1d; --muted:#6b6a66; --line:#e4e0d5; --line2:#c9c5b8;
+  --accent:#534AB7; --accent-bg:#EEEDFE;
+  --pos:#1D9E75; --neg:#D85A30; --pt:#7F77DD; --pt-soft:#AFA9EC; --pt-dark:#534AB7;
+  --pos-new:#9FE1CB; --neg-new:#F0997B; --ok:#3B6D11; --ok-bg:#EAF3DE; --bad:#A32D2D; --bad-bg:#FCEBEB; --note-bg:#FAF3E3; --note-line:#E7C98A;
+  --serif:"Source Serif 4", Georgia, "Times New Roman", serif;
+  --sans:"IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#191817; --paper:#232220; --ink:#ecebe6; --muted:#a3a29c; --line:#383733; --line2:#55534e;
+    --accent:#AFA9EC; --accent-bg:#2c2852; --pt-dark:#CECBF6; --pt-soft:#6f68b8; --pos-new:#5DCAA5; --neg-new:#F5C4B3;
+    --ok:#C0DD97; --ok-bg:#24400d; --bad:#F7C1C1; --bad-bg:#5a1c1c; --note-bg:#2b261b; --note-line:#6b5626;
+  }
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.7 var(--serif);-webkit-font-smoothing:antialiased}
+
+/* ===================== Layout ===================== */
+.topbar{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1000px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:14px;font:500 13px/1 var(--sans);color:var(--muted)}
+.brand{color:var(--ink);font-weight:600;letter-spacing:.02em}
+.brand b{color:var(--accent)}
+.crumbs{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pid{font-family:var(--mono);color:var(--accent);background:var(--accent-bg);padding:4px 8px;border-radius:6px}
+.prose{max-width:720px;margin:0 auto;padding:0 20px}
+.wide{max-width:1000px;margin:0 auto;padding:0 20px}
+
+/* ===================== Hero ===================== */
+.hero{padding:48px 0 12px}
+.kicker{font:600 13px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1{font:700 46px/1.1 var(--serif);margin:12px 0 14px;letter-spacing:-.01em}
+.dek{font-size:21px;color:var(--muted);margin:0 0 22px;font-style:italic}
+.tiers{display:flex;gap:6px;flex-wrap:wrap;font:500 13px/1 var(--sans);margin-bottom:8px}
+.tier{padding:7px 12px;border-radius:999px;border:1px solid var(--line2);color:var(--muted)}
+.tier.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.tier small{opacity:.7;margin-left:4px}
+
+/* ===================== Text elements ===================== */
+h2{font:700 28px/1.25 var(--serif);margin:56px 0 10px;display:flex;gap:12px;align-items:baseline}
+h2 .n{font:600 14px/1 var(--mono);color:var(--accent);min-width:28px}
+p{margin:0 0 16px}
+em.key{font-style:normal;background:linear-gradient(transparent 62%,var(--accent-bg) 62%);padding:0 2px}
+.goals{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:18px 22px;margin:22px 0 0;font:15.5px/1.6 var(--sans)}
+.goals h3{font:600 12px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
+.goals ul{margin:0;padding-left:20px}
+.note{background:var(--note-bg);border-left:4px solid var(--note-line);border-radius:0 10px 10px 0;padding:14px 18px;margin:20px 0;font:15.5px/1.6 var(--sans)}
+.note b{font-weight:600}
+.notice{list-style:none;padding:0;margin:8px 0 18px;counter-reset:n}
+.notice li{position:relative;padding:12px 0 12px 46px;border-top:1px solid var(--line)}
+.notice li:last-child{border-bottom:1px solid var(--line)}
+.notice li::before{counter-increment:n;content:counter(n);position:absolute;left:4px;top:13px;width:26px;height:26px;border-radius:50%;background:var(--accent-bg);color:var(--accent);font:600 13px/26px var(--mono);text-align:center}
+.goes{list-style:none;padding:0;margin:8px 0 18px}
+.goes li{padding:12px 0;border-top:1px solid var(--line)}
+.goes li:last-child{border-bottom:1px solid var(--line)}
+.math{overflow-x:auto;margin:12px 0 18px;padding:14px 18px;background:var(--paper);border:1px solid var(--line);border-radius:12px}
+.math .cap{font:14px/1.5 var(--sans);color:var(--muted);margin-top:4px}
+.mono{font-family:var(--mono);font-size:.92em;white-space:nowrap}
+.pos{color:var(--pos);font-weight:600}.neg{color:var(--neg);font-weight:600}.pt{color:var(--pt-dark);font-weight:600}
+
+/* ===================== Vocabulary ===================== */
+.vocab{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin:14px 0 8px}
+.term{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font:14.5px/1.5 var(--sans)}
+.term b{display:block;font:600 15px/1.3 var(--serif);margin-bottom:4px}
+
+/* ===================== Interactive cards ===================== */
+.card{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:18px 20px 20px;margin:26px 0;box-shadow:0 1px 0 var(--line),0 12px 32px -22px rgba(0,0,0,.25);font-family:var(--sans)}
+.card-h{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.card-h .tag{font:600 11px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--accent);background:var(--accent-bg);padding:5px 8px;border-radius:6px}
+.card-h h3{font:600 18px/1.3 var(--sans);margin:0}
+.card-h .sub{color:var(--muted);font-size:14.5px;flex-basis:100%}
+.panel-label{font:600 11px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:12px 0 4px;display:flex;justify-content:space-between}
+.panel-label span:last-child{letter-spacing:0;text-transform:none;font-weight:500}
+svg.nl{display:block;width:100%;height:auto;border:1px solid var(--line);border-radius:12px;background:var(--bg);touch-action:manipulation}
+svg.clickable{cursor:pointer}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:12px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0}
+button{font:500 14px/1 var(--sans);padding:9px 14px;border-radius:9px;border:1px solid var(--line2);background:var(--paper);color:var(--ink);cursor:pointer;transition:background .15s,border-color .15s}
+button:hover{border-color:var(--ink)}
+button.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+button.preset.on{background:var(--accent-bg);border-color:var(--accent);color:var(--accent)}
+button:disabled{opacity:.45;cursor:default}
+.desc{min-height:24px;color:var(--muted);font-size:14.5px;margin:2px 0 6px}
+.inputs{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;margin:12px 0 4px}
+.field{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.field input{width:92px;font:500 18px/1 var(--mono);padding:9px 10px;border-radius:9px;border:2px solid var(--line2);background:var(--bg);color:var(--ink);text-align:center}
+.field input:focus{outline:none;border-color:var(--accent)}
+.field i,.eq i,.sym{font:italic 600 1.15em var(--serif);text-transform:none;letter-spacing:0;color:var(--pt-dark)}
+.field.start input{border-color:var(--pt-soft)}
+.field.slide input{border-color:var(--pt)}
+.eq{font:500 20px/1 var(--mono);padding:10px 14px;background:var(--bg);border-radius:10px;border:1px solid var(--line)}
+.err{color:var(--bad);font-size:14px;min-height:20px;margin:2px 0}
+.readout{margin-top:12px;padding:12px 14px;background:var(--bg);border-radius:10px;border:1px solid var(--line);font-size:15px;line-height:1.55;min-height:48px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:12px;font-size:13px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{display:inline-block;width:14px;height:14px;border-radius:50%}
+.sw.pos{background:var(--pos)}.sw.neg{border:2.4px solid var(--neg)}
+.sw.x{position:relative;background:var(--pos);opacity:.45}.sw.x::after{content:'✕';position:absolute;inset:-1px 0 0 0;color:var(--neg);font:700 13px/1 var(--sans);text-align:center}
+.sw.posnew{background:var(--pos-new);border:1.5px solid var(--pos)}.sw.negnew{border:2.4px solid var(--neg-new)}.sw.pt{background:var(--pt)}
+.sw.mv{width:22px;height:4px;border-radius:2px;background:var(--pt-soft)}
+.sw.rl{width:22px;height:0;border-top:2px dashed var(--ink);border-radius:0;opacity:.7}
+.feedback{margin-top:10px;padding:12px 14px;border-radius:10px;font-size:15px;line-height:1.55;display:none}
+.feedback.ok{display:block;background:var(--ok-bg);color:var(--ok)}
+.feedback.bad{display:block;background:var(--bad-bg);color:var(--bad)}
+.feedback.info{display:block;background:var(--accent-bg);color:var(--accent)}
+.score{margin-left:auto;font:600 14px/1 var(--mono);color:var(--muted)}
+
+/* ===================== Footer nav ===================== */
+.pager{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:56px 0 18px;font-family:var(--sans)}
+.pager a,.pager div{display:block;padding:16px 18px;border:1px solid var(--line);border-radius:14px;background:var(--paper);color:var(--ink);text-decoration:none}
+.pager small{display:block;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.pager .next{text-align:right}
+.pager .soon{opacity:.6}
+.meta{font:13px/1.6 var(--sans);color:var(--muted);text-align:center;padding:10px 0 50px}
+
+@media (max-width:720px){
+  body{font-size:17px}
+  h1{font-size:34px}
+  .dek{font-size:18px}
+  h2{font-size:24px}
+  .card{padding:14px 12px 16px;border-radius:14px}
+  .crumbs{display:none}
+  svg.nl{min-width:640px}
+}
+</style>
+<meta name="mm-site" content="1">
+<style>
+/* ===================== Navigation: Contents menu and Previous/Next ===================== */
+.topbar-in{position:relative}
+.tocbtn{font:500 13px/1 var(--sans);padding:7px 11px;border-radius:8px;border:1px solid var(--line2);background:var(--paper);color:var(--ink);cursor:pointer}
+.tocbtn:hover,.tocbtn[aria-expanded="true"]{border-color:var(--accent);color:var(--accent)}
+.tocpanel{position:absolute;top:calc(100% + 6px);right:20px;width:440px;max-height:72vh;overflow:auto;background:var(--paper);border:1px solid var(--line);border-radius:14px;box-shadow:0 22px 48px -20px rgba(0,0,0,.4);padding:14px 14px 10px;display:none;z-index:20;font-family:var(--sans)}
+.tocpanel.open{display:block}
+.tocch{font:600 12px/1.3 var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin:2px 6px 4px}
+.toctier{font:600 11px/1.3 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:12px 6px 4px}
+.tocrow{display:flex;gap:10px;align-items:baseline;padding:7px 8px;border-radius:8px;color:var(--ink);text-decoration:none;font:14.5px/1.35 var(--sans)}
+a.tocrow:hover{background:var(--accent-bg)}
+.tocrow .tid{font:500 12.5px var(--mono);color:var(--accent);min-width:44px}
+.tocrow.cur{background:var(--accent-bg);font-weight:600}
+.tocrow.coming{color:var(--muted)}.tocrow.coming .tid{color:var(--muted)}
+.tocrow small{margin-left:auto;color:var(--muted);font-size:12px;white-space:nowrap}
+.pager .soon{opacity:1}
+.pager .soon .dimtxt{opacity:.6;display:block}
+.pager a:hover{border-color:var(--accent)}
+.pager .skip{display:inline-block;margin-top:8px;padding:0;border:none;background:none;color:var(--accent);font-size:14px;font-weight:500;text-decoration:none}
+.pager .skip:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<style>
+/* ===================== Page-specific styles (1.B.6) ===================== */
+/* x = first amount (amber), y = second amount (blue), k / the line (purple); racers get their own colors */
+:root{ --qx:#C98A0B; --qy:#2F7FC1; --k:#6A5FD0; --k-soft:#ECEAFD; --car:#D85A30; --bike:#1D9E75; --walk:#B07A0A; --you:#6A5FD0; --taxi:#D85A30; --scoot:#1D9E75; }
+@media (prefers-color-scheme:dark){ :root{ --qx:#F0C24B; --qy:#7FB8E6; --k:#AFA9EC; --k-soft:#2c2852; --car:#F0997B; --bike:#5DCAA5; --walk:#F0C24B; --you:#AFA9EC; --taxi:#F0997B; --scoot:#5DCAA5; } }
+.qx{color:var(--qx);font-weight:600}.qy{color:var(--qy);font-weight:600}.kk{color:var(--k);font-weight:700}
+.field.fx input{border-color:var(--qx)}.field.fy input{border-color:var(--qy)}.field.fk input{border-color:var(--k)}
+.split{display:grid;grid-template-columns:260px 1fr;gap:18px;align-items:start}
+.split2{display:grid;grid-template-columns:1fr 300px;gap:18px;align-items:start}
+table.rt{border-collapse:separate;border-spacing:0;width:100%;font:15px var(--mono);background:var(--bg);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+table.rt th{font:600 12px var(--sans);letter-spacing:.04em;text-transform:uppercase;color:var(--muted);padding:9px 8px;text-align:center;border-bottom:1px solid var(--line)}
+table.rt th i{text-transform:none;font:italic 600 15px var(--serif)}
+table.rt td{padding:6px 8px;text-align:center;border-bottom:1px solid var(--line);transition:opacity .2s}
+table.rt tr:last-child td{border-bottom:none}
+table.rt td.cx{color:var(--qx);font-weight:600}table.rt td.cy{color:var(--qy);font-weight:600}table.rt td.cp{color:var(--muted);font-size:13px}
+table.rt tr.wait td{opacity:.3}
+table.rt tr.now td{background:var(--k-soft)}
+.checks{list-style:none;padding:0;margin:0;font-size:14.5px}
+.checks li{padding:8px 0;border-bottom:1px solid var(--line);display:flex;gap:8px;align-items:baseline}
+.checks .y{color:var(--ok);font-weight:700}.checks .n{color:var(--bad);font-weight:700}
+.choice{display:flex;gap:8px;margin:0}
+.choice button{min-width:130px}
+.qtext{font:17px/1.55 var(--serif);margin:4px 0 10px}
+.racers{display:flex;flex-direction:column;gap:8px;font-size:14.5px}
+.racer{display:flex;justify-content:space-between;padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg)}
+.racer b{font-family:var(--mono)}
+</style>
+
+<!-- ===================== Top bar ===================== -->
+<div class="topbar"><div class="topbar-in">
+  <span class="brand">Math<b>Mastery</b></span>
+  <span class="crumbs">Chapter 1 · Numbers &amp; Arithmetic › Basics</span>
+  <span class="pid">1.B.6</span>
+</div></div>
+
+<!-- ===================== Hero ===================== -->
+<header class="prose hero">
+  <div class="kicker">Chapter 1 · Numbers &amp; Arithmetic</div>
+  <h1>Graphing Proportional Relationships</h1>
+  <p class="dek">Turn every row of a ratio table into a point, and a proportional relationship draws itself: a straight line that starts at zero and climbs <i>k</i> for every step of 1.</p>
+  <div class="tiers" aria-label="Tier">
+    <span class="tier on">Basics <small>you are here</small></span>
+    <span class="tier">Undergraduate</span>
+    <span class="tier">Masters</span>
+  </div>
+  <div class="goals">
+    <h3>On this page</h3>
+    <ul>
+      <li>Plot a ratio table as points on a graph, and say what any point <b>means</b>.</li>
+      <li>Recognize a <b>proportional relationship</b> on a graph: a <b>straight line</b> through the <b>origin</b> (0, 0).</li>
+      <li>Read the <b>constant of proportionality</b> <i class="sym">k</i> from the graph: the point (1, <i class="sym">k</i>), or “over 1, up <i class="sym">k</i>”.</li>
+      <li>Compare relationships by <b>steepness</b>: the steeper line has the bigger <i class="sym">k</i>.</li>
+    </ul>
+  </div>
+</header>
+
+<main>
+<!-- ===================== §1 A table becomes points ===================== -->
+<section class="prose">
+  <h2><span class="n">1</span>Every row is a point</h2>
+  <p>A graph is a picture of a table. Draw two number lines that meet at 0: one going <b>across</b> for the first amount <i class="sym">x</i>, and one going <b>up</b> for the second amount <i class="sym">y</i>. The flat page between them is called the <b>coordinate plane</b>, and the corner where both are 0 is the <b>origin</b>.</p>
+  <p>Now take a row of the lemonade table: <span class="qx">4 scoops</span> with <span class="qy">6 cups</span>. Start at the origin, go <b>over</b> 4, then <b>up</b> 6, and put a dot. That dot is the <b>ordered pair</b> (4, 6). The order matters: <i class="sym">x</i> first, then <i class="sym">y</i>. <em class="key">Every point on the graph is a sentence: “4 scoops go with 6 cups.”</em></p>
+  <p>Press Play below and watch the whole table turn into points, one row at a time. Then watch what the points do together.</p>
+</section>
+
+<section class="wide">
+  <div class="card" id="explorer">
+    <div class="card-h">
+      <span class="tag">Explore</span><h3>From table to points to line</h3>
+      <span class="sub">Pick a situation or type your own <i class="sym">k</i>, then press Play. Click any point on the graph to read what it means.</span>
+    </div>
+    <div class="row" id="presets"></div>
+    <div class="desc" id="presetDesc"></div>
+    <div class="inputs">
+      <label class="field fk"><span>Constant <i>k</i></span><input id="inK" type="text" inputmode="decimal" autocomplete="off"></label>
+      <div class="eq" id="eq"></div>
+      <div class="row" style="margin:0"><button class="primary" id="play">Play</button><button id="reset">Reset</button></div>
+    </div>
+    <div class="err" id="exErr"></div>
+    <div class="split">
+      <div>
+        <div class="panel-label"><span>Ratio table</span><span>each row → a point</span></div>
+        <table class="rt" id="rt"></table>
+      </div>
+      <div>
+        <div class="panel-label"><span>Graph</span><span id="gcap"></span></div>
+        <svg class="nl" id="graph" viewBox="0 0 700 440" role="img" aria-label="Graph of the proportional relationship"></svg>
+      </div>
+    </div>
+    <div class="readout" id="exOut" aria-live="polite"></div>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--k)"></i>a point (<i class="sym">x</i>, <i class="sym">y</i>) from the table</span>
+      <span><i class="sw" style="background:var(--k);width:22px;height:4px;border-radius:2px"></i>the line <i class="sym">y</i> = <i class="sym">k</i> · <i class="sym">x</i></span>
+      <span><i class="sw" style="background:var(--qx);width:22px;height:4px;border-radius:2px"></i>over 1</span>
+      <span><i class="sw" style="background:var(--qy);width:4px;height:18px;border-radius:2px"></i>up <i class="sym">k</i></span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §2 What the line tells you ===================== -->
+<section class="prose">
+  <h2><span class="n">2</span>Three things every proportional graph does</h2>
+  <ol class="notice">
+    <li><b>The points line up in a straight line.</b> Each step of 1 to the right adds exactly <i class="sym">k</i> going up, every time. The little staircase under the line shows it: every step is the same size, so the line never bends.</li>
+    <li><b>The line goes through the origin (0, 0).</b> Zero scoops go with zero cups; zero hours of driving go with zero miles. That’s the “check zero” test from 1.B.5, drawn as a picture.</li>
+    <li><b>The point above <i class="sym">x</i> = 1 is (1, <i class="sym">k</i>).</b> Go over 1, and the line is exactly <i class="sym">k</i> high. That’s the same “find the one” idea from 1.B.5, and it’s why <i class="sym">k</i> is <em class="key">how steep the line is</em>: over 1, up <i class="sym">k</i>.</li>
+  </ol>
+  <p>Because the line is straight and passes through the origin, <i>any</i> point on it gives you <i class="sym">k</i>: divide its <i class="sym">y</i> by its <i class="sym">x</i>. The point (4, 6) gives 6 ÷ 4 = 1½, exactly what (1, 1½) says.</p>
+</section>
+
+<!-- ===================== §3 Steeper means bigger k: the race ===================== -->
+<section class="prose">
+  <h2><span class="n">3</span>Steeper means a bigger <i class="sym" style="font-size:1em">k</i></h2>
+  <p>Put several proportional relationships on the same graph and you can compare them at a glance. Here a car (60 miles per hour), a bike (12 miles per hour) and a walker (3 miles per hour) all start at the same moment. Time goes across, distance goes up. Press Race and watch: the faster the traveler, the <b>steeper</b> their line. Add yourself at any speed you like.</p>
+</section>
+<section class="wide">
+  <div class="card" id="race">
+    <div class="card-h">
+      <span class="tag">Compare</span><h3>The race</h3>
+      <span class="sub">Each line is a different <i class="sym">k</i> (speed). The dots move along their lines as the hours tick by.</span>
+    </div>
+    <div class="inputs">
+      <label class="field fk"><span>Your speed <i>k</i> (mi/h)</span><input id="inYou" type="text" inputmode="decimal" autocomplete="off" value="25"></label>
+      <div class="row" style="margin:0"><button class="primary" id="raceGo">Race</button><button id="raceReset">Reset</button></div>
+    </div>
+    <div class="err" id="raceErr"></div>
+    <div class="split2">
+      <svg class="nl" id="raceSvg" viewBox="0 0 700 440" role="img" aria-label="Distance versus time race"></svg>
+      <div>
+        <div class="panel-label"><span>After <span id="raceT">0</span> hours</span><span></span></div>
+        <div class="racers" id="racers"></div>
+        <div class="readout" id="raceOut" style="margin-top:10px"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §4 Not proportional ===================== -->
+<section class="prose">
+  <h2><span class="n">4</span>What “not proportional” looks like</h2>
+  <p>Remember the taxi from 1.B.5: <b>$3 to get in</b>, then $2 per mile. Its graph is a straight line too, but look where it starts. At 0 miles you already owe $3, so the line begins at (0, 3), <b>above</b> the origin. A straight line that misses the origin is <em class="key">not</em> proportional. Compare it with an electric scooter that charges $2.50 per mile and nothing to start:</p>
+</section>
+<section class="wide">
+  <div class="card" id="taxi">
+    <div class="card-h">
+      <span class="tag">Compare</span><h3>Taxi vs. scooter</h3>
+      <span class="sub">Click a line’s name to highlight it and run the three checks.</span>
+    </div>
+    <div class="row" id="taxiBtns"></div>
+    <div class="split2">
+      <svg class="nl" id="taxiSvg" viewBox="0 0 700 420" role="img" aria-label="Taxi and scooter fares"></svg>
+      <div>
+        <div class="panel-label"><span id="taxiName">Checks</span><span></span></div>
+        <ul class="checks" id="taxiChecks"></ul>
+        <div class="readout" id="taxiOut" style="margin-top:10px"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §5 In symbols ===================== -->
+<section class="prose">
+  <h2><span class="n">5</span>Now, in symbols</h2>
+  <p>On the graph, the across direction was labeled <i class="sym">x</i>, the up direction <i class="sym">y</i>, and the first step of the staircase was “over 1, up <i class="sym">k</i>.” Every point on the line obeys the same rule from 1.B.5:</p>
+  <div class="math">\[ y = k \cdot x \]<div class="cap">The graph of this equation is always a straight line through \((0,0)\) and \((1,k)\).</div></div>
+  <p>Pick any point \((x, y)\) on the line except the origin, and it hands you \(k\):</p>
+  <div class="math">\[ k = \frac{y}{x} = \frac{\text{up}}{\text{over}} \]<div class="cap">“How far up for each 1 over.” For the point \((4, 6)\): \(k = \tfrac{6}{4} = 1\tfrac{1}{2}\).</div></div>
+  <p>Two points on the same line also make a <b>proportion</b>: \(\tfrac{6}{4} = \tfrac{9}{6}\), because both equal \(k\). The taxi’s rule is \(y = 2x + 3\). That extra \(+\,3\) is what lifts its line off the origin and breaks the proportion.</p>
+</section>
+
+<!-- ===================== §6 Where this goes ===================== -->
+<section class="prose">
+  <h2><span class="n">6</span>Where this goes</h2>
+  <ul class="goes">
+    <li><b>Next (1.B.7):</b> converting between units, like inches and centimeters, is a proportional relationship too. Its graph is a straight line through the origin, and <i class="sym">k</i> is the conversion factor.</li>
+    <li><b>Later in this book:</b> the steepness <i class="sym">k</i> becomes the <b>slope</b> of a line in Algebra, and the taxi’s rule \(y = 2x + 3\) is the general straight line \(y = mx + b\). In Calculus, the idea of “how steep is it right here?” works even for curves that bend: that’s the <b>derivative</b>.</li>
+    <li><b>In the world:</b> distance–time graphs on a fitness app, how a bathtub fills at a steady rate, and the cost of buying more of something at a fixed price are all straight lines through the origin. When the line is steeper, the rate is faster.</li>
+  </ul>
+</section>
+
+<!-- ===================== §7 Vocabulary ===================== -->
+<section class="prose">
+  <h2><span class="n">7</span>Words to know</h2>
+  <div class="vocab">
+    <div class="term"><b>Proportional relationship</b>Two amounts where <i class="sym">y</i> = <i class="sym">k</i> · <i class="sym">x</i>. On a graph: a straight line through the origin.</div>
+    <div class="term"><b>Constant of proportionality</b>The number <i class="sym">k</i>. On the graph it’s the height of the line at <i class="sym">x</i> = 1, and how steep the line is: over 1, up <i class="sym">k</i>.</div>
+    <div class="term"><b>Proportion</b>A statement that two ratios are equal. Any two points on a proportional line make one: 6/4 = 9/6.</div>
+    <div class="term"><b>Coordinate plane</b>The flat grid made by an across number line (<i class="sym">x</i>) and an up number line (<i class="sym">y</i>).</div>
+    <div class="term"><b>Ordered pair</b>A point written (<i class="sym">x</i>, <i class="sym">y</i>): go over <i class="sym">x</i>, then up <i class="sym">y</i>. Order matters.</div>
+    <div class="term"><b>Origin</b>The point (0, 0), where the two number lines cross.</div>
+    <div class="term"><b>Steepness</b>How fast a line climbs as you move right. For a proportional line, it’s <i class="sym">k</i>.</div>
+  </div>
+</section>
+
+<!-- ===================== Quiz ===================== -->
+<section class="prose"><h2><span class="n">8</span>Check yourself</h2>
+  <p>Four kinds of questions: what a point means, reading <i class="sym">k</i> from a graph, proportional or not, and which line is steeper.</p>
+</section>
+<section class="wide">
+  <div class="card" id="quiz">
+    <div class="card-h"><span class="tag">Quiz</span><h3 id="qTitle"></h3><span class="score" id="score">Score: 0 / 0</span></div>
+    <div class="qtext" id="qText"></div>
+    <svg class="nl" id="qSvg" viewBox="0 0 700 420" role="img" aria-label="Quiz graph" style="max-width:760px;margin:0 auto"></svg>
+    <div class="inputs">
+      <label class="field fx" id="qF1"><span id="qL1"></span><input id="qIn1" type="text" inputmode="decimal" autocomplete="off"></label>
+      <label class="field fy" id="qF2"><span id="qL2"></span><input id="qIn2" type="text" inputmode="decimal" autocomplete="off"></label>
+      <div class="choice" id="qChoice"><button id="qA"></button><button id="qB"></button></div>
+      <div class="row" style="margin:0">
+        <button class="primary" id="qCheck">Check</button>
+        <button id="qShow">Show answer</button>
+        <button id="qNew">New question</button>
+      </div>
+    </div>
+    <div class="err" id="qErr"></div>
+    <div class="feedback" id="qFb" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ===================== Pager ===================== -->
+<nav class="wide">
+  <div class="pager">
+    <div class="soon"><small>← Previous</small>1.B.5 The constant of proportionality</div>
+    <div class="next soon"><small>Next →</small>1.B.7 Converting customary and metric units <span style="color:var(--muted)">(coming)</span></div>
+  </div>
+  <div class="meta">1.B.6 · Prerequisites: 1.B.1, 1.B.4, 1.B.5 · Leads to: 1.B.7, 1.B.8, Algebra (slope, y = mx + b), Calculus (derivative)</div>
+</nav>
+</main>
+
+<script>
+/* =====================================================================
+   1. HELPERS
+   ===================================================================== */
+const NS = 'http://www.w3.org/2000/svg';
+const $ = id => document.getElementById(id);
+function mk(tag, attrs, parent){                        // create an SVG element with attributes
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function txt(parent, x, y, s, cls, extra){              // create an SVG text element
+  const t = mk('text', Object.assign({ x, y, class: cls || '' }, extra || {}), parent);
+  t.textContent = s;
+  return t;
+}
+const isInt = x => Math.abs(x - Math.round(x)) < 1e-9;
+const near = (p, q) => Math.abs(p - q) < 1e-6 * Math.max(1, Math.abs(q));
+const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+const ease = t => t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+function fmt(x){                                         // whole numbers plain, halves as ½, else 2 decimals
+  if (isInt(x)) return String(Math.round(x));
+  if (isInt(x * 2)) { const w = Math.floor(x); return (w ? w : '') + '½'; }
+  return String(Math.round(x * 100) / 100);
+}
+function parseNum(s){                                    // integers, decimals, fractions, mixed numbers, ½, $
+  s = String(s).trim().replace(/[−–]/g, '-').replace(/^\+/, '').replace(/^\$/, '');
+  s = s.replace(/^(\d+)\s*½$/, '$1.5').replace(/^½$/, '0.5');
+  if (/^-?\d+(\.\d+)?$|^-?\.\d+$/.test(s)) return parseFloat(s);
+  let m = s.match(/^(\d+)\s+(\d+)\s*\/\s*(\d+)$/);
+  if (m && +m[3] !== 0) return +m[1] + (+m[2]) / (+m[3]);
+  m = s.match(/^(-?\d+)\s*\/\s*(\d+)$/);
+  if (m && +m[2] !== 0) return +m[1] / +m[2];
+  return NaN;
+}
+// A "nice" grid step (1, 2, 2.5, 5 × a power of 10) giving about `n` divisions of `range`
+function niceStep(range, n){
+  const raw = range / n, p = Math.pow(10, Math.floor(Math.log10(raw)));
+  for (const m of [1, 2, 2.5, 5, 10]) if (m * p >= raw - 1e-9) return m * p;
+  return 10 * p;
+}
+
+const svgCss = document.createElement('style');
+svgCss.textContent = `
+  .grid{stroke:var(--line);stroke-width:1} .axis{stroke:var(--ink);stroke-width:1.6}
+  .tlX{fill:var(--qx);font:500 12px var(--mono);text-anchor:middle} .tlY{fill:var(--qy);font:500 12px var(--mono);text-anchor:end}
+  .atitle{font:600 13px var(--sans)} .atX{fill:var(--qx)} .atY{fill:var(--qy)}
+  .sym{font:italic 600 17px var(--serif)} .sX{fill:var(--qx)} .sY{fill:var(--qy)} .sK{fill:var(--k)}
+  .line{stroke:var(--k);stroke-width:3;fill:none;stroke-linecap:round}
+  .pt{fill:var(--k);stroke:var(--paper);stroke-width:2;cursor:pointer}
+  .ptNew{fill:var(--k);stroke:var(--paper);stroke-width:2}
+  .ptSel{fill:var(--paper);stroke:var(--k);stroke-width:3}
+  .guideX{stroke:var(--qx);stroke-width:1.6;stroke-dasharray:4 3} .guideY{stroke:var(--qy);stroke-width:1.6;stroke-dasharray:4 3}
+  .stair{fill:none;stroke-width:1.4;opacity:.55} .stX{stroke:var(--qx)} .stY{stroke:var(--qy)}
+  .step1X{stroke:var(--qx);stroke-width:3.5;stroke-linecap:round} .step1Y{stroke:var(--qy);stroke-width:3.5;stroke-linecap:round}
+  .stlbl{font:600 13px var(--sans);paint-order:stroke;stroke:var(--bg);stroke-width:5px}
+  .stlX{fill:var(--qx);text-anchor:middle} .stlY{fill:var(--qy);text-anchor:start}
+  .plbl{font:600 13px var(--mono);fill:var(--k);paint-order:stroke;stroke:var(--bg);stroke-width:5px}
+  .origin{fill:var(--ink)} .olbl{font:600 12px var(--mono);fill:var(--ink)}
+  .rl{stroke-width:3;fill:none;stroke-linecap:round} .rdot{stroke:var(--paper);stroke-width:2}
+  .rlbl{font:600 13px var(--sans);paint-order:stroke;stroke:var(--bg);stroke-width:5px}
+  .dim{opacity:.25}
+  .hit{fill:transparent;cursor:pointer}
+`;
+document.head.appendChild(svgCss);
+
+/* =====================================================================
+   2. THE GRAPH DRAWER (shared by explorer, race, taxi and quiz)
+   ===================================================================== */
+// G: {xmax, ymax, xlab, ylab, xstep, ystep}. Returns the coordinate helpers and the group to draw in.
+function axes(svg, G){
+  svg.innerHTML = '';
+  const W = +svg.getAttribute('viewBox').split(' ')[2], H = +svg.getAttribute('viewBox').split(' ')[3];
+  const L = 70, R = W - 24, T = 22, B = H - 54;
+  const X = v => L + v / G.xmax * (R - L), Y = v => B - v / G.ymax * (B - T);
+  const g = mk('g', {}, svg);
+  const xs = G.xstep || niceStep(G.xmax, 6), ys = G.ystep || niceStep(G.ymax, 6);
+  for (let v = 0; v <= G.xmax + 1e-9; v += xs){                 // vertical grid lines and x labels
+    mk('line', { x1: X(v), y1: T, x2: X(v), y2: B, class: 'grid' }, g);
+    txt(g, X(v), B + 18, fmt(v), 'tlX');
+  }
+  for (let v = 0; v <= G.ymax + 1e-9; v += ys){                 // horizontal grid lines and y labels
+    mk('line', { x1: L, y1: Y(v), x2: R, y2: Y(v), class: 'grid' }, g);
+    txt(g, L - 8, Y(v) + 4, fmt(v), 'tlY');
+  }
+  mk('line', { x1: L, y1: B, x2: R, y2: B, class: 'axis' }, g);   // x axis
+  mk('line', { x1: L, y1: B, x2: L, y2: T, class: 'axis' }, g);   // y axis
+  const xt = txt(g, (L + R) / 2, B + 42, '', 'atitle atX'); xt.setAttribute('text-anchor', 'middle');
+  xt.innerHTML = `<tspan class="sym sX">x</tspan><tspan>  ${G.xlab}</tspan>`;
+  const yt = txt(g, 0, 0, '', 'atitle atY', { transform: `translate(18 ${(T + B) / 2}) rotate(-90)`, 'text-anchor': 'middle' });
+  yt.innerHTML = `<tspan class="sym sY">y</tspan><tspan>  ${G.ylab}</tspan>`;
+  return { g, X, Y, L, R, T, B };
+}
+// Draw y = k·x + b from x = 0 rightward, clipped to the graph, drawn progressively (p from 0 to 1)
+function drawLine(c, G, k, b, cls, p, style){
+  const xEnd = k > 0 ? Math.min(G.xmax, (G.ymax - b) / k) : G.xmax;
+  const x1 = xEnd * p;
+  const el = mk('line', { x1: c.X(0), y1: c.Y(b), x2: c.X(x1), y2: c.Y(k * x1 + b), class: cls }, c.g);
+  if (style) el.setAttribute('style', style);
+  return el;
+}
+
+/* =====================================================================
+   3. EXPLORER: table -> points -> line
+   ===================================================================== */
+const CTX = {
+  lemon: { name: 'Lemonade', xl: 'scoops', yl: 'cups', xs: ['scoop', 'scoops'], ys: ['cup', 'cups'], ku: 'cups per scoop' },
+  car:   { name: 'Car',      xl: 'hours',  yl: 'miles', xs: ['hour', 'hours'], ys: ['mile', 'miles'], ku: 'miles per hour' },
+  bike:  { name: 'Bike',     xl: 'hours',  yl: 'miles', xs: ['hour', 'hours'], ys: ['mile', 'miles'], ku: 'miles per hour' },
+  walk:  { name: 'Walker',   xl: 'hours',  yl: 'miles', xs: ['hour', 'hours'], ys: ['mile', 'miles'], ku: 'miles per hour' },
+  gen:   { name: 'Custom',   xl: '',       yl: '',      xs: ['', ''], ys: ['', ''], ku: '' },
+};
+const PRESETS = [
+  { name: 'Lemonade', c: 'lemon', k: 1.5, d: 'The 1.B.4 recipe: 1½ cups per scoop. Each row of the table becomes a point.' },
+  { name: 'Car',      c: 'car',   k: 60,  d: 'A car at 60 miles per hour: every hour over, 60 miles up.' },
+  { name: 'Bike',     c: 'bike',  k: 12,  d: 'A bike at 12 miles per hour: the same shape, just on a different scale.' },
+  { name: 'Walker',   c: 'walk',  k: 3,   d: 'A walker at 3 miles per hour.' },
+  { name: 'k = 1',    c: 'gen',   k: 1,   d: 'k = 1: y always equals x. The line climbs at exactly 45° on equal scales.' },
+  { name: 'k = ½',    c: 'gen',   k: 0.5, d: 'k = ½: over 1, up only ½. A small k makes a gentle line.' },
+];
+const XMAX = 6;
+const ex = { c: 'lemon', k: 1.5, e: 1, raf: 0, playing: false, sel: 4 };
+PRESETS.forEach((p, i) => {
+  const b = document.createElement('button');
+  b.className = 'preset'; b.textContent = p.name; b.onclick = () => choosePreset(i);
+  $('presets').appendChild(b);
+});
+function markPreset(i){
+  [...$('presets').children].forEach((b, j) => b.classList.toggle('on', j === i));
+  $('presetDesc').textContent = i === null ? 'Custom k: a general proportional relationship y = k · x.' : PRESETS[i].d;
+}
+function choosePreset(i){
+  const p = PRESETS[i];
+  Object.assign(ex, { c: p.c, k: p.k, sel: null });
+  $('inK').value = fmt(p.k); $('exErr').textContent = ''; markPreset(i);
+  stopEx(); ex.e = 0; drawEx(); playEx();
+}
+$('inK').addEventListener('input', () => {
+  const k = parseNum($('inK').value);
+  markPreset(null); stopEx();
+  if (isNaN(k) || k <= 0 || k > 100){ $('exErr').textContent = 'Type a k bigger than 0 and up to 100.'; return; }
+  $('exErr').textContent = ''; Object.assign(ex, { c: 'gen', k, sel: null, e: 0 }); drawEx();
+});
+$('inK').addEventListener('focus', e => e.target.select());
+$('inK').addEventListener('keydown', e => { if (e.key === 'Enter') playEx(); });
+
+// Timeline: rows 0..6 appear one by one (each with guides), then the line, then the staircase and (1, k)
+const NROW = XMAX + 1;
+const tRow = i => (i + 1) / (NROW + 3);            // when row i's point appears
+const tLine = (NROW + 1) / (NROW + 3);              // when the line starts drawing
+function drawEx(){
+  const c = CTX[ex.c], k = ex.k, e = ex.e;
+  const ymax = Math.max(k * XMAX, 1), ystep = niceStep(ymax, 6);
+  const G = { xmax: XMAX, ymax: Math.ceil(ymax / ystep - 1e-9) * ystep, xlab: c.xl, ylab: c.yl, xstep: 1, ystep };
+  const cg = axes($('graph'), G);
+  $('gcap').innerHTML = `<i class="sym">x</i> across${c.xl ? ' (' + c.xl + ')' : ''}, <i class="sym">y</i> up${c.yl ? ' (' + c.yl + ')' : ''}`;
+  // Which rows have appeared, and which one is the newest
+  const shown = [...Array(NROW).keys()].filter(i => e >= tRow(i));
+  const newest = shown.length && e < tLine ? shown[shown.length - 1] : null;
+  // Staircase and the emphasized first step, after the line is drawn
+  const lineP = clamp((e - tLine) / (1 - tLine) * 1.6, 0, 1);
+  if (e >= 1){
+    for (let i = 1; i < XMAX; i++){
+      if (k * (i + 1) > G.ymax + 1e-9) break;
+      // each later step of the staircase: over 1 (amber), then up k (blue)
+      mk('line', { x1: cg.X(i), y1: cg.Y(k * i), x2: cg.X(i + 1), y2: cg.Y(k * i), class: 'stair stX' }, cg.g);
+      mk('line', { x1: cg.X(i + 1), y1: cg.Y(k * i), x2: cg.X(i + 1), y2: cg.Y(k * (i + 1)), class: 'stair stY' }, cg.g);
+    }
+  }
+  // The line through the origin
+  if (lineP > 0) drawLine(cg, G, k, 0, 'line', lineP);
+  // Guides for the newest point: over x (amber), then up y (blue)
+  if (newest !== null){
+    const x = newest, y = k * x;
+    mk('line', { x1: cg.X(0), y1: cg.Y(0) + 0.01, x2: cg.X(x), y2: cg.Y(0), class: 'guideX' }, cg.g);
+    mk('line', { x1: cg.X(x), y1: cg.Y(0), x2: cg.X(x), y2: cg.Y(y), class: 'guideY' }, cg.g);
+  }
+  // The first step: over 1, up k, with the point (1, k)
+  if (e >= 1){
+    mk('line', { x1: cg.X(0), y1: cg.Y(0), x2: cg.X(1), y2: cg.Y(0), class: 'step1X' }, cg.g);
+    mk('line', { x1: cg.X(1), y1: cg.Y(0), x2: cg.X(1), y2: cg.Y(k), class: 'step1Y' }, cg.g);
+    txt(cg.g, (cg.X(0) + cg.X(1)) / 2, cg.Y(0) - 8, 'over 1', 'stlbl stlX');
+    txt(cg.g, cg.X(1) + 8, (cg.Y(0) + cg.Y(k)) / 2 + 4, 'up k = ' + fmt(k), 'stlbl stlY');
+  }
+  // Points (clickable). The selected one is drawn hollow, with its guides.
+  shown.forEach(i => {
+    const x = i, y = k * x;
+    if (ex.sel === i && e >= 1){
+      mk('line', { x1: cg.X(0), y1: cg.Y(y), x2: cg.X(x), y2: cg.Y(y), class: 'guideY' }, cg.g);
+      mk('line', { x1: cg.X(x), y1: cg.Y(0), x2: cg.X(x), y2: cg.Y(y), class: 'guideX' }, cg.g);
+    }
+    const dot = mk('circle', { cx: cg.X(x), cy: cg.Y(y), r: ex.sel === i ? 7.5 : 6.5, class: ex.sel === i ? 'ptSel' : (i === newest ? 'ptNew' : 'pt') }, cg.g);
+    const hit = mk('circle', { cx: cg.X(x), cy: cg.Y(y), r: 14, class: 'hit' }, cg.g);
+    hit.addEventListener('click', () => { if (ex.e >= 1){ ex.sel = i; drawEx(); } });
+    if (i === 1 && e >= 1) txt(cg.g, cg.X(1) - 10, cg.Y(k) - 12, '(1, k)', 'plbl', { 'text-anchor': 'end' });
+    if ((i === newest) || (ex.sel === i && e >= 1)) txt(cg.g, cg.X(x) + 10, cg.Y(y) - 10, `(${fmt(x)}, ${fmt(y)})`, 'plbl');
+  });
+  mk('circle', { cx: cg.X(0), cy: cg.Y(0), r: 4, class: 'origin' }, cg.g);
+  // Ratio table, with rows fading in as their points appear
+  let h = `<tr><th>${c.xl || ''} <i>x</i></th><th>${c.yl || ''} <i>y</i></th><th>point</th></tr>`;
+  for (let i = 0; i < NROW; i++){
+    const cls = !shown.includes(i) ? 'wait' : (i === newest || (ex.sel === i && e >= 1) ? 'now' : '');
+    h += `<tr class="${cls}"><td class="cx">${i}</td><td class="cy">${fmt(k * i)}</td><td class="cp">(${i}, ${fmt(k * i)})</td></tr>`;
+  }
+  $('rt').innerHTML = h;
+  $('eq').innerHTML = `<i>y</i> = <i style="color:var(--k)">k</i> · <i>x</i> = ${fmt(k)} · <i>x</i>`;
+  // Readout
+  let out;
+  if (e < tLine && newest !== null){
+    out = `Row ${newest + 1}: go <span class="qx">over ${newest}</span>, then <span class="qy">up ${fmt(k * newest)}</span>, and put a dot at <b>(${newest}, ${fmt(k * newest)})</b>.`;
+  } else if (e < 1){
+    out = `All the points line up, so connect them: a straight line through the origin.`;
+  } else if (ex.sel !== null){
+    const x = ex.sel, y = k * x;
+    out = c.xl
+      ? `The point <b>(${x}, ${fmt(y)})</b> means <span class="qx">${x} ${c.xs[x === 1 ? 0 : 1]}</span> go with <span class="qy">${fmt(y)} ${c.ys[near(y, 1) ? 0 : 1]}</span>. ${x ? `And ${fmt(y)} ÷ ${x} = <b class="kk">${fmt(k)}</b>, which is <i class="sym">k</i> again.` : 'Zero goes with zero: the origin.'}`
+      : `The point <b>(${x}, ${fmt(y)})</b> means <i class="sym">x</i> = ${x} goes with <i class="sym">y</i> = ${fmt(y)}. ${x ? `${fmt(y)} ÷ ${x} = <b class="kk">${fmt(k)}</b> = <i class="sym">k</i>.` : 'Zero goes with zero.'}`;
+  } else {
+    out = `A straight line through the origin, climbing <b class="kk">${fmt(k)}</b> for every 1 across${c.ku ? ' (' + c.ku + ')' : ''}. Every step of the staircase is the same size. Click any point to read what it means.`;
+  }
+  $('exOut').innerHTML = out;
+}
+function playEx(){
+  if (ex.playing){ stopEx(); return; }
+  if (ex.e >= 1){ ex.e = 0; ex.sel = null; }
+  ex.playing = true; $('play').textContent = 'Pause';
+  let last = performance.now();
+  const step = now => {
+    ex.e = Math.min(1, ex.e + (now - last) / 6000); last = now;
+    drawEx();
+    if (ex.e < 1 && ex.playing) ex.raf = requestAnimationFrame(step); else stopEx();
+  };
+  ex.raf = requestAnimationFrame(step);
+}
+function stopEx(){ ex.playing = false; cancelAnimationFrame(ex.raf); $('play').textContent = ex.e >= 1 ? 'Replay' : 'Play'; }
+$('play').onclick = playEx;
+$('reset').onclick = () => { stopEx(); ex.e = 0; ex.sel = null; $('play').textContent = 'Play'; drawEx(); };
+
+/* =====================================================================
+   4. THE RACE: several k on one graph
+   ===================================================================== */
+const RACE = { t: 5, raf: 0, playing: false };
+function racers(){
+  const you = parseNum($('inYou').value);
+  const list = [
+    { n: 'Car', k: 60, col: 'var(--car)' },
+    { n: 'Bike', k: 12, col: 'var(--bike)' },
+    { n: 'Walker', k: 3, col: 'var(--walk)' },
+  ];
+  if (!isNaN(you) && you > 0 && you <= 80) list.push({ n: 'You', k: you, col: 'var(--you)' });
+  return list;
+}
+function drawRace(){
+  const you = parseNum($('inYou').value);
+  $('raceErr').textContent = (isNaN(you) || you <= 0 || you > 80) ? 'Type a speed bigger than 0 and up to 80 mi/h.' : '';
+  const G = { xmax: 5, ymax: 300, xlab: 'hours', ylab: 'miles', xstep: 1, ystep: 50 };
+  const c = axes($('raceSvg'), G), t = RACE.t;
+  const list = racers().sort((p, q) => q.k - p.k);
+  list.forEach(r => {
+    drawLine(c, G, r.k, 0, 'rl', 1, `stroke:${r.col};opacity:.3`);                        // the whole path, faint
+    const tt = Math.min(t, G.ymax / r.k);                                                  // stop at the top edge
+    mk('line', { x1: c.X(0), y1: c.Y(0), x2: c.X(tt), y2: c.Y(r.k * tt), class: 'rl', style: `stroke:${r.col}` }, c.g);
+    mk('circle', { cx: c.X(tt), cy: c.Y(r.k * tt), r: 7, class: 'rdot', style: `fill:${r.col}` }, c.g);
+    if (t >= 5 || tt < t){
+      const lx = Math.min(tt, 4.4);                                                        // label just left of this point on the line
+      txt(c.g, c.X(lx) - 8, c.Y(r.k * lx) - 9, `${r.n}: k = ${fmt(r.k)}`, 'rlbl', { style: `fill:${r.col}`, 'text-anchor': 'end' });
+    }
+  });
+  $('raceT').textContent = fmt(Math.round(t * 2) / 2);
+  $('racers').innerHTML = list.map(r => `<div class="racer"><span style="color:${r.col};font-weight:600">${r.n}</span><b>${fmt(Math.round(r.k * t * 10) / 10)} mi</b></div>`).join('');
+  $('raceOut').innerHTML = t >= 5
+    ? `The steepest line belongs to the fastest traveler. Each line’s <i class="sym">k</i> is its speed: the height of the line at 1 hour.`
+    : `Every line starts at the origin: at 0 hours, everyone has gone 0 miles.`;
+}
+function race(){
+  if (RACE.playing) return;
+  RACE.t = 0; RACE.playing = true;
+  let last = performance.now();
+  const step = now => {
+    RACE.t = Math.min(5, RACE.t + (now - last) / 1000); last = now;
+    drawRace();
+    if (RACE.t < 5) RACE.raf = requestAnimationFrame(step); else RACE.playing = false;
+  };
+  RACE.raf = requestAnimationFrame(step);
+}
+$('raceGo').onclick = race;
+$('raceReset').onclick = () => { cancelAnimationFrame(RACE.raf); RACE.playing = false; RACE.t = 0; drawRace(); };
+$('inYou').addEventListener('input', drawRace);
+$('inYou').addEventListener('focus', e => e.target.select());
+$('inYou').addEventListener('keydown', e => { if (e.key === 'Enter') race(); });
+
+/* =====================================================================
+   5. TAXI vs SCOOTER
+   ===================================================================== */
+const FARES = [
+  { n: 'Taxi: $3 + $2 per mile', short: 'Taxi', k: 2, b: 3, col: 'var(--taxi)' },
+  { n: 'Scooter: $2.50 per mile', short: 'Scooter', k: 2.5, b: 0, col: 'var(--scoot)' },
+];
+let fareSel = 0;
+FARES.forEach((f, i) => {
+  const b = document.createElement('button');
+  b.className = 'preset'; b.textContent = f.n; b.onclick = () => { fareSel = i; drawTaxi(); };
+  $('taxiBtns').appendChild(b);
+});
+function drawTaxi(){
+  [...$('taxiBtns').children].forEach((b, j) => b.classList.toggle('on', j === fareSel));
+  const G = { xmax: 6, ymax: 16, xlab: 'miles', ylab: 'dollars', xstep: 1, ystep: 2 };
+  const c = axes($('taxiSvg'), G);
+  FARES.forEach((f, i) => {
+    const on = i === fareSel;
+    drawLine(c, G, f.k, f.b, 'rl', 1, `stroke:${f.col};opacity:${on ? 1 : .25}`);
+    mk('circle', { cx: c.X(0), cy: c.Y(f.b), r: on ? 7 : 5, class: 'rdot', style: `fill:${f.col};opacity:${on ? 1 : .35}` }, c.g);
+    if (on) txt(c.g, c.X(0) + 12, c.Y(f.b) + (f.b ? -10 : -12), `starts at (0, ${fmt(f.b)})`, 'rlbl', { style: `fill:${f.col}` });
+    txt(c.g, c.X(4.6) + (f.b ? -8 : 8), c.Y(f.k * 4.6 + f.b) + (f.b ? -10 : 18), f.short, 'rlbl', { style: `fill:${f.col};opacity:${on ? 1 : .45}`, 'text-anchor': f.b ? 'end' : 'start' });
+  });
+  const f = FARES[fareSel];
+  const q = [1, 2, 4].map(x => (f.k * x + f.b) / x);
+  const constant = q.every(v => near(v, q[0]));
+  $('taxiName').textContent = f.short + ': the three checks';
+  $('taxiChecks').innerHTML = [
+    ['Straight line?', true, 'every mile adds the same $' + fmt(f.k)],
+    ['Through the origin (0, 0)?', f.b === 0, f.b === 0 ? '0 miles cost $0' : '0 miles already cost $' + fmt(f.b)],
+    ['Same y ÷ x for every point?', constant, q.map((v, i) => `${fmt(f.k * [1, 2, 4][i] + f.b)} ÷ ${[1, 2, 4][i]} = ${fmt(v)}`).join(', ')],
+  ].map(([lbl, ok, why]) => `<li><span class="${ok ? 'y' : 'n'}">${ok ? '✓' : '✗'}</span><span><b>${lbl}</b> ${why}</span></li>`).join('');
+  $('taxiOut').innerHTML = f.b === 0
+    ? `<b style="color:var(--ok)">Proportional.</b> Straight, through the origin, with <i class="sym">k</i> = ${fmt(f.k)} dollars per mile: <i class="sym">y</i> = ${fmt(f.k)} · <i class="sym">x</i>.`
+    : `<b style="color:var(--bad)">Not proportional.</b> The line is straight, but the $${fmt(f.b)} starting fee lifts it off the origin, so <i class="sym">y</i> ÷ <i class="sym">x</i> keeps changing. Its rule is <i class="sym">y</i> = ${fmt(f.k)}<i class="sym">x</i> + ${fmt(f.b)}.`;
+}
+
+/* =====================================================================
+   6. QUIZ
+   ===================================================================== */
+const rnd = arr => arr[Math.floor(Math.random() * arr.length)];
+const randInt = (lo, hi) => lo + Math.floor(Math.random() * (hi - lo + 1));
+const qz = { counted: false, done: false, right: 0, total: 0 };
+// Pick a context with values that land exactly on grid lines
+function qScene(){
+  if (Math.random() < 0.5){ const k = rnd([1.5, 2, 2.5, 3, 4]); return { c: 'lemon', k, G: { xmax: 6, ymax: k * 6, xlab: 'scoops', ylab: 'cups', xstep: 1, ystep: k <= 2 ? 1 : (k === 2.5 ? 2.5 : k) } }; }
+  const c = rnd(['car', 'bike', 'walk']);
+  const k = c === 'car' ? rnd([40, 50, 60]) : c === 'bike' ? rnd([10, 12, 15]) : rnd([2, 3, 4]);
+  return { c, k, G: { xmax: 6, ymax: k * 6, xlab: 'hours', ylab: 'miles', xstep: 1, ystep: k } };
+}
+function setMode(mode){                                  // 'two' inputs, 'one' input, or 'choice'
+  $('qF1').style.display = mode === 'choice' ? 'none' : '';
+  $('qF2').style.display = mode === 'two' ? '' : 'none';
+  $('qChoice').style.display = mode === 'choice' ? '' : 'none';
+  $('qCheck').style.display = mode === 'choice' ? 'none' : '';
+}
+function newQuestion(){
+  Object.assign(qz, { counted: false, done: false });
+  $('qErr').textContent = ''; $('qFb').className = 'feedback'; $('qFb').innerHTML = ''; $('qIn1').value = ''; $('qIn2').value = '';
+  qz.type = rnd(['point', 'readk', 'prop', 'steep']);
+  if (qz.type === 'point'){
+    Object.assign(qz, qScene()); qz.x = randInt(2, 5);
+    const c = CTX[qz.c];
+    $('qTitle').textContent = 'What does this point mean?';
+    $('qText').innerHTML = `The graph shows a ${qz.c === 'lemon' ? 'lemonade recipe' : c.name.toLowerCase() + '’s trip'}. Read point <b>P</b>: how many <span class="qx">${c.xl}</span> go with how many <span class="qy">${c.yl}</span>?`;
+    $('qL1').innerHTML = `${c.xl} <i>x</i>`; $('qL2').innerHTML = `${c.yl} <i>y</i>`;
+    $('qF1').className = 'field fx'; setMode('two');
+  } else if (qz.type === 'readk'){
+    Object.assign(qz, qScene()); qz.x = randInt(2, 5);
+    const c = CTX[qz.c];
+    $('qTitle').textContent = 'Read k from the graph';
+    $('qText').innerHTML = `This line is proportional and passes through point <b>P</b>. What is the constant of proportionality <i class="sym">k</i> (${c.ku})?`;
+    $('qL1').innerHTML = 'Constant <i>k</i>'; $('qF1').className = 'field fk'; setMode('one');
+  } else if (qz.type === 'prop'){
+    qz.kind = rnd(['yes', 'yes', 'start']);
+    qz.k = rnd([1, 1.5, 2, 2.5]); qz.b = qz.kind === 'yes' ? 0 : rnd([1, 2, 3, 4]);
+    $('qTitle').textContent = 'Proportional or not?';
+    $('qText').innerHTML = `Does this graph show a proportional relationship?`;
+    $('qA').textContent = 'Proportional'; $('qB').textContent = 'Not proportional'; setMode('choice');
+  } else {
+    const pool = [[60, 40], [12, 15], [50, 60], [3, 4], [10, 15], [40, 55]];
+    const [p, q] = rnd(pool); const swap = Math.random() < 0.5;
+    qz.kA = swap ? q : p; qz.kB = swap ? p : q;
+    $('qTitle').textContent = 'Which is faster?';
+    $('qText').innerHTML = `Two travelers start together. The graph shows distance (miles) against time (hours). Which one is faster?`;
+    $('qA').textContent = 'A is faster'; $('qB').textContent = 'B is faster'; setMode('choice');
+  }
+  drawQuiz();
+}
+function drawQuiz(){
+  const svg = $('qSvg');
+  if (qz.type === 'point' || qz.type === 'readk'){
+    const c = axes(svg, qz.G), y = qz.k * qz.x;
+    drawLine(c, qz.G, qz.k, 0, 'line', 1);
+    if (qz.done){
+      mk('line', { x1: c.X(0), y1: c.Y(y), x2: c.X(qz.x), y2: c.Y(y), class: 'guideY' }, c.g);
+      mk('line', { x1: c.X(qz.x), y1: c.Y(0), x2: c.X(qz.x), y2: c.Y(y), class: 'guideX' }, c.g);
+      if (qz.type === 'readk'){
+        mk('line', { x1: c.X(0), y1: c.Y(0), x2: c.X(1), y2: c.Y(0), class: 'step1X' }, c.g);
+        mk('line', { x1: c.X(1), y1: c.Y(0), x2: c.X(1), y2: c.Y(qz.k), class: 'step1Y' }, c.g);
+        txt(c.g, c.X(1) + 8, (c.Y(0) + c.Y(qz.k)) / 2 + 4, 'up k = ' + fmt(qz.k), 'stlbl stlY');
+      }
+    }
+    mk('circle', { cx: c.X(qz.x), cy: c.Y(y), r: 7.5, class: 'pt' }, c.g);
+    txt(c.g, c.X(qz.x) - 12, c.Y(y) - 10, qz.done ? `P (${qz.x}, ${fmt(y)})` : 'P', 'plbl', { 'text-anchor': 'end' });
+  } else if (qz.type === 'prop'){
+    const G = { xmax: 6, ymax: 16, xlab: '', ylab: '', xstep: 1, ystep: 2 };
+    const c = axes(svg, G);
+    drawLine(c, G, qz.k, qz.b, 'line', 1);
+    mk('circle', { cx: c.X(0), cy: c.Y(qz.b), r: 6, class: 'pt' }, c.g);
+    if (qz.done) txt(c.g, c.X(0) + 12, c.Y(qz.b) - 10, `starts at (0, ${fmt(qz.b)})`, 'plbl');
+  } else {
+    const G = { xmax: 5, ymax: Math.max(qz.kA, qz.kB) * 5, xlab: 'hours', ylab: 'miles', xstep: 1 };
+    G.ystep = niceStep(G.ymax, 6); G.ymax = Math.ceil(G.ymax / G.ystep) * G.ystep;
+    const c = axes(svg, G);
+    [['A', qz.kA, 'var(--car)'], ['B', qz.kB, 'var(--bike)']].forEach(([n, k, col]) => {
+      drawLine(c, G, k, 0, 'rl', 1, `stroke:${col}`);
+      // steeper line labelled above-left, gentler line labelled below-right, so labels never sit on the other line
+      const top = k === Math.max(qz.kA, qz.kB);
+      txt(c.g, c.X(4.4) + (top ? -8 : 8), c.Y(k * 4.4) + (top ? -10 : 20), qz.done ? `${n}: k = ${fmt(k)}` : n, 'rlbl', { style: `fill:${col}`, 'text-anchor': top ? 'end' : 'start' });
+      if (qz.done) mk('circle', { cx: c.X(1), cy: c.Y(k), r: 6, class: 'rdot', style: `fill:${col}` }, c.g);
+    });
+  }
+}
+function countQ(ok){
+  if (qz.counted) return;
+  qz.counted = true; qz.total++; if (ok) qz.right++;
+  $('score').textContent = `Score: ${qz.right} / ${qz.total}`;
+}
+function checkQ(){
+  const fb = $('qFb'), c = CTX[qz.c], y = qz.k * qz.x;
+  let ok = false, msg;
+  if (qz.type === 'point'){
+    const a = parseNum($('qIn1').value), b = parseNum($('qIn2').value);
+    if (isNaN(a) || isNaN(b)){ $('qErr').textContent = 'Fill in both boxes with a number.'; return; }
+    $('qErr').textContent = '';
+    if (near(a, qz.x) && near(b, y)){ ok = true; msg = `<b>Right.</b> P is (${qz.x}, ${fmt(y)}): <span class="qx">${qz.x} ${c.xl}</span> go with <span class="qy">${fmt(y)} ${c.yl}</span>.`; }
+    else if (near(a, y) && near(b, qz.x)) msg = `<b>Swapped.</b> The first number of a point is across (<i class="sym">x</i>), the second is up (<i class="sym">y</i>). Go over first, then up.`;
+    else if (near(a, qz.x)) msg = `<b>Your ${c.xl} are right.</b> Now read straight across from P to the up axis for the ${c.yl}.`;
+    else if (near(b, y)) msg = `<b>Your ${c.yl} are right.</b> Now read straight down from P to the across axis for the ${c.xl}.`;
+    else msg = `<b>Not quite.</b> From P, read straight down for <i class="sym">x</i> and straight across to the left for <i class="sym">y</i>.`;
+  } else {
+    const v = parseNum($('qIn1').value);
+    if (isNaN(v)){ $('qErr').textContent = 'Type a number (like 1.5, 1½ or 3/2).'; return; }
+    $('qErr').textContent = '';
+    if (near(v, qz.k)){ ok = true; msg = `<b>Right.</b> P is (${qz.x}, ${fmt(y)}), so <i class="sym">k</i> = ${fmt(y)} ÷ ${qz.x} = <b>${fmt(qz.k)}</b> ${c.ku}. You can also see it at <i class="sym">x</i> = 1: over 1, up ${fmt(qz.k)}.`; }
+    else if (near(v, y)) msg = `<b>That’s P’s height, the total for ${qz.x} ${c.xl}.</b> <i class="sym">k</i> is the amount for <b>one</b>: divide by ${qz.x}.`;
+    else if (near(v, qz.x / y)) msg = `<b>That’s flipped (<i class="sym">x</i> ÷ <i class="sym">y</i>).</b> <i class="sym">k</i> is up ÷ over: <i class="sym">y</i> ÷ <i class="sym">x</i>.`;
+    else msg = `<b>Not quite.</b> Read P’s <i class="sym">x</i> and <i class="sym">y</i>, then divide <i class="sym">y</i> by <i class="sym">x</i>. Or look at the height of the line above <i class="sym">x</i> = 1.`;
+  }
+  countQ(ok);
+  if (ok){ qz.done = true; drawQuiz(); }
+  fb.className = 'feedback ' + (ok ? 'ok' : 'bad'); fb.innerHTML = msg;
+}
+function explainChoice(){
+  if (qz.type === 'prop') return qz.kind === 'yes'
+    ? `It’s a straight line through the origin, so it’s proportional, with <i class="sym">k</i> = ${fmt(qz.k)}.`
+    : `It’s straight, but it starts at (0, ${fmt(qz.b)}), not the origin. Like the taxi, it has a starting amount, so it’s not proportional.`;
+  const faster = qz.kA > qz.kB ? 'A' : 'B';
+  return `${faster}’s line is steeper. At 1 hour, A has gone ${fmt(qz.kA)} miles and B has gone ${fmt(qz.kB)}, so A’s <i class="sym">k</i> = ${fmt(qz.kA)} and B’s <i class="sym">k</i> = ${fmt(qz.kB)}. Steeper = bigger <i class="sym">k</i> = faster.`;
+}
+function answerChoice(first){
+  if (qz.done) return;
+  const ok = qz.type === 'prop' ? (qz.kind === 'yes') === first : (qz.kA > qz.kB) === first;
+  countQ(ok); qz.done = true; drawQuiz();
+  $('qFb').className = 'feedback ' + (ok ? 'ok' : 'bad');
+  $('qFb').innerHTML = `<b>${ok ? 'Right.' : 'Not this time.'}</b> ${explainChoice()}`;
+}
+function showQ(){
+  countQ(false); qz.done = true; drawQuiz(); $('qErr').textContent = '';
+  const fb = $('qFb'); fb.className = 'feedback info';
+  const c = CTX[qz.c], y = qz.k * qz.x;
+  if (qz.type === 'point') fb.innerHTML = `P is <b>(${qz.x}, ${fmt(y)})</b>: ${qz.x} ${c.xl} go with ${fmt(y)} ${c.yl}.`;
+  else if (qz.type === 'readk') fb.innerHTML = `<i class="sym">k</i> = ${fmt(y)} ÷ ${qz.x} = <b>${fmt(qz.k)}</b> ${c.ku}.`;
+  else fb.innerHTML = explainChoice();
+}
+$('qCheck').onclick = checkQ;
+$('qA').onclick = () => answerChoice(true);
+$('qB').onclick = () => answerChoice(false);
+$('qShow').onclick = showQ;
+$('qNew').onclick = newQuestion;
+['qIn1', 'qIn2'].forEach(id => {
+  $(id).addEventListener('input', () => { $('qErr').textContent = ''; });
+  $(id).addEventListener('focus', e => e.target.select());
+  $(id).addEventListener('keydown', e => { if (e.key === 'Enter') checkQ(); });
+});
+
+/* =====================================================================
+   7. START
+   ===================================================================== */
+markPreset(0); $('inK').value = '1.5'; ex.e = 1; ex.sel = 4; drawEx(); $('play').textContent = 'Replay';
+drawRace();
+drawTaxi();
+newQuestion();
+</script>
+<script>
+/* MathMastery table of contents: the single source of truth for page order, titles and links.
+   - built: true  -> the page exists in the site build (GitHub)
+   - url          -> the page's published Claude artifact (used when not in site mode)
+   - ext: true    -> an existing standalone explorer linked as-is: always opens its url, in both builds
+   Add a page here, rebuild every page, and the Contents menu and Previous/Next update everywhere. */
+window.MM_TOC = [
+  { ch: 1, title: 'Numbers & Arithmetic', pages: [
+    { id: '1.B.1', title: 'Counting and the Number Line',            built: true, url: 'https://claude.ai/artifact/Ms2KnDNrzSW8oPYWgvfwQK' },
+    { id: '1.B.2', title: 'Multiplication as Stretching' },
+    { id: '1.B.3', title: 'Fractions, Decimals, and the Gaps Between Them' },
+    { id: '1.B.4', title: 'Equivalent Ratios',                       built: true, url: 'https://claude.ai/artifact/8RtDdq54Mbx1eML3iH4sDF' },
+    { id: '1.B.5', title: 'The Constant of Proportionality',         built: true, url: 'https://claude.ai/artifact/6CRFQvbG3Dkin62BeT9PKL' },
+    { id: '1.B.6', title: 'Graphing Proportional Relationships',     built: true, url: 'https://claude.ai/artifact/Dk2wz7bzT1rKY3QduyGiKM' },
+    { id: '1.B.7', title: 'Converting Customary and Metric Units',   built: true, url: 'https://claude.ai/artifact/FXQApxvApHWy3Y4ao9oF9o' },
+    { id: '1.B.8', title: 'Proportional Reasoning: Solving Problems', built: true, url: 'https://claude.ai/artifact/5BczAcmrhUzUdGzmV9sUiN' },
+    { id: '1.B.9', title: 'Why We Invented Each New Kind of Number' },
+  ]},
+  { ch: 3, title: 'Algebra', pages: [
+    { id: '3.B.1', title: 'Variables and Expressions' },
+    { id: '3.B.2', title: 'Solving Equations' },
+    { id: '3.B.3', title: 'Functions' },
+    { id: '3.B.4', title: 'Exponents and Exponential Growth' },
+    { id: '3.B.5', title: 'Logarithms (Log Explorer)', ext: true, url: 'https://claude.ai/artifact/GkbAXj1R4V1LharhQ9WgZP' },
+  ]},
+  { ch: 5, title: 'Trigonometry', pages: [
+    { id: '5.B.1', title: 'Angles and Radians' },
+    { id: '5.B.2', title: 'Sine, Cosine and Tangent on the Unit Circle (Trig Explorer)', ext: true, url: 'https://claude.ai/artifact/4xY54b5XpeoyG9FocJ9ZFZ' },
+    { id: '5.B.3', title: 'Laws of Sines and Cosines (Trig Explorer, Any triangle tab)', ext: true, url: 'https://claude.ai/artifact/4xY54b5XpeoyG9FocJ9ZFZ' },
+    { id: '5.B.4', title: 'Waves and Periodic Functions' },
+  ]},
+  { ch: 7, title: 'Linear Algebra', pages: [
+    { id: '7.B.1', title: 'Vectors: Arrows and Lists' },
+    { id: '7.B.2', title: 'Linear Combinations and Span' },
+    { id: '7.B.3', title: 'The Dot Product' },
+    { id: '7.B.4', title: 'A Matrix Is a Move (Matrix Transformer)', ext: true, url: 'https://claude.ai/artifact/UPYx73qewW2rkDX2VR4YTS' },
+    { id: '7.B.5', title: 'Matrix Multiplication: One Move After Another' },
+    { id: '7.B.6', title: 'The Determinant' },
+    { id: '7.B.7', title: 'Inverse Matrices' },
+  ]},
+  { ch: 8, title: 'Calculus', pages: [
+    { id: '8.B.1', title: 'Limits' },
+    { id: '8.B.2', title: 'Derivatives' },
+    { id: '8.B.3', title: 'Integrals' },
+    { id: '8.U.1', title: 'Infinite Series' },
+    { id: '8.U.2', title: 'Power Series' },
+    { id: '8.U.3', title: 'Taylor Approximations (Taylor Explorer)', ext: true, url: 'https://claude.ai/artifact/NbkDNnFSAGmLb5UqG4MBiB' },
+  ]},
+];
+
+/* MathMastery navigation: a Contents menu in the top bar and live Previous/Next cards.
+   Works in two places without edits:
+   - as published Claude artifacts: links use each page's artifact url
+   - on the GitHub site: a <meta name="mm-site"> tag (added by build_page.py --site) switches every link
+     to a relative path like ../1-B-4/index.html */
+(function(){
+  const SITE = !!document.querySelector('meta[name="mm-site"]');            // which kind of build is this?
+  const TIERS = { B: 'Basics', U: 'Undergraduate', M: 'Masters' };
+  // Flatten the table of contents into one ordered list of pages
+  const pages = [];
+  (window.MM_TOC || []).forEach(ch => ch.pages.forEach(p => pages.push(Object.assign({ ch: ch.ch, chTitle: ch.title }, p))));
+  const ready = p => p.ext ? !!p.url : (SITE ? !!p.built : !!p.url);          // can we link to this page?
+  const href = p => (p.ext || !SITE) ? p.url : `../${p.id.replace(/\./g, '-')}/index.html`;   // explorers always use their own url
+  const pidEl = document.querySelector('.pid');
+  const curId = pidEl ? pidEl.textContent.trim() : '';
+  const cur = pages.findIndex(p => p.id === curId);
+  const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+
+  /* ---------- Contents menu in the top bar ---------- */
+  const bar = document.querySelector('.topbar-in');
+  if (bar){
+    const btn = document.createElement('button');
+    btn.className = 'tocbtn'; btn.type = 'button'; btn.setAttribute('aria-expanded', 'false');
+    btn.innerHTML = '☰&nbsp; Contents';
+    bar.insertBefore(btn, pidEl || null);
+    const panel = document.createElement('div');
+    panel.className = 'tocpanel'; panel.setAttribute('role', 'menu');
+    let h = '';
+    (window.MM_TOC || []).forEach(ch => {
+      h += `<div class="tocch">Chapter ${ch.ch} · ${esc(ch.title)}</div>`;
+      let lastTier = '';
+      ch.pages.forEach(p => {
+        const tier = p.id.split('.')[1];
+        if (tier !== lastTier){ h += `<div class="toctier">${TIERS[tier] || tier}</div>`; lastTier = tier; }
+        const isCur = p.id === curId;
+        const inner = `<span class="tid">${p.id}</span><span>${esc(p.title)}</span>${isCur ? '<small>you are here</small>' : (p.ext ? '<small>explorer ↗</small>' : (ready(p) ? '' : '<small>coming</small>'))}`;
+        h += ready(p) && !isCur
+          ? `<a class="tocrow" href="${href(p)}">${inner}</a>`
+          : `<div class="tocrow ${isCur ? 'cur' : 'coming'}">${inner}</div>`;
+      });
+    });
+    panel.innerHTML = h;
+    bar.appendChild(panel);
+    const setOpen = open => { panel.classList.toggle('open', open); btn.setAttribute('aria-expanded', String(open)); };
+    btn.addEventListener('click', e => { e.stopPropagation(); setOpen(!panel.classList.contains('open')); });
+    document.addEventListener('click', e => { if (!panel.contains(e.target)) setOpen(false); });   // click outside closes
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') setOpen(false); });
+  }
+
+  /* ---------- Previous / Next cards ---------- */
+  const pager = document.querySelector('.pager');
+  if (pager && cur >= 0){
+    // The nearest page in a direction that can actually be opened (for "skip ahead" links)
+    const nearestReady = (from, step) => { for (let j = from; j >= 0 && j < pages.length; j += step) if (ready(pages[j])) return pages[j]; return null; };
+    const card = (p, dir) => {
+      const head = `<small>${dir < 0 ? '← Previous' : 'Next →'}</small>`;
+      const cls = dir > 0 ? 'next' : '';
+      if (!p) return `<div class="${cls} soon"><span class="dimtxt">${head}${dir < 0 ? 'Start of the book' : 'End of what’s written so far'}</span></div>`;
+      if (ready(p)) return `<a class="${cls}" href="${href(p)}">${head}${p.id} ${esc(p.title)}</a>`;
+      const alt = nearestReady(pages.indexOf(p) + dir, dir);
+      const skip = alt ? `<a class="skip" href="${href(alt)}">${dir < 0 ? '← Back to' : 'Skip ahead to'} ${alt.id} ${esc(alt.title)}${dir > 0 ? ' →' : ''}</a>` : '';
+      return `<div class="${cls} soon"><span class="dimtxt">${head}${p.id} ${esc(p.title)} (coming)</span>${skip}</div>`;
+    };
+    pager.innerHTML = card(pages[cur - 1], -1) + card(pages[cur + 1], 1);
+  }
+})();
+</script>
+</body>
+</html>

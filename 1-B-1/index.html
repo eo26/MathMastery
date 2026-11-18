@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>1.B.1 Counting and the Number Line · MathMastery</title>
+<!-- Fonts: a book serif for prose, a clean sans for UI, a mono for numbers -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<!-- MathJax renders the few formulas on the page (SVG output needs no external stylesheet) -->
+<script>
+  window.MathJax = { tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] }, svg: { fontCache: 'global' } };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<style>
+/* ===================== Theme ===================== */
+:root{
+  --bg:#f7f5ef; --paper:#ffffff; --ink:#1f1e1d; --muted:#6b6a66; --line:#e4e0d5; --line2:#c9c5b8;
+  --accent:#534AB7; --accent-bg:#EEEDFE;
+  --pos:#1D9E75; --neg:#D85A30; --pt:#7F77DD; --pt-soft:#AFA9EC; --pt-dark:#534AB7;
+  --pos-new:#9FE1CB; --neg-new:#F0997B; --ok:#3B6D11; --ok-bg:#EAF3DE; --bad:#A32D2D; --bad-bg:#FCEBEB; --note-bg:#FAF3E3; --note-line:#E7C98A;
+  --serif:"Source Serif 4", Georgia, "Times New Roman", serif;
+  --sans:"IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#191817; --paper:#232220; --ink:#ecebe6; --muted:#a3a29c; --line:#383733; --line2:#55534e;
+    --accent:#AFA9EC; --accent-bg:#2c2852; --pt-dark:#CECBF6; --pt-soft:#6f68b8; --pos-new:#5DCAA5; --neg-new:#F5C4B3;
+    --ok:#C0DD97; --ok-bg:#24400d; --bad:#F7C1C1; --bad-bg:#5a1c1c; --note-bg:#2b261b; --note-line:#6b5626;
+  }
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.7 var(--serif);-webkit-font-smoothing:antialiased}
+
+/* ===================== Layout ===================== */
+.topbar{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1000px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:14px;font:500 13px/1 var(--sans);color:var(--muted)}
+.brand{color:var(--ink);font-weight:600;letter-spacing:.02em}
+.brand b{color:var(--accent)}
+.crumbs{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pid{font-family:var(--mono);color:var(--accent);background:var(--accent-bg);padding:4px 8px;border-radius:6px}
+.prose{max-width:720px;margin:0 auto;padding:0 20px}
+.wide{max-width:1000px;margin:0 auto;padding:0 20px}
+
+/* ===================== Hero ===================== */
+.hero{padding:48px 0 12px}
+.kicker{font:600 13px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1{font:700 46px/1.1 var(--serif);margin:12px 0 14px;letter-spacing:-.01em}
+.dek{font-size:21px;color:var(--muted);margin:0 0 22px;font-style:italic}
+.tiers{display:flex;gap:6px;flex-wrap:wrap;font:500 13px/1 var(--sans);margin-bottom:8px}
+.tier{padding:7px 12px;border-radius:999px;border:1px solid var(--line2);color:var(--muted)}
+.tier.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.tier small{opacity:.7;margin-left:4px}
+
+/* ===================== Text elements ===================== */
+h2{font:700 28px/1.25 var(--serif);margin:56px 0 10px;display:flex;gap:12px;align-items:baseline}
+h2 .n{font:600 14px/1 var(--mono);color:var(--accent);min-width:28px}
+p{margin:0 0 16px}
+em.key{font-style:normal;background:linear-gradient(transparent 62%,var(--accent-bg) 62%);padding:0 2px}
+.goals{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:18px 22px;margin:22px 0 0;font:15.5px/1.6 var(--sans)}
+.goals h3{font:600 12px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
+.goals ul{margin:0;padding-left:20px}
+.note{background:var(--note-bg);border-left:4px solid var(--note-line);border-radius:0 10px 10px 0;padding:14px 18px;margin:20px 0;font:15.5px/1.6 var(--sans)}
+.note b{font-weight:600}
+.notice{list-style:none;padding:0;margin:8px 0 18px;counter-reset:n}
+.notice li{position:relative;padding:12px 0 12px 46px;border-top:1px solid var(--line)}
+.notice li:last-child{border-bottom:1px solid var(--line)}
+.notice li::before{counter-increment:n;content:counter(n);position:absolute;left:4px;top:13px;width:26px;height:26px;border-radius:50%;background:var(--accent-bg);color:var(--accent);font:600 13px/26px var(--mono);text-align:center}
+.goes{list-style:none;padding:0;margin:8px 0 18px}
+.goes li{padding:12px 0;border-top:1px solid var(--line)}
+.goes li:last-child{border-bottom:1px solid var(--line)}
+.math{overflow-x:auto;margin:12px 0 18px;padding:14px 18px;background:var(--paper);border:1px solid var(--line);border-radius:12px}
+.math .cap{font:14px/1.5 var(--sans);color:var(--muted);margin-top:4px}
+.mono{font-family:var(--mono);font-size:.92em;white-space:nowrap}
+.pos{color:var(--pos);font-weight:600}.neg{color:var(--neg);font-weight:600}.pt{color:var(--pt-dark);font-weight:600}
+
+/* ===================== Vocabulary ===================== */
+.vocab{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin:14px 0 8px}
+.term{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font:14.5px/1.5 var(--sans)}
+.term b{display:block;font:600 15px/1.3 var(--serif);margin-bottom:4px}
+
+/* ===================== Interactive cards ===================== */
+.card{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:18px 20px 20px;margin:26px 0;box-shadow:0 1px 0 var(--line),0 12px 32px -22px rgba(0,0,0,.25);font-family:var(--sans)}
+.card-h{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.card-h .tag{font:600 11px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--accent);background:var(--accent-bg);padding:5px 8px;border-radius:6px}
+.card-h h3{font:600 18px/1.3 var(--sans);margin:0}
+.card-h .sub{color:var(--muted);font-size:14.5px;flex-basis:100%}
+.panel-label{font:600 11px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:12px 0 4px;display:flex;justify-content:space-between}
+.panel-label span:last-child{letter-spacing:0;text-transform:none;font-weight:500}
+svg.nl{display:block;width:100%;height:auto;border:1px solid var(--line);border-radius:12px;background:var(--bg);touch-action:manipulation}
+svg.clickable{cursor:pointer}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:12px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0}
+button{font:500 14px/1 var(--sans);padding:9px 14px;border-radius:9px;border:1px solid var(--line2);background:var(--paper);color:var(--ink);cursor:pointer;transition:background .15s,border-color .15s}
+button:hover{border-color:var(--ink)}
+button.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+button.preset.on{background:var(--accent-bg);border-color:var(--accent);color:var(--accent)}
+button:disabled{opacity:.45;cursor:default}
+.desc{min-height:24px;color:var(--muted);font-size:14.5px;margin:2px 0 6px}
+.inputs{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;margin:12px 0 4px}
+.field{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.field input{width:92px;font:500 18px/1 var(--mono);padding:9px 10px;border-radius:9px;border:2px solid var(--line2);background:var(--bg);color:var(--ink);text-align:center}
+.field input:focus{outline:none;border-color:var(--accent)}
+.field i,.eq i,.sym{font:italic 600 1.15em var(--serif);text-transform:none;letter-spacing:0;color:var(--pt-dark)}
+.field.start input{border-color:var(--pt-soft)}
+.field.slide input{border-color:var(--pt)}
+.eq{font:500 20px/1 var(--mono);padding:10px 14px;background:var(--bg);border-radius:10px;border:1px solid var(--line)}
+.err{color:var(--bad);font-size:14px;min-height:20px;margin:2px 0}
+.readout{margin-top:12px;padding:12px 14px;background:var(--bg);border-radius:10px;border:1px solid var(--line);font-size:15px;line-height:1.55;min-height:48px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:12px;font-size:13px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{display:inline-block;width:14px;height:14px;border-radius:50%}
+.sw.pos{background:var(--pos)}.sw.neg{border:2.4px solid var(--neg)}
+.sw.x{position:relative;background:var(--pos);opacity:.45}.sw.x::after{content:'✕';position:absolute;inset:-1px 0 0 0;color:var(--neg);font:700 13px/1 var(--sans);text-align:center}
+.sw.posnew{background:var(--pos-new);border:1.5px solid var(--pos)}.sw.negnew{border:2.4px solid var(--neg-new)}.sw.pt{background:var(--pt)}
+.sw.mv{width:22px;height:4px;border-radius:2px;background:var(--pt-soft)}
+.sw.rl{width:22px;height:0;border-top:2px dashed var(--ink);border-radius:0;opacity:.7}
+.feedback{margin-top:10px;padding:12px 14px;border-radius:10px;font-size:15px;line-height:1.55;display:none}
+.feedback.ok{display:block;background:var(--ok-bg);color:var(--ok)}
+.feedback.bad{display:block;background:var(--bad-bg);color:var(--bad)}
+.feedback.info{display:block;background:var(--accent-bg);color:var(--accent)}
+.score{margin-left:auto;font:600 14px/1 var(--mono);color:var(--muted)}
+
+/* ===================== Footer nav ===================== */
+.pager{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:56px 0 18px;font-family:var(--sans)}
+.pager a,.pager div{display:block;padding:16px 18px;border:1px solid var(--line);border-radius:14px;background:var(--paper);color:var(--ink);text-decoration:none}
+.pager small{display:block;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.pager .next{text-align:right}
+.pager .soon{opacity:.6}
+.meta{font:13px/1.6 var(--sans);color:var(--muted);text-align:center;padding:10px 0 50px}
+
+@media (max-width:720px){
+  body{font-size:17px}
+  h1{font-size:34px}
+  .dek{font-size:18px}
+  h2{font-size:24px}
+  .card{padding:14px 12px 16px;border-radius:14px}
+  .crumbs{display:none}
+  svg.nl{min-width:640px}
+}
+</style>
+<meta name="mm-site" content="1">
+<style>
+/* ===================== Navigation: Contents menu and Previous/Next ===================== */
+.topbar-in{position:relative}
+.tocbtn{font:500 13px/1 var(--sans);padding:7px 11px;border-radius:8px;border:1px solid var(--line2);background:var(--paper);color:var(--ink);cursor:pointer}
+.tocbtn:hover,.tocbtn[aria-expanded="true"]{border-color:var(--accent);color:var(--accent)}
+.tocpanel{position:absolute;top:calc(100% + 6px);right:20px;width:440px;max-height:72vh;overflow:auto;background:var(--paper);border:1px solid var(--line);border-radius:14px;box-shadow:0 22px 48px -20px rgba(0,0,0,.4);padding:14px 14px 10px;display:none;z-index:20;font-family:var(--sans)}
+.tocpanel.open{display:block}
+.tocch{font:600 12px/1.3 var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin:2px 6px 4px}
+.toctier{font:600 11px/1.3 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:12px 6px 4px}
+.tocrow{display:flex;gap:10px;align-items:baseline;padding:7px 8px;border-radius:8px;color:var(--ink);text-decoration:none;font:14.5px/1.35 var(--sans)}
+a.tocrow:hover{background:var(--accent-bg)}
+.tocrow .tid{font:500 12.5px var(--mono);color:var(--accent);min-width:44px}
+.tocrow.cur{background:var(--accent-bg);font-weight:600}
+.tocrow.coming{color:var(--muted)}.tocrow.coming .tid{color:var(--muted)}
+.tocrow small{margin-left:auto;color:var(--muted);font-size:12px;white-space:nowrap}
+.pager .soon{opacity:1}
+.pager .soon .dimtxt{opacity:.6;display:block}
+.pager a:hover{border-color:var(--accent)}
+.pager .skip{display:inline-block;margin-top:8px;padding:0;border:none;background:none;color:var(--accent);font-size:14px;font-weight:500;text-decoration:none}
+.pager .skip:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<!-- ===================== Top bar: book, chapter, page id ===================== -->
+<div class="topbar"><div class="topbar-in">
+  <span class="brand">Math<b>Mastery</b></span>
+  <span class="crumbs">Chapter 1 · Numbers &amp; Arithmetic › Basics</span>
+  <span class="pid">1.B.1</span>
+</div></div>
+
+<!-- ===================== Hero ===================== -->
+<header class="prose hero">
+  <div class="kicker">Chapter 1 · Numbers &amp; Arithmetic</div>
+  <h1>Counting and the Number Line</h1>
+  <p class="dek">A number answers two questions at once: <em>how many?</em> and <em>where?</em> Once you see both, adding stops being a calculation and becomes a movement.</p>
+  <div class="tiers" aria-label="Tier">
+    <span class="tier on">Basics <small>you are here</small></span>
+    <span class="tier">Undergraduate</span>
+    <span class="tier">Masters</span>
+  </div>
+  <div class="goals">
+    <h3>On this page</h3>
+    <ul>
+      <li>See a number as both a <b>count</b> and a <b>position</b>.</li>
+      <li>See adding as <b>sliding the whole number line</b>, not just one number.</li>
+      <li>Read negative numbers as places left of 0, and as amounts <b>owed</b>.</li>
+      <li>Work backwards: given a before and an after, find the slide.</li>
+    </ul>
+  </div>
+</header>
+
+<main>
+<!-- ===================== §1 Counting ===================== -->
+<section class="prose">
+  <h2><span class="n">1</span>How many?</h2>
+  <p>The oldest piece of mathematics we have is a bone with notches cut into it, roughly 20,000 years old. One notch per thing. That is all counting is: matching each thing to one mark. Five things, five marks, and we call that amount <b>5</b>.</p>
+  <p>In this book a counted thing is a dot: <span class="pos">●</span>. Three dots is 3. No dots at all is also an answer to “how many?”, and its name is <b>0</b>. Zero took humanity a surprisingly long time to accept as a number, but it is the most important one on this page: it is where everything starts.</p>
+</section>
+
+<!-- ===================== §2 A count is also a place ===================== -->
+<section class="prose">
+  <h2><span class="n">2</span>A count is also a place</h2>
+  <p>Now lay the dots in a row, each one taking up exactly one step of space, starting from a mark labeled 0. The end of the row lands on a tick mark. <em class="key">That tick is the number.</em> “3” now means two things at once: three dots, and the place three steps to the right of 0.</p>
+  <p>This is the <b>number line</b>: every number gets an address, and its distance from 0 is how many.</p>
+  <p>What is to the left of 0? Something less than nothing. That sounds impossible until you think about owing. If you borrow 2 cookies from a friend, then until you pay them back you have less than nothing: you <b>owe</b> 2. We draw an owed thing as a hollow dot <span class="neg">○</span> and lay owed dots out to the left. Owing 2 is the place two steps left of 0, written <b>−2</b>.</p>
+  <p>The rule that makes this work: <em class="key">a dot you have and a dot you owe cancel.</em> Have 1, owe 1, and you are back at 0.</p>
+</section>
+
+<section class="wide">
+  <div class="card" id="warm">
+    <div class="card-h">
+      <span class="tag">Warm-up</span><h3>Build a number</h3>
+      <span class="sub">Add dots with the buttons, or tap anywhere on the line to jump there. Watch the dots and the position always agree.</span>
+    </div>
+    <div class="scroll"><svg class="nl clickable" id="warmSvg" viewBox="0 0 720 118" role="img" aria-label="Number line with dots"></svg></div>
+    <div class="row">
+      <button id="wPlus">+1 &nbsp;<span class="pos">●</span></button>
+      <button id="wMinus">−1 &nbsp;<span class="neg">○</span></button>
+      <button id="wZero">Back to 0</button>
+    </div>
+    <div class="readout" id="warmOut"></div>
+  </div>
+</section>
+
+
+<!-- ===================== §3 Adding is sliding ===================== -->
+<section class="prose">
+  <h2><span class="n">3</span>Adding is sliding</h2>
+  <p>Here is the shift in thinking that the rest of this book depends on. Read <b>2 + 3</b> not as “combine a pile of 2 with a pile of 3,” but as an instruction: <em class="key">slide by 3</em>.</p>
+  <p>And a slide doesn’t move just the point at 2. It moves <b>the whole line</b>. Every point slides 3 to the right at the same moment: 2 lands on 5, 0 lands on 3, −4 lands on −1. That’s why the explorer below has two lines. The <span class="pt">moving line</span> carries its original labels with it; the <b>fixed ruler</b> underneath never moves, so you can read where everything ended up.</p>
+</section>
+
+<section class="wide">
+  <div class="card" id="explorer">
+    <div class="card-h">
+      <span class="tag">Explore</span><h3>The slide explorer</h3>
+      <span class="sub">Pick a preset or type your own start and slide, then press Play. Tap any tick on the moving line to track a second point.</span>
+    </div>
+
+    <!-- Presets, ordered from familiar to new -->
+    <div class="row" id="presets"></div>
+    <div class="desc" id="presetDesc"></div>
+
+    <!-- Manual inputs: typing switches to Custom -->
+    <div class="inputs">
+      <label class="field start"><span>Start <i>a</i></span><input id="inA" type="text" inputmode="decimal" autocomplete="off"></label>
+      <label class="field slide"><span>Slide <i>s</i></span><input id="inS" type="text" inputmode="decimal" autocomplete="off"></label>
+      <div class="eq" id="eq" aria-live="polite"></div>
+      <div class="row" style="margin:0">
+        <button class="primary" id="play">Play</button>
+        <button id="reset">Reset</button>
+      </div>
+    </div>
+    <div class="err" id="exErr"></div>
+
+    <div class="panel-label"><span>Before</span><span>the line at rest</span></div>
+    <div class="scroll"><svg class="nl" id="exBefore" viewBox="0 0 720 118" role="img" aria-label="Before: the starting point"></svg></div>
+    <div class="panel-label"><span>After</span><span>moving line over a fixed ruler</span></div>
+    <div class="scroll"><svg class="nl clickable" id="exAfter" viewBox="0 0 720 200" role="img" aria-label="After: the line slides"></svg></div>
+
+    <div class="readout" id="exOut" aria-live="polite"></div>
+    <div class="legend">
+      <span><i class="sw pos"></i>a dot you started with (+1)</span>
+      <span><i class="sw posnew"></i>a dot the slide added</span>
+      <span><i class="sw neg"></i>an owed dot you started with (−1)</span>
+      <span><i class="sw negnew"></i>an owed dot the slide added</span>
+      <span><i class="sw x"></i>a dot the slide cancelled</span>
+      <span><svg width="26" height="12" viewBox="0 0 26 12" aria-hidden="true"><path d="M2,11 Q13,-3 24,11" fill="none" stroke="var(--neg)" stroke-width="2.2"/></svg>one hop = one step of the slide <i class="sym">s</i></span>
+      <span><i class="sw pt"></i>the tracked point (<i class="sym">a</i> → <i class="sym">b</i>)</span>
+      <span><i class="sw mv"></i>moving line</span>
+      <span><i class="sw rl"></i>fixed ruler</span>
+    </div>
+  </div>
+</section>
+
+<section class="prose">
+  <p>Play with every preset, then look for these five things. Each one comes back, under a grander name, much later in the book.</p>
+  <ol class="notice">
+    <li><b>Every point moves the same distance.</b> The spacing between ticks never changes. The line slides; it doesn’t stretch. (Stretching is the next page.)</li>
+    <li><b>0 moves too.</b> Adding drags the starting mark along with everything else. Hold on to this; it’s exactly what multiplication will <i>not</i> do.</li>
+    <li><b>A slide of 0 does nothing.</b> Every point stays put. Zero is the “do-nothing” slide.</li>
+    <li><b>Every slide can be undone.</b> Slide +5, then −5, and you’re back where you began. +5 and −5 are <b>opposites</b>.</li>
+    <li><b>Order doesn’t matter.</b> Slide 2 then 3, or 3 then 2: you land in the same place. Both are a slide of 5.</li>
+  </ol>
+</section>
+
+<!-- ===================== §4 Subtracting ===================== -->
+<section class="prose">
+  <h2><span class="n">4</span>Subtracting is sliding left</h2>
+  <p><b>5 − 2</b> is the same move as <b>5 + (−2)</b>: a slide of 2 to the left. So subtraction isn’t a second operation to learn. It’s adding a leftward slide. In the explorer, each hop left along the ruler crosses out one of the dots you have; once you run out, new owed dots start to pile up on the left of 0.</p>
+  <p>Subtraction also answers a second, very useful question: <em class="key">how far apart are two places?</em> If a point started at 2 and ended at 5, the slide was 5 − 2 = 3. That’s the skill the quiz at the bottom tests.</p>
+</section>
+
+<!-- ===================== §5 In symbols ===================== -->
+<section class="prose">
+  <h2><span class="n">5</span>Now, in symbols</h2>
+  <p>The formulas come last, because by now they only write down what you’ve already watched happen. Look back at the explorer: the purple starting point is labeled <i class="sym">a</i>, the hops along the ruler are labeled <i class="sym">s</i>, and under the ruler you’ll find <i class="sym">a</i> where the point started and <i class="sym">b</i> where it landed. Those three labels are the whole formula:</p>
+  <div class="math">\[ a + s = b \]<div class="cap">Start at \(a\) (the purple point), slide by \(s\) (the hops), land on \(b\) (the ruler). With the first preset: \(2 + 3 = 5\).</div></div>
+  <p>The picture said more than that, though: the <i>whole line</i> moves, not just \(a\). The second point you can track by tapping is any other point; call it \(x\). Mathematicians write the slide as a rule for every point at once:</p>
+  <div class="math">\[ x \;\longmapsto\; x + s \qquad \text{for every point } x \]<div class="cap">Read the arrow as “goes to”: every point goes to itself plus the slide.</div></div>
+  <p>And working backwards, which is exactly what the quiz asks you to do: if you can see \(a\) and \(b\), the slide is their difference.</p>
+  <div class="math">\[ s = b - a \]<div class="cap">“How far did it move?” is a subtraction.</div></div>
+</section>
+
+<!-- ===================== §6 Where this goes ===================== -->
+<section class="prose">
+  <h2><span class="n">6</span>Where this goes</h2>
+  <ul class="goes">
+    <li><b>Next (1.B.2):</b> multiplication is also a movement of the whole line, but it <i>stretches</i> the line around 0, and 0 stays put. Adding is the one move that carries 0 along with everything else.</li>
+    <li><b>Later in this book:</b> on a flat page, a slide can go in any direction, not just left or right. A slide like that is drawn as an arrow called a <b>vector</b>, and adding vectors means doing one slide and then another, exactly like here. And the five things you noticed in the explorer turn out to be the rules of a structure mathematicians call a <b>group</b>, which shows up all over higher mathematics.</li>
+    <li><b>In the world:</b> the number line is everywhere once you look. Elevator floors below the ground floor, temperatures below zero, heights below sea level, and years on a timeline all work like positions left and right of 0, and every change in them is a slide.</li>
+  </ul>
+</section>
+
+<!-- ===================== Vocabulary ===================== -->
+<section class="prose">
+  <h2><span class="n">7</span>Words to know</h2>
+  <div class="vocab">
+    <div class="term"><b>Natural numbers</b>The counting numbers 1, 2, 3, …</div>
+    <div class="term"><b>Whole numbers</b>The natural numbers plus 0.</div>
+    <div class="term"><b>Integers</b>The whole numbers and their negatives: …, −2, −1, 0, 1, 2, …</div>
+    <div class="term"><b>Number line</b>A line where every number has a place, and distance from 0 is size.</div>
+    <div class="term"><b>Origin</b>The point 0, where measuring starts.</div>
+    <div class="term"><b>Positive / negative</b>Right of 0 (have) / left of 0 (owe).</div>
+    <div class="term"><b>Opposite</b>The same distance from 0 on the other side: 5 and −5. They cancel.</div>
+    <div class="term"><b>Translation</b>The formal name for a slide: every point moves the same distance the same way.</div>
+  </div>
+</section>
+
+<!-- ===================== Quiz ===================== -->
+<section class="prose"><h2><span class="n">8</span>Check yourself</h2>
+  <p>Each question shows a line before and after a slide. Your job is to name the slide: how far, and which way. Use + for right and − for left.</p>
+</section>
+<section class="wide">
+  <div class="card" id="quiz">
+    <div class="card-h">
+      <span class="tag">Quiz</span><h3>What was the slide?</h3>
+      <span class="score" id="score">Score: 0 / 0</span>
+    </div>
+    <div class="panel-label"><span>Before</span><span>where the purple point starts</span></div>
+    <div class="scroll"><svg class="nl" id="qBefore" viewBox="0 0 720 118" role="img" aria-label="Quiz before"></svg></div>
+    <div class="panel-label"><span>After</span><span>where it lands on the fixed ruler</span></div>
+    <div class="scroll"><svg class="nl" id="qAfter" viewBox="0 0 720 200" role="img" aria-label="Quiz after"></svg></div>
+    <div class="inputs">
+      <label class="field slide"><span>The slide <i>s</i> was</span><input id="qIn" type="text" inputmode="decimal" autocomplete="off" placeholder="−3"></label>
+      <div class="row" style="margin:0">
+        <button class="primary" id="qCheck">Check</button>
+        <button id="qShow">Show answer</button>
+        <button id="qReplay">Replay move</button>
+        <button id="qNew">New question</button>
+      </div>
+    </div>
+    <div class="err" id="qErr"></div>
+    <div class="feedback" id="qFb" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ===================== Pager ===================== -->
+<nav class="wide">
+  <div class="pager">
+    <div class="soon"><small>← Previous</small>Chapter 1 overview <span style="color:var(--muted)">(coming)</span></div>
+    <div class="next soon"><small>Next →</small>1.B.2 Multiplication as stretching <span style="color:var(--muted)">(coming)</span></div>
+  </div>
+  <div class="meta">1.B.1 · Prerequisites: none · Leads to: 1.B.2, 1.B.4, Linear Algebra (vectors)</div>
+</nav>
+</main>
+
+<script>
+/* =====================================================================
+   1. CONSTANTS AND SMALL HELPERS
+   ===================================================================== */
+const NS = 'http://www.w3.org/2000/svg';                 // SVG namespace for createElementNS
+const VIEW = { L: 30, R: 690, min: -10, max: 10 };       // visible range of every number line
+const U = (VIEW.R - VIEW.L) / (VIEW.max - VIEW.min);     // pixels per one step on the line
+const X = v => VIEW.L + (v - VIEW.min) * U;              // number -> x pixel in the viewBox
+const $ = id => document.getElementById(id);             // shorthand for getElementById
+
+// Create an SVG element with attributes and (optionally) append it to a parent
+function mk(tag, attrs, parent){
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+// Create an SVG text node
+function txt(parent, x, y, s, cls){
+  const t = mk('text', { x, y, class: cls || '' }, parent);
+  t.textContent = s;
+  return t;
+}
+// Format a whole number with a true minus sign, never "-0"
+const fmt = n => { n = Math.round(n); return n === 0 ? '0' : (n < 0 ? '−' + (-n) : String(n)); };
+// Format to one decimal place (used only while a point is mid-slide)
+const fmt1 = v => { const r = Math.round(v * 10) / 10; return r === 0 ? '0' : (r < 0 ? '−' + (-r) : String(r)); };
+// Format a slide with an explicit sign: +3, −2, 0
+const signed = n => n > 0 ? '+' + n : fmt(n);
+// Words for a slide's direction: "3 to the right"
+const dirWords = s => s > 0 ? `${s} to the right` : `${-s} to the left`;
+// The equation for start a and slide s, with negative slides in parentheses
+const eqn = (a, s) => `${fmt(a)} + ${s < 0 ? '(' + fmt(s) + ')' : fmt(s)} = ${fmt(a + s)}`;
+// Ease-in-out so slides start and stop gently
+const ease = t => t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+// Longer slides take a bit longer, so the dots pop in at a steady pace
+const duration = s => Math.min(2800, 700 + 230 * Math.abs(s));
+
+// Parse typed input: integers, decimals, leading + or minus, simple fractions like -3/4
+function parseNum(s){
+  s = String(s).trim().replace(/[−–]/g, '-').replace(/^\+/, '');   // accept typographic minus and a leading +
+  if (/^-?\d+(\.\d+)?$|^-?\.\d+$/.test(s)) return parseFloat(s);   // plain number
+  const m = s.match(/^(-?\d+)\s*\/\s*(\d+)$/);                       // fraction a/b
+  if (m && +m[2] !== 0) return +m[1] / +m[2];
+  return NaN;                                                         // anything else is invalid
+}
+
+// Inject styles for SVG parts (classes so light/dark CSS variables apply)
+const svgCss = document.createElement('style');
+svgCss.textContent = `
+  .ax{stroke:var(--ink);stroke-width:1.6}
+  .tick{stroke:var(--ink);stroke-width:1.3}
+  .ruler{stroke:var(--ink);stroke-width:1.3;stroke-dasharray:6 4;opacity:.7}
+  .lbl{fill:var(--muted);font:12px var(--mono);text-anchor:middle}
+  .lbl0{fill:var(--ink);font:600 12.5px var(--mono);text-anchor:middle}
+  .mv{stroke:var(--pt-soft);stroke-width:3.5;stroke-linecap:round}
+  .mvtick{stroke:var(--pt-soft);stroke-width:2}
+  .mvlbl{fill:var(--pt-dark);font:500 11.5px var(--mono);text-anchor:middle}
+  .mvlbl0{fill:var(--pt-dark);font:700 12px var(--mono);text-anchor:middle}
+  .tokpos{fill:var(--pos)}
+  .tokneg{fill:var(--bg);stroke:var(--neg);stroke-width:2.4}
+  .tokposnew{fill:var(--pos-new);stroke:var(--pos);stroke-width:1.5}
+  .toknegnew{fill:var(--bg);stroke:var(--neg-new);stroke-width:2.4}
+  .blbl{fill:var(--pt-dark);font:italic 600 14px var(--serif);text-anchor:middle}
+  .bring{fill:none;stroke:var(--pt);stroke-width:2}
+  .xpos{stroke:var(--pos);stroke-width:2.6;stroke-linecap:round}
+  .xneg{stroke:var(--neg);stroke-width:2.6;stroke-linecap:round}
+  .hoppos{stroke:var(--pos);stroke-width:2.4;fill:none;stroke-linecap:round}
+  .hopneg{stroke:var(--neg);stroke-width:2.4;fill:none;stroke-linecap:round}
+  .slbl{font:italic 600 14px var(--serif);text-anchor:middle;paint-order:stroke;stroke:var(--bg);stroke-width:5px;stroke-linejoin:round}
+  .ablbl{fill:var(--pt-dark);font:italic 600 15px var(--serif);text-anchor:middle}
+  .mark{fill:var(--pt);stroke:var(--paper);stroke-width:2.5}
+  .mark2{fill:var(--paper);stroke:var(--pt);stroke-width:2.5}
+  .drop{stroke:var(--pt);stroke-width:1.5;stroke-dasharray:2 3}
+  .drop2{stroke:var(--pt-soft);stroke-width:1.5;stroke-dasharray:2 3}
+  .marktxt{fill:var(--pt-dark);font:italic 600 14px var(--serif);text-anchor:middle}
+  .arrpos{stroke:var(--pos);stroke-width:3;fill:none;stroke-linecap:round}
+  .arrneg{stroke:var(--neg);stroke-width:3;fill:none;stroke-linecap:round}
+  .headpos{fill:var(--pos)} .headneg{fill:var(--neg)}
+  .arrtxt{font:600 12.5px var(--mono);text-anchor:middle}
+  .side{fill:var(--muted);font:500 10px var(--sans);letter-spacing:.08em;text-transform:uppercase}
+`;
+document.head.appendChild(svgCss);
+
+/* =====================================================================
+   2. DRAWING HELPERS
+   ===================================================================== */
+
+// One dot: positive = filled green, negative = hollow orange ring.
+// isNew = true draws the lighter colour used for dots the slide brought in.
+function token(g, cx, cy, sign, opacity, isNew){
+  if (opacity <= 0.001) return;                                   // invisible, skip
+  const cls = sign > 0 ? (isNew ? 'tokposnew' : 'tokpos') : (isNew ? 'toknegnew' : 'tokneg');
+  const c = mk('circle', { cx, cy, r: sign > 0 ? 8 : 7, class: cls }, g);
+  c.setAttribute('opacity', Math.min(1, opacity).toFixed(3));
+}
+
+// Draw the dots for a net value v, laid in the cells between 0 and v, sitting over the axis below them.
+// `step` = {d, f}: an in-progress move from v to v+d, f in [0,1) of the way there.
+// `a` = the starting value: dots inside the starting range are "original", any others were added by the slide.
+function drawTokens(g, y, v, step, a){
+  if (a === undefined) a = v;                                       // still panels: every dot is original
+  const isOrig = c => Math.sign(c) === Math.sign(a) && Math.abs(c) < Math.abs(a);
+  const n = Math.abs(v), sg = Math.sign(v);
+  const changing = step && step.f > 0 ? v + step.d / 2 : null;     // centre of the cell that is changing
+  const shrinking = changing !== null && Math.abs(v + step.d) < Math.abs(v);
+  for (let i = 0; i < n; i++){
+    const c = sg * (i + 0.5);                                       // cell centre: 0.5, 1.5, ... (or negatives)
+    if (shrinking && Math.abs(c - changing) < 1e-9){
+      // This dot is being cancelled: an opposite (new) dot fades in on top, then both fade out together
+      const f = step.f;
+      token(g, X(c), y, sg, f < .5 ? 1 : 2 * (1 - f), !isOrig(c));
+      token(g, X(c), y, -sg, f < .5 ? f * 2 : 2 * (1 - f), true);
+    } else {
+      token(g, X(c), y, sg, 1, !isOrig(c));
+    }
+  }
+  if (changing !== null && !shrinking) token(g, X(changing), y, step.d, step.f, true);   // a new dot fading in
+}
+
+// Dots during a slide from a by s, after `t` steps (t can be fractional mid-animation).
+// Dots the slide cancels stay visible as faded ghosts with an ✕ in the colour of what cancelled them.
+function drawSlideTokens(g, y, a, s, t){
+  const d = Math.sign(s), k = Math.min(Math.abs(s), Math.floor(t + 1e-9)), f = t - k;
+  const cells = new Map();                                // cell centre -> {sign, isNew, cancel 0..1, op}
+  for (let i = 0; i < Math.abs(a); i++){                  // the dots you start with
+    const c = Math.sign(a) * (i + 0.5);
+    cells.set(c, { sign: Math.sign(a), isNew: false, cancel: 0, op: 1 });
+  }
+  // Apply each completed step fully, then the step in progress with weight f
+  for (let j = 0; j <= k; j++){
+    const w = j < k ? 1 : f;                              // how far through this step we are
+    if (w <= 0 || j >= Math.abs(s)) break;
+    const p = a + d * j, c = p + d / 2;                   // the cell this step touches
+    if (Math.abs(p + d) < Math.abs(p)) cells.get(c).cancel = w;           // moving toward 0: cancel a dot
+    else cells.set(c, { sign: d, isNew: true, cancel: 0, op: w });         // moving away from 0: add a new dot
+  }
+  for (const [c, dot] of cells){
+    const cx = X(c);
+    token(g, cx, y, dot.sign, dot.op * (1 - 0.6 * dot.cancel), dot.isNew); // cancelled dots fade to a ghost
+    if (dot.cancel > 0){                                  // the ✕, in the colour of the slide that cancelled it
+      const r = 7 * dot.cancel, cls = d > 0 ? 'xpos' : 'xneg';
+      mk('line', { x1: cx - r, y1: y - r, x2: cx + r, y2: y + r, class: cls }, g);
+      mk('line', { x1: cx - r, y1: y + r, x2: cx + r, y2: y - r, class: cls }, g);
+    }
+  }
+}
+
+// The slide drawn as hops along the fixed ruler: one curved hop per step, tick to tick, each with an arrowhead.
+function drawHops(g, rulerY, a, s, t){
+  const d = Math.sign(s); if (!d) return;                 // a slide of 0 has no hops
+  const k = Math.min(Math.abs(s), Math.floor(t + 1e-9)), f = t - k;
+  const y0 = rulerY - 3, yc = rulerY - 34, cls = d > 0 ? 'pos' : 'neg';
+  const hop = (p, op) => {
+    const x0 = X(p), x1 = X(p + d), xc = (x0 + x1) / 2;   // from tick p to tick p+d, arching upward
+    mk('path', { d: `M${x0},${y0} Q${xc},${yc} ${x1},${y0}`, class: 'hop' + cls, opacity: op }, g);
+    // Arrowhead along the curve's final direction (control point -> end point)
+    const vx = x1 - xc, vy = y0 - yc, L = Math.hypot(vx, vy), ux = vx / L, uy = vy / L;
+    const bx = x1 - ux * 9, by = y0 - uy * 9;             // base of the head, 9px back along the curve
+    mk('polygon', { points: `${x1},${y0} ${bx - uy * 4.5},${by + ux * 4.5} ${bx + uy * 4.5},${by - ux * 4.5}`, class: 'head' + cls, opacity: op }, g);
+  };
+  for (let j = 0; j < k; j++) hop(a + d * j, 1);          // completed hops
+  if (k < Math.abs(s) && f > 0) hop(a + d * k, f);        // the hop in progress fades in
+  const done = Math.min(t, Math.abs(s));
+  if (done >= 0.6){                                       // label the slide over the middle of the hops
+    const lab = txt(g, (X(a) + X(a + d * done)) / 2, yc + 6, 's = ' + signed(d * Math.round(done)), 'slbl');
+    lab.setAttribute('style', `fill:var(--${cls})`);
+  }
+}
+
+// A fixed axis with ticks and labels. dashed = true draws it as the fixed "ruler".
+function drawAxis(g, y, dashed){
+  mk('line', { x1: X(VIEW.min) - 12, y1: y, x2: X(VIEW.max) + 12, y2: y, class: dashed ? 'ruler' : 'ax' }, g);
+  for (let v = VIEW.min; v <= VIEW.max; v++){
+    mk('line', { x1: X(v), y1: y - (v === 0 ? 7 : 4), x2: X(v), y2: y + (v === 0 ? 7 : 4), class: 'tick' }, g);
+    txt(g, X(v), y + 22, fmt(v), v === 0 ? 'lbl0' : 'lbl');
+  }
+}
+
+// The moving line: same ticks and labels, all shifted by `shift` steps, clipped to the panel
+function drawMovingLine(g, y, shift, clipId){
+  const cg = mk('g', { 'clip-path': `url(#${clipId})` }, g);
+  mk('line', { x1: -50, y1: y, x2: 770, y2: y, class: 'mv' }, cg);       // drawn wider than the panel so it never ends visibly
+  for (let v = VIEW.min - 25; v <= VIEW.max + 25; v++){                   // extra ticks off both edges
+    const x = X(v + shift);
+    if (x < -20 || x > 740) continue;
+    mk('line', { x1: x, y1: y - (v === 0 ? 8 : 5), x2: x, y2: y + (v === 0 ? 8 : 5), class: 'mvtick' }, cg);
+    txt(cg, x, y - 13, fmt(v), v === 0 ? 'mvlbl0' : 'mvlbl');
+  }
+}
+
+// A horizontal arrow from value x1 to x2, coloured by direction, with a signed label
+function drawArrow(g, y, x1, x2, label){
+  if (Math.abs(x2 - x1) < 0.02) return;                          // nothing to draw for a zero slide
+  const dir = Math.sign(x2 - x1), cls = dir > 0 ? 'pos' : 'neg';
+  const px1 = X(x1), px2 = X(x2) - dir * 2;
+  mk('line', { x1: px1, y1: y, x2: px2 - dir * 8, y2: y, class: 'arr' + cls }, g);
+  mk('line', { x1: px1, y1: y - 6, x2: px1, y2: y + 6, class: 'arr' + cls }, g);   // a small bar marks the start
+  mk('polygon', { points: `${px2},${y} ${px2 - dir * 11},${y - 6} ${px2 - dir * 11},${y + 6}`, class: 'head' + cls }, g);
+  if (label){
+    const t = txt(g, (px1 + px2) / 2, y - 8, label, 'arrtxt');
+    t.setAttribute('style', `fill:var(--${cls})`);
+  }
+}
+
+// Clear an svg and set up a clip path for its moving line
+function freshSvg(svg, clipId){
+  svg.innerHTML = '';
+  const defs = mk('defs', {}, svg);
+  const cp = mk('clipPath', { id: clipId }, defs);
+  mk('rect', { x: 4, y: 0, width: 712, height: 400 }, cp);
+  return mk('g', {}, svg);
+}
+
+/* =====================================================================
+   3. PANEL RENDERERS (shared by warm-up, explorer and quiz)
+   ===================================================================== */
+
+// "Before" style panel: dots above a fixed axis, purple marker at `value`
+function renderStill(svg, value, markLabel){
+  const g = freshSvg(svg, svg.id + 'Clip');
+  drawTokens(g, 30, value);
+  drawAxis(g, 78, false);
+  mk('circle', { cx: X(value), cy: 78, r: 8, class: 'mark' }, g);
+  if (markLabel) txt(g, X(value), 60, markLabel, 'marktxt');
+}
+
+// "After" panel, top to bottom: moving line, dots, hops sitting on the fixed ruler, then a and b under the ruler.
+// opts: a (start), s (slide), e (animation progress 0..1), arrow (show the hops?), track2 (label of 2nd tracked point or null)
+function renderAfter(svg, opts){
+  const { a, s, e, arrow, track2 } = opts;
+  const g = freshSvg(svg, svg.id + 'Clip');
+  const shift = s * ease(e);                          // how far the line has slid so far
+  const t = Math.abs(shift);                          // steps travelled so far (fractional mid-slide)
+  const Y = { line: 40, dots: 96, ruler: 150 };       // vertical position of each layer
+  drawAxis(g, Y.ruler, true);                         // fixed ruler (never moves)
+  drawSlideTokens(g, Y.dots, a, s, t);                // dots aligned to the ruler's cells
+  if (arrow) drawHops(g, Y.ruler, a, s, t);           // the slide s, as hops along the ruler
+  // a and b written under their numbers on the ruler
+  txt(g, X(a), Y.ruler + 42, 'a', 'ablbl');
+  if (e >= 1 && s !== 0){
+    mk('circle', { cx: X(a + s), cy: Y.ruler, r: 6, class: 'bring' }, g);
+    txt(g, X(a + s), Y.ruler + 42, 'b', 'ablbl');
+  }
+  if (e >= 1 && s === 0) txt(g, X(a) + 20, Y.ruler + 42, '= b', 'ablbl');
+  drawMovingLine(g, Y.line, shift, svg.id + 'Clip');  // moving line at the top, carrying its old labels
+  // Optional second tracked point (light purple ring), with a drop line to the ruler
+  if (track2 !== null && track2 !== undefined){
+    const x2 = X(track2 + shift);
+    mk('line', { x1: x2, y1: Y.line + 8, x2: x2, y2: Y.ruler, class: 'drop2' }, g);
+    mk('circle', { cx: x2, cy: Y.line, r: 7, class: 'mark2' }, g);
+  }
+  // Main tracked point (purple), with a drop line so its true position can be read on the ruler
+  const xp = X(a + shift);
+  mk('line', { x1: xp, y1: Y.line + 8, x2: xp, y2: Y.ruler, class: 'drop' }, g);
+  mk('circle', { cx: xp, cy: Y.line, r: 8, class: 'mark' }, g);
+  return shift;
+}
+
+/* =====================================================================
+   4. WARM-UP: BUILD A NUMBER
+   ===================================================================== */
+let w = 0;                                            // current value in the warm-up
+function renderWarm(){
+  renderStill($('warmSvg'), w, w === 0 ? 'start here' : 'you are here');
+  let msg;
+  if (w === 0) msg = `<b>0</b>: no dots at all. This is the origin, the place every count starts from.`;
+  else if (w > 0) msg = `<span class="pos">${w} dot${w > 1 ? 's' : ''}</span> you have → the point <b>${fmt(w)}</b>, ${w} step${w > 1 ? 's' : ''} to the <b>right</b> of 0.`;
+  else msg = `<span class="neg">${-w} dot${w < -1 ? 's' : ''}</span> you owe → the point <b>${fmt(w)}</b>, ${-w} step${w < -1 ? 's' : ''} to the <b>left</b> of 0.`;
+  $('warmOut').innerHTML = msg;
+  $('wPlus').disabled = w >= VIEW.max;
+  $('wMinus').disabled = w <= VIEW.min;
+}
+$('wPlus').onclick = () => { w = Math.min(VIEW.max, w + 1); renderWarm(); };
+$('wMinus').onclick = () => { w = Math.max(VIEW.min, w - 1); renderWarm(); };
+$('wZero').onclick = () => { w = 0; renderWarm(); };
+// Tap the line: jump to the nearest whole number
+$('warmSvg').addEventListener('click', ev => {
+  const v = svgValue($('warmSvg'), ev);
+  w = Math.max(VIEW.min, Math.min(VIEW.max, Math.round(v)));
+  renderWarm();
+});
+
+// Convert a click on an svg to a number on the line (using the svg's own coordinate system)
+function svgValue(svg, ev){
+  const pt = svg.createSVGPoint();
+  pt.x = ev.clientX; pt.y = ev.clientY;
+  const p = pt.matrixTransform(svg.getScreenCTM().inverse());
+  return (p.x - VIEW.L) / U + VIEW.min;
+}
+
+/* =====================================================================
+   5. EXPLORER: PRESETS, INPUTS, ANIMATION
+   ===================================================================== */
+const PRESETS = [
+  { name: '+3',         a: 2,  s: 3,   d: 'Start at 2 and slide 3 to the right. One new dot appears for each step.' },
+  { name: '−2',         a: 4,  s: -2,  d: 'Slide 2 to the left. Each hop left cancels one of your dots: watch them get crossed out.' },
+  { name: '+0',         a: 3,  s: 0,   d: 'A slide of 0. Press Play: nothing moves at all. Zero is the do-nothing slide.' },
+  { name: 'Cross zero', a: 2,  s: -5,  d: 'Slide past 0. Once the dots you have run out, owed dots start piling up on the left.' },
+  { name: 'Climb out',  a: -4, s: 6,   d: 'Start owing 4, then slide 6 right: the debt is paid off first, then you build up.' },
+  { name: 'Undo',       a: 5,  s: -5,  d: 'Slide left exactly as far as you are from 0: back to the origin. −5 undoes +5.' },
+  { name: 'Big jump',   a: -7, s: 15,  d: 'A long slide: 15 steps right in one move. Watch the whole line travel, not just one point.' },
+];
+const ex = { a: 2, s: 3, e: 0, playing: false, raf: 0, track2: null, preset: 0 };
+
+// Build the preset buttons
+PRESETS.forEach((p, i) => {
+  const b = document.createElement('button');
+  b.className = 'preset';
+  b.textContent = p.name;
+  b.onclick = () => choosePreset(i);
+  $('presets').appendChild(b);
+});
+function markPreset(i){
+  [...$('presets').children].forEach((b, j) => b.classList.toggle('on', j === i));
+  $('presetDesc').textContent = i === null ? 'Custom: your own start and slide.' : PRESETS[i].d;
+}
+function choosePreset(i){
+  const p = PRESETS[i];
+  ex.preset = i; ex.a = p.a; ex.s = p.s; ex.track2 = null;
+  $('inA').value = fmt(p.a); $('inS').value = signed(p.s);
+  $('exErr').textContent = '';
+  markPreset(i);
+  stopEx(); ex.e = 0; drawEx();
+  playEx();                                            // presets play straight away
+}
+
+// Read and validate the two inputs. Returns true if usable.
+function readExInputs(){
+  const a = parseNum($('inA').value), s = parseNum($('inS').value);
+  const err = $('exErr');
+  if (isNaN(a) || isNaN(s)){ err.textContent = 'Fill in both boxes with a number.'; return false; }
+  if (!Number.isInteger(a) || !Number.isInteger(s)){ err.textContent = 'Whole numbers only on this page. Fractions arrive in 1.B.3.'; return false; }
+  if (Math.abs(a) > 10 || Math.abs(a + s) > 10){ err.textContent = 'Keep the start and the landing spot between −10 and 10 so they stay on screen.'; return false; }
+  err.textContent = '';
+  ex.a = a; ex.s = s;
+  return true;
+}
+// Typing switches to Custom and resets the animation
+['inA', 'inS'].forEach(id => {
+  $(id).addEventListener('input', () => {
+    $('exErr').textContent = '';
+    ex.preset = null; markPreset(null);
+    stopEx(); ex.e = 0;
+    if (readExInputs()) { ex.track2 = null; drawEx(); }
+  });
+  $(id).addEventListener('focus', e => e.target.select());               // select all, so retyping is fast
+  $(id).addEventListener('keydown', e => { if (e.key === 'Enter') $('play').click(); });
+});
+
+// Redraw both explorer panels and the readout
+function drawEx(){
+  renderStill($('exBefore'), ex.a, 'a = ' + fmt(ex.a));
+  const shift = renderAfter($('exAfter'), { a: ex.a, s: ex.s, e: ex.e, arrow: true, track2: ex.track2 });
+  $('eq').innerHTML = `<i>a</i> + <i>s</i> = <i>b</i> &nbsp;→&nbsp; ${eqn(ex.a, ex.s)}`;
+  // Plain-language readout
+  const out = $('exOut'), s = ex.s, a = ex.a;
+  let html;
+  if (ex.e === 0){
+    html = s === 0
+      ? `A slide of <b>0</b>. Press Play and watch: every point should stay exactly where it is.`
+      : `Ready to slide every point <b>${dirWords(s)}</b>. Press Play and watch the whole line, not just the purple point.`;
+  } else if (ex.e < 1){
+    html = `Sliding… the purple point (<i class="sym">a</i>, labeled <b>${fmt(a)}</b> on the moving line) is now over <b>${fmt1(a + shift)}</b> on the fixed ruler.`;
+  } else if (s === 0){
+    html = `Nothing moved. The point labeled <b>${fmt(a)}</b> is still over <b>${fmt(a)}</b>. In symbols: <span class="mono">${eqn(a, s)}</span>.`;
+  } else {
+    html = `Every point slid <b>${dirWords(s)}</b>. The purple point started at <i class="sym">a</i> = <b>${fmt(a)}</b>, slid <i class="sym">s</i> = <b>${signed(s)}</b>, and landed on <i class="sym">b</i> = <b>${fmt(a + s)}</b> on the fixed ruler: <span class="mono">${eqn(a, s)}</span>.`;
+    const cancelled = Math.sign(s) === -Math.sign(a) ? Math.min(Math.abs(s), Math.abs(a)) : 0;
+    const added = Math.abs(s) - cancelled;
+    const parts = [];
+    if (cancelled) parts.push(`${cancelled} dot${cancelled > 1 ? 's' : ''} you started with ${cancelled > 1 ? 'were' : 'was'} cancelled (crossed out)`);
+    if (added) parts.push(`${added} new dot${added > 1 ? 's were' : ' was'} added`);
+    html += `<br>${Math.abs(s)} hop${Math.abs(s) > 1 ? 's' : ''} along the ruler: ${parts.join(', and ')}.`;
+    if (ex.track2 !== null){
+      html += `<br>Your second point, labeled <b>${fmt(ex.track2)}</b>, moved the same distance: it’s now over <b>${fmt(ex.track2 + s)}</b>.`;
+    } else {
+      const other = a + s === 0 ? 1 : 0;           // show that 0 moved too (or 1, if 0 is where we landed)
+      html += `<br>So did everything else: the moving line’s <b>${fmt(other)}</b> is now over <b>${fmt(other + s)}</b>. Tap any tick to track another point.`;
+    }
+  }
+  out.innerHTML = html;
+}
+
+// Animation loop: blend from no slide (e=0) to the full slide (e=1)
+function playEx(){
+  if (ex.playing){ stopEx(); return; }                 // the button doubles as Pause
+  if (!readExInputs()) return;
+  if (ex.e >= 1) ex.e = 0;                             // replay from the start
+  ex.playing = true; $('play').textContent = 'Pause';
+  const dur = duration(ex.s);
+  let last = performance.now();
+  const stepFrame = now => {
+    ex.e = Math.min(1, ex.e + (now - last) / dur);
+    last = now;
+    drawEx();
+    if (ex.e < 1 && ex.playing) ex.raf = requestAnimationFrame(stepFrame);
+    else stopEx();
+  };
+  ex.raf = requestAnimationFrame(stepFrame);
+}
+function stopEx(){
+  ex.playing = false; cancelAnimationFrame(ex.raf);
+  $('play').textContent = ex.e >= 1 ? 'Replay' : 'Play';
+}
+$('play').onclick = playEx;
+$('reset').onclick = () => { stopEx(); ex.e = 0; $('play').textContent = 'Play'; drawEx(); };
+// Tap the After panel: track the moving-line label nearest the tap
+$('exAfter').addEventListener('click', ev => {
+  const shift = ex.s * ease(ex.e);
+  const label = Math.round(svgValue($('exAfter'), ev) - shift);          // undo the slide to get the original label
+  ex.track2 = label === ex.a ? null : label;
+  drawEx();
+});
+
+/* =====================================================================
+   6. QUIZ: WHAT WAS THE SLIDE?
+   ===================================================================== */
+const qz = { a: 0, s: 0, e: 0, raf: 0, counted: false, revealed: false, right: 0, total: 0 };
+const randInt = (lo, hi) => lo + Math.floor(Math.random() * (hi - lo + 1));
+
+function newQuestion(){
+  let a, s, tries = 0;
+  do {                                                   // readable questions: small numbers, something always moves
+    a = randInt(-6, 6); s = randInt(-8, 8); tries++;
+  } while ((s === 0 || Math.abs(a + s) > 9 || (a === qz.a && s === qz.s)) && tries < 200);
+  Object.assign(qz, { a, s, e: 0, counted: false, revealed: false });
+  $('qIn').value = ''; $('qErr').textContent = '';
+  const fb = $('qFb'); fb.className = 'feedback'; fb.innerHTML = '';
+  playQuiz();
+}
+function drawQuiz(){
+  renderStill($('qBefore'), qz.a, 'a = ' + fmt(qz.a));
+  renderAfter($('qAfter'), { a: qz.a, s: qz.s, e: qz.e, arrow: qz.revealed, track2: null });
+}
+function playQuiz(){
+  cancelAnimationFrame(qz.raf);
+  qz.e = 0;
+  const dur = duration(qz.s);
+  let last = performance.now();
+  const f = now => {
+    qz.e = Math.min(1, qz.e + (now - last) / dur); last = now;
+    drawQuiz();
+    if (qz.e < 1) qz.raf = requestAnimationFrame(f);
+  };
+  qz.raf = requestAnimationFrame(f);
+}
+function count(correct){                                 // each question counts once, on first Check or Show answer
+  if (qz.counted) return;
+  qz.counted = true; qz.total++; if (correct) qz.right++;
+  $('score').textContent = `Score: ${qz.right} / ${qz.total}`;
+}
+function checkQuiz(){
+  const raw = $('qIn').value, v = parseNum(raw), fb = $('qFb');
+  if (raw.trim() === '' || isNaN(v)){ $('qErr').textContent = 'Type the slide as a number, like +3 or −2.'; fb.className = 'feedback'; return; }
+  if (!Number.isInteger(v)){ $('qErr').textContent = 'Every slide in this quiz is a whole number of steps.'; fb.className = 'feedback'; return; }
+  $('qErr').textContent = '';
+  const { a, s } = qz, b = a + s;
+  const right = s > 0 ? 'right' : 'left';
+  let msg, ok = false;
+  if (v === s){
+    ok = true;
+    msg = `<b>Right.</b> The point moved ${dirWords(s)}, a slide of <b>${signed(s)}</b>: <span class="mono">${eqn(a, s)}</span>.`;
+  } else if (v === -s){
+    msg = `<b>Right distance, wrong direction.</b> It moved to the <b>${right}</b>, so the slide is ${s > 0 ? 'positive' : 'negative'}.`;
+  } else if (v === b){
+    msg = `<b>That’s <i class="sym">b</i>, where it landed, not how far it moved.</b> The slide <i class="sym">s</i> is the distance from <i class="sym">a</i> = ${fmt(a)} to <i class="sym">b</i> = ${fmt(b)}.`;
+  } else if (v === a){
+    msg = `<b>That’s <i class="sym">a</i>, where it started.</b> Count the steps from <i class="sym">a</i> to <i class="sym">b</i>, where it landed.`;
+  } else if (v === 0){
+    msg = `<b>Something did move.</b> Compare the purple point in the Before panel with where its dotted line meets the ruler.`;
+  } else if (Math.sign(v) === Math.sign(s) && Math.abs(v - s) === 1){
+    msg = `<b>Right direction, off by one.</b> Count the jumps between ticks, not the tick marks themselves.`;
+  } else if (Math.sign(v) === Math.sign(s)){
+    msg = `<b>Right direction, wrong distance.</b> Count the steps from ${fmt(a)} to ${fmt(b)} along the ruler.`;
+  } else {
+    msg = `<b>Check the direction first.</b> The point moved to the <b>${right}</b>, so the slide is ${s > 0 ? 'positive (+)' : 'negative (−)'}. Then count the steps.`;
+  }
+  count(ok);
+  if (ok){ qz.revealed = true; drawQuiz(); }
+  fb.className = 'feedback ' + (ok ? 'ok' : 'bad');
+  fb.innerHTML = msg;
+}
+function showQuiz(){
+  count(false);
+  qz.revealed = true; qz.e = 1; cancelAnimationFrame(qz.raf); drawQuiz();
+  const { a, s } = qz, b = a + s;
+  $('qErr').textContent = '';
+  const fb = $('qFb'); fb.className = 'feedback info';
+  fb.innerHTML = `The slide was <b>${signed(s)}</b>: from ${fmt(a)} to ${fmt(b)} is ${dirWords(s)}. ` +
+    `Working backwards it’s a subtraction: <span class="mono">s = b − a = ${fmt(b)} − ${a < 0 ? '(' + fmt(a) + ')' : fmt(a)} = ${signed(s)}</span>.`;
+}
+$('qCheck').onclick = checkQuiz;
+$('qShow').onclick = showQuiz;
+$('qReplay').onclick = playQuiz;
+$('qNew').onclick = newQuestion;
+$('qIn').addEventListener('input', () => { $('qErr').textContent = ''; });
+$('qIn').addEventListener('focus', e => e.target.select());
+$('qIn').addEventListener('keydown', e => { if (e.key === 'Enter') checkQuiz(); });
+
+/* =====================================================================
+   7. START
+   ===================================================================== */
+renderWarm();
+ex.preset = 0; ex.a = PRESETS[0].a; ex.s = PRESETS[0].s;
+$('inA').value = fmt(ex.a); $('inS').value = signed(ex.s);
+markPreset(0); drawEx();
+newQuestion();
+// On narrow screens the number lines scroll sideways: start each one centred on 0
+function centreScrollers(){
+  document.querySelectorAll('.scroll').forEach(d => { d.scrollLeft = (d.scrollWidth - d.clientWidth) / 2; });
+}
+centreScrollers();
+window.addEventListener('resize', centreScrollers);
+</script>
+<script>
+/* MathMastery table of contents: the single source of truth for page order, titles and links.
+   - built: true  -> the page exists in the site build (GitHub)
+   - url          -> the page's published Claude artifact (used when not in site mode)
+   - ext: true    -> an existing standalone explorer linked as-is: always opens its url, in both builds
+   Add a page here, rebuild every page, and the Contents menu and Previous/Next update everywhere. */
+window.MM_TOC = [
+  { ch: 1, title: 'Numbers & Arithmetic', pages: [
+    { id: '1.B.1', title: 'Counting and the Number Line',            built: true, url: 'https://claude.ai/artifact/Ms2KnDNrzSW8oPYWgvfwQK' },
+    { id: '1.B.2', title: 'Multiplication as Stretching' },
+    { id: '1.B.3', title: 'Fractions, Decimals, and the Gaps Between Them' },
+    { id: '1.B.4', title: 'Equivalent Ratios',                       built: true, url: 'https://claude.ai/artifact/8RtDdq54Mbx1eML3iH4sDF' },
+    { id: '1.B.5', title: 'The Constant of Proportionality',         built: true, url: 'https://claude.ai/artifact/6CRFQvbG3Dkin62BeT9PKL' },
+    { id: '1.B.6', title: 'Graphing Proportional Relationships',     built: true, url: 'https://claude.ai/artifact/Dk2wz7bzT1rKY3QduyGiKM' },
+    { id: '1.B.7', title: 'Converting Customary and Metric Units',   built: true, url: 'https://claude.ai/artifact/FXQApxvApHWy3Y4ao9oF9o' },
+    { id: '1.B.8', title: 'Proportional Reasoning: Solving Problems', built: true, url: 'https://claude.ai/artifact/5BczAcmrhUzUdGzmV9sUiN' },
+    { id: '1.B.9', title: 'Why We Invented Each New Kind of Number' },
+  ]},
+  { ch: 3, title: 'Algebra', pages: [
+    { id: '3.B.1', title: 'Variables and Expressions' },
+    { id: '3.B.2', title: 'Solving Equations' },
+    { id: '3.B.3', title: 'Functions' },
+    { id: '3.B.4', title: 'Exponents and Exponential Growth' },
+    { id: '3.B.5', title: 'Logarithms (Log Explorer)', ext: true, url: 'https://claude.ai/artifact/GkbAXj1R4V1LharhQ9WgZP' },
+  ]},
+  { ch: 5, title: 'Trigonometry', pages: [
+    { id: '5.B.1', title: 'Angles and Radians' },
+    { id: '5.B.2', title: 'Sine, Cosine and Tangent on the Unit Circle (Trig Explorer)', ext: true, url: 'https://claude.ai/artifact/4xY54b5XpeoyG9FocJ9ZFZ' },
+    { id: '5.B.3', title: 'Laws of Sines and Cosines (Trig Explorer, Any triangle tab)', ext: true, url: 'https://claude.ai/artifact/4xY54b5XpeoyG9FocJ9ZFZ' },
+    { id: '5.B.4', title: 'Waves and Periodic Functions' },
+  ]},
+  { ch: 7, title: 'Linear Algebra', pages: [
+    { id: '7.B.1', title: 'Vectors: Arrows and Lists' },
+    { id: '7.B.2', title: 'Linear Combinations and Span' },
+    { id: '7.B.3', title: 'The Dot Product' },
+    { id: '7.B.4', title: 'A Matrix Is a Move (Matrix Transformer)', ext: true, url: 'https://claude.ai/artifact/UPYx73qewW2rkDX2VR4YTS' },
+    { id: '7.B.5', title: 'Matrix Multiplication: One Move After Another' },
+    { id: '7.B.6', title: 'The Determinant' },
+    { id: '7.B.7', title: 'Inverse Matrices' },
+  ]},
+  { ch: 8, title: 'Calculus', pages: [
+    { id: '8.B.1', title: 'Limits' },
+    { id: '8.B.2', title: 'Derivatives' },
+    { id: '8.B.3', title: 'Integrals' },
+    { id: '8.U.1', title: 'Infinite Series' },
+    { id: '8.U.2', title: 'Power Series' },
+    { id: '8.U.3', title: 'Taylor Approximations (Taylor Explorer)', ext: true, url: 'https://claude.ai/artifact/NbkDNnFSAGmLb5UqG4MBiB' },
+  ]},
+];
+
+/* MathMastery navigation: a Contents menu in the top bar and live Previous/Next cards.
+   Works in two places without edits:
+   - as published Claude artifacts: links use each page's artifact url
+   - on the GitHub site: a <meta name="mm-site"> tag (added by build_page.py --site) switches every link
+     to a relative path like ../1-B-4/index.html */
+(function(){
+  const SITE = !!document.querySelector('meta[name="mm-site"]');            // which kind of build is this?
+  const TIERS = { B: 'Basics', U: 'Undergraduate', M: 'Masters' };
+  // Flatten the table of contents into one ordered list of pages
+  const pages = [];
+  (window.MM_TOC || []).forEach(ch => ch.pages.forEach(p => pages.push(Object.assign({ ch: ch.ch, chTitle: ch.title }, p))));
+  const ready = p => p.ext ? !!p.url : (SITE ? !!p.built : !!p.url);          // can we link to this page?
+  const href = p => (p.ext || !SITE) ? p.url : `../${p.id.replace(/\./g, '-')}/index.html`;   // explorers always use their own url
+  const pidEl = document.querySelector('.pid');
+  const curId = pidEl ? pidEl.textContent.trim() : '';
+  const cur = pages.findIndex(p => p.id === curId);
+  const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+
+  /* ---------- Contents menu in the top bar ---------- */
+  const bar = document.querySelector('.topbar-in');
+  if (bar){
+    const btn = document.createElement('button');
+    btn.className = 'tocbtn'; btn.type = 'button'; btn.setAttribute('aria-expanded', 'false');
+    btn.innerHTML = '☰&nbsp; Contents';
+    bar.insertBefore(btn, pidEl || null);
+    const panel = document.createElement('div');
+    panel.className = 'tocpanel'; panel.setAttribute('role', 'menu');
+    let h = '';
+    (window.MM_TOC || []).forEach(ch => {
+      h += `<div class="tocch">Chapter ${ch.ch} · ${esc(ch.title)}</div>`;
+      let lastTier = '';
+      ch.pages.forEach(p => {
+        const tier = p.id.split('.')[1];
+        if (tier !== lastTier){ h += `<div class="toctier">${TIERS[tier] || tier}</div>`; lastTier = tier; }
+        const isCur = p.id === curId;
+        const inner = `<span class="tid">${p.id}</span><span>${esc(p.title)}</span>${isCur ? '<small>you are here</small>' : (p.ext ? '<small>explorer ↗</small>' : (ready(p) ? '' : '<small>coming</small>'))}`;
+        h += ready(p) && !isCur
+          ? `<a class="tocrow" href="${href(p)}">${inner}</a>`
+          : `<div class="tocrow ${isCur ? 'cur' : 'coming'}">${inner}</div>`;
+      });
+    });
+    panel.innerHTML = h;
+    bar.appendChild(panel);
+    const setOpen = open => { panel.classList.toggle('open', open); btn.setAttribute('aria-expanded', String(open)); };
+    btn.addEventListener('click', e => { e.stopPropagation(); setOpen(!panel.classList.contains('open')); });
+    document.addEventListener('click', e => { if (!panel.contains(e.target)) setOpen(false); });   // click outside closes
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') setOpen(false); });
+  }
+
+  /* ---------- Previous / Next cards ---------- */
+  const pager = document.querySelector('.pager');
+  if (pager && cur >= 0){
+    // The nearest page in a direction that can actually be opened (for "skip ahead" links)
+    const nearestReady = (from, step) => { for (let j = from; j >= 0 && j < pages.length; j += step) if (ready(pages[j])) return pages[j]; return null; };
+    const card = (p, dir) => {
+      const head = `<small>${dir < 0 ? '← Previous' : 'Next →'}</small>`;
+      const cls = dir > 0 ? 'next' : '';
+      if (!p) return `<div class="${cls} soon"><span class="dimtxt">${head}${dir < 0 ? 'Start of the book' : 'End of what’s written so far'}</span></div>`;
+      if (ready(p)) return `<a class="${cls}" href="${href(p)}">${head}${p.id} ${esc(p.title)}</a>`;
+      const alt = nearestReady(pages.indexOf(p) + dir, dir);
+      const skip = alt ? `<a class="skip" href="${href(alt)}">${dir < 0 ? '← Back to' : 'Skip ahead to'} ${alt.id} ${esc(alt.title)}${dir > 0 ? ' →' : ''}</a>` : '';
+      return `<div class="${cls} soon"><span class="dimtxt">${head}${p.id} ${esc(p.title)} (coming)</span>${skip}</div>`;
+    };
+    pager.innerHTML = card(pages[cur - 1], -1) + card(pages[cur + 1], 1);
+  }
+})();
+</script>
+</body>
+</html>

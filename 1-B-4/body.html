@@ -1,0 +1,739 @@
+<style>
+/* ===================== Page-specific styles (1.B.4) ===================== */
+:root{ --qa:#C98A0B; --qa-soft:#F6DE8D; --qb:#2F7FC1; --qb-soft:#CFE5F7; }
+@media (prefers-color-scheme:dark){ :root{ --qa:#F0C24B; --qa-soft:#6b5410; --qb:#7FB8E6; --qb-soft:#1d3d57; } }
+.qa{color:var(--qa);font-weight:600}.qb{color:var(--qb);font-weight:600}
+.field.fa input{border-color:var(--qa)}.field.fb input{border-color:var(--qb)}.field.fn input{border-color:var(--pt)}
+.split{display:grid;grid-template-columns:1.25fr 1fr;gap:18px;align-items:start}
+table.rt{border-collapse:separate;border-spacing:0;width:100%;font:15px var(--mono);background:var(--bg);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+table.rt th{font:600 12px var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:9px 10px;text-align:center;border-bottom:1px solid var(--line)}
+table.rt td{padding:7px 10px;text-align:center;border-bottom:1px solid var(--line)}
+table.rt tr:last-child td{border-bottom:none}
+table.rt td.ca{color:var(--qa);font-weight:600}table.rt td.cb{color:var(--qb);font-weight:600}
+table.rt td.mul{color:var(--muted);font-size:13px}
+table.rt tr.on td{background:var(--accent-bg)}
+table.rt tr.on td.mul{color:var(--accent);font-weight:600}
+.choice{display:flex;gap:8px;margin:0}
+.choice button{min-width:150px}
+.qtext{font:17px/1.55 var(--serif);margin:4px 0 10px}
+.verdict-same{color:var(--ok)}.verdict-diff{color:var(--bad)}
+</style>
+
+<!-- ===================== Top bar ===================== -->
+<div class="topbar"><div class="topbar-in">
+  <span class="brand">Math<b>Mastery</b></span>
+  <span class="crumbs">Chapter 1 · Numbers &amp; Arithmetic › Basics</span>
+  <span class="pid">1.B.4</span>
+</div></div>
+
+<!-- ===================== Hero ===================== -->
+<header class="prose hero">
+  <div class="kicker">Chapter 1 · Numbers &amp; Arithmetic</div>
+  <h1>Equivalent Ratios</h1>
+  <p class="dek">A ratio is a recipe, not a pair of amounts. Make more of it by multiplying both parts by the same number, and the result tastes exactly the same.</p>
+  <div class="tiers" aria-label="Tier">
+    <span class="tier on">Basics <small>you are here</small></span>
+    <span class="tier">Undergraduate</span>
+    <span class="tier">Masters</span>
+  </div>
+  <div class="goals">
+    <h3>On this page</h3>
+    <ul>
+      <li>Read a ratio three ways: <b>2 : 3</b>, “2 to 3”, and <b>2/3</b>.</li>
+      <li>Make <b>equivalent ratios</b> by multiplying (or dividing) both parts by the same number.</li>
+      <li>Use a <b>ratio table</b> and a <b>double number line</b> to find missing amounts.</li>
+      <li>Spot the <b>adding trap</b>: why adding the same amount to both parts changes the ratio.</li>
+      <li>Write a <b>proportion</b>: a statement that two ratios are equal.</li>
+    </ul>
+  </div>
+</header>
+
+<main>
+<!-- ===================== §1 What a ratio says ===================== -->
+<section class="prose">
+  <h2><span class="n">1</span>What a ratio says</h2>
+  <p>Here is a lemonade recipe: <b><span class="qa">2 scoops</span> of lemon mix for every <span class="qb">3 cups</span> of water.</b> That “for every” is the heart of a ratio. It compares two amounts by saying how much of one goes with how much of the other.</p>
+  <p>There are three common ways to write it, and they all mean the same thing:</p>
+  <div class="math" style="font:500 22px/1.6 var(--mono);text-align:center"><span class="qa">2</span> : <span class="qb">3</span> &nbsp;&nbsp;·&nbsp;&nbsp; <span class="qa">2</span> to <span class="qb">3</span> &nbsp;&nbsp;·&nbsp;&nbsp; <span class="qa">2</span>/<span class="qb">3</span>
+    <div class="cap" style="text-align:center">Read all three as “2 scoops for every 3 cups.” The order matters: scoops first, cups second.</div></div>
+  <p>We’ll call the two parts of the recipe <i class="sym">a</i> (scoops) and <i class="sym">b</i> (cups). One batch of the recipe looks like this:</p>
+</section>
+<section class="wide">
+  <div class="card">
+    <div class="card-h"><span class="tag">Picture</span><h3>One batch: <i class="sym">a</i> : <i class="sym">b</i> = 2 : 3</h3></div>
+    <svg class="nl" id="oneBatch" viewBox="0 0 1000 220" role="img" aria-label="One batch of lemonade: 2 scoops and 3 cups"></svg>
+  </div>
+</section>
+
+<!-- ===================== §2 More batches, same taste ===================== -->
+<section class="prose">
+  <h2><span class="n">2</span>More lemonade, same taste</h2>
+  <p>One batch is not enough for a party. So you make the recipe again, and again. Two batches use <span class="qa">4 scoops</span> and <span class="qb">6 cups</span>. Three batches use <span class="qa">6 scoops</span> and <span class="qb">9 cups</span>. The amounts change, but every sip tastes exactly the same, because every cup of water still has the same amount of mix in it.</p>
+  <p><em class="key">Ratios that describe the same mix are called equivalent ratios.</em> 2 : 3, 4 : 6 and 6 : 9 are all equivalent. Each one is the same recipe, made a different number of times. The number of batches is <i class="sym">n</i>, and making <i class="sym">n</i> batches multiplies <b>both</b> parts by <i class="sym">n</i>.</p>
+  <p>In the batch builder below, watch three things change together: the picture, the ratio table, and the double number line. Then watch the one thing that never changes: the color of the lemonade.</p>
+</section>
+
+<section class="wide">
+  <div class="card" id="explorer">
+    <div class="card-h">
+      <span class="tag">Explore</span><h3>The batch builder</h3>
+      <span class="sub">Pick a preset, or type your own recipe and number of batches, then press Play to add the batches one at a time.</span>
+    </div>
+    <div class="row" id="presets"></div>
+    <div class="desc" id="presetDesc"></div>
+    <div class="inputs">
+      <label class="field fa"><span>Scoops <i>a</i></span><input id="inA" type="text" inputmode="decimal" autocomplete="off"></label>
+      <label class="field fb"><span>Cups <i>b</i></span><input id="inB" type="text" inputmode="decimal" autocomplete="off"></label>
+      <label class="field fn"><span>Batches <i>n</i></span><input id="inN" type="text" inputmode="decimal" autocomplete="off"></label>
+      <div class="eq" id="eq"></div>
+      <div class="row" style="margin:0"><button class="primary" id="play">Play</button><button id="reset">Reset</button></div>
+    </div>
+    <div class="err" id="exErr"></div>
+
+    <div class="panel-label"><span>Picture</span><span>each box is one batch of the recipe</span></div>
+    <svg class="nl" id="scene" viewBox="0 0 1000 220" role="img" aria-label="Batches of lemonade"></svg>
+
+    <div class="split" style="margin-top:6px">
+      <div>
+        <div class="panel-label"><span>Double number line</span><span>matching amounts line up</span></div>
+        <svg class="nl" id="dnl" viewBox="0 0 600 150" role="img" aria-label="Double number line"></svg>
+      </div>
+      <div>
+        <div class="panel-label"><span>Ratio table</span><span>every row is the same recipe</span></div>
+        <table class="rt" id="rt"></table>
+      </div>
+    </div>
+    <div class="readout" id="exOut" aria-live="polite"></div>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--qa)"></i>scoops of mix (<i class="sym">a</i>)</span>
+      <span><i class="sw" style="background:var(--qb-soft);border:2px solid var(--qb)"></i>cups of water (<i class="sym">b</i>)</span>
+      <span><i class="sw pt"></i>the number of batches (<i class="sym">n</i>)</span>
+      <span><i class="sw" style="background:linear-gradient(90deg,#DCEEFA,#FAE482,#DE9100)"></i>lemonade color = how strong it tastes</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §3 Ratio tables ===================== -->
+<section class="prose">
+  <h2><span class="n">3</span>Reading a ratio table</h2>
+  <p>A <b>ratio table</b> lists equivalent ratios in rows. The rule for moving between rows is always the same: <em class="key">whatever you multiply one column by, multiply the other column by the same number.</em> Going from row 1 to row 3 multiplies both columns by 3. Going from row 4 back up to row 2 divides both by 2.</p>
+  <p>Notice the half batch at the top of the table. Dividing both parts by 2 gives 1 scoop for 1½ cups. Fractions are perfectly good amounts in a ratio, and that row tastes exactly like all the others.</p>
+  <p>When two amounts always come in equivalent ratios like this, every row a stretched or shrunk copy of the recipe, we say they are in a <b>proportional relationship</b>. Scoops and cups in this recipe are proportional: double the scoops and the cups double too.</p>
+
+  <h2><span class="n">4</span>Reading a double number line</h2>
+  <p>A <b>double number line</b> puts two number lines on top of each other: <span class="qa">scoops</span> above, <span class="qb">cups</span> below. They’re spaced so that amounts that belong together sit directly on top of each other. 2 scoops sits over 3 cups, 4 over 6, 6 over 9.</p>
+  <p>It’s the number line from 1.B.1, doubled. And look at the spacing: every step along the top line is 2 scoops, while the same step along the bottom line is 3 cups. The bottom line is the top line, stretched. You’ll make that stretch precise on the next page.</p>
+</section>
+
+<!-- ===================== §5 The adding trap ===================== -->
+<section class="prose">
+  <h2><span class="n">5</span>The adding trap</h2>
+  <p>Here is the most common mistake people make with ratios. To make more lemonade, someone adds <b>1 more scoop and 1 more cup</b>, so 2 : 3 becomes 3 : 4. It feels fair, because they added the same amount to both. But it is <b>not</b> the same recipe.</p>
+  <p>Why? In the original, there are 2 scoops for 3 cups, so the water outnumbers the mix by a lot, relatively speaking. Adding 1 to each makes the two amounts more alike, so the lemonade gets stronger. Keep adding and it gets stronger still. Try it:</p>
+</section>
+<section class="wide">
+  <div class="card" id="trap">
+    <div class="card-h">
+      <span class="tag">Compare</span><h3>Multiply both vs. add to both</h3>
+      <span class="sub">Starting from 2 : 3, pick a number <i class="sym">k</i>. The left glass multiplies both parts by <i class="sym">k</i>; the right glass adds <i class="sym">k</i> to both. The taste meter shows which one still matches.</span>
+    </div>
+    <div class="row" id="kBtns"></div>
+    <svg class="nl" id="trapSvg" viewBox="0 0 1000 300" role="img" aria-label="Multiply versus add"></svg>
+    <div class="readout" id="trapOut"></div>
+  </div>
+</section>
+
+<!-- ===================== §6 Mix your own ===================== -->
+<section class="prose">
+  <h2><span class="n">6</span>Mix your own</h2>
+  <p>Now you be the cook. Type any amounts of mix and water and see whether you matched the recipe from the batch builder. If you didn’t, the explanation tells you which way you’re off and what would fix it.</p>
+</section>
+<section class="wide">
+  <div class="card" id="mix">
+    <div class="card-h">
+      <span class="tag">Try it</span><h3>Does your mix match the recipe?</h3>
+      <span class="sub" id="mixSub"></span>
+    </div>
+    <div class="inputs">
+      <label class="field fa"><span>Your scoops</span><input id="mxA" type="text" inputmode="decimal" autocomplete="off" value="8"></label>
+      <label class="field fb"><span>Your cups</span><input id="mxB" type="text" inputmode="decimal" autocomplete="off" value="12"></label>
+      <div class="row" style="margin:0"><button class="primary" id="mxGo">Mix it</button></div>
+    </div>
+    <div class="err" id="mxErr"></div>
+    <svg class="nl" id="mixSvg" viewBox="0 0 1000 260" role="img" aria-label="Your mix compared with the recipe"></svg>
+    <div class="readout" id="mixOut"></div>
+  </div>
+</section>
+
+<!-- ===================== §7 In symbols ===================== -->
+<section class="prose">
+  <h2><span class="n">7</span>Now, in symbols</h2>
+  <p>In the batch builder, the recipe was labeled <i class="sym">a</i> : <i class="sym">b</i> (scoops : cups) and the number of batches was <i class="sym">n</i>. Making <i class="sym">n</i> batches multiplies both parts:</p>
+  <div class="math">\[ a : b \;=\; (n \times a) : (n \times b) \]<div class="cap">With the lemonade and \(n = 3\): \(2 : 3 = 6 : 9\). This works for any \(n\) bigger than 0, including fractions like \(n = \tfrac{1}{2}\).</div></div>
+  <p>A statement that two ratios are equal has its own name: a <b>proportion</b>. Written with fractions, the lemonade proportion is</p>
+  <div class="math">\[ \frac{2}{3} = \frac{6}{9} \]<div class="cap">“2 is to 3 as 6 is to 9.” Every row of the ratio table gives you another true proportion.</div></div>
+  <p>A quick way to check a proportion: multiply across the diagonals. If the ratios are equivalent, the two products match.</p>
+  <div class="math">\[ \frac{2}{3} \;\;\text{and}\;\; \frac{6}{9}: \qquad 2 \times 9 = 18 \qquad 3 \times 6 = 18 \;\;✓ \]<div class="cap">They match because the same multiplier (\(n = 3\)) hides in both products: \(2 \times (3 \times 3)\) and \(3 \times (3 \times 2)\). With the adding trap, \(\tfrac{2}{3}\) and \(\tfrac{3}{4}\) give \(2 \times 4 = 8\) but \(3 \times 3 = 9\), so they are not equivalent.</div></div>
+</section>
+
+<!-- ===================== §8 Where this goes ===================== -->
+<section class="prose">
+  <h2><span class="n">8</span>Where this goes</h2>
+  <ul class="goes">
+    <li><b>Next (1.B.5):</b> divide the cups by the scoops in any row of the ratio table and you get the same answer every time: 1½ cups per scoop. That never-changing number is called the <b>constant of proportionality</b>.</li>
+    <li><b>Later in this book:</b> plot the rows of a ratio table as points and they line up in a straight line through 0 (1.B.6). In Geometry, shapes whose sides are in equivalent ratios are called <b>similar</b>: same shape, different size. And multiplying every part of something by the same number, called <b>scaling</b>, is one of the basic moves of Linear Algebra.</li>
+    <li><b>In the world:</b> recipes, mixing paint colors, the scale on a map or a model car, and how fast something moves (miles for every hour) are all ratios. Whenever you make more of something and want it to stay “the same,” you’re using equivalent ratios.</li>
+  </ul>
+</section>
+
+<!-- ===================== §9 Vocabulary ===================== -->
+<section class="prose">
+  <h2><span class="n">9</span>Words to know</h2>
+  <div class="vocab">
+    <div class="term"><b>Ratio</b>A comparison of two amounts that says how much of one goes with how much of the other: 2 : 3.</div>
+    <div class="term"><b>Terms of a ratio</b>The two numbers in it. In 2 : 3, the terms are 2 and 3.</div>
+    <div class="term"><b>Equivalent ratios</b>Ratios that describe the same mix: 2 : 3, 4 : 6, 6 : 9.</div>
+    <div class="term"><b>Ratio table</b>A table of equivalent ratios, where every row is the same recipe at a different size.</div>
+    <div class="term"><b>Double number line</b>Two number lines lined up so that amounts that go together sit on top of each other.</div>
+    <div class="term"><b>Proportion</b>A statement that two ratios are equal: 2/3 = 6/9.</div>
+    <div class="term"><b>Proportional relationship</b>Two amounts that always come in equivalent ratios, like scoops and cups in every row of the ratio table. Double one and the other doubles too.</div>
+    <div class="term"><b>Constant of proportionality</b>The one number you multiply the first amount by to get the second, the same in every row. For the lemonade: cups = 1½ × scoops. (Explored fully in 1.B.5.)</div>
+  </div>
+</section>
+
+<!-- ===================== Quiz ===================== -->
+<section class="prose"><h2><span class="n">10</span>Check yourself</h2>
+  <p>Two kinds of questions: find the missing amount, or decide whether two mixes taste the same. Watch out for the adding trap.</p>
+</section>
+<section class="wide">
+  <div class="card" id="quiz">
+    <div class="card-h"><span class="tag">Quiz</span><h3 id="qTitle">Equivalent ratios</h3><span class="score" id="score">Score: 0 / 0</span></div>
+    <div class="qtext" id="qText"></div>
+    <svg class="nl" id="qSvg" viewBox="0 0 1000 200" role="img" aria-label="Quiz picture"></svg>
+    <div class="inputs" id="qInputs">
+      <label class="field" id="qField"><span id="qLabel">Answer</span><input id="qIn" type="text" inputmode="decimal" autocomplete="off"></label>
+      <div class="choice" id="qChoice">
+        <button id="qSame">Same taste</button><button id="qDiff">Different taste</button>
+      </div>
+      <div class="row" style="margin:0">
+        <button class="primary" id="qCheck">Check</button>
+        <button id="qShow">Show answer</button>
+        <button id="qNew">New question</button>
+      </div>
+    </div>
+    <div class="err" id="qErr"></div>
+    <div class="feedback" id="qFb" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ===================== Pager ===================== -->
+<nav class="wide">
+  <div class="pager">
+    <div class="soon"><small>← Previous</small>1.B.3 Fractions, decimals, and the gaps between them <span style="color:var(--muted)">(coming)</span></div>
+    <div class="next soon"><small>Next →</small>1.B.5 The constant of proportionality <span style="color:var(--muted)">(coming)</span></div>
+  </div>
+  <div class="meta">1.B.4 · Prerequisites: 1.B.1, 1.B.2, 1.B.3 · Leads to: 1.B.5, 1.B.6, 1.B.7, 1.B.8, Geometry (similar shapes)</div>
+</nav>
+</main>
+
+<script>
+/* =====================================================================
+   1. HELPERS
+   ===================================================================== */
+const NS = 'http://www.w3.org/2000/svg';                       // SVG namespace
+const $ = id => document.getElementById(id);                   // shorthand for getElementById
+// Create an SVG element with attributes, optionally appended to a parent
+function mk(tag, attrs, parent){
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+// Create an SVG text element
+function txt(parent, x, y, s, cls, extra){
+  const t = mk('text', Object.assign({ x, y, class: cls || '' }, extra || {}), parent);
+  t.textContent = s;
+  return t;
+}
+const isInt = x => Math.abs(x - Math.round(x)) < 1e-9;          // whole-number test that tolerates rounding
+const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+// Format an amount: whole numbers plain, halves as ½, anything else to 2 decimals
+function fmtQ(x){
+  if (isInt(x)) return String(Math.round(x));
+  if (isInt(x * 2)) { const w = Math.floor(x); return (w ? w : '') + '½'; }
+  return String(Math.round(x * 100) / 100);
+}
+// Parse typed input: integers, decimals, fractions (3/4), mixed numbers (1 1/2), and ½
+function parseNum(s){
+  s = String(s).trim().replace(/[−–]/g, '-').replace(/^\+/, '');
+  s = s.replace(/^(\d+)\s*½$/, '$1.5').replace(/^½$/, '0.5');            // 1½ -> 1.5
+  if (/^-?\d+(\.\d+)?$|^-?\.\d+$/.test(s)) return parseFloat(s);          // plain number
+  let m = s.match(/^(\d+)\s+(\d+)\s*\/\s*(\d+)$/);                        // mixed number 1 1/2
+  if (m && +m[3] !== 0) return +m[1] + (+m[2]) / (+m[3]);
+  m = s.match(/^(-?\d+)\s*\/\s*(\d+)$/);                                  // fraction a/b
+  if (m && +m[2] !== 0) return +m[1] / +m[2];
+  return NaN;
+}
+
+/* ---------- Taste: how strong a mix is, and what color it looks ---------- */
+// Strength = the share of the drink that is mix. Equivalent ratios give exactly the same strength.
+const strength = (a, b) => a / (a + b);
+// Map strength to a lemonade color: pale water blue -> light lemon -> deep lemon
+function mixColor(a, b){
+  const t = clamp((strength(a, b) - 0.15) / 0.5, 0, 1);
+  const stops = [[220, 238, 250], [250, 228, 130], [222, 145, 0]];
+  const seg = t < .5 ? 0 : 1, u = t < .5 ? t * 2 : (t - .5) * 2;
+  const c = stops[seg].map((v, i) => Math.round(v + (stops[seg + 1][i] - v) * u));
+  return `rgb(${c.join(',')})`;
+}
+
+// SVG classes (CSS variables, so light and dark mode both work)
+const svgCss = document.createElement('style');
+svgCss.textContent = `
+  .box{fill:var(--paper);stroke:var(--line2);stroke-width:1.2}
+  .boxlbl{fill:var(--muted);font:600 11px var(--sans);text-anchor:middle;letter-spacing:.06em;text-transform:uppercase}
+  .scoop{fill:var(--qa)} .scoopH{stroke:var(--qa);stroke-width:3;stroke-linecap:round}
+  .cup{fill:var(--qb-soft);stroke:var(--qb);stroke-width:1.6}
+  .rowlbl{font:600 13px var(--sans)} .rowA{fill:var(--qa)} .rowB{fill:var(--qb)}
+  .sym{font:italic 600 16px var(--serif)} .symA{fill:var(--qa)} .symB{fill:var(--qb)} .symN{fill:var(--pt-dark)}
+  .glass{stroke:var(--ink);stroke-width:2;fill:none}
+  .glasslbl{fill:var(--ink);font:600 16px var(--mono);text-anchor:middle}
+  .small{fill:var(--muted);font:12.5px var(--sans);text-anchor:middle}
+  .big{fill:var(--ink);font:600 15px var(--sans);text-anchor:middle}
+  .arrow{stroke:var(--muted);stroke-width:2;fill:none} .arrowH{fill:var(--muted)}
+  .lineA{stroke:var(--qa);stroke-width:2.5} .lineB{stroke:var(--qb);stroke-width:2.5}
+  .tickA{stroke:var(--qa);stroke-width:1.6} .tickB{stroke:var(--qb);stroke-width:1.6}
+  .lblA{fill:var(--qa);font:500 12px var(--mono);text-anchor:middle} .lblB{fill:var(--qb);font:500 12px var(--mono);text-anchor:middle}
+  .conn{stroke:var(--line2);stroke-width:1;stroke-dasharray:3 3}
+  .hi{stroke:var(--pt);stroke-width:3} .hiDot{fill:var(--pt);stroke:var(--paper);stroke-width:2}
+  .hiTxt{fill:var(--pt-dark);font:600 13px var(--sans);text-anchor:middle}
+  .q{fill:var(--bad);font:700 16px var(--mono);text-anchor:middle}
+  .meterbar{stroke:var(--line2);stroke-width:1}
+  .mk{stroke:var(--paper);stroke-width:1.5}
+  .mklbl{font:600 12.5px var(--sans);text-anchor:middle}
+  .ok{fill:var(--ok)} .bad{fill:var(--bad)}
+`;
+document.head.appendChild(svgCss);
+
+/* =====================================================================
+   2. DRAWING HELPERS: icons, glass, taste meter
+   ===================================================================== */
+let clipN = 0;                                                    // unique ids for half-icon clip paths
+// Clip a group to its left half (for half a scoop or half a cup)
+function halfClip(svg, g, cx){
+  const id = 'hc' + (clipN++);
+  const defs = svg.querySelector('defs') || mk('defs', {}, svg);
+  const cp = mk('clipPath', { id }, defs);
+  mk('rect', { x: cx - 20, y: -1000, width: 20, height: 3000 }, cp);
+  g.setAttribute('clip-path', `url(#${id})`);
+}
+// A scoop of mix: a round heap with a short handle. frac = 1 or 0.5
+function scoopIcon(svg, parent, cx, cy, frac){
+  const g = mk('g', {}, parent);
+  mk('line', { x1: cx + 6, y1: cy + 4, x2: cx + 13, y2: cy + 9, class: 'scoopH' }, g);
+  mk('circle', { cx, cy, r: 8, class: 'scoop' }, g);
+  if (frac < 1) halfClip(svg, g, cx);
+}
+// A cup of water: a tapered cup. frac = 1 or 0.5
+function cupIcon(svg, parent, cx, cy, frac){
+  const g = mk('g', {}, parent);
+  mk('path', { d: `M${cx - 8},${cy - 10} L${cx + 8},${cy - 10} L${cx + 6},${cy + 10} L${cx - 6},${cy + 10} Z`, class: 'cup' }, g);
+  if (frac < 1) halfClip(svg, g, cx);
+}
+// A glass of lemonade with a ratio label underneath
+function glass(parent, x, y, w, h, color, label, sub){
+  mk('rect', { x: x + 3, y: y + h * 0.18, width: w - 6, height: h * 0.82 - 3, rx: 6, fill: color }, parent);
+  mk('path', { d: `M${x},${y} L${x + 3},${y + h - 4} Q${x + 3},${y + h} ${x + 8},${y + h} L${x + w - 8},${y + h} Q${x + w - 3},${y + h} ${x + w - 3},${y + h - 4} L${x + w},${y}`, class: 'glass' }, parent);
+  if (label) txt(parent, x + w / 2, y + h + 22, label, 'glasslbl');
+  if (sub) txt(parent, x + w / 2, y + h + 40, sub, 'small');
+}
+// The taste meter: a gradient bar from watery to strong, with markers.
+// markers: [{a, b, label, color, up}] — up=true puts the label above the bar
+function meter(svg, parent, x, y, w, markers){
+  const id = 'mg' + (clipN++);
+  const defs = svg.querySelector('defs') || mk('defs', {}, svg);
+  const lg = mk('linearGradient', { id }, defs);
+  [[0, 'rgb(220,238,250)'], [.5, 'rgb(250,228,130)'], [1, 'rgb(222,145,0)']].forEach(([o, c]) => mk('stop', { offset: o, 'stop-color': c }, lg));
+  mk('rect', { x, y, width: w, height: 16, rx: 8, fill: `url(#${id})`, class: 'meterbar' }, parent);
+  txt(parent, x, y + 34, 'more watery', 'small', { 'text-anchor': 'start' });
+  txt(parent, x + w, y + 34, 'stronger', 'small', { 'text-anchor': 'end' });
+  markers.forEach(m => {
+    const t = clamp((strength(m.a, m.b) - 0.15) / 0.5, 0, 1), mx = x + t * w;
+    if (m.up){
+      mk('polygon', { points: `${mx},${y + 1} ${mx - 7},${y - 11} ${mx + 7},${y - 11}`, fill: m.color, class: 'mk' }, parent);
+      txt(parent, mx, y - 16, m.label, 'mklbl', { fill: m.color });
+    } else {
+      mk('polygon', { points: `${mx},${y + 15} ${mx - 7},${y + 27} ${mx + 7},${y + 27}`, fill: m.color, class: 'mk' }, parent);
+      txt(parent, mx, y + 42, m.label, 'mklbl', { fill: m.color });
+    }
+  });
+}
+
+/* =====================================================================
+   3. THE PICTURE: batches of the recipe -> a pitcher
+   ===================================================================== */
+// Draw `n` batches (n can end in ½) of recipe a : b, then the pitcher they make.
+function renderScene(svg, a, b, n){
+  svg.innerHTML = '';
+  const g = mk('g', {}, svg);
+  const rowA = 98, rowB = 150, x0 = 96, pitchX = 880;
+  // Row labels on the left, with the symbols a and b
+  txt(g, 14, rowA + 5, 'a', 'sym symA'); txt(g, 30, rowA + 5, 'scoops', 'rowlbl rowA');
+  txt(g, 14, rowB + 5, 'b', 'sym symB'); txt(g, 30, rowB + 5, 'cups', 'rowlbl rowB');
+  // Size each batch box so the widest row fits, and shrink spacing if many batches
+  const per = Math.max(a, b), boxes = Math.ceil(n - 1e-9);
+  const avail = pitchX - 60 - x0, gap = 10;
+  const step = Math.min(24, (avail / boxes - gap - 14) / per);
+  const boxW = per * step + 14;
+  for (let i = 0; i < boxes; i++){
+    const frac = Math.min(1, n - i);                       // 1 for a full batch, 0.5 for a half batch
+    const bx = x0 + i * (boxW + gap);
+    mk('rect', { x: bx, y: 56, width: boxW, height: 124, rx: 10, class: 'box' }, g);
+    txt(g, bx + boxW / 2, 74, frac < 1 ? '½ batch' : 'batch ' + (i + 1), 'boxlbl');
+    // Scoops in this box: a × frac of them (a half icon if it doesn't come out whole)
+    const sa = a * frac, sb = b * frac;
+    for (let j = 0; j < Math.ceil(sa - 1e-9); j++) scoopIcon(svg, g, bx + 7 + step / 2 + j * step, rowA, Math.min(1, sa - j));
+    for (let j = 0; j < Math.ceil(sb - 1e-9); j++) cupIcon(svg, g, bx + 7 + step / 2 + j * step, rowB, Math.min(1, sb - j));
+  }
+  // Brace label above the batches: n
+  const right = x0 + boxes * (boxW + gap) - gap;
+  mk('path', { d: `M${x0},44 Q${x0},36 ${x0 + 8},36 L${right - 8},36 Q${right},36 ${right},44`, class: 'arrow' }, g);
+  const nl = txt(g, (x0 + right) / 2, 28, '', 'big');
+  nl.innerHTML = `<tspan class="sym symN">n</tspan><tspan> = ${fmtQ(n)} batch${n === 1 ? '' : 'es'}</tspan>`;
+  // Arrow to the pitcher, then the pitcher filled with the mix color
+  mk('line', { x1: right + 12, y1: 118, x2: pitchX - 22, y2: 118, class: 'arrow' }, g);
+  mk('polygon', { points: `${pitchX - 14},118 ${pitchX - 24},112 ${pitchX - 24},124`, class: 'arrowH' }, g);
+  glass(g, pitchX, 60, 90, 110, mixColor(a, b), `${fmtQ(n * a)} : ${fmtQ(n * b)}`, n === 1 ? 'one batch' : `same taste as ${fmtQ(a)} : ${fmtQ(b)}`);
+}
+
+/* =====================================================================
+   4. DOUBLE NUMBER LINE
+   ===================================================================== */
+// opts.n = highlighted batches; opts.max = batches shown; opts.quiz = {hide:'A'|'B'} hides labels except 0, 1 batch and the question
+function renderDNL(svg, a, b, opts){
+  svg.innerHTML = '';
+  const g = mk('g', {}, svg);
+  const W = +svg.getAttribute('viewBox').split(' ')[2];
+  const L = 70, R = W - 24, yA = 50, yB = 108, max = opts.max || 6;
+  const X = k => L + (k / max) * (R - L);                  // batches -> x pixel (both lines share it)
+  txt(g, 8, yA + 4, 'scoops', 'rowlbl rowA'); txt(g, 8, yB + 4, 'cups', 'rowlbl rowB');
+  mk('line', { x1: L, y1: yA, x2: R, y2: yA, class: 'lineA' }, g);
+  mk('line', { x1: L, y1: yB, x2: R, y2: yB, class: 'lineB' }, g);
+  for (let h = 0; h <= max * 2; h++){                       // a tick every half batch, labels on whole batches
+    const k = h / 2, x = X(k), whole = isInt(k);
+    const show = !opts.quiz || k === 0 || k === 1;
+    if (whole) mk('line', { x1: x, y1: yA + 8, x2: x, y2: yB - 8, class: 'conn' }, g);
+    mk('line', { x1: x, y1: yA - (whole ? 6 : 3), x2: x, y2: yA + (whole ? 6 : 3), class: 'tickA' }, g);
+    mk('line', { x1: x, y1: yB - (whole ? 6 : 3), x2: x, y2: yB + (whole ? 6 : 3), class: 'tickB' }, g);
+    if (whole && show){
+      txt(g, x, yA - 13, fmtQ(k * a), 'lblA');
+      txt(g, x, yB + 24, fmtQ(k * b), 'lblB');
+    }
+  }
+  // Highlight the current number of batches (or the quiz target)
+  if (opts.n !== undefined){
+    const x = X(opts.n);
+    mk('line', { x1: x, y1: yA, x2: x, y2: yB, class: 'hi' }, g);
+    mk('circle', { cx: x, cy: yA, r: 6, class: 'hiDot' }, g);
+    mk('circle', { cx: x, cy: yB, r: 6, class: 'hiDot' }, g);
+    if (opts.quiz){
+      // Quiz: show the known amount, put a ? on the hidden one
+      if (opts.quiz.hide === 'B'){ txt(g, x, yA - 13, fmtQ(opts.n * a), 'lblA'); txt(g, x, yB + 26, opts.quiz.reveal ? fmtQ(opts.n * b) : '?', 'q'); }
+      else { txt(g, x, yA - 13, opts.quiz.reveal ? fmtQ(opts.n * a) : '?', 'q'); txt(g, x, yB + 24, fmtQ(opts.n * b), 'lblB'); }
+    } else if (!isInt(opts.n)){
+      txt(g, x, yA - 13, fmtQ(opts.n * a), 'lblA'); txt(g, x, yB + 24, fmtQ(opts.n * b), 'lblB');
+    }
+    txt(g, x, yB + 42, opts.quiz ? '' : `n = ${fmtQ(opts.n)}`, 'hiTxt');
+  }
+}
+
+/* =====================================================================
+   5. RATIO TABLE
+   ===================================================================== */
+function renderTable(a, b, n){
+  const rows = [0.5, 1, 2, 3, 4, 5, 6];
+  if (!rows.includes(n)) { rows.push(n); rows.sort((p, q) => p - q); }   // make sure the current n has a row
+  let h = `<tr><th>Batches <i class="sym">n</i></th><th>Scoops</th><th>Cups</th><th>from 1 batch</th></tr>`;
+  rows.forEach(k => {
+    h += `<tr class="${k === n ? 'on' : ''}"><td>${fmtQ(k)}</td><td class="ca">${fmtQ(k * a)}</td><td class="cb">${fmtQ(k * b)}</td>` +
+         `<td class="mul">${k === 1 ? 'the recipe' : (k < 1 ? '÷ ' + fmtQ(1 / k) + ' both' : '× ' + fmtQ(k) + ' both')}</td></tr>`;
+  });
+  $('rt').innerHTML = h;
+}
+
+/* =====================================================================
+   6. BATCH BUILDER (explorer)
+   ===================================================================== */
+const PRESETS = [
+  { name: '1 batch',      a: 2, b: 3, n: 1,   d: 'The recipe itself: 2 scoops for every 3 cups.' },
+  { name: 'Double',       a: 2, b: 3, n: 2,   d: 'Two batches: both amounts doubled to 4 : 6. Same color, same taste.' },
+  { name: 'Triple',       a: 2, b: 3, n: 3,   d: 'Three batches: 6 : 9. Find it in the table, on the double number line, and in the picture.' },
+  { name: 'Half batch',   a: 2, b: 3, n: 0.5, d: 'Divide both by 2: 1 scoop for 1½ cups. Fractions are fine in a ratio.' },
+  { name: 'Party size',   a: 2, b: 3, n: 6,   d: 'Six batches: 12 scoops and 18 cups, still exactly the same taste.' },
+  { name: 'Strong recipe', a: 3, b: 2, n: 2,  d: 'A different recipe: 3 : 2 has more mix than water, so the color is much deeper.' },
+  { name: 'Weak recipe',  a: 1, b: 4, n: 3,   d: 'Another recipe: 1 : 4 is mostly water. Three batches is 3 : 12, just as weak.' },
+];
+const ex = { a: 2, b: 3, n: 3, shown: 3, timer: 0, playing: false };
+
+PRESETS.forEach((p, i) => {
+  const btn = document.createElement('button');
+  btn.className = 'preset'; btn.textContent = p.name;
+  btn.onclick = () => choosePreset(i);
+  $('presets').appendChild(btn);
+});
+function markPreset(i){
+  [...$('presets').children].forEach((btn, j) => btn.classList.toggle('on', j === i));
+  $('presetDesc').textContent = i === null ? 'Custom: your own recipe and number of batches.' : PRESETS[i].d;
+}
+function setInputs(){ $('inA').value = fmtQ(ex.a); $('inB').value = fmtQ(ex.b); $('inN').value = fmtQ(ex.n); }
+function choosePreset(i){
+  const p = PRESETS[i];
+  Object.assign(ex, { a: p.a, b: p.b, n: p.n });
+  setInputs(); $('exErr').textContent = ''; markPreset(i);
+  playEx(true);
+}
+// Validate the three inputs; returns true when usable
+function readEx(){
+  const a = parseNum($('inA').value), b = parseNum($('inB').value), n = parseNum($('inN').value), err = $('exErr');
+  if ([a, b, n].some(isNaN)){ err.textContent = 'Fill in every box with a number.'; return false; }
+  if (![a, b].every(v => isInt(v) && v >= 1 && v <= 5)){ err.textContent = 'Keep the recipe to whole numbers from 1 to 5 so the picture fits.'; return false; }
+  if (!(isInt(n * 2) && n >= 0.5 && n <= 6)){ err.textContent = 'Batches can be ½, 1, 1½, 2, … up to 6.'; return false; }
+  err.textContent = '';
+  Object.assign(ex, { a, b, n });
+  return true;
+}
+['inA', 'inB', 'inN'].forEach(id => {
+  $(id).addEventListener('input', () => { $('exErr').textContent = ''; markPreset(null); stopEx(); if (readEx()){ ex.shown = ex.n; drawEx(); } });
+  $(id).addEventListener('focus', e => e.target.select());
+  $(id).addEventListener('keydown', e => { if (e.key === 'Enter') playEx(true); });
+});
+
+function drawEx(){
+  const { a, b } = ex, n = ex.shown;
+  renderScene($('scene'), a, b, n);
+  renderDNL($('dnl'), a, b, { n, max: 6 });
+  renderTable(a, b, n);
+  $('eq').innerHTML = `<i style="color:var(--qa)">a</i> : <i style="color:var(--qb)">b</i> = ${fmtQ(a)} : ${fmtQ(b)} &nbsp;→&nbsp; <i>n</i> = ${fmtQ(n)} &nbsp;→&nbsp; ${fmtQ(n * a)} : ${fmtQ(n * b)}`;
+  const mfrom = n === 1 ? 'This is the recipe itself.' :
+    n < 1 ? `Both amounts were divided by ${fmtQ(1 / n)}.` : `Both amounts were multiplied by ${fmtQ(n)}.`;
+  $('exOut').innerHTML = `<b>${fmtQ(n)} batch${n === 1 ? '' : 'es'}</b> of ${fmtQ(a)} : ${fmtQ(b)} use <span class="qa">${fmtQ(n * a)} scoops</span> and <span class="qb">${fmtQ(n * b)} cups</span>. ${mfrom} ` +
+    (n === 1 ? '' : `The color in the pitcher is identical to one batch, because <b>${fmtQ(n * a)} : ${fmtQ(n * b)}</b> is equivalent to <b>${fmtQ(a)} : ${fmtQ(b)}</b>.`);
+}
+// Play: add batches one at a time up to n (half batch last if n ends in ½)
+function playEx(fromStart){
+  if (ex.playing){ stopEx(); return; }
+  if (!readEx()) return;
+  const steps = [];
+  if (ex.n < 1) steps.push(ex.n);
+  else { for (let k = 1; k <= Math.floor(ex.n); k++) steps.push(k); if (!isInt(ex.n)) steps.push(ex.n); }
+  let i = 0;
+  ex.playing = true; $('play').textContent = 'Pause';
+  const tick = () => {
+    ex.shown = steps[i]; drawEx(); i++;
+    if (i < steps.length && ex.playing) ex.timer = setTimeout(tick, 520);
+    else stopEx();
+  };
+  tick();
+}
+function stopEx(){ ex.playing = false; clearTimeout(ex.timer); $('play').textContent = 'Play'; }
+$('play').onclick = () => playEx(true);
+$('reset').onclick = () => { stopEx(); ex.shown = Math.min(1, ex.n) === ex.n ? ex.n : 1; drawEx(); };
+
+/* =====================================================================
+   7. THE ADDING TRAP
+   ===================================================================== */
+let trapK = 3;
+for (let k = 1; k <= 5; k++){
+  const btn = document.createElement('button');
+  btn.className = 'preset'; btn.innerHTML = `<i class="sym" style="font-size:1em">k</i> = ${k}`;
+  btn.onclick = () => { trapK = k; drawTrap(); };
+  $('kBtns').appendChild(btn);
+}
+function drawTrap(){
+  [...$('kBtns').children].forEach((btn, j) => btn.classList.toggle('on', j + 1 === trapK));
+  const svg = $('trapSvg'); svg.innerHTML = ''; const g = mk('g', {}, svg);
+  const k = trapK, ma = 2 * k, mb = 3 * k, aa = 2 + k, ab = 3 + k;
+  txt(g, 250, 24, `Multiply both by ${k}`, 'big'); txt(g, 750, 24, `Add ${k} to both`, 'big');
+  glass(g, 120, 40, 70, 90, mixColor(2, 3), '2 : 3', 'the recipe');
+  txt(g, 250, 92, `× ${k}`, 'big');
+  glass(g, 310, 40, 70, 90, mixColor(ma, mb), `${ma} : ${mb}`, 'same taste ✓');
+  glass(g, 620, 40, 70, 90, mixColor(2, 3), '2 : 3', 'the recipe');
+  txt(g, 750, 92, `+ ${k}`, 'big');
+  glass(g, 810, 40, 70, 90, mixColor(aa, ab), `${aa} : ${ab}`, 'stronger ✗');
+  meter(svg, g, 120, 232, 760, [
+    { a: 2, b: 3, label: 'recipe and × ' + k, color: 'var(--ok)', up: true },
+    { a: aa, b: ab, label: '+ ' + k, color: 'var(--bad)', up: false },
+  ]);
+  $('trapOut').innerHTML = `Multiplying by ${k} gives <b>${ma} : ${mb}</b>, the same recipe made ${k} times, so its marker sits exactly on the recipe’s. ` +
+    `Adding ${k} to both gives <b>${aa} : ${ab}</b>. That’s ${aa} scoops for ${ab} cups, and the meter shows it is <b>stronger</b>. ` +
+    `Check with the cross products: 2 × ${ab} = ${2 * ab}, but 3 × ${aa} = ${3 * aa}. They don’t match.`;
+}
+
+/* =====================================================================
+   8. MIX YOUR OWN
+   ===================================================================== */
+function drawMix(){
+  const x = parseNum($('mxA').value), y = parseNum($('mxB').value), err = $('mxErr');
+  const { a, b } = ex;
+  $('mixSub').innerHTML = `The target is the batch builder’s recipe: <b>${fmtQ(a)} : ${fmtQ(b)}</b>. Change it up there and this target changes too.`;
+  if (isNaN(x) || isNaN(y)){ err.textContent = 'Fill in both boxes with a number.'; return; }
+  if (x <= 0 || y <= 0 || x > 60 || y > 60){ err.textContent = 'Use amounts bigger than 0 and up to 60.'; return; }
+  err.textContent = '';
+  const svg = $('mixSvg'); svg.innerHTML = ''; const g = mk('g', {}, svg);
+  const same = Math.abs(x * b - y * a) < 1e-9;                 // cross products equal -> equivalent
+  glass(g, 260, 20, 80, 100, mixColor(a, b), `${fmtQ(a)} : ${fmtQ(b)}`, 'the recipe');
+  glass(g, 660, 20, 80, 100, mixColor(x, y), `${fmtQ(x)} : ${fmtQ(y)}`, 'your mix');
+  txt(g, 500, 80, same ? '=' : '≠', 'big', { style: 'font-size:34px' });
+  meter(svg, g, 120, 202, 760, [
+    { a, b, label: 'recipe', color: 'var(--ok)', up: true },
+    { a: x, b: y, label: 'yours', color: same ? 'var(--ok)' : 'var(--bad)', up: false },
+  ]);
+  const nA = x / a, nB = y / b;                                // how many batches' worth of each ingredient
+  let h;
+  if (same){
+    h = `<b class="verdict-same">Same taste.</b> ${fmtQ(x)} scoops is ${fmtQ(nA)} batch${nA === 1 ? '' : 'es'}’ worth of mix, and ${fmtQ(y)} cups is ${fmtQ(nB)} batch${nB === 1 ? '' : 'es'}’ worth of water. ` +
+        `Both match, so ${fmtQ(x)} : ${fmtQ(y)} is equivalent to ${fmtQ(a)} : ${fmtQ(b)} (both multiplied by ${fmtQ(nA)}).`;
+  } else {
+    const stronger = nA > nB;
+    h = `<b class="verdict-diff">Different taste: ${stronger ? 'stronger' : 'more watery'}.</b> ${fmtQ(x)} scoops is ${fmtQ(nA)} batches’ worth of mix, but ${fmtQ(y)} cups is ${stronger ? 'only ' : ''}${fmtQ(nB)} batches’ worth of water. ` +
+        `${stronger ? 'There’s not enough water for that much mix.' : 'There’s too much water for that much mix.'} ` +
+        `To match the recipe with ${fmtQ(x)} scoops, you’d need <b>${fmtQ(nA * b)} cups</b>.`;
+  }
+  $('mixOut').innerHTML = h;
+}
+$('mxGo').onclick = drawMix;
+['mxA', 'mxB'].forEach(id => {
+  $(id).addEventListener('input', () => { $('mxErr').textContent = ''; });
+  $(id).addEventListener('focus', e => e.target.select());
+  $(id).addEventListener('keydown', e => { if (e.key === 'Enter') drawMix(); });
+});
+
+/* =====================================================================
+   9. QUIZ
+   ===================================================================== */
+const RECIPES = [[2, 3], [1, 2], [3, 4], [2, 5], [3, 2], [1, 3], [4, 3], [3, 5], [4, 5]];
+const qz = { type: 'missing', counted: false, done: false, right: 0, total: 0 };
+const rnd = arr => arr[Math.floor(Math.random() * arr.length)];
+const randInt = (lo, hi) => lo + Math.floor(Math.random() * (hi - lo + 1));
+
+function newQuestion(){
+  Object.assign(qz, { counted: false, done: false });
+  $('qErr').textContent = ''; $('qFb').className = 'feedback'; $('qFb').innerHTML = ''; $('qIn').value = '';
+  const [a, b] = rnd(RECIPES);
+  qz.a = a; qz.b = b;
+  qz.type = Math.random() < 0.5 ? 'missing' : 'same';
+  if (qz.type === 'missing'){
+    qz.n = randInt(2, 6); qz.hide = Math.random() < 0.5 ? 'B' : 'A';
+    const known = qz.hide === 'B' ? `${qz.n * a} scoops` : `${qz.n * b} cups`;
+    const want = qz.hide === 'B' ? 'cups of water' : 'scoops of mix';
+    $('qTitle').textContent = 'Find the missing amount';
+    $('qText').innerHTML = `A recipe uses <span class="qa">${a} scoop${a > 1 ? 's' : ''}</span> for every <span class="qb">${b} cup${b > 1 ? 's' : ''}</span>. ` +
+      `How many <b>${want}</b> go with <b>${known}</b>, so it tastes the same?`;
+    $('qLabel').innerHTML = qz.hide === 'B' ? 'Cups' : 'Scoops';
+    $('qField').className = 'field ' + (qz.hide === 'B' ? 'fb' : 'fa');
+    $('qField').style.display = ''; $('qChoice').style.display = 'none'; $('qCheck').style.display = '';
+  } else {
+    // Same-taste question: a true equivalent, an adding-trap mix, or a near miss
+    qz.kind = rnd(['same', 'add', 'near']);
+    if (qz.kind === 'same'){ const n = randInt(2, 5); qz.x = n * a; qz.y = n * b; qz.n = n; }
+    else if (qz.kind === 'add'){ const k = randInt(1, 4); qz.x = a + k; qz.y = b + k; qz.k = k; }
+    else { const n = randInt(2, 5); qz.n = n; qz.x = n * a; qz.y = n * b + rnd([-1, 1]); }
+    $('qTitle').textContent = 'Same taste or different?';
+    $('qText').innerHTML = `The recipe is <b>${a} : ${b}</b> (scoops : cups). Someone mixes <b>${qz.x} : ${qz.y}</b>. Does it taste the same as the recipe?`;
+    $('qField').style.display = 'none'; $('qChoice').style.display = ''; $('qCheck').style.display = 'none';
+  }
+  drawQuiz();
+}
+function drawQuiz(){
+  const svg = $('qSvg');
+  if (qz.type === 'missing'){
+    svg.setAttribute('viewBox', '0 0 1000 160');
+    renderDNL(svg, qz.a, qz.b, { n: qz.n, max: 6, quiz: { hide: qz.hide, reveal: qz.done } });
+  } else {
+    svg.setAttribute('viewBox', '0 0 1000 250');
+    svg.innerHTML = ''; const g = mk('g', {}, svg);
+    const hidden = 'var(--line)';                            // glasses stay grey until answered
+    glass(g, 300, 14, 70, 90, qz.done ? mixColor(qz.a, qz.b) : hidden, `${qz.a} : ${qz.b}`, 'the recipe');
+    glass(g, 630, 14, 70, 90, qz.done ? mixColor(qz.x, qz.y) : hidden, `${qz.x} : ${qz.y}`, 'their mix');
+    txt(g, 500, 66, qz.done ? (qz.kind === 'same' ? '=' : '≠') : '?', 'big', { style: 'font-size:30px' });
+    if (qz.done) meter(svg, g, 160, 196, 680, [
+      { a: qz.a, b: qz.b, label: 'recipe', color: 'var(--ok)', up: true },
+      { a: qz.x, b: qz.y, label: '', color: qz.kind === 'same' ? 'var(--ok)' : 'var(--bad)', up: false },
+    ]);
+  }
+}
+function countQ(ok){
+  if (qz.counted) return;
+  qz.counted = true; qz.total++; if (ok) qz.right++;
+  $('score').textContent = `Score: ${qz.right} / ${qz.total}`;
+}
+// Feedback for a missing-amount answer
+function checkMissing(){
+  const v = parseNum($('qIn').value);
+  if ($('qIn').value.trim() === '' || isNaN(v)){ $('qErr').textContent = 'Type a number (fractions like 7/2 or 3½ are fine).'; return; }
+  $('qErr').textContent = '';
+  const { a, b, n, hide } = qz;
+  const ans = hide === 'B' ? n * b : n * a;
+  const knownGiven = hide === 'B' ? n * a : n * b, knownBase = hide === 'B' ? a : b, otherBase = hide === 'B' ? b : a;
+  const trap = otherBase + (knownGiven - knownBase);                 // what adding the difference would give
+  let msg, ok = false;
+  if (Math.abs(v - ans) < 1e-9){
+    ok = true;
+    msg = `<b>Right.</b> ${knownGiven} is ${knownBase} × ${n}, so this is ${n} batches. The other amount is ${otherBase} × ${n} = <b>${ans}</b>. Proportion: ${a}/${b} = ${n * a}/${n * b}.`;
+  } else if (Math.abs(v - trap) < 1e-9){
+    msg = `<b>That’s the adding trap.</b> You added ${knownGiven - knownBase} to both amounts. Ratios grow by <i>multiplying</i>: how many times does ${knownBase} go into ${knownGiven}? Multiply the other amount by that.`;
+  } else if (Math.abs(v - knownGiven) < 1e-9){
+    msg = `<b>That’s the amount you were given.</b> The question asks for the other ingredient.`;
+  } else if (Math.abs(v - otherBase * (n + 1)) < 1e-9 || Math.abs(v - otherBase * (n - 1)) < 1e-9){
+    msg = `<b>Close: you used the wrong number of batches.</b> Count again: ${knownGiven} ÷ ${knownBase} = ? batches.`;
+  } else {
+    msg = `<b>Not quite.</b> First find the number of batches: how many times does ${knownBase} go into ${knownGiven}? Then multiply ${otherBase} by that same number.`;
+  }
+  countQ(ok);
+  if (ok){ qz.done = true; drawQuiz(); }
+  $('qFb').className = 'feedback ' + (ok ? 'ok' : 'bad'); $('qFb').innerHTML = msg;
+}
+// Feedback for a same-or-different answer
+function explainSame(){
+  const { a, b, x, y, kind } = qz;
+  if (kind === 'same') return `${x} : ${y} is ${a} : ${b} with both parts multiplied by ${qz.n}, so it’s equivalent. Cross products: ${a} × ${y} = ${a * y} and ${b} × ${x} = ${b * x}.`;
+  if (kind === 'add') return `${x} : ${y} came from <b>adding ${qz.k}</b> to both parts: that’s the adding trap, and it changes the taste (it’s ${strength(x, y) > strength(a, b) ? 'stronger' : 'more watery'}). Cross products: ${a} × ${y} = ${a * y}, but ${b} × ${x} = ${b * x}.`;
+  return `So close! ${x} scoops is ${qz.n} batches’ worth, which needs ${qz.n * b} cups, not ${y}. It’s ${y < qz.n * b ? 'a little stronger' : 'a little more watery'}.`;
+}
+function answerSame(saySame){
+  if (qz.done) return;
+  const ok = (qz.kind === 'same') === saySame;
+  countQ(ok); qz.done = true; drawQuiz();
+  $('qFb').className = 'feedback ' + (ok ? 'ok' : 'bad');
+  $('qFb').innerHTML = `<b>${ok ? 'Right.' : 'Not this time.'}</b> ${explainSame()}`;
+}
+function showQuiz(){
+  countQ(false); qz.done = true; drawQuiz(); $('qErr').textContent = '';
+  $('qFb').className = 'feedback info';
+  if (qz.type === 'missing'){
+    const { a, b, n, hide } = qz, given = hide === 'B' ? n * a : n * b, base = hide === 'B' ? a : b, other = hide === 'B' ? b : a;
+    $('qFb').innerHTML = `The answer is <b>${n * other}</b>. ${given} ÷ ${base} = ${n} batches, and ${other} × ${n} = ${n * other}.`;
+  } else {
+    $('qFb').innerHTML = `<b>${qz.kind === 'same' ? 'Same taste.' : 'Different taste.'}</b> ${explainSame()}`;
+  }
+}
+$('qCheck').onclick = checkMissing;
+$('qSame').onclick = () => answerSame(true);
+$('qDiff').onclick = () => answerSame(false);
+$('qShow').onclick = showQuiz;
+$('qNew').onclick = newQuestion;
+$('qIn').addEventListener('input', () => { $('qErr').textContent = ''; });
+$('qIn').addEventListener('focus', e => e.target.select());
+$('qIn').addEventListener('keydown', e => { if (e.key === 'Enter') checkMissing(); });
+
+/* =====================================================================
+   10. START
+   ===================================================================== */
+renderScene($('oneBatch'), 2, 3, 1);
+ex.shown = ex.n; setInputs(); markPreset(2); drawEx();
+drawTrap();
+drawMix();
+newQuestion();
+</script>
+</body>
+</html>

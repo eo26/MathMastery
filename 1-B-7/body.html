@@ -1,0 +1,656 @@
+<style>
+/* ===================== Page-specific styles (1.B.7) ===================== */
+/* customary amounts (x) = warm brown/amber, metric amounts (y) = blue, the factor k = purple, temperature = red */
+:root{ --cu:#B26A12; --cu-soft:#FBEBD2; --me:#2F7FC1; --me-soft:#DCEBF8; --k:#6A5FD0; --k-soft:#ECEAFD; --temp:#C0392B; }
+@media (prefers-color-scheme:dark){ :root{ --cu:#F0B860; --cu-soft:#4a3410; --me:#7FB8E6; --me-soft:#173750; --k:#AFA9EC; --k-soft:#2c2852; --temp:#F0897B; } }
+.cu{color:var(--cu);font-weight:600}.me{color:var(--me);font-weight:600}.kk{color:var(--k);font-weight:700}
+.field.fcu input{border-color:var(--cu)}.field.fme input{border-color:var(--me)}.field.fk input{border-color:var(--k)}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
+.split2{display:grid;grid-template-columns:1fr 320px;gap:18px;align-items:start}
+.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;margin-top:8px}
+.obj{border:1px solid var(--line);border-radius:12px;background:var(--bg);padding:12px 14px;cursor:pointer;text-align:left;font:14px/1.45 var(--sans);color:var(--ink)}
+.obj:hover{border-color:var(--accent)}
+.obj b{display:block;font-size:15px;margin-bottom:4px}
+.obj .v{font-family:var(--mono);font-size:13.5px}
+table.rt{border-collapse:separate;border-spacing:0;width:100%;font:15px var(--mono);background:var(--bg);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+table.rt th{font:600 12px var(--sans);letter-spacing:.04em;text-transform:uppercase;color:var(--muted);padding:9px 8px;text-align:center;border-bottom:1px solid var(--line)}
+table.rt th i{text-transform:none;font:italic 600 15px var(--serif)}
+table.rt td{padding:7px 8px;text-align:center;border-bottom:1px solid var(--line)}
+table.rt tr:last-child td{border-bottom:none}
+table.rt td.ccu{color:var(--cu);font-weight:600}table.rt td.cme{color:var(--me);font-weight:600}table.rt td.ck{color:var(--k);font-weight:700}
+table.rt td.good{color:var(--ok);font-weight:700;background:var(--ok-bg)}table.rt td.bad{color:var(--bad);font-weight:700;background:var(--bad-bg)}
+.checks{list-style:none;padding:0;margin:0;font-size:14.5px}
+.checks li{padding:8px 0;border-bottom:1px solid var(--line);display:flex;gap:8px;align-items:baseline}
+.checks .y{color:var(--ok);font-weight:700}.checks .n{color:var(--bad);font-weight:700}
+.choice{display:flex;gap:8px;margin:0}.choice button{min-width:150px}
+.qtext{font:17px/1.55 var(--serif);margin:4px 0 10px}
+.dirbtns button.on{background:var(--accent-bg);border-color:var(--accent);color:var(--accent)}
+</style>
+
+<!-- ===================== Top bar ===================== -->
+<div class="topbar"><div class="topbar-in">
+  <span class="brand">Math<b>Mastery</b></span>
+  <span class="crumbs">Chapter 1 · Numbers &amp; Arithmetic › Basics</span>
+  <span class="pid">1.B.7</span>
+</div></div>
+
+<!-- ===================== Hero ===================== -->
+<header class="prose hero">
+  <div class="kicker">Chapter 1 · Numbers &amp; Arithmetic</div>
+  <h1>Converting Customary and Metric Units</h1>
+  <p class="dek">An inch and a centimeter measure the same world with different-sized steps. Converting between them is a proportional relationship, and the constant of proportionality is the conversion factor.</p>
+  <div class="tiers" aria-label="Tier">
+    <span class="tier on">Basics <small>you are here</small></span>
+    <span class="tier">Undergraduate</span>
+    <span class="tier">Masters</span>
+  </div>
+  <div class="goals">
+    <h3>On this page</h3>
+    <ul>
+      <li>See unit conversion as a <b>proportional relationship</b>: metric = <i class="sym">k</i> × customary.</li>
+      <li>Use the <b>conversion factor</b> <i class="sym">k</i> (the <b>constant of proportionality</b>) in both directions: multiply one way, divide the other.</li>
+      <li>Know exact factors and friendly ones for mental math: 1 in = 2.54 cm, 1 mi ≈ 1.6 km, 1 kg ≈ 2.2 lb.</li>
+      <li>Explain why temperature conversion is <b>not</b> proportional.</li>
+    </ul>
+  </div>
+</header>
+
+<main>
+<!-- ===================== §1 Two rulers, one world ===================== -->
+<section class="prose">
+  <h2><span class="n">1</span>Two rulers, one world</h2>
+  <p>The United States mostly measures with <b>customary units</b>: inches, feet, miles, ounces and pounds. Almost everywhere else, and in every science lab, people use <b>metric units</b>: centimeters, meters, kilometers, grams and kilograms. A pencil doesn’t change length when you pick up a different ruler, but the number you read does.</p>
+  <p>Lay an inch ruler and a centimeter ruler side by side, both starting at 0. Wherever you look, the centimeter reading is about 2½ times the inch reading. Exactly, it’s <b>2.54</b> times: <em class="key">1 inch = 2.54 centimeters, by definition.</em> And 0 inches is 0 centimeters, and doubling the inches doubles the centimeters. This is a <b>proportional relationship</b>, and 2.54 is its <b>constant of proportionality</b>. When it converts units, people call <i class="sym">k</i> the <b>conversion factor</b>.</p>
+</section>
+
+<section class="wide">
+  <div class="card" id="explorer">
+    <div class="card-h">
+      <span class="tag">Explore</span><h3>The twin rulers</h3>
+      <span class="sub">Pick a pair of units and a direction, type an amount, and press Play. Or click an everyday object below to load it.</span>
+    </div>
+    <div class="row" id="pairs"></div>
+    <div class="row dirbtns" id="dirs"></div>
+    <div class="inputs">
+      <label class="field" id="valField"><span id="valLbl">Amount</span><input id="inV" type="text" inputmode="decimal" autocomplete="off"></label>
+      <div class="eq" id="eq"></div>
+      <div class="row" style="margin:0"><button class="primary" id="play">Play</button><button id="reset">Reset</button></div>
+    </div>
+    <div class="err" id="exErr"></div>
+    <div class="panel-label"><span>Twin rulers</span><span>both start at 0 · same length, two numbers</span></div>
+    <svg class="nl" id="rulers" viewBox="0 0 1000 230" role="img" aria-label="Customary and metric rulers"></svg>
+    <div class="split" style="margin-top:6px">
+      <div>
+        <div class="panel-label"><span>The machine</span><span id="machCap"></span></div>
+        <svg class="nl" id="machine" viewBox="0 0 560 170" role="img" aria-label="Conversion machine"></svg>
+      </div>
+      <div>
+        <div class="panel-label"><span>Graph</span><span><i class="sym">y</i> = <i class="sym">k</i> · <i class="sym">x</i>, a line through 0</span></div>
+        <svg class="nl" id="graph" viewBox="0 0 560 300" role="img" aria-label="Graph of the conversion"></svg>
+      </div>
+    </div>
+    <div class="readout" id="exOut" aria-live="polite"></div>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--cu)"></i>customary amount <i class="sym">x</i></span>
+      <span><i class="sw" style="background:var(--me)"></i>metric amount <i class="sym">y</i></span>
+      <span><i class="sw" style="background:var(--k)"></i>conversion factor <i class="sym">k</i> (metric per 1 customary)</span>
+    </div>
+
+    <div class="panel-label" style="margin-top:18px"><span>Everyday objects</span><span>click one to measure it</span></div>
+    <div class="gallery" id="gallery"></div>
+  </div>
+</section>
+
+<!-- ===================== §2 Multiply or divide? ===================== -->
+<section class="prose">
+  <h2><span class="n">2</span>Multiply or divide?</h2>
+  <p>The machine runs both ways. Going from customary to metric, <b>multiply</b> by <i class="sym">k</i>. Going back from metric to customary, run the machine backwards: <b>divide</b> by <i class="sym">k</i>.</p>
+  <p>A sanity check that never fails: <em class="key">smaller units mean bigger numbers.</em> A centimeter is smaller than an inch, so a length in centimeters is always a bigger number than the same length in inches. If you convert 10 inches and get 3.9 centimeters, you went the wrong way. A kilogram is heavier than a pound, so a weight in kilograms is a <i>smaller</i> number than the same weight in pounds.</p>
+
+  <h2><span class="n">3</span>Exact factors and friendly ones</h2>
+  <p>Some factors are exact by definition (1 inch is exactly 2.54 cm). Others have long decimals. For quick estimates in your head, round them to friendly numbers. The <b>≈</b> sign means “about equal to.”</p>
+</section>
+<section class="wide">
+  <div class="card">
+    <table class="rt" id="factorTable"></table>
+  </div>
+</section>
+
+<!-- ===================== §4 Temperature ===================== -->
+<section class="prose">
+  <h2><span class="n">4</span>The one that isn’t proportional: temperature</h2>
+  <p>Not every conversion is a simple multiply. Water freezes at <b>0 °C</b>, but that’s <b>32 °F</b>. Zero doesn’t go with zero, so Celsius and Fahrenheit are <b>not</b> proportional. Doubling doesn’t work either: 10 °C is 50 °F, but 20 °C is 68 °F, not 100 °F.</p>
+  <p>The rule is <b>°F = 1.8 × °C + 32</b>. That “+ 32” is a starting amount, exactly like the taxi’s $3 fee in 1.B.5 and 1.B.6. The graph is a straight line, but it misses the origin.</p>
+</section>
+<section class="wide">
+  <div class="card" id="tempCard">
+    <div class="card-h">
+      <span class="tag">Compare</span><h3>Celsius vs. Fahrenheit</h3>
+      <span class="sub">Type a temperature in °C. The checks test whether it behaves like a proportional relationship.</span>
+    </div>
+    <div class="inputs">
+      <label class="field"><span>Temperature (°C)</span><input id="inC" type="text" inputmode="decimal" autocomplete="off" value="20"></label>
+    </div>
+    <div class="err" id="tErr"></div>
+    <div class="split2">
+      <svg class="nl" id="tempSvg" viewBox="0 0 700 400" role="img" aria-label="Celsius to Fahrenheit graph"></svg>
+      <div>
+        <div class="panel-label"><span>The three checks</span><span></span></div>
+        <ul class="checks" id="tChecks"></ul>
+        <div class="readout" id="tOut" style="margin-top:10px"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §5 In symbols ===================== -->
+<section class="prose">
+  <h2><span class="n">5</span>Now, in symbols</h2>
+  <p>In the explorer the customary amount was <i class="sym">x</i>, the metric amount was <i class="sym">y</i>, and the number in the machine was the conversion factor <i class="sym">k</i>. Converting is the same proportional rule from 1.B.5, run in either direction:</p>
+  <div class="math">\[ y = k \cdot x \qquad\qquad x = \frac{y}{k} \]<div class="cap">For inches and centimeters: \(\text{cm} = 2.54 \times \text{in}\) and \(\text{in} = \text{cm} \div 2.54\).</div></div>
+  <p>Because the relationship is proportional, any two measurements of the rulers form a <b>proportion</b>:</p>
+  <div class="math">\[ \frac{2.54\ \text{cm}}{1\ \text{in}} = \frac{30.48\ \text{cm}}{12\ \text{in}} \]<div class="cap">Both equal \(k = 2.54\) centimeters per inch. Temperature can’t do this: \(\tfrac{50}{10} \ne \tfrac{68}{20}\).</div></div>
+</section>
+
+<!-- ===================== §6 Where this goes ===================== -->
+<section class="prose">
+  <h2><span class="n">6</span>Where this goes</h2>
+  <ul class="goes">
+    <li><b>Next (1.B.8):</b> putting it all together to solve real problems: unit rates, recipes, maps, speeds, and conversions that take more than one step.</li>
+    <li><b>Later in this book:</b> chaining conversions (feet → inches → centimeters) by multiplying factors is called <b>dimensional analysis</b>, a core tool in science. Rewriting the same thing in different units is a first taste of a big idea in Linear Algebra: <b>change of basis</b>, describing the same object in a different coordinate system.</li>
+    <li><b>In the world:</b> reading a recipe from another country, running a 5K (about 3.1 miles), checking your luggage weight in kilograms, or understanding a weather report abroad.</li>
+  </ul>
+</section>
+
+<!-- ===================== §7 Vocabulary ===================== -->
+<section class="prose">
+  <h2><span class="n">7</span>Words to know</h2>
+  <div class="vocab">
+    <div class="term"><b>Proportional relationship</b>Two amounts where <i class="sym">y</i> = <i class="sym">k</i> · <i class="sym">x</i>. Length and weight conversions are proportional; temperature is not.</div>
+    <div class="term"><b>Constant of proportionality</b>The number <i class="sym">k</i>. In a unit conversion it’s the conversion factor: 2.54 cm per inch.</div>
+    <div class="term"><b>Proportion</b>A statement that two ratios are equal: 2.54/1 = 30.48/12.</div>
+    <div class="term"><b>Conversion factor</b>The number you multiply by to change units: how many of the new unit make 1 of the old.</div>
+    <div class="term"><b>Customary units</b>The US system: inches, feet, miles, ounces, pounds.</div>
+    <div class="term"><b>Metric units</b>The system used by most of the world and in science: centimeters, meters, kilometers, grams, kilograms.</div>
+    <div class="term"><b>≈ (approximately equal)</b>“About equal to.” 1 mile ≈ 1.6 km.</div>
+  </div>
+</section>
+
+<!-- ===================== Quiz ===================== -->
+<section class="prose"><h2><span class="n">8</span>Check yourself</h2>
+  <p>Three kinds of questions: convert an amount, find <i class="sym">k</i> from a pair of measurements, and decide whether a conversion table is proportional. Answers within about 2% count, so friendly factors are fine.</p>
+</section>
+<section class="wide">
+  <div class="card" id="quiz">
+    <div class="card-h"><span class="tag">Quiz</span><h3 id="qTitle"></h3><span class="score" id="score">Score: 0 / 0</span></div>
+    <div class="qtext" id="qText"></div>
+    <svg class="nl" id="qSvg" viewBox="0 0 560 170" role="img" aria-label="Quiz machine" style="max-width:640px;margin:0 auto"></svg>
+    <table class="rt" id="qTable" style="max-width:520px;margin:0 auto"></table>
+    <div class="inputs">
+      <label class="field" id="qField"><span id="qLabel"></span><input id="qIn" type="text" inputmode="decimal" autocomplete="off"></label>
+      <div class="choice" id="qChoice"><button id="qYes">Proportional</button><button id="qNo">Not proportional</button></div>
+      <div class="row" style="margin:0">
+        <button class="primary" id="qCheck">Check</button>
+        <button id="qShow">Show answer</button>
+        <button id="qNew">New question</button>
+      </div>
+    </div>
+    <div class="err" id="qErr"></div>
+    <div class="feedback" id="qFb" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ===================== Pager (filled in by the shared navigation) ===================== -->
+<nav class="wide">
+  <div class="pager"></div>
+  <div class="meta">1.B.7 · Prerequisites: 1.B.4, 1.B.5, 1.B.6 · Leads to: 1.B.8, Science (dimensional analysis), Linear Algebra (change of basis)</div>
+</nav>
+</main>
+
+<script>
+/* =====================================================================
+   1. HELPERS
+   ===================================================================== */
+const NS = 'http://www.w3.org/2000/svg';
+const $ = id => document.getElementById(id);
+function mk(tag, attrs, parent){                        // create an SVG element with attributes
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function txt(parent, x, y, s, cls, extra){              // create an SVG text element
+  const t = mk('text', Object.assign({ x, y, class: cls || '' }, extra || {}), parent);
+  t.textContent = s;
+  return t;
+}
+const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+const ease = t => t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+// Round for display: up to `d` decimals, no trailing zeros, never "-0"
+function fmt(x, d){
+  if (d === undefined) d = Math.abs(x) >= 100 ? 1 : 2;
+  const r = Math.round(x * Math.pow(10, d)) / Math.pow(10, d);
+  return (Object.is(r, -0) ? 0 : r).toString();
+}
+function parseNum(s){                                    // integers, decimals, fractions, mixed numbers, ½
+  s = String(s).trim().replace(/[−–]/g, '-').replace(/^\+/, '').replace(/,/g, '');
+  s = s.replace(/^(\d+)\s*½$/, '$1.5').replace(/^½$/, '0.5');
+  if (/^-?\d+(\.\d+)?$|^-?\.\d+$/.test(s)) return parseFloat(s);
+  let m = s.match(/^(\d+)\s+(\d+)\s*\/\s*(\d+)$/);
+  if (m && +m[3] !== 0) return +m[1] + (+m[2]) / (+m[3]);
+  m = s.match(/^(-?\d+)\s*\/\s*(\d+)$/);
+  if (m && +m[2] !== 0) return +m[1] / +m[2];
+  return NaN;
+}
+function niceStep(range, n){                             // 1, 2, 2.5, 5 × a power of ten
+  const raw = range / n, p = Math.pow(10, Math.floor(Math.log10(raw)));
+  for (const m of [1, 2, 2.5, 5, 10]) if (m * p >= raw - 1e-9) return m * p;
+  return 10 * p;
+}
+const relClose = (v, t, tol) => Math.abs(v - t) <= tol * Math.max(Math.abs(t), 1e-9);
+
+const svgCss = document.createElement('style');
+svgCss.textContent = `
+  .rbodyCu{fill:var(--cu-soft);stroke:var(--cu);stroke-width:1.5} .rbodyMe{fill:var(--me-soft);stroke:var(--me);stroke-width:1.5}
+  .tkCu{stroke:var(--cu);stroke-width:1.3} .tkMe{stroke:var(--me);stroke-width:1.3}
+  .lbCu{fill:var(--cu);font:500 12px var(--mono);text-anchor:middle} .lbMe{fill:var(--me);font:500 12px var(--mono);text-anchor:middle}
+  .unitCu{fill:var(--cu);font:600 13px var(--sans)} .unitMe{fill:var(--me);font:600 13px var(--sans)}
+  .band{fill:var(--k);opacity:.13} .cursor{stroke:var(--k);stroke-width:3}
+  .rd{font:700 15px var(--mono);paint-order:stroke;stroke:var(--paper);stroke-width:5px}
+  .rdCu{fill:var(--cu)} .rdMe{fill:var(--me)}
+  .sym{font:italic 600 17px var(--serif)} .sCu{fill:var(--cu)} .sMe{fill:var(--me)} .sK{fill:var(--k)}
+  .pill{stroke-width:2} .pCu{fill:var(--cu-soft);stroke:var(--cu)} .pMe{fill:var(--me-soft);stroke:var(--me)}
+  .pillTxt{font:700 17px var(--mono);text-anchor:middle} .pillSub{font:500 12px var(--sans);text-anchor:middle;fill:var(--muted)}
+  .mbox{fill:var(--k-soft);stroke:var(--k);stroke-width:2.5}
+  .mTxt{fill:var(--k);font:700 21px var(--mono);text-anchor:middle}
+  .arr{stroke:var(--muted);stroke-width:2;fill:none} .arrH{fill:var(--muted)}
+  .qmark{fill:var(--bad);font:700 20px var(--mono);text-anchor:middle}
+  .grid{stroke:var(--line);stroke-width:1} .axis{stroke:var(--ink);stroke-width:1.5}
+  .tlX{fill:var(--cu);font:500 11.5px var(--mono);text-anchor:middle} .tlY{fill:var(--me);font:500 11.5px var(--mono);text-anchor:end}
+  .atitle{font:600 12.5px var(--sans)}
+  .gline{stroke:var(--k);stroke-width:3;fill:none} .gpt{fill:var(--k);stroke:var(--paper);stroke-width:2}
+  .guide{stroke:var(--muted);stroke-width:1.3;stroke-dasharray:4 3}
+  .tline{stroke:var(--temp);stroke-width:3} .tpt{fill:var(--temp);stroke:var(--paper);stroke-width:2}
+  .pline{stroke:var(--k);stroke-width:2;stroke-dasharray:6 5;opacity:.7}
+  .plbl{font:600 12.5px var(--sans);paint-order:stroke;stroke:var(--bg);stroke-width:5px}
+`;
+document.head.appendChild(svgCss);
+
+/* =====================================================================
+   2. UNIT PAIRS (customary x  ->  metric y = k·x)
+   ===================================================================== */
+const PAIRS = [
+  { id: 'in', cu: ['inch', 'inches', 'in'], me: ['centimeter', 'centimeters', 'cm'], k: 2.54,        exact: true,  friendly: 2.5,  back: 0.3937,  backFriendly: '0.4', xmax: 12, def: 10,  kind: 'length' },
+  { id: 'ft', cu: ['foot', 'feet', 'ft'],     me: ['meter', 'meters', 'm'],          k: 0.3048,      exact: true,  friendly: 0.3,  back: 3.2808,  backFriendly: '3.3', xmax: 10, def: 6,   kind: 'length' },
+  { id: 'mi', cu: ['mile', 'miles', 'mi'],    me: ['kilometer', 'kilometers', 'km'], k: 1.609344,    exact: true,  friendly: 1.6,  back: 0.6214,  backFriendly: '0.6', xmax: 10, def: 5,   kind: 'length' },
+  { id: 'lb', cu: ['pound', 'pounds', 'lb'],  me: ['kilogram', 'kilograms', 'kg'],   k: 0.45359237,  exact: true,  friendly: 0.45, back: 2.2046,  backFriendly: '2.2', xmax: 20, def: 10,  kind: 'weight' },
+  { id: 'oz', cu: ['ounce', 'ounces', 'oz'],  me: ['gram', 'grams', 'g'],            k: 28.349523125, exact: true, friendly: 28,   back: 0.03527, backFriendly: '0.035', xmax: 16, def: 8, kind: 'weight' },
+];
+const P = id => PAIRS.find(p => p.id === id);
+const nm = (p, which, v) => p[which][Math.abs(v - 1) < 1e-9 ? 0 : 1];      // singular/plural unit name
+
+/* =====================================================================
+   3. TWIN RULERS
+   ===================================================================== */
+// Ticks for one ruler: major step with labels, minor steps between
+function rulerTicks(max){
+  const major = niceStep(max, 10);
+  const lead = Math.round(major / Math.pow(10, Math.floor(Math.log10(major))));
+  const minorN = lead === 1 ? 4 : lead === 2 ? 4 : 5;
+  return { major, minor: major / minorN };
+}
+// Draw both rulers, a shaded band from 0 to the current length, and both readings
+function renderRulers(svg, p, xNow, showVals){
+  svg.innerHTML = '';
+  const g = mk('g', {}, svg);
+  const L = 70, R = 970, xmax = Math.max(p.xmax, Math.ceil(xNow * 1.1)), ymax = xmax * p.k;
+  const Xc = v => L + v / xmax * (R - L);                  // customary value -> pixel
+  const Xm = v => L + (v / p.k) / xmax * (R - L);          // metric value -> same physical pixel
+  // Ruler bodies: customary on top (ticks hang down), metric below (ticks point up); they meet at the middle
+  mk('rect', { x: L - 14, y: 34, width: R - L + 28, height: 72, rx: 6, class: 'rbodyCu' }, g);
+  mk('rect', { x: L - 14, y: 112, width: R - L + 28, height: 72, rx: 6, class: 'rbodyMe' }, g);
+  txt(g, 8, 76, p.cu[2], 'unitCu'); txt(g, 8, 154, p.me[2], 'unitMe');
+  const tc = rulerTicks(xmax), tm = rulerTicks(ymax);
+  for (let v = 0; v <= xmax + 1e-9; v += tc.minor){
+    const major = Math.abs(v / tc.major - Math.round(v / tc.major)) < 1e-6;
+    mk('line', { x1: Xc(v), y1: 106, x2: Xc(v), y2: 106 - (major ? 26 : 12), class: 'tkCu' }, g);
+    if (major) txt(g, Xc(v), 58, fmt(v), 'lbCu');
+  }
+  for (let v = 0; v <= ymax + 1e-9; v += tm.minor){
+    const major = Math.abs(v / tm.major - Math.round(v / tm.major)) < 1e-6;
+    mk('line', { x1: Xm(v), y1: 112, x2: Xm(v), y2: 112 + (major ? 26 : 12), class: 'tkMe' }, g);
+    if (major) txt(g, Xm(v), 166, fmt(v), 'lbMe');
+  }
+  // The measured length: a band across both rulers and a cursor line
+  if (xNow > 0){
+    mk('rect', { x: Xc(0), y: 34, width: Xc(xNow) - Xc(0), height: 150, class: 'band' }, g);
+    mk('line', { x1: Xc(xNow), y1: 22, x2: Xc(xNow), y2: 198, class: 'cursor' }, g);
+  }
+  if (showVals){
+    const right = Xc(xNow) > R - 120;                       // keep the readings inside the panel
+    const anchor = right ? 'end' : 'start', dx = right ? -8 : 8;
+    txt(g, Xc(xNow) + dx, 18, `x = ${fmt(xNow)} ${p.cu[2]}`, 'rd rdCu', { 'text-anchor': anchor });
+    txt(g, Xc(xNow) + dx, 216, `y = ${fmt(xNow * p.k)} ${p.me[2]}`, 'rd rdMe', { 'text-anchor': anchor });
+  }
+}
+
+/* =====================================================================
+   4. THE MACHINE (runs forward ×k or backward ÷k)
+   ===================================================================== */
+// dir 'fwd': customary -> ×k -> metric;  'back': metric -> ÷k -> customary. hide puts ? in 'in' | 'k' | 'out'
+function renderMachine(svg, p, x, dir, hide){
+  svg.innerHTML = '';
+  const g = mk('g', {}, svg);
+  const y = x * p.k, fwd = dir === 'fwd';
+  const pill = (cx, cls, val, sub, sym, symCls, hidden) => {
+    mk('rect', { x: cx - 72, y: 52, width: 144, height: 56, rx: 28, class: 'pill ' + cls }, g);
+    if (hidden) txt(g, cx, 88, '?', 'qmark'); else txt(g, cx, 87, val, 'pillTxt');
+    txt(g, cx, 130, sub, 'pillSub');
+    txt(g, cx, 38, sym, 'sym ' + symCls);
+  };
+  if (fwd) pill(88, 'pCu', fmt(x), p.cu[1], 'x', 'sCu', hide === 'in');
+  else     pill(88, 'pMe', fmt(y), p.me[1], 'y', 'sMe', hide === 'in');
+  mk('line', { x1: 162, y1: 80, x2: 200, y2: 80, class: 'arr' }, g); mk('polygon', { points: '206,80 196,74 196,86', class: 'arrH' }, g);
+  mk('rect', { x: 208, y: 40, width: 144, height: 80, rx: 14, class: 'mbox' }, g);
+  txt(g, 280, 30, 'k', 'sym sK');
+  txt(g, 280, 90, (fwd ? '× ' : '÷ ') + (hide === 'k' ? '?' : fmt(p.k, 4)), 'mTxt');
+  txt(g, 280, 140, `${p.me[2]} per ${p.cu[0]}`, 'pillSub');
+  mk('line', { x1: 354, y1: 80, x2: 392, y2: 80, class: 'arr' }, g); mk('polygon', { points: '398,80 388,74 388,86', class: 'arrH' }, g);
+  if (fwd) pill(472, 'pMe', fmt(y), p.me[1], 'y', 'sMe', hide === 'out');
+  else     pill(472, 'pCu', fmt(x), p.cu[1], 'x', 'sCu', hide === 'out');
+}
+
+/* =====================================================================
+   5. SMALL GRAPH  y = k·x
+   ===================================================================== */
+function renderGraph(svg, p, xNow){
+  svg.innerHTML = '';
+  const g = mk('g', {}, svg);
+  const W = 560, H = 300, L = 62, R = W - 20, T = 16, B = H - 46;
+  const xmax = Math.max(p.xmax, Math.ceil(xNow * 1.1)), ys = niceStep(xmax * p.k, 5), ymax = Math.ceil(xmax * p.k / ys) * ys;
+  const X = v => L + v / xmax * (R - L), Y = v => B - v / ymax * (B - T);
+  const xs = niceStep(xmax, 6);
+  for (let v = 0; v <= xmax + 1e-9; v += xs){ mk('line', { x1: X(v), y1: T, x2: X(v), y2: B, class: 'grid' }, g); txt(g, X(v), B + 16, fmt(v), 'tlX'); }
+  for (let v = 0; v <= ymax + 1e-9; v += ys){ mk('line', { x1: L, y1: Y(v), x2: R, y2: Y(v), class: 'grid' }, g); txt(g, L - 6, Y(v) + 4, fmt(v), 'tlY'); }
+  mk('line', { x1: L, y1: B, x2: R, y2: B, class: 'axis' }, g); mk('line', { x1: L, y1: B, x2: L, y2: T, class: 'axis' }, g);
+  txt(g, (L + R) / 2, B + 36, `x = ${p.cu[1]}`, 'atitle', { fill: 'var(--cu)', 'text-anchor': 'middle' });
+  txt(g, 0, 0, `y = ${p.me[1]}`, 'atitle', { fill: 'var(--me)', 'text-anchor': 'middle', transform: `translate(16 ${(T + B) / 2}) rotate(-90)` });
+  mk('line', { x1: X(0), y1: Y(0), x2: X(xmax), y2: Y(xmax * p.k), class: 'gline' }, g);
+  if (xNow > 0){
+    mk('line', { x1: X(xNow), y1: B, x2: X(xNow), y2: Y(xNow * p.k), class: 'guide' }, g);
+    mk('line', { x1: L, y1: Y(xNow * p.k), x2: X(xNow), y2: Y(xNow * p.k), class: 'guide' }, g);
+    mk('circle', { cx: X(xNow), cy: Y(xNow * p.k), r: 6.5, class: 'gpt' }, g);
+  }
+}
+
+/* =====================================================================
+   6. EXPLORER STATE, CONTROLS, ANIMATION
+   ===================================================================== */
+const ex = { p: 'in', dir: 'fwd', v: 10, e: 1, raf: 0, playing: false };
+PAIRS.forEach(p => {
+  const b = document.createElement('button');
+  b.className = 'preset'; b.textContent = `${p.cu[1]} ↔ ${p.me[1]}`; b.dataset.id = p.id;
+  b.onclick = () => { ex.p = p.id; ex.v = ex.dir === 'fwd' ? p.def : +fmt(p.def * p.k, 1); $('inV').value = fmt(ex.v); syncControls(); restart(); };
+  $('pairs').appendChild(b);
+});
+['fwd', 'back'].forEach(d => {
+  const b = document.createElement('button');
+  b.dataset.d = d;
+  b.onclick = () => {
+    if (ex.dir === d) return;
+    const p = P(ex.p), v = parseNum($('inV').value);
+    if (!isNaN(v)) ex.v = d === 'back' ? +fmt(v * p.k, 2) : +fmt(v / p.k, 2);   // keep the same physical length
+    ex.dir = d; $('inV').value = fmt(ex.v); syncControls(); restart();
+  };
+  $('dirs').appendChild(b);
+});
+function syncControls(){
+  const p = P(ex.p), fwd = ex.dir === 'fwd';
+  [...$('pairs').children].forEach(b => b.classList.toggle('on', b.dataset.id === ex.p));
+  [...$('dirs').children].forEach(b => {
+    b.classList.toggle('on', b.dataset.d === ex.dir);
+    b.textContent = b.dataset.d === 'fwd' ? `${p.cu[1]} → ${p.me[1]} (× k)` : `${p.me[1]} → ${p.cu[1]} (÷ k)`;
+  });
+  $('valLbl').innerHTML = fwd ? `${p.cu[1]} <i>x</i>` : `${p.me[1]} <i>y</i>`;
+  $('valField').className = 'field ' + (fwd ? 'fcu' : 'fme');
+  $('machCap').textContent = fwd ? 'customary → metric: multiply' : 'metric → customary: divide';
+}
+function readV(){
+  const v = parseNum($('inV').value), p = P(ex.p);
+  if (isNaN(v)){ $('exErr').textContent = 'Type an amount as a number.'; return false; }
+  const x = ex.dir === 'fwd' ? v : v / p.k;
+  if (v <= 0 || x > p.xmax * 4){ $('exErr').textContent = `Use an amount bigger than 0 and up to about ${fmt(ex.dir === 'fwd' ? p.xmax * 4 : p.xmax * 4 * p.k, 0)} ${ex.dir === 'fwd' ? p.cu[2] : p.me[2]}.`; return false; }
+  $('exErr').textContent = ''; ex.v = v; return true;
+}
+$('inV').addEventListener('input', () => { stopEx(); if (readV()){ ex.e = 0; drawEx(); } });
+$('inV').addEventListener('focus', e => e.target.select());
+$('inV').addEventListener('keydown', e => { if (e.key === 'Enter') playEx(); });
+
+function drawEx(){
+  const p = P(ex.p), fwd = ex.dir === 'fwd';
+  const x = fwd ? ex.v : ex.v / p.k, y = x * p.k;          // the full-length amounts
+  const xNow = x * ease(ex.e);                              // where the cursor is during the animation
+  renderRulers($('rulers'), p, xNow, ex.e > 0);
+  renderMachine($('machine'), p, x, ex.dir, ex.e < 1 ? 'out' : null);
+  renderGraph($('graph'), p, xNow);
+  $('eq').innerHTML = fwd
+    ? `<i>y</i> = <i style="color:var(--k)">k</i> · <i>x</i> → ${p.me[2]} = ${fmt(p.k, 4)} × ${p.cu[2]}`
+    : `<i>x</i> = <i>y</i> ÷ <i style="color:var(--k)">k</i> → ${p.cu[2]} = ${p.me[2]} ÷ ${fmt(p.k, 4)}`;
+  let h;
+  if (ex.e < 1){
+    h = `Measuring… the band covers the same length on both rulers.`;
+  } else if (fwd){
+    h = `<span class="cu">${fmt(x)} ${nm(p, 'cu', x)}</span> × ${fmt(p.k, 4)} = <span class="me">${fmt(y)} ${nm(p, 'me', y)}</span>. ` +
+        `Mental math: ${fmt(x)} × ${p.friendly} ≈ <b>${fmt(x * p.friendly)}</b>. ` +
+        (p.k > 1 ? `A ${p.me[0]} is smaller than a ${p.cu[0]}, so the metric number is bigger.` : `A ${p.me[0]} is bigger than a ${p.cu[0]}, so the metric number is smaller.`);
+  } else {
+    h = `<span class="me">${fmt(y)} ${nm(p, 'me', y)}</span> ÷ ${fmt(p.k, 4)} = <span class="cu">${fmt(x)} ${nm(p, 'cu', x)}</span>. ` +
+        `Mental math: ${fmt(y)} × ${p.backFriendly} ≈ <b>${fmt(y * parseFloat(p.backFriendly))}</b> (because 1 ${p.me[0]} ≈ ${p.backFriendly} ${p.cu[1]}). ` +
+        `Running the machine backwards means dividing by <i class="sym">k</i>.`;
+  }
+  $('exOut').innerHTML = h;
+}
+function playEx(){
+  if (ex.playing){ stopEx(); return; }
+  if (!readV()) return;
+  if (ex.e >= 1) ex.e = 0;
+  ex.playing = true; $('play').textContent = 'Pause';
+  let last = performance.now();
+  const step = now => {
+    ex.e = Math.min(1, ex.e + (now - last) / 1800); last = now;
+    drawEx();
+    if (ex.e < 1 && ex.playing) ex.raf = requestAnimationFrame(step); else stopEx();
+  };
+  ex.raf = requestAnimationFrame(step);
+}
+function stopEx(){ ex.playing = false; cancelAnimationFrame(ex.raf); $('play').textContent = ex.e >= 1 ? 'Replay' : 'Play'; }
+function restart(){ stopEx(); ex.e = 0; drawEx(); playEx(); }
+$('play').onclick = playEx;
+$('reset').onclick = () => { stopEx(); ex.e = 0; $('play').textContent = 'Play'; drawEx(); };
+
+/* =====================================================================
+   7. EVERYDAY OBJECT GALLERY (loads into the explorer)
+   ===================================================================== */
+const OBJECTS = [
+  { n: 'A sheet of notebook paper (long side)', p: 'in', dir: 'fwd', v: 11 },
+  { n: 'A school ruler', p: 'in', dir: 'fwd', v: 12 },
+  { n: 'A basketball hoop’s height', p: 'ft', dir: 'fwd', v: 10 },
+  { n: 'A 100-meter sprint', p: 'ft', dir: 'back', v: 100 },
+  { n: 'A 5K race', p: 'mi', dir: 'back', v: 5 },
+  { n: 'A marathon', p: 'mi', dir: 'fwd', v: 26.2 },
+  { n: 'A bag of flour', p: 'lb', dir: 'fwd', v: 5 },
+  { n: 'A newborn baby', p: 'lb', dir: 'fwd', v: 7.5 },
+  { n: 'A slice of bread', p: 'oz', dir: 'fwd', v: 1 },
+  { n: 'A chocolate bar', p: 'oz', dir: 'back', v: 100 },
+];
+$('gallery').innerHTML = OBJECTS.map((o, i) => {
+  const p = P(o.p), x = o.dir === 'fwd' ? o.v : o.v / p.k, y = x * p.k;
+  const a = o.dir === 'fwd' ? `${fmt(x)} ${p.cu[2]}` : `${fmt(y)} ${p.me[2]}`, b = o.dir === 'fwd' ? `${fmt(y)} ${p.me[2]}` : `${fmt(x)} ${p.cu[2]}`;
+  return `<button class="obj" data-i="${i}"><b>${o.n}</b><span class="v">${a} ≈ ${b}</span></button>`;
+}).join('');
+$('gallery').querySelectorAll('.obj').forEach(btn => btn.onclick = () => {
+  const o = OBJECTS[+btn.dataset.i];
+  Object.assign(ex, { p: o.p, dir: o.dir, v: o.v }); $('inV').value = fmt(o.v); syncControls(); restart();
+  $('explorer').scrollIntoView({ behavior: 'smooth', block: 'start' });
+});
+
+/* =====================================================================
+   8. FACTOR TABLE (exact and friendly)
+   ===================================================================== */
+$('factorTable').innerHTML = `<tr><th>Units</th><th>Exact factor <i>k</i></th><th>Friendly (mental math)</th><th>Going back (÷ <i>k</i>)</th></tr>` +
+  PAIRS.map(p => `<tr><td>${p.cu[1]} → ${p.me[1]}</td><td class="ck">1 ${p.cu[2]} = ${fmt(p.k, 4)}${p.id === 'oz' ? '…' : ''} ${p.me[2]}</td>` +
+    `<td>1 ${p.cu[2]} ≈ ${p.friendly} ${p.me[2]}</td><td>1 ${p.me[2]} ≈ ${p.backFriendly} ${p.cu[2]}</td></tr>`).join('');
+
+/* =====================================================================
+   9. TEMPERATURE (the non-example)
+   ===================================================================== */
+function drawTemp(){
+  const c = parseNum($('inC').value);
+  if (isNaN(c) || c < -20 || c > 100){ $('tErr').textContent = 'Type a temperature from −20 to 100 °C.'; return; }
+  $('tErr').textContent = '';
+  const F = v => 1.8 * v + 32;
+  const svg = $('tempSvg'); svg.innerHTML = ''; const g = mk('g', {}, svg);
+  const W = 700, H = 400, L = 70, R = W - 24, T = 20, B = H - 52;
+  const xmin = -20, xmax = 100, ymin = -20, ymax = 220;
+  const X = v => L + (v - xmin) / (xmax - xmin) * (R - L), Y = v => B - (v - ymin) / (ymax - ymin) * (B - T);
+  for (let v = xmin; v <= xmax; v += 20){ mk('line', { x1: X(v), y1: T, x2: X(v), y2: B, class: 'grid' }, g); txt(g, X(v), B + 16, v + '°', 'tlX', { style: 'fill:var(--ink)' }); }
+  for (let v = ymin; v <= ymax; v += 40){ mk('line', { x1: L, y1: Y(v), x2: R, y2: Y(v), class: 'grid' }, g); txt(g, L - 6, Y(v) + 4, v + '°', 'tlY', { style: 'fill:var(--temp)' }); }
+  mk('line', { x1: X(0), y1: T, x2: X(0), y2: B, class: 'axis' }, g); mk('line', { x1: L, y1: Y(0), x2: R, y2: Y(0), class: 'axis' }, g);
+  txt(g, (L + R) / 2, B + 38, '°C (Celsius)', 'atitle', { 'text-anchor': 'middle', fill: 'var(--ink)' });
+  txt(g, 0, 0, '°F (Fahrenheit)', 'atitle', { 'text-anchor': 'middle', fill: 'var(--temp)', transform: `translate(16 ${(T + B) / 2}) rotate(-90)` });
+  // A proportional line through the origin for comparison (y = 1.8x), then the real temperature line
+  mk('line', { x1: X(xmin), y1: Y(1.8 * xmin), x2: X(xmax), y2: Y(1.8 * xmax), class: 'pline' }, g);
+  txt(g, X(42), Y(1.8 * 42) + 26, 'if it were proportional: °F = 1.8 × °C', 'plbl', { style: 'fill:var(--k)' });
+  mk('line', { x1: X(xmin), y1: Y(F(xmin)), x2: X(xmax), y2: Y(F(xmax)), class: 'tline' }, g);
+  mk('circle', { cx: X(0), cy: Y(32), r: 7, class: 'tpt' }, g);
+  txt(g, X(0) + 10, Y(32) - 10, '0 °C = 32 °F', 'plbl', { style: 'fill:var(--temp)' });
+  mk('circle', { cx: X(c), cy: Y(F(c)), r: 7, class: 'tpt' }, g);
+  txt(g, X(c) - 10, Y(F(c)) - 12, `${fmt(c)} °C = ${fmt(F(c))} °F`, 'plbl', { style: 'fill:var(--temp)', 'text-anchor': 'end' });
+  const c2 = c * 2;
+  $('tChecks').innerHTML = [
+    ['Straight line?', true, 'every 1 °C adds the same 1.8 °F'],
+    ['Zero goes with zero?', false, '0 °C is 32 °F, not 0 °F'],
+    ['Doubling doubles?', false, c === 0 ? 'try a temperature other than 0' : `${fmt(c)} °C → ${fmt(F(c))} °F, but ${fmt(c2)} °C → ${fmt(F(c2))} °F, not ${fmt(2 * F(c))} °F`],
+  ].map(([l, ok, w]) => `<li><span class="${ok ? 'y' : 'n'}">${ok ? '✓' : '✗'}</span><span><b>${l}</b> ${w}</span></li>`).join('');
+  $('tOut').innerHTML = `<b style="color:var(--bad)">Not proportional.</b> °F = 1.8 × ${fmt(c)} + 32 = <b>${fmt(F(c))}</b>. The +32 lifts the line off the origin, like the taxi’s starting fee. ${c ? `And ${fmt(F(c))} ÷ ${fmt(c)} = ${fmt(F(c) / c)}, which changes with the temperature, so there’s no single <i class="sym">k</i>.` : ''}`;
+}
+$('inC').addEventListener('input', drawTemp);
+$('inC').addEventListener('focus', e => e.target.select());
+
+/* =====================================================================
+   10. QUIZ
+   ===================================================================== */
+const rnd = arr => arr[Math.floor(Math.random() * arr.length)];
+const qz = { counted: false, done: false, right: 0, total: 0 };
+const NICE = { in: [4, 5, 6, 8, 10, 12, 20], ft: [3, 5, 6, 10, 20], mi: [2, 3, 5, 10, 26], lb: [2, 5, 10, 20, 50], oz: [2, 4, 8, 10, 16] };
+const NICE_BACK = { in: [10, 20, 30, 50, 100], ft: [2, 3, 5, 10, 100], mi: [5, 10, 20, 42, 100], lb: [1, 2, 5, 10, 25], oz: [50, 100, 200, 250, 500] };
+function newQuestion(){
+  Object.assign(qz, { counted: false, done: false });
+  $('qErr').textContent = ''; $('qFb').className = 'feedback'; $('qFb').innerHTML = ''; $('qIn').value = '';
+  qz.type = rnd(['conv', 'conv', 'findk', 'prop']);
+  const isProp = qz.type === 'prop';
+  $('qField').style.display = isProp ? 'none' : ''; $('qCheck').style.display = isProp ? 'none' : '';
+  $('qChoice').style.display = isProp ? '' : 'none';
+  $('qSvg').style.display = isProp ? 'none' : ''; $('qTable').style.display = isProp ? '' : 'none';
+  if (qz.type === 'conv'){
+    qz.p = rnd(PAIRS).id; const p = P(qz.p);
+    qz.dir = Math.random() < 0.55 ? 'fwd' : 'back';
+    if (qz.dir === 'fwd'){ qz.x = rnd(NICE[p.id]); qz.ans = qz.x * p.k; }
+    else { qz.yv = rnd(NICE_BACK[p.id]); qz.x = qz.yv / p.k; qz.ans = qz.x; }
+    $('qTitle').textContent = 'Convert the amount';
+    $('qText').innerHTML = qz.dir === 'fwd'
+      ? `Convert <b class="cu">${fmt(qz.x)} ${nm(p, 'cu', qz.x)}</b> to <b class="me">${p.me[1]}</b>. (1 ${p.cu[0]} = ${fmt(p.k, 4)} ${p.me[1]}.)`
+      : `Convert <b class="me">${fmt(qz.yv)} ${nm(p, 'me', qz.yv)}</b> to <b class="cu">${p.cu[1]}</b>. (1 ${p.cu[0]} = ${fmt(p.k, 4)} ${p.me[1]}.)`;
+    $('qLabel').innerHTML = qz.dir === 'fwd' ? p.me[1] : p.cu[1];
+    $('qField').className = 'field ' + (qz.dir === 'fwd' ? 'fme' : 'fcu');
+    renderMachine($('qSvg'), p, qz.x, qz.dir, 'out');
+  } else if (qz.type === 'findk'){
+    qz.p = rnd(PAIRS).id; const p = P(qz.p);
+    qz.x = rnd(NICE[p.id]); qz.y = +fmt(qz.x * p.k, 3);
+    $('qTitle').textContent = 'Find k from a pair';
+    $('qText').innerHTML = `A measurement shows <b class="cu">${fmt(qz.x)} ${nm(p, 'cu', qz.x)}</b> = <b class="me">${fmt(qz.y, 3)} ${p.me[1]}</b>. What is the conversion factor <i class="sym">k</i>, in ${p.me[1]} per ${p.cu[0]}?`;
+    $('qLabel').innerHTML = `<i>k</i> (${p.me[2]} per ${p.cu[2]})`; $('qField').className = 'field fk';
+    renderMachine($('qSvg'), p, qz.x, 'fwd', 'k');
+  } else {
+    qz.kind = rnd(['len', 'wt', 'temp', 'temp']);
+    $('qTitle').textContent = 'Proportional or not?';
+    if (qz.kind === 'temp'){
+      const cs = rnd([[5, 10, 20, 30], [10, 20, 40, 50], [10, 15, 25, 35]]);
+      qz.rows = cs.map(c => [c, 1.8 * c + 32]); qz.xl = '°C'; qz.yl = '°F';
+    } else {
+      const p = qz.kind === 'len' ? P(rnd(['in', 'mi', 'ft'])) : P(rnd(['lb', 'oz']));
+      qz.rows = NICE[p.id].slice(0, 4).map(x => [x, +fmt(x * p.k, 2)]); qz.xl = p.cu[2]; qz.yl = p.me[2]; qz.pp = p;
+    }
+    $('qText').innerHTML = `Is this conversion table proportional?`;
+    drawPropTable(false);
+  }
+}
+function drawPropTable(reveal){
+  let h = `<tr><th><i>x</i> (${qz.xl})</th><th><i>y</i> (${qz.yl})</th>${reveal ? '<th><i>y</i> ÷ <i>x</i></th>' : ''}</tr>`;
+  const k0 = qz.rows[0][1] / qz.rows[0][0];
+  qz.rows.forEach(r => { const q = r[1] / r[0]; h += `<tr><td class="ccu">${fmt(r[0])}</td><td class="cme">${fmt(r[1])}</td>${reveal ? `<td class="${relClose(q, k0, 0.003) ? 'good' : 'bad'}">${fmt(q, 3)}</td>` : ''}</tr>`; });
+  $('qTable').innerHTML = h;
+}
+function countQ(ok){ if (qz.counted) return; qz.counted = true; qz.total++; if (ok) qz.right++; $('score').textContent = `Score: ${qz.right} / ${qz.total}`; }
+function checkQ(){
+  const v = parseNum($('qIn').value);
+  if ($('qIn').value.trim() === '' || isNaN(v)){ $('qErr').textContent = 'Type a number (decimals like 25.4 are fine).'; return; }
+  $('qErr').textContent = '';
+  const p = P(qz.p); let ok = false, msg;
+  if (qz.type === 'conv'){
+    const fwd = qz.dir === 'fwd', given = fwd ? qz.x : qz.yv, wrongWay = fwd ? given / p.k : given * p.k;
+    if (relClose(v, qz.ans, 0.02)){
+      ok = true;
+      msg = `<b>Right${relClose(v, qz.ans, 0.003) ? '' : ' (close enough for a friendly factor)'}.</b> ${fwd ? `${fmt(given)} × ${fmt(p.k, 4)}` : `${fmt(given)} ÷ ${fmt(p.k, 4)}`} = <b>${fmt(qz.ans)}</b> ${fwd ? p.me[1] : p.cu[1]}.`;
+    } else if (relClose(v, wrongWay, 0.02)){
+      msg = `<b>Wrong direction: you ${fwd ? 'divided' : 'multiplied'}.</b> ${fwd ? `${p.cu[1]} → ${p.me[1]} runs the machine forward: multiply by ${fmt(p.k, 4)}.` : `${p.me[1]} → ${p.cu[1]} runs the machine backward: divide by ${fmt(p.k, 4)}.`} ` +
+            `Check: 1 ${p.me[0]} is ${p.k > 1 ? 'smaller' : 'bigger'} than 1 ${p.cu[0]}, so the same ${p.kind} is always ${p.k > 1 ? 'more' : 'fewer'} ${p.me[1]} than ${p.cu[1]}.`;
+    } else if (relClose(v, given, 0.001)){
+      msg = `<b>That’s the amount you started with.</b> Converting changes the number because the unit size changes.`;
+    } else {
+      msg = `<b>Not quite.</b> ${fwd ? 'Multiply' : 'Divide'} ${fmt(given)} by <i class="sym">k</i> = ${fmt(p.k, 4)}.`;
+    }
+  } else {
+    if (relClose(v, p.k, 0.01)){ ok = true; msg = `<b>Right.</b> <i class="sym">k</i> = ${fmt(qz.y, 3)} ÷ ${fmt(qz.x)} = <b>${fmt(p.k, 4)}</b> ${p.me[1]} per ${p.cu[0]}.`; }
+    else if (relClose(v, 1 / p.k, 0.01)) msg = `<b>That’s flipped: ${p.cu[1]} per ${p.me[0]}.</b> <i class="sym">k</i> is metric per 1 customary: divide the ${p.me[1]} by the ${p.cu[1]}.`;
+    else if (relClose(v, qz.y, 0.001)) msg = `<b>That’s the total, not the amount for one ${p.cu[0]}.</b> Divide by ${fmt(qz.x)}.`;
+    else msg = `<b>Not quite.</b> Find how many ${p.me[1]} go with <b>one</b> ${p.cu[0]}: divide ${fmt(qz.y, 3)} by ${fmt(qz.x)}.`;
+  }
+  countQ(ok);
+  if (ok){ qz.done = true; renderMachine($('qSvg'), p, qz.x, qz.type === 'findk' ? 'fwd' : qz.dir, null); }
+  $('qFb').className = 'feedback ' + (ok ? 'ok' : 'bad'); $('qFb').innerHTML = msg;
+}
+function explainProp(){
+  if (qz.kind === 'temp') return `Temperature isn’t proportional: <i class="sym">y</i> ÷ <i class="sym">x</i> changes from row to row (see the red cells), because °F = 1.8 × °C + 32. The +32 means 0 °C goes with 32 °F, not 0.`;
+  return `Every row gives the same <i class="sym">y</i> ÷ <i class="sym">x</i> = ${fmt(qz.pp.k, 4)}, the conversion factor. Length and weight conversions are always proportional: 0 goes with 0.`;
+}
+function answerProp(yes){
+  if (qz.done) return;
+  const ok = (qz.kind !== 'temp') === yes;
+  countQ(ok); qz.done = true; drawPropTable(true);
+  $('qFb').className = 'feedback ' + (ok ? 'ok' : 'bad'); $('qFb').innerHTML = `<b>${ok ? 'Right.' : 'Not this time.'}</b> ${explainProp()}`;
+}
+function showQ(){
+  countQ(false); qz.done = true; $('qErr').textContent = '';
+  const fb = $('qFb'); fb.className = 'feedback info';
+  if (qz.type === 'prop'){ drawPropTable(true); fb.innerHTML = explainProp(); return; }
+  const p = P(qz.p);
+  renderMachine($('qSvg'), p, qz.x, qz.type === 'findk' ? 'fwd' : qz.dir, null);
+  if (qz.type === 'conv') fb.innerHTML = qz.dir === 'fwd' ? `${fmt(qz.x)} × ${fmt(p.k, 4)} = <b>${fmt(qz.ans)}</b> ${p.me[1]}.` : `${fmt(qz.yv)} ÷ ${fmt(p.k, 4)} = <b>${fmt(qz.ans)}</b> ${p.cu[1]}.`;
+  else fb.innerHTML = `<i class="sym">k</i> = ${fmt(qz.y, 3)} ÷ ${fmt(qz.x)} = <b>${fmt(p.k, 4)}</b> ${p.me[1]} per ${p.cu[0]}.`;
+}
+$('qCheck').onclick = checkQ; $('qYes').onclick = () => answerProp(true); $('qNo').onclick = () => answerProp(false);
+$('qShow').onclick = showQ; $('qNew').onclick = newQuestion;
+$('qIn').addEventListener('input', () => { $('qErr').textContent = ''; });
+$('qIn').addEventListener('focus', e => e.target.select());
+$('qIn').addEventListener('keydown', e => { if (e.key === 'Enter') checkQ(); });
+
+/* =====================================================================
+   11. START
+   ===================================================================== */
+$('inV').value = '10'; syncControls(); ex.e = 1; drawEx(); $('play').textContent = 'Replay';
+drawTemp();
+newQuestion();
+</script>
+</body>
+</html>
