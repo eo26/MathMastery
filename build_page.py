@@ -19,5 +19,9 @@ nav = open('shared/toc.js').read() + '\n' + open('shared/nav.js').read()
 assert body.rstrip().endswith('</html>'), 'body.html must end with </body></html>'
 body = body.replace('</body>', f'<script>\n{nav}</script>\n</body>')   # navigation runs after the page's own script
 
-open(f'{pid}/index.html', 'w').write(head + '\n' + body)
-print('built', pid, '(site)' if site else '(artifact)')
+# Site builds go in the page folder (committed to GitHub); artifact builds go in _artifact/ (ignored by git)
+import os
+out = f'{pid}/index.html' if site else f'_artifact/{pid}/index.html'
+os.makedirs(os.path.dirname(out), exist_ok=True)
+open(out, 'w').write(head + '\n' + body)
+print('built', out)

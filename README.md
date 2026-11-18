@@ -21,7 +21,7 @@ Written for students from middle school through PhD. Designed for desktop browse
 ```bash
 python3 build_all.py --site     # build every page for this site (relative links)
 python3 make_home.py            # rebuild the home page from shared/toc.js
-python3 build_all.py            # build for publishing as Claude artifacts instead
+python3 build_all.py            # build Claude-artifact versions into _artifact/ (not committed)
 ```
 
 `build_page.py <folder> "<title>" [--site]` builds a single page. `pages.json` lists every page's folder,
