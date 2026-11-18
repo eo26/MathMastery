@@ -1,0 +1,642 @@
+<style>
+/* ===================== Page-specific styles (1.B.2) ===================== */
+/* the start a and the moving line = purple; the stretch factor m = teal; 0 (the fixed point) = ink; a slide (from 1.B.1) = orange */
+:root{ --m:#0F8A7A; --m-soft:#CFEFE9; --slide:#D85A30; --copyA:#7F77DD; --copyB:#B9B3F0; }
+@media (prefers-color-scheme:dark){ :root{ --m:#5DCAB5; --m-soft:#123b35; --slide:#F0997B; --copyA:#9E97EC; --copyB:#5E57A8; } }
+.mm{color:var(--m);font-weight:700}
+.field.fm input{border-color:var(--m)}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+.checks{list-style:none;padding:0;margin:0;font-size:14.5px}
+.checks li{padding:8px 0;border-bottom:1px solid var(--line);display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:8px;align-items:baseline}
+.checks li.h{font:600 11px var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.checks .y{color:var(--ok);font-weight:700}.checks .n{color:var(--bad);font-weight:700}
+.signs{border-collapse:separate;border-spacing:0;font:16px var(--mono);margin:10px auto;background:var(--paper);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.signs th,.signs td{padding:10px 18px;text-align:center;border-bottom:1px solid var(--line)}
+.signs tr:last-child td{border-bottom:none}
+.signs th{font:600 12px var(--sans);color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.choice{display:flex;gap:8px;margin:0}.choice button{min-width:150px}
+.qtext{font:17px/1.55 var(--serif);margin:4px 0 10px}
+</style>
+
+<!-- ===================== Top bar ===================== -->
+<div class="topbar"><div class="topbar-in">
+  <span class="brand">Math<b>Mastery</b></span>
+  <span class="crumbs">Chapter 1 · Numbers &amp; Arithmetic › Basics</span>
+  <span class="pid">1.B.2</span>
+</div></div>
+
+<!-- ===================== Hero ===================== -->
+<header class="prose hero">
+  <div class="kicker">Chapter 1 · Numbers &amp; Arithmetic</div>
+  <h1>Multiplication as Stretching</h1>
+  <p class="dek">Adding slides the whole number line. Multiplying stretches it, like a rubber band pinned at 0. That one picture explains why ×½ shrinks, why ×0 collapses everything, and why a negative times a negative is positive.</p>
+  <div class="tiers" aria-label="Tier">
+    <span class="tier on">Basics <small>you are here</small></span>
+    <span class="tier">Undergraduate</span>
+    <span class="tier">Masters</span>
+  </div>
+  <div class="goals">
+    <h3>On this page</h3>
+    <ul>
+      <li>See multiplying by <i class="sym">m</i> as <b>stretching the whole line</b> around 0, which never moves.</li>
+      <li>See ×3 as <b>three copies</b> laid end to end: repeated adding and stretching are the same thing.</li>
+      <li>Understand shrinking (×½), doing nothing (×1), collapsing (×0) and <b>flipping</b> (×−1).</li>
+      <li>Tell a <b>slide</b> from a <b>stretch</b>, and explain why (−) × (−) = +.</li>
+    </ul>
+  </div>
+</header>
+
+<main>
+<!-- ===================== §1 Three copies ===================== -->
+<section class="prose">
+  <h2><span class="n">1</span>Three copies of 2</h2>
+  <p>You probably first met <b>3 × 2</b> as “three groups of 2”: 2 + 2 + 2 = 6. On the number line from 1.B.1, that’s three hops of 2, laid end to end, starting at 0. The result lands at 6.</p>
+  <p>Now picture the whole line made of rubber, pinned down at 0. Grab it and stretch it so that every distance from 0 becomes three times as long. The point that was at 2 ends up at 6, because 6 is three times as far from 0. <em class="key">Stretching by 3 and laying down three copies give exactly the same answer.</em> The stretch picture has one big advantage: it keeps working for numbers like ½ and −1, where “three groups of” stops making sense.</p>
+  <p>The number you stretch by is called the <b>stretch factor</b>. We’ll call it <i class="sym">m</i> (for multiplier), the starting point <i class="sym">a</i>, and where it lands <i class="sym">b</i>.</p>
+</section>
+
+<!-- ===================== Explorer ===================== -->
+<section class="wide">
+  <div class="card" id="explorer">
+    <div class="card-h">
+      <span class="tag">Explore</span><h3>The rubber-band number line</h3>
+      <span class="sub">Pick a preset or type a start <i class="sym">a</i> and a stretch factor <i class="sym">m</i>, then press Play. Tap any tick on the moving line to follow a second point.</span>
+    </div>
+    <div class="row" id="presets"></div>
+    <div class="desc" id="presetDesc"></div>
+    <div class="inputs">
+      <label class="field start"><span>Start <i>a</i></span><input id="inA" type="text" inputmode="decimal" autocomplete="off"></label>
+      <label class="field fm"><span>Stretch <i>m</i></span><input id="inM" type="text" inputmode="decimal" autocomplete="off"></label>
+      <div class="eq" id="eq"></div>
+      <div class="row" style="margin:0"><button class="primary" id="play">Play</button><button id="reset">Reset</button></div>
+    </div>
+    <div class="err" id="exErr"></div>
+    <div class="panel-label"><span>Before</span><span>the line at rest</span></div>
+    <svg class="nl" id="exBefore" viewBox="0 0 720 104" role="img" aria-label="Before"></svg>
+    <div class="panel-label"><span>After</span><span>moving line stretched over a fixed ruler</span></div>
+    <svg class="nl clickable" id="exAfter" viewBox="0 0 720 214" role="img" aria-label="After: the line stretches"></svg>
+    <div class="readout" id="exOut" aria-live="polite"></div>
+    <div class="legend">
+      <span><i class="sw pt"></i>the tracked point (<i class="sym">a</i> → <i class="sym">b</i>)</span>
+      <span><i class="sw mv"></i>moving line</span>
+      <span><i class="sw rl"></i>fixed ruler</span>
+      <span><i class="sw" style="background:linear-gradient(90deg,var(--copyA) 50%,var(--copyB) 50%);border-radius:3px;width:26px;height:10px"></i>copies of <i class="sym">a</i> laid end to end</span>
+      <span><i class="sw" style="background:var(--ink);width:10px;height:10px"></i>0, the pin that never moves</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §2 What to notice ===================== -->
+<section class="prose">
+  <p>Try every preset, then look for these things:</p>
+  <ol class="notice">
+    <li><b>0 never moves.</b> It’s the pin. Every other point moves away from 0 (or toward it), but 0 stays exactly where it was. This is the big difference from adding.</li>
+    <li><b>Spacing changes, evenly.</b> After ×2, every gap between ticks is twice as wide, everywhere. The line stretches the same amount all along its length.</li>
+    <li><b>Multiplying can make things smaller.</b> ×½ squeezes every point halfway toward 0. Any stretch factor between 0 and 1 shrinks.</li>
+    <li><b>×1 does nothing, ×0 collapses everything.</b> ×1 is the do-nothing stretch. ×0 squashes the whole line onto the single point 0: every number times 0 is 0.</li>
+    <li><b>A negative stretch flips.</b> ×−1 sends every point to its mirror image on the other side of 0. ×−2 flips <i>and</i> doubles.</li>
+  </ol>
+</section>
+
+<!-- ===================== §3 Slide vs stretch ===================== -->
+<section class="prose">
+  <h2><span class="n">2</span>Slide or stretch?</h2>
+  <p>In 1.B.1, <b>adding</b> slid the whole line: every point moved the same distance, and 0 moved too. <b>Multiplying</b> stretches the line: 0 stays pinned, and the farther a point is from 0, the farther it moves. Run both on the same starting point and compare:</p>
+</section>
+<section class="wide">
+  <div class="card" id="vs">
+    <div class="card-h"><span class="tag">Compare</span><h3>+ <i class="sym" style="font-size:1em">n</i> vs × <i class="sym" style="font-size:1em">n</i>, starting from 2</h3>
+      <span class="sub">Pick <i class="sym">n</i> and press Play. Watch what happens to 0, and to the spacing between ticks.</span></div>
+    <div class="row" id="vsBtns"><button class="primary" id="vsPlay" style="margin-left:auto">Play</button></div>
+    <div>
+      <div><div class="panel-label"><span id="vsL1">Slide: + 3</span><span>adding (1.B.1)</span></div><svg class="nl" id="vsSlide" viewBox="0 0 720 190"></svg></div>
+      <div><div class="panel-label"><span id="vsL2">Stretch: × 3</span><span>multiplying</span></div><svg class="nl" id="vsStretch" viewBox="0 0 720 190"></svg></div>
+    </div>
+    <ul class="checks" id="vsChecks" style="margin-top:12px"></ul>
+  </div>
+</section>
+
+<!-- ===================== §4 Signs ===================== -->
+<section class="prose">
+  <h2><span class="n">3</span>Why a negative times a negative is positive</h2>
+  <p>Here’s the rule people memorize without understanding: <b>(−) × (−) = +</b>. The stretch picture makes it obvious. A negative stretch factor <b>flips</b> the line around 0. So:</p>
+  <ul class="goes">
+    <li><b>Positive × positive:</b> no flips. A point on the right stays on the right. 3 × 2 = 6.</li>
+    <li><b>Negative × positive</b> (or positive × negative): one flip. The point crosses to the other side. 3 × (−2) = −6 and (−3) × 2 = −6.</li>
+    <li><b>Negative × negative:</b> the point starts on the left, and the flip sends it to the right. (−3) × (−2) = 6. <em class="key">Two flips put you back facing the way you started.</em></li>
+  </ul>
+  <table class="signs">
+    <tr><th>×</th><th>by a positive</th><th>by a negative</th></tr>
+    <tr><th>a positive</th><td style="color:var(--ok)">+ (no flip)</td><td style="color:var(--bad)">− (one flip)</td></tr>
+    <tr><th>a negative</th><td style="color:var(--bad)">− (already flipped)</td><td style="color:var(--ok)">+ (flipped back)</td></tr>
+  </table>
+  <p>Try the “(−) × (−)” preset in the explorer: the point starts at −3, the line flips, and it lands at +6.</p>
+</section>
+
+<!-- ===================== §5 In symbols ===================== -->
+<section class="prose">
+  <h2><span class="n">4</span>Now, in symbols</h2>
+  <p>In the explorer the start was labeled <i class="sym">a</i>, the stretch factor <i class="sym">m</i>, and the landing spot on the ruler <i class="sym">b</i>:</p>
+  <div class="math">\[ a \times m = b \]<div class="cap">Start at \(a\), stretch by \(m\), land on \(b\). With the first preset: \(3 \times 2 = 6\).</div></div>
+  <p>The whole line moves, so we can write the stretch as a rule for every point \(x\), just like the slide \(x \mapsto x + s\) from 1.B.1:</p>
+  <div class="math">\[ x \;\longmapsto\; m \cdot x \qquad\text{and}\qquad 0 \;\longmapsto\; m \cdot 0 = 0 \]<div class="cap">A stretch always leaves 0 where it is. A slide never does (unless it’s a slide of 0).</div></div>
+  <p>And the flips, written as rules:</p>
+  <div class="math">\[ (-1) \cdot x = -x, \qquad (-1)\cdot(-1) = 1 \]<div class="cap">Flipping twice is the same as not flipping at all.</div></div>
+</section>
+
+<!-- ===================== §6 Where this goes ===================== -->
+<section class="prose">
+  <h2><span class="n">5</span>Where this goes</h2>
+  <ul class="goes">
+    <li><b>Next (1.B.3):</b> stretching by ½ squeezed every point halfway to 0. That’s where fractions come from, and what lives in the gaps between whole numbers.</li>
+    <li><b>Later in this book:</b> the constant of proportionality <i class="sym">k</i> in 1.B.5 is a stretch factor: <i class="sym">y</i> = <i class="sym">k</i> · <i class="sym">x</i> stretches the <i class="sym">x</i> line into the <i class="sym">y</i> line. In Linear Algebra, a <b>matrix</b> is a stretch (and turn, and flip) of the whole plane instead of a line (7.B.4), and the “0 never moves” rule is what makes those moves <b>linear</b>.</li>
+    <li><b>In the world:</b> zooming a photo or a map in and out, making a scale drawing, doubling a recipe, or turning a thermostat that runs “2 times as fast.” Every zoom is a stretch around a fixed center.</li>
+  </ul>
+</section>
+
+<!-- ===================== §7 Vocabulary ===================== -->
+<section class="prose">
+  <h2><span class="n">6</span>Words to know</h2>
+  <div class="vocab">
+    <div class="term"><b>Multiply</b>Stretch the whole number line around 0 by a stretch factor. Also: add copies, when the factor is a whole number.</div>
+    <div class="term"><b>Factor</b>Each number being multiplied. In 3 × 2, both 3 and 2 are factors.</div>
+    <div class="term"><b>Product</b>The result of multiplying. The product of 3 and 2 is 6.</div>
+    <div class="term"><b>Stretch factor</b>The number <i class="sym">m</i> that every distance from 0 gets multiplied by. Bigger than 1 stretches; between 0 and 1 shrinks.</div>
+    <div class="term"><b>Repeated addition</b>3 × 2 = 2 + 2 + 2: three copies laid end to end.</div>
+    <div class="term"><b>Identity (×1)</b>Multiplying by 1 leaves every number unchanged: the do-nothing stretch.</div>
+    <div class="term"><b>Zero product</b>Any number times 0 is 0: the whole line collapses onto 0.</div>
+    <div class="term"><b>Fixed point</b>A point a move leaves where it is. For every stretch, 0 is a fixed point.</div>
+  </div>
+</section>
+
+<!-- ===================== Quiz ===================== -->
+<section class="prose"><h2><span class="n">7</span>Check yourself</h2>
+  <p>Three kinds of questions: name the stretch factor, decide whether a move was a slide or a stretch, and predict the sign of a product.</p>
+</section>
+<section class="wide">
+  <div class="card" id="quiz">
+    <div class="card-h"><span class="tag">Quiz</span><h3 id="qTitle"></h3><span class="score" id="score">Score: 0 / 0</span></div>
+    <div class="qtext" id="qText"></div>
+    <div class="panel-label" id="qBL"><span>Before</span><span></span></div>
+    <svg class="nl" id="qBefore" viewBox="0 0 720 104" role="img" aria-label="Quiz before"></svg>
+    <div class="panel-label"><span>After</span><span id="qACap"></span></div>
+    <svg class="nl" id="qAfter" viewBox="0 0 720 214" role="img" aria-label="Quiz after"></svg>
+    <div class="inputs">
+      <label class="field fm" id="qField"><span id="qLabel"></span><input id="qIn" type="text" inputmode="decimal" autocomplete="off"></label>
+      <div class="choice" id="qChoice"><button id="qA"></button><button id="qB"></button></div>
+      <div class="row" style="margin:0">
+        <button class="primary" id="qCheck">Check</button>
+        <button id="qShow">Show answer</button>
+        <button id="qReplay">Replay move</button>
+        <button id="qNew">New question</button>
+      </div>
+    </div>
+    <div class="err" id="qErr"></div>
+    <div class="feedback" id="qFb" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ===================== Pager (filled in by the shared navigation) ===================== -->
+<nav class="wide">
+  <div class="pager"></div>
+  <div class="meta">1.B.2 · Prerequisites: 1.B.1 · Leads to: 1.B.3, 1.B.5, Linear Algebra (7.B.4, a matrix is a move)</div>
+</nav>
+</main>
+
+<script>
+/* =====================================================================
+   1. CONSTANTS AND HELPERS
+   ===================================================================== */
+const NS = 'http://www.w3.org/2000/svg';
+const VIEW = { L: 30, R: 690, min: -10, max: 10 };          // visible range of every number line
+const U = (VIEW.R - VIEW.L) / (VIEW.max - VIEW.min);        // pixels per one step
+const X = v => VIEW.L + (v - VIEW.min) * U;                 // number -> x pixel
+const $ = id => document.getElementById(id);
+function mk(tag, attrs, parent){                            // create an SVG element with attributes
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function txt(parent, x, y, s, cls, extra){                  // create an SVG text element
+  const t = mk('text', Object.assign({ x, y, class: cls || '' }, extra || {}), parent);
+  t.textContent = s;
+  return t;
+}
+const isInt = x => Math.abs(x - Math.round(x)) < 1e-9;
+// Format a number with a true minus sign, halves as ½, otherwise up to 2 decimals, never "-0"
+function fmt(x){
+  if (Math.abs(x) < 1e-9) return '0';
+  const neg = x < 0, v = Math.abs(x);
+  let s;
+  if (isInt(v)) s = String(Math.round(v));
+  else if (isInt(v * 2)) { const w = Math.floor(v); s = (w ? w : '') + '½'; }
+  else s = String(Math.round(v * 100) / 100);
+  return (neg ? '−' : '') + s;
+}
+const paren = x => x < 0 ? `(${fmt(x)})` : fmt(x);          // wrap negatives in parentheses inside equations
+const eqn = (a, m) => `${paren(a)} × ${paren(m)} = ${fmt(a * m)}`;
+const ease = t => t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+function parseNum(s){                                       // integers, decimals, leading minus, fractions, ½
+  s = String(s).trim().replace(/[−–]/g, '-').replace(/^\+/, '');
+  s = s.replace(/^(-?)(\d+)\s*½$/, '$1$2.5').replace(/^(-?)½$/, '$10.5');
+  if (/^-?\d+(\.\d+)?$|^-?\.\d+$/.test(s)) return parseFloat(s);
+  const m = s.match(/^(-?\d+)\s*\/\s*(\d+)$/);
+  if (m && +m[2] !== 0) return +m[1] / +m[2];
+  return NaN;
+}
+
+const svgCss = document.createElement('style');
+svgCss.textContent = `
+  .ax{stroke:var(--ink);stroke-width:1.6} .tick{stroke:var(--ink);stroke-width:1.3}
+  .ruler{stroke:var(--ink);stroke-width:1.3;stroke-dasharray:6 4;opacity:.7}
+  .lbl{fill:var(--muted);font:12px var(--mono);text-anchor:middle} .lbl0{fill:var(--ink);font:600 12.5px var(--mono);text-anchor:middle}
+  .mv{stroke:var(--pt-soft);stroke-width:3.5;stroke-linecap:round} .mvtick{stroke:var(--pt-soft);stroke-width:2}
+  .mvlbl{fill:var(--pt-dark);font:500 11.5px var(--mono);text-anchor:middle} .mvlbl0{fill:var(--ink);font:700 12.5px var(--mono);text-anchor:middle}
+  .mark{fill:var(--pt);stroke:var(--paper);stroke-width:2.5} .mark2{fill:var(--paper);stroke:var(--pt);stroke-width:2.5}
+  .drop{stroke:var(--pt);stroke-width:1.5;stroke-dasharray:2 3} .drop2{stroke:var(--pt-soft);stroke-width:1.5;stroke-dasharray:2 3}
+  .marktxt{fill:var(--pt-dark);font:italic 600 14px var(--serif);text-anchor:middle}
+  .pin{fill:var(--ink)} .pintxt{fill:var(--ink);font:600 11px var(--sans);text-anchor:middle;paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+  .zeroMoved{fill:var(--slide)} .zeroTxt{fill:var(--slide);font:600 11px var(--sans);text-anchor:middle;paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+  .bar{opacity:.9} .cA{fill:var(--copyA)} .cB{fill:var(--copyB)} .cGhost{fill:none;stroke:var(--muted);stroke-width:1.5;stroke-dasharray:4 3}
+  .clbl{font:600 11.5px var(--mono);text-anchor:middle;fill:var(--pt-dark);paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+  .flip{fill:none;stroke:var(--m);stroke-width:2.2} .flipH{fill:var(--m)}
+  .fliptxt{fill:var(--m);font:600 12px var(--sans);text-anchor:middle;paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+  .ablbl{fill:var(--pt-dark);font:italic 600 15px var(--serif);text-anchor:middle} .bring{fill:none;stroke:var(--pt);stroke-width:2}
+  .slideArr{stroke:var(--slide);stroke-width:2.5;fill:none} .slideH{fill:var(--slide)}
+`;
+document.head.appendChild(svgCss);
+
+/* =====================================================================
+   2. DRAWING HELPERS
+   ===================================================================== */
+function freshSvg(svg){                                       // clear an svg and give it a clip path for the moving line
+  svg.innerHTML = '';
+  const defs = mk('defs', {}, svg), cp = mk('clipPath', { id: svg.id + 'Clip' }, defs);
+  mk('rect', { x: 4, y: 0, width: 712, height: 400 }, cp);
+  return mk('g', {}, svg);
+}
+function drawAxis(g, y, dashed){                              // a fixed axis (solid) or fixed ruler (dashed) from −10 to 10
+  mk('line', { x1: X(VIEW.min) - 12, y1: y, x2: X(VIEW.max) + 12, y2: y, class: dashed ? 'ruler' : 'ax' }, g);
+  for (let v = VIEW.min; v <= VIEW.max; v++){
+    mk('line', { x1: X(v), y1: y - (v === 0 ? 7 : 4), x2: X(v), y2: y + (v === 0 ? 7 : 4), class: 'tick' }, g);
+    txt(g, X(v), y + 22, fmt(v), v === 0 ? 'lbl0' : 'lbl');
+  }
+}
+// The moving line: every original label v is drawn at the position pos(v). Labels thin out when ticks get crowded.
+function drawMoving(g, svg, y, pos, gap){
+  const cg = mk('g', { 'clip-path': `url(#${svg.id}Clip)` }, g);
+  mk('line', { x1: -50, y1: y, x2: 770, y2: y, class: 'mv' }, cg);
+  const every = gap > 22 ? 1 : gap > 11 ? 2 : 0;                  // label every 1 or 2; when squeezed tight, only 0 keeps its label
+  for (let v = -40; v <= 40; v++){
+    const x = pos(v);
+    if (x < -20 || x > 740) continue;
+    if (v === 0 || gap > 9 || (gap > 2 && v % 5 === 0)) mk('line', { x1: x, y1: y - (v === 0 ? 8 : 5), x2: x, y2: y + (v === 0 ? 8 : 5), class: 'mvtick' }, cg);
+    if (v === 0 || (every && v % every === 0)) txt(cg, x, y - 13, fmt(v), v === 0 ? 'mvlbl0' : 'mvlbl');
+  }
+}
+// Copies of a laid end to end on the ruler, from 0 toward b (m copies; a partial copy for fractions; flipped side for negatives)
+function drawCopies(g, y, a, m){
+  const c = Math.abs(m), full = Math.floor(c + 1e-9), part = c - full, dir = Math.sign(a * m) || 1, len = Math.abs(a);
+  if (Math.abs(a) < 1e-9) return;
+  if (c < 1e-9){ txt(g, X(0), y + 4, '0 copies', 'clbl'); return; }
+  // When shrinking (0 < |m| < 1), show the full copy of a as a dashed ghost so the "part of a" reads clearly
+  if (full === 0) mk('rect', { x: Math.min(X(0), X(dir * len)), y: y - 7, width: len * U, height: 14, rx: 3, class: 'cGhost' }, g);
+  for (let i = 0; i < full + (part > 1e-9 ? 1 : 0); i++){
+    const w = i < full ? 1 : part, x0 = X(dir * len * i), x1 = X(dir * len * (i + w));
+    mk('rect', { x: Math.min(x0, x1), y: y - 7, width: Math.abs(x1 - x0), height: 14, rx: 3, class: 'bar ' + (i % 2 ? 'cB' : 'cA') }, g);
+    if (Math.abs(x1 - x0) > 26) txt(g, (x0 + x1) / 2, y - 12, i < full ? (full > 1 || part > 1e-9 ? `${i + 1}` : '1 copy') : `${fmt(part)} of a`, 'clbl');
+  }
+  if (full === 0 && part > 1e-9) txt(g, X(dir * len * part / 2), y - 12, `${fmt(part)} of a`, 'clbl');
+}
+// A flip arrow from a to −a, drawn under the ruler, for negative stretch factors
+function drawFlip(g, y, a){
+  if (Math.abs(a) < 1e-9) return;
+  const x0 = X(a), x1 = X(-a), xc = (x0 + x1) / 2;
+  mk('path', { d: `M${x0},${y} Q${xc},${y + 34} ${x1},${y}`, class: 'flip' }, g);
+  const d = Math.sign(x1 - x0);
+  mk('polygon', { points: `${x1},${y} ${x1 - d * 10},${y + 2} ${x1 - d * 5},${y + 10}`, class: 'flipH' }, g);
+  txt(g, xc, y + 30, 'flip across 0', 'fliptxt');
+}
+
+/* =====================================================================
+   3. PANELS
+   ===================================================================== */
+// Before: a fixed axis with the purple start point
+function renderBefore(svg, a, label){
+  const g = freshSvg(svg);
+  drawAxis(g, 58, false);
+  mk('circle', { cx: X(a), cy: 58, r: 8, class: 'mark' }, g);
+  if (label) txt(g, X(a), 38, label, 'marktxt');
+}
+// After (stretch). opts: a, m, e (0..1), track2, hideAns. Layers top to bottom: moving line, copies, ruler, a/b letters.
+function renderStretch(svg, o){
+  const g = freshSvg(svg);
+  const Y = { line: 40, copies: 104, ruler: 146 };
+  const s = 1 + ease(o.e) * (o.m - 1);                     // the stretch factor right now (blends from 1 to m)
+  drawAxis(g, Y.ruler, true);
+  // Copies on the ruler: a growing bar during the move, then the copies laid end to end
+  if (o.e >= 1 && !o.hideAns){
+    drawCopies(g, Y.copies, o.a, o.m);
+    if (o.m < 0) drawFlip(g, Y.ruler + 30, o.a);
+  } else if (Math.abs(o.a * s) > 1e-6){
+    const x0 = X(0), x1 = X(o.a * s);
+    mk('rect', { x: Math.min(x0, x1), y: Y.copies - 7, width: Math.abs(x1 - x0), height: 14, rx: 3, class: 'bar cA', opacity: .55 }, g);
+  }
+  // a and b under their numbers on the ruler
+  txt(g, X(o.a), Y.ruler + 40, 'a', 'ablbl');
+  if (o.e >= 1 && !o.hideAns){
+    const b = o.a * o.m;
+    if (Math.abs(b - o.a) > 1e-9){ mk('circle', { cx: X(b), cy: Y.ruler, r: 6, class: 'bring' }, g); txt(g, X(b), Y.ruler + 40, 'b', 'ablbl'); }
+    else txt(g, X(o.a) + 22, Y.ruler + 40, '= b', 'ablbl');
+  }
+  // The moving line, stretched around 0
+  drawMoving(g, svg, Y.line, v => X(v * s), Math.abs(s) * U);
+  // The pin at 0
+  mk('rect', { x: X(0) - 5, y: Y.line + 10, width: 10, height: 10, class: 'pin' }, g);
+  txt(g, X(0), Y.line + 34, '0 stays put', 'pintxt');
+  // Second tracked point (tap), then the main tracked point, each with a drop line to the ruler
+  if (o.track2 !== null && o.track2 !== undefined){
+    const x2 = X(o.track2 * s);
+    mk('line', { x1: x2, y1: Y.line + 8, x2: x2, y2: Y.ruler, class: 'drop2' }, g);
+    mk('circle', { cx: x2, cy: Y.line, r: 7, class: 'mark2' }, g);
+  }
+  const xp = X(o.a * s);
+  if (!o.hideAns || o.e < 1) mk('line', { x1: xp, y1: Y.line + 8, x2: xp, y2: Y.ruler, class: 'drop' }, g);
+  mk('circle', { cx: xp, cy: Y.line, r: 8, class: 'mark' }, g);
+  return s;
+}
+// After (slide), for comparisons: the whole line moves by shift; 0 is shown moving (orange)
+function renderSlide(svg, a, sh, e, H){
+  const g = freshSvg(svg);
+  const Y = { line: 40, ruler: H ? H - 56 : 146 };
+  const shift = sh * ease(e);
+  drawAxis(g, Y.ruler, true);
+  drawMoving(g, svg, Y.line, v => X(v + shift), U);
+  mk('rect', { x: X(shift) - 5, y: Y.line + 10, width: 10, height: 10, class: 'zeroMoved' }, g);
+  txt(g, X(shift), Y.line + 34, Math.abs(shift) > 0.3 ? '0 moved!' : '0', 'zeroTxt');
+  if (Math.abs(shift) > 0.05){
+    mk('line', { x1: X(0), y1: Y.ruler - 22, x2: X(shift) - 8, y2: Y.ruler - 22, class: 'slideArr' }, g);
+    mk('polygon', { points: `${X(shift)},${Y.ruler - 22} ${X(shift) - 10},${Y.ruler - 28} ${X(shift) - 10},${Y.ruler - 16}`, class: 'slideH' }, g);
+  }
+  const xp = X(a + shift);
+  mk('line', { x1: xp, y1: Y.line + 8, x2: xp, y2: Y.ruler, class: 'drop' }, g);
+  mk('circle', { cx: xp, cy: Y.line, r: 8, class: 'mark' }, g);
+}
+
+/* =====================================================================
+   4. EXPLORER
+   ===================================================================== */
+const PRESETS = [
+  { name: '× 2',       a: 3,  m: 2,   d: 'Every point doubles its distance from 0. The gaps between ticks double too, and 0 stays put.' },
+  { name: '× 3',       a: 2,  m: 3,   d: 'Three copies of 2 laid end to end land at 6, exactly where the stretch sends 2. Repeated adding is stretching.' },
+  { name: '× ½',       a: 6,  m: 0.5, d: 'A stretch factor between 0 and 1 shrinks: every point slides halfway toward 0. Multiplying made it smaller.' },
+  { name: '× 1',       a: 4,  m: 1,   d: 'The do-nothing stretch. Press Play: nothing moves at all.' },
+  { name: '× 0',       a: 5,  m: 0,   d: 'Everything collapses onto 0. Any number times 0 is 0.' },
+  { name: '× −1',      a: 3,  m: -1,  d: 'A flip: every point jumps to its mirror image across 0. Watch the labels come out backwards.' },
+  { name: '× −2',      a: 2,  m: -2,  d: 'Flip and stretch at once: the point ends up twice as far from 0, on the other side.' },
+  { name: '(−) × (−)', a: -3, m: -2,  d: 'Start on the negative side and flip: the point lands on the positive side. That’s why a negative times a negative is positive.' },
+];
+const ex = { a: 3, m: 2, e: 1, raf: 0, playing: false, track2: null };
+PRESETS.forEach((p, i) => {
+  const b = document.createElement('button');
+  b.className = 'preset'; b.textContent = p.name; b.onclick = () => choosePreset(i);
+  $('presets').appendChild(b);
+});
+function markPreset(i){
+  [...$('presets').children].forEach((b, j) => b.classList.toggle('on', j === i));
+  $('presetDesc').textContent = i === null ? 'Custom: your own start and stretch factor.' : PRESETS[i].d;
+}
+function choosePreset(i){
+  const p = PRESETS[i];
+  Object.assign(ex, { a: p.a, m: p.m, track2: null });
+  $('inA').value = fmt(p.a); $('inM').value = fmt(p.m); $('exErr').textContent = '';
+  markPreset(i); stopEx(); ex.e = 0; drawEx(); playEx();
+}
+function readEx(){
+  const a = parseNum($('inA').value), m = parseNum($('inM').value), err = $('exErr');
+  if (isNaN(a) || isNaN(m)){ err.textContent = 'Fill in both boxes with a number.'; return false; }
+  if (Math.abs(a) > 10 || Math.abs(a * m) > 10){ err.textContent = 'Keep the start and the landing spot between −10 and 10 so they stay on screen.'; return false; }
+  if (Math.abs(m) > 10){ err.textContent = 'Use a stretch factor between −10 and 10.'; return false; }
+  err.textContent = ''; ex.a = a; ex.m = m; return true;
+}
+['inA', 'inM'].forEach(id => {
+  $(id).addEventListener('input', () => { markPreset(null); stopEx(); ex.e = 0; if (readEx()){ ex.track2 = null; drawEx(); } });
+  $(id).addEventListener('focus', e => e.target.select());
+  $(id).addEventListener('keydown', e => { if (e.key === 'Enter') playEx(); });
+});
+function drawEx(){
+  const { a, m } = ex, b = a * m;
+  renderBefore($('exBefore'), a, 'a = ' + fmt(a));
+  const s = renderStretch($('exAfter'), { a, m, e: ex.e, track2: ex.track2 });
+  $('eq').innerHTML = `<i>a</i> × <i style="color:var(--m)">m</i> = <i>b</i> &nbsp;→&nbsp; ${eqn(a, m)}`;
+  let h;
+  if (ex.e === 0) h = `Ready to stretch the whole line by <b class="mm">${fmt(m)}</b> around 0. Press Play and watch every tick, not just the purple point.`;
+  else if (ex.e < 1) h = `Stretching… right now every distance from 0 is multiplied by <b>${fmt(s)}</b>. The purple point is over <b>${fmt(a * s)}</b> on the ruler.`;
+  else {
+    const what = m === 1 ? 'Nothing moved: ×1 is the do-nothing stretch.'
+      : m === 0 ? 'The whole line collapsed onto 0.'
+      : m < 0 ? (Math.abs(m) === 1 ? 'The line flipped across 0.' : `The line flipped across 0 and every distance became ${fmt(Math.abs(m))} times as long.`)
+      : m > 1 ? `Every distance from 0 became ${fmt(m)} times as long.`
+      : `Every distance from 0 shrank to ${fmt(m)} of what it was.`;
+    h = `${what} The purple point started at <i class="sym">a</i> = <b>${fmt(a)}</b> and landed on <i class="sym">b</i> = <b>${fmt(b)}</b>: <span class="mono">${eqn(a, m)}</span>.`;
+    if (isInt(m) && m > 1 && a !== 0) h += `<br>On the ruler: ${m} copies of ${fmt(a)} laid end to end, ${Array(m).fill(paren(a)).join(' + ')} = ${fmt(b)}.`;
+    if (ex.track2 !== null) h += `<br>Your second point, labeled <b>${fmt(ex.track2)}</b>, went to <b>${fmt(ex.track2 * m)}</b>: also multiplied by ${fmt(m)}.`;
+    else h += `<br>And 0 is still at 0. Tap any tick on the moving line to follow another point.`;
+  }
+  $('exOut').innerHTML = h;
+}
+function playEx(){
+  if (ex.playing){ stopEx(); return; }
+  if (!readEx()) return;
+  if (ex.e >= 1) ex.e = 0;
+  ex.playing = true; $('play').textContent = 'Pause';
+  let last = performance.now();
+  const step = now => {
+    ex.e = Math.min(1, ex.e + (now - last) / 2200); last = now;
+    drawEx();
+    if (ex.e < 1 && ex.playing) ex.raf = requestAnimationFrame(step); else stopEx();
+  };
+  ex.raf = requestAnimationFrame(step);
+}
+function stopEx(){ ex.playing = false; cancelAnimationFrame(ex.raf); $('play').textContent = ex.e >= 1 ? 'Replay' : 'Play'; }
+$('play').onclick = playEx;
+$('reset').onclick = () => { stopEx(); ex.e = 0; $('play').textContent = 'Play'; drawEx(); };
+// Tap the After panel: follow the moving-line label nearest the tap
+$('exAfter').addEventListener('click', ev => {
+  const svg = $('exAfter'), pt = svg.createSVGPoint(); pt.x = ev.clientX; pt.y = ev.clientY;
+  const p = pt.matrixTransform(svg.getScreenCTM().inverse());
+  const s = 1 + ease(ex.e) * (ex.m - 1);
+  if (Math.abs(s) < 0.15) return;                            // collapsed: nothing to pick
+  const label = Math.round(((p.x - VIEW.L) / U + VIEW.min) / s);
+  ex.track2 = label === ex.a ? null : label;
+  drawEx();
+});
+
+/* =====================================================================
+   5. SLIDE vs STRETCH
+   ===================================================================== */
+const vs = { n: 3, e: 1, raf: 0 };
+for (let n = 1; n <= 4; n++){
+  const b = document.createElement('button');
+  b.className = 'preset'; b.innerHTML = `<i class="sym" style="font-size:1em">n</i> = ${n}`;
+  b.onclick = () => { vs.n = n; playVs(); };
+  $('vsBtns').insertBefore(b, $('vsPlay'));
+}
+function drawVs(){
+  [...$('vsBtns').querySelectorAll('.preset')].forEach((b, j) => b.classList.toggle('on', j + 1 === vs.n));
+  const a = 2, n = vs.n;
+  $('vsL1').textContent = `Slide: + ${n}`; $('vsL2').textContent = `Stretch: × ${n}`;
+  renderSlide($('vsSlide'), a, n, vs.e, 190);
+  renderStretch($('vsStretch'), { a, m: n, e: vs.e });
+  const rows = [
+    ['', 'Slide + ' + n, 'Stretch × ' + n],
+    ['Where does 2 land?', `${2 + n}`, `${2 * n}`],
+    ['Does 0 move?', `<span class="n">yes</span>, to ${n}`, `<span class="y">no</span>, it stays put`],
+    ['Does the spacing change?', `<span class="y">no</span>, gaps stay 1`, n === 1 ? `<span class="y">no</span> (×1 does nothing)` : `<span class="n">yes</span>, gaps become ${n}`],
+    ['Does every point move the same amount?', `<span class="y">yes</span>, all move ${n}`, n === 1 ? 'nothing moves' : `<span class="n">no</span>, far points move more`],
+  ];
+  $('vsChecks').innerHTML = rows.map((r, i) => `<li class="${i === 0 ? 'h' : ''}"><span>${i ? '<b>' + r[0] + '</b>' : ''}</span><span>${r[1]}</span><span>${r[2]}</span></li>`).join('');
+}
+function playVs(){
+  cancelAnimationFrame(vs.raf); vs.e = 0;
+  let last = performance.now();
+  const step = now => { vs.e = Math.min(1, vs.e + (now - last) / 2200); last = now; drawVs(); if (vs.e < 1) vs.raf = requestAnimationFrame(step); };
+  vs.raf = requestAnimationFrame(step);
+}
+$('vsPlay').onclick = playVs;
+
+/* =====================================================================
+   6. QUIZ
+   ===================================================================== */
+const rnd = arr => arr[Math.floor(Math.random() * arr.length)];
+const randInt = (lo, hi) => lo + Math.floor(Math.random() * (hi - lo + 1));
+const qz = { counted: false, done: false, right: 0, total: 0, e: 0, raf: 0 };
+function setMode(choice){
+  $('qField').style.display = choice ? 'none' : ''; $('qCheck').style.display = choice ? 'none' : '';
+  $('qChoice').style.display = choice ? '' : 'none';
+}
+function newQuestion(){
+  Object.assign(qz, { counted: false, done: false });
+  $('qErr').textContent = ''; $('qFb').className = 'feedback'; $('qFb').innerHTML = ''; $('qIn').value = '';
+  qz.type = rnd(['factor', 'factor', 'which', 'sign']);
+  const showPanels = qz.type !== 'sign';
+  ['qBL', 'qBefore'].forEach(id => $(id).style.display = showPanels ? '' : 'none');
+  if (qz.type === 'factor'){
+    // pick a stretch factor and a start so the landing spot is a readable number on screen
+    let a, m;
+    do { m = rnd([2, 3, 4, 0.5, -1, -2, -3, -0.5, 1.5]); a = rnd([-6, -4, -3, -2, 2, 3, 4, 6]); } while (Math.abs(a * m) > 9 || !isInt(a * m) || (a === qz.a && m === qz.m));
+    Object.assign(qz, { a, m });
+    $('qTitle').textContent = 'What was the stretch factor?';
+    $('qText').innerHTML = `The whole line was stretched around 0. The purple point started at <i class="sym">a</i> = ${fmt(a)}. What was the stretch factor <i class="sym">m</i>?`;
+    $('qLabel').innerHTML = 'Stretch <i>m</i>'; $('qACap').textContent = 'where the purple point lands';
+    setMode(false);
+  } else if (qz.type === 'which'){
+    qz.kind = rnd(['slide', 'stretch']);
+    qz.a = rnd([1, 2, 3, -2]);
+    qz.v = qz.kind === 'slide' ? rnd([2, 3, 4, -3]) : rnd([2, 3]);
+    $('qTitle').textContent = 'Slide or stretch?';
+    $('qText').innerHTML = `Watch the whole moving line, not just the purple point. Was this move a <b>slide</b> (adding) or a <b>stretch</b> (multiplying)?`;
+    $('qA').textContent = 'Slide (+)'; $('qB').textContent = 'Stretch (×)'; $('qACap').textContent = 'watch 0 and the spacing';
+    setMode(true);
+  } else {
+    const a = rnd([-6, -5, -4, -3, -2, 2, 3, 4, 5]) , m = rnd([-4, -3, -2, 2, 3, 4]);
+    Object.assign(qz, { a, m });
+    $('qTitle').textContent = 'Predict the product';
+    $('qText').innerHTML = `What is <b class="mono">${paren(a)} × ${paren(m)}</b>? Think about flips first: how many negatives are there?`;
+    $('qLabel').innerHTML = 'Product'; $('qACap').textContent = 'shown after you answer';
+    setMode(false);
+  }
+  playQuiz();
+}
+function drawQuiz(){
+  if (qz.type === 'which'){
+    renderBefore($('qBefore'), qz.a, 'a');
+    if (qz.kind === 'slide') renderSlideQuiz(); else renderStretch($('qAfter'), { a: qz.a, m: qz.v, e: qz.e, hideAns: !qz.done });
+  } else if (qz.type === 'factor'){
+    renderBefore($('qBefore'), qz.a, 'a = ' + fmt(qz.a));
+    renderStretch($('qAfter'), { a: qz.a, m: qz.m, e: qz.e, hideAns: !qz.done });
+    if (qz.e >= 1 && !qz.done){                               // show where it landed (b), but not the copies that give m away
+      const g = $('qAfter').querySelector('g');
+      mk('circle', { cx: X(qz.a * qz.m), cy: 146, r: 6, class: 'bring' }, g);
+      txt(g, X(qz.a * qz.m), 186, 'b', 'ablbl');
+    }
+  } else {
+    const svg = $('qAfter');
+    if (!qz.done){ freshSvg(svg); const g = svg.querySelector('g'); drawAxis(g, 146, true); txt(g, 360, 70, '?', 'lbl0', { style: 'font-size:28px;fill:var(--bad)' }); }
+    else renderStretch(svg, { a: qz.a, m: qz.m, e: qz.e });
+  }
+}
+// In slide questions the 0 marker must look like a normal tick (no "0 moved!" hint) until answered
+function renderSlideQuiz(){
+  const svg = $('qAfter'), g = freshSvg(svg), shift = qz.v * ease(qz.e);
+  drawAxis(g, 146, true);
+  drawMoving(g, svg, 40, v => X(v + shift), U);
+  if (qz.done){ mk('rect', { x: X(shift) - 5, y: 50, width: 10, height: 10, class: 'zeroMoved' }, g); txt(g, X(shift), 74, '0 moved', 'zeroTxt'); }
+  const xp = X(qz.a + shift);
+  mk('line', { x1: xp, y1: 48, x2: xp, y2: 146, class: 'drop' }, g);
+  mk('circle', { cx: xp, cy: 40, r: 8, class: 'mark' }, g);
+}
+function playQuiz(){
+  cancelAnimationFrame(qz.raf); qz.e = 0;
+  let last = performance.now();
+  const step = now => { qz.e = Math.min(1, qz.e + (now - last) / 2200); last = now; drawQuiz(); if (qz.e < 1) qz.raf = requestAnimationFrame(step); };
+  qz.raf = requestAnimationFrame(step);
+}
+function countQ(ok){ if (qz.counted) return; qz.counted = true; qz.total++; if (ok) qz.right++; $('score').textContent = `Score: ${qz.right} / ${qz.total}`; }
+function checkQ(){
+  const raw = $('qIn').value, v = parseNum(raw);
+  if (raw.trim() === '' || isNaN(v)){ $('qErr').textContent = 'Type a number (like 3, −2 or 1/2).'; return; }
+  $('qErr').textContent = '';
+  let ok = false, msg;
+  const { a, m } = qz, b = a * m;
+  if (qz.type === 'factor'){
+    if (Math.abs(v - m) < 0.01){ ok = true; msg = `<b>Right.</b> Every distance from 0 was multiplied by <b>${fmt(m)}</b>: <span class="mono">${eqn(a, m)}</span>.`; }
+    else if (Math.abs(v + m) < 0.01) msg = `<b>Right size, wrong direction.</b> The point ${Math.sign(b) === Math.sign(a) ? 'stayed on the same side of 0, so there was no flip' : 'crossed to the other side of 0, so the line flipped'}: the stretch factor is ${m > 0 ? 'positive' : 'negative'}.`;
+    else if (Math.abs(v - b) < 0.01) msg = `<b>That’s where it landed (<i class="sym">b</i>), not the stretch factor.</b> Ask: how many times as far from 0 is <i class="sym">b</i> compared with <i class="sym">a</i>?`;
+    else if (Math.abs(v - (b - a)) < 0.01) msg = `<b>That’s the slide that would land there.</b> But 0 stayed put, so this was a stretch: divide instead, <i class="sym">b</i> ÷ <i class="sym">a</i>.`;
+    else if (m !== 0 && Math.abs(v - 1 / m) < 0.01) msg = `<b>That’s flipped upside down.</b> The stretch factor turns <i class="sym">a</i> into <i class="sym">b</i>: <i class="sym">m</i> = <i class="sym">b</i> ÷ <i class="sym">a</i>, not <i class="sym">a</i> ÷ <i class="sym">b</i>.`;
+    else msg = `<b>Not quite.</b> Compare distances from 0: <i class="sym">b</i> is ${fmt(Math.abs(b))} away, <i class="sym">a</i> is ${fmt(Math.abs(a))} away. Then check whether the point switched sides.`;
+  } else {
+    if (Math.abs(v - b) < 0.01){ ok = true; msg = `<b>Right.</b> ${eqn(a, m)}. ${a < 0 && m < 0 ? 'Two negatives: the point started on the left and the flip sent it right.' : (a < 0 || m < 0) ? 'One negative: one flip, so the answer is negative.' : 'No negatives, no flips.'}`; }
+    else if (Math.abs(v + b) < 0.01) msg = `<b>Right size, wrong sign.</b> Count the negatives: ${(a < 0) + (m < 0)}. ${a < 0 && m < 0 ? 'Two flips bring you back to positive.' : 'One flip makes the answer negative.'}`;
+    else if (Math.abs(v - (a + m)) < 0.01) msg = `<b>You added.</b> This is multiplication: stretch ${fmt(a)} by ${fmt(m)}.`;
+    else msg = `<b>Not quite.</b> First multiply the sizes: ${fmt(Math.abs(a))} × ${fmt(Math.abs(m))} = ${fmt(Math.abs(b))}. Then decide the sign by counting flips.`;
+  }
+  countQ(ok);
+  if (ok){ qz.done = true; if (qz.type === 'sign') playQuiz(); else drawQuiz(); }
+  $('qFb').className = 'feedback ' + (ok ? 'ok' : 'bad'); $('qFb').innerHTML = msg;
+}
+function explainWhich(){
+  return qz.kind === 'slide'
+    ? `It was a <b>slide of ${fmt(qz.v)}</b>: 0 moved to ${fmt(qz.v)}, and the gaps between ticks stayed exactly 1. Every point moved the same distance.`
+    : `It was a <b>stretch by ${fmt(qz.v)}</b>: 0 stayed put, and the gaps between ticks became ${fmt(qz.v)} wide. Points far from 0 moved farther.`;
+}
+function answerWhich(saySlide){
+  if (qz.done) return;
+  const ok = (qz.kind === 'slide') === saySlide;
+  countQ(ok); qz.done = true; drawQuiz();
+  $('qFb').className = 'feedback ' + (ok ? 'ok' : 'bad'); $('qFb').innerHTML = `<b>${ok ? 'Right.' : 'Not this time.'}</b> ${explainWhich()}`;
+}
+function showQ(){
+  countQ(false); qz.done = true; $('qErr').textContent = '';
+  const fb = $('qFb'); fb.className = 'feedback info';
+  if (qz.type === 'which'){ drawQuiz(); fb.innerHTML = explainWhich(); return; }
+  if (qz.type === 'sign'){ playQuiz(); fb.innerHTML = `${eqn(qz.a, qz.m)}. Sizes: ${fmt(Math.abs(qz.a))} × ${fmt(Math.abs(qz.m))} = ${fmt(Math.abs(qz.a * qz.m))}; sign: ${(qz.a < 0) + (qz.m < 0) === 1 ? 'one flip, negative' : 'no flips or two flips, positive'}.`; return; }
+  drawQuiz(); fb.innerHTML = `The stretch factor was <b>${fmt(qz.m)}</b>: <i class="sym">m</i> = <i class="sym">b</i> ÷ <i class="sym">a</i> = ${fmt(qz.a * qz.m)} ÷ ${paren(qz.a)} = ${fmt(qz.m)}.`;
+}
+$('qCheck').onclick = checkQ; $('qA').onclick = () => answerWhich(true); $('qB').onclick = () => answerWhich(false);
+$('qShow').onclick = showQ; $('qReplay').onclick = playQuiz; $('qNew').onclick = newQuestion;
+$('qIn').addEventListener('input', () => { $('qErr').textContent = ''; });
+$('qIn').addEventListener('focus', e => e.target.select());
+$('qIn').addEventListener('keydown', e => { if (e.key === 'Enter') checkQ(); });
+
+/* =====================================================================
+   7. START
+   ===================================================================== */
+markPreset(0); $('inA').value = '3'; $('inM').value = '2'; ex.e = 1; drawEx(); $('play').textContent = 'Replay';
+drawVs();
+newQuestion();
+</script>
+</body>
+</html>
