@@ -26,7 +26,7 @@ window.MM_TOC = [
     { id: '5.B.1', title: 'Angles and Radians', built: true, url: 'https://claude.ai/artifact/FBpVrV9tcTSwwi2UQ4LXH3' },
     { id: '5.B.2', title: 'Sine, Cosine and Tangent on the Unit Circle (Trig Explorer)', ext: true, url: 'https://claude.ai/artifact/4xY54b5XpeoyG9FocJ9ZFZ' },
     { id: '5.B.3', title: 'Laws of Sines and Cosines (Trig Explorer, Any triangle tab)', ext: true, url: 'https://claude.ai/artifact/4xY54b5XpeoyG9FocJ9ZFZ' },
-    { id: '5.B.4', title: 'Waves and Periodic Functions' },
+    { id: '5.B.4', title: 'Waves and Periodic Functions', built: true, url: 'https://claude.ai/artifact/Ge7zmxuBizyzBUH5Ub8pz2' },
   ]},
   { ch: 7, title: 'Linear Algebra', pages: [
     { id: '7.B.1', title: 'Vectors: Arrows and Lists' },

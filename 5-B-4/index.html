@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>5.B.4 Waves and Periodic Functions · MathMastery</title>
+<!-- Fonts: a book serif for prose, a clean sans for UI, a mono for numbers -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<!-- MathJax renders the few formulas on the page (SVG output needs no external stylesheet) -->
+<script>
+  window.MathJax = { tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] }, svg: { fontCache: 'global' } };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<style>
+/* ===================== Theme ===================== */
+:root{
+  --bg:#f7f5ef; --paper:#ffffff; --ink:#1f1e1d; --muted:#6b6a66; --line:#e4e0d5; --line2:#c9c5b8;
+  --accent:#534AB7; --accent-bg:#EEEDFE;
+  --pos:#1D9E75; --neg:#D85A30; --pt:#7F77DD; --pt-soft:#AFA9EC; --pt-dark:#534AB7;
+  --pos-new:#9FE1CB; --neg-new:#F0997B; --ok:#3B6D11; --ok-bg:#EAF3DE; --bad:#A32D2D; --bad-bg:#FCEBEB; --note-bg:#FAF3E3; --note-line:#E7C98A;
+  --serif:"Source Serif 4", Georgia, "Times New Roman", serif;
+  --sans:"IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#191817; --paper:#232220; --ink:#ecebe6; --muted:#a3a29c; --line:#383733; --line2:#55534e;
+    --accent:#AFA9EC; --accent-bg:#2c2852; --pt-dark:#CECBF6; --pt-soft:#6f68b8; --pos-new:#5DCAA5; --neg-new:#F5C4B3;
+    --ok:#C0DD97; --ok-bg:#24400d; --bad:#F7C1C1; --bad-bg:#5a1c1c; --note-bg:#2b261b; --note-line:#6b5626;
+  }
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.7 var(--serif);-webkit-font-smoothing:antialiased}
+
+/* ===================== Layout ===================== */
+.topbar{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1000px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:14px;font:500 13px/1 var(--sans);color:var(--muted)}
+.brand{color:var(--ink);font-weight:600;letter-spacing:.02em}
+.brand b{color:var(--accent)}
+.crumbs{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pid{font-family:var(--mono);color:var(--accent);background:var(--accent-bg);padding:4px 8px;border-radius:6px}
+.prose{max-width:720px;margin:0 auto;padding:0 20px}
+.wide{max-width:1000px;margin:0 auto;padding:0 20px}
+
+/* ===================== Hero ===================== */
+.hero{padding:48px 0 12px}
+.kicker{font:600 13px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1{font:700 46px/1.1 var(--serif);margin:12px 0 14px;letter-spacing:-.01em}
+.dek{font-size:21px;color:var(--muted);margin:0 0 22px;font-style:italic}
+.tiers{display:flex;gap:6px;flex-wrap:wrap;font:500 13px/1 var(--sans);margin-bottom:8px}
+.tier{padding:7px 12px;border-radius:999px;border:1px solid var(--line2);color:var(--muted)}
+.tier.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.tier small{opacity:.7;margin-left:4px}
+
+/* ===================== Text elements ===================== */
+h2{font:700 28px/1.25 var(--serif);margin:56px 0 10px;display:flex;gap:12px;align-items:baseline}
+h2 .n{font:600 14px/1 var(--mono);color:var(--accent);min-width:28px}
+p{margin:0 0 16px}
+em.key{font-style:normal;background:linear-gradient(transparent 62%,var(--accent-bg) 62%);padding:0 2px}
+.goals{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:18px 22px;margin:22px 0 0;font:15.5px/1.6 var(--sans)}
+.goals h3{font:600 12px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
+.goals ul{margin:0;padding-left:20px}
+.note{background:var(--note-bg);border-left:4px solid var(--note-line);border-radius:0 10px 10px 0;padding:14px 18px;margin:20px 0;font:15.5px/1.6 var(--sans)}
+.note b{font-weight:600}
+.notice{list-style:none;padding:0;margin:8px 0 18px;counter-reset:n}
+.notice li{position:relative;padding:12px 0 12px 46px;border-top:1px solid var(--line)}
+.notice li:last-child{border-bottom:1px solid var(--line)}
+.notice li::before{counter-increment:n;content:counter(n);position:absolute;left:4px;top:13px;width:26px;height:26px;border-radius:50%;background:var(--accent-bg);color:var(--accent);font:600 13px/26px var(--mono);text-align:center}
+.goes{list-style:none;padding:0;margin:8px 0 18px}
+.goes li{padding:12px 0;border-top:1px solid var(--line)}
+.goes li:last-child{border-bottom:1px solid var(--line)}
+.math{overflow-x:auto;margin:12px 0 18px;padding:14px 18px;background:var(--paper);border:1px solid var(--line);border-radius:12px}
+.math .cap{font:14px/1.5 var(--sans);color:var(--muted);margin-top:4px}
+.mono{font-family:var(--mono);font-size:.92em;white-space:nowrap}
+.pos{color:var(--pos);font-weight:600}.neg{color:var(--neg);font-weight:600}.pt{color:var(--pt-dark);font-weight:600}
+
+/* ===================== Vocabulary ===================== */
+.vocab{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin:14px 0 8px}
+.term{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font:14.5px/1.5 var(--sans)}
+.term b{display:block;font:600 15px/1.3 var(--serif);margin-bottom:4px}
+
+/* ===================== Interactive cards ===================== */
+.card{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:18px 20px 20px;margin:26px 0;box-shadow:0 1px 0 var(--line),0 12px 32px -22px rgba(0,0,0,.25);font-family:var(--sans)}
+.card-h{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.card-h .tag{font:600 11px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--accent);background:var(--accent-bg);padding:5px 8px;border-radius:6px}
+.card-h h3{font:600 18px/1.3 var(--sans);margin:0}
+.card-h .sub{color:var(--muted);font-size:14.5px;flex-basis:100%}
+.panel-label{font:600 11px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:12px 0 4px;display:flex;justify-content:space-between}
+.panel-label span:last-child{letter-spacing:0;text-transform:none;font-weight:500}
+svg.nl{display:block;width:100%;height:auto;border:1px solid var(--line);border-radius:12px;background:var(--bg);touch-action:manipulation}
+svg.clickable{cursor:pointer}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:12px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0}
+button{font:500 14px/1 var(--sans);padding:9px 14px;border-radius:9px;border:1px solid var(--line2);background:var(--paper);color:var(--ink);cursor:pointer;transition:background .15s,border-color .15s}
+button:hover{border-color:var(--ink)}
+button.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+button.preset.on{background:var(--accent-bg);border-color:var(--accent);color:var(--accent)}
+button:disabled{opacity:.45;cursor:default}
+.desc{min-height:24px;color:var(--muted);font-size:14.5px;margin:2px 0 6px}
+.inputs{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;margin:12px 0 4px}
+.field{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.field input{width:92px;font:500 18px/1 var(--mono);padding:9px 10px;border-radius:9px;border:2px solid var(--line2);background:var(--bg);color:var(--ink);text-align:center}
+.field input:focus{outline:none;border-color:var(--accent)}
+.field i,.eq i,.sym{font:italic 600 1.15em var(--serif);text-transform:none;letter-spacing:0;color:var(--pt-dark)}
+.field.start input{border-color:var(--pt-soft)}
+.field.slide input{border-color:var(--pt)}
+.eq{font:500 20px/1 var(--mono);padding:10px 14px;background:var(--bg);border-radius:10px;border:1px solid var(--line)}
+.err{color:var(--bad);font-size:14px;min-height:20px;margin:2px 0}
+.readout{margin-top:12px;padding:12px 14px;background:var(--bg);border-radius:10px;border:1px solid var(--line);font-size:15px;line-height:1.55;min-height:48px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:12px;font-size:13px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{display:inline-block;width:14px;height:14px;border-radius:50%}
+.sw.pos{background:var(--pos)}.sw.neg{border:2.4px solid var(--neg)}
+.sw.x{position:relative;background:var(--pos);opacity:.45}.sw.x::after{content:'✕';position:absolute;inset:-1px 0 0 0;color:var(--neg);font:700 13px/1 var(--sans);text-align:center}
+.sw.posnew{background:var(--pos-new);border:1.5px solid var(--pos)}.sw.negnew{border:2.4px solid var(--neg-new)}.sw.pt{background:var(--pt)}
+.sw.mv{width:22px;height:4px;border-radius:2px;background:var(--pt-soft)}
+.sw.rl{width:22px;height:0;border-top:2px dashed var(--ink);border-radius:0;opacity:.7}
+.feedback{margin-top:10px;padding:12px 14px;border-radius:10px;font-size:15px;line-height:1.55;display:none}
+.feedback.ok{display:block;background:var(--ok-bg);color:var(--ok)}
+.feedback.bad{display:block;background:var(--bad-bg);color:var(--bad)}
+.feedback.info{display:block;background:var(--accent-bg);color:var(--accent)}
+.score{margin-left:auto;font:600 14px/1 var(--mono);color:var(--muted)}
+
+/* ===================== Footer nav ===================== */
+.pager{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:56px 0 18px;font-family:var(--sans)}
+.pager a,.pager div{display:block;padding:16px 18px;border:1px solid var(--line);border-radius:14px;background:var(--paper);color:var(--ink);text-decoration:none}
+.pager small{display:block;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.pager .next{text-align:right}
+.pager .soon{opacity:.6}
+.meta{font:13px/1.6 var(--sans);color:var(--muted);text-align:center;padding:10px 0 50px}
+
+@media (max-width:720px){
+  body{font-size:17px}
+  h1{font-size:34px}
+  .dek{font-size:18px}
+  h2{font-size:24px}
+  .card{padding:14px 12px 16px;border-radius:14px}
+  .crumbs{display:none}
+  svg.nl{min-width:640px}
+}
+</style>
+<meta name="mm-site" content="1">
+<link rel="stylesheet" href="../shared/nav.css">
+</head>
+<body>
+<style>
+/* ===================== Page-specific styles (5.B.4) ===================== */
+/* sine (height) = orange, cosine (across) = green, the moving point = purple, wave parts: amplitude = blue, period = teal, shift = pink, midline = ink */
+:root{ --sin:#D85A30; --cos:#1D9E75; --amp:#2F7FC1; --per:#0F8A7A; --shift:#C2417A; --wave:#6A5FD0; }
+@media (prefers-color-scheme:dark){ :root{ --sin:#F0997B; --cos:#5DCAA5; --amp:#7FB8E6; --per:#5DCAB5; --shift:#F08AB8; --wave:#AFA9EC; } }
+.sn{color:var(--sin);font-weight:700}.cs{color:var(--cos);font-weight:700}.am{color:var(--amp);font-weight:700}.pe{color:var(--per);font-weight:700}.sh{color:var(--shift);font-weight:700}
+.field.fA input{border-color:var(--amp)}.field.fP input{border-color:var(--per)}.field.fC input{border-color:var(--shift)}.field.fD input{border-color:var(--ink)}
+.togs button.on{background:var(--accent-bg);border-color:var(--accent);color:var(--accent)}
+.chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
+.chip{border:1px solid var(--line);border-radius:12px;padding:8px 14px;background:var(--bg);min-width:120px}
+.chip small{display:block;font:600 11px var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.chip b{font:600 19px var(--mono)}
+.qtext{font:17px/1.55 var(--serif);margin:4px 0 10px}
+.eqbig{font:500 22px var(--mono);text-align:center;margin:8px 0}
+.eqbig .blank{display:inline-block;min-width:34px;border-bottom:2.5px solid var(--bad);color:var(--bad);text-align:center}
+</style>
+
+<!-- ===================== Top bar ===================== -->
+<div class="topbar"><div class="topbar-in">
+  <span class="brand">Math<b>Mastery</b></span>
+  <span class="crumbs">Chapter 5 · Trigonometry › Basics</span>
+  <span class="pid">5.B.4</span>
+</div></div>
+
+<!-- ===================== Hero ===================== -->
+<header class="prose hero">
+  <div class="kicker">Chapter 5 · Trigonometry</div>
+  <h1>Waves and Periodic Functions</h1>
+  <p class="dek">Walk a point around a circle and plot its height over time: out comes a wave. Stretch it, squeeze it, lift it and slide it, and the same shape describes tides, Ferris wheels, daylight and sound.</p>
+  <div class="tiers" aria-label="Tier">
+    <span class="tier on">Basics <small>you are here</small></span>
+    <span class="tier">Undergraduate</span>
+    <span class="tier">Masters</span>
+  </div>
+  <div class="goals">
+    <h3>On this page</h3>
+    <ul>
+      <li>See the <b>sine wave</b> unroll from a point going around the unit circle, and <b>cosine</b> as the same wave, shifted.</li>
+      <li>Name the parts of a wave: <b>amplitude</b>, <b>midline</b>, <b>period</b>, <b>frequency</b> and <b>phase shift</b>.</li>
+      <li>Read and write a wave as <i class="sym">y</i> = <i class="sym">A</i> sin(<i class="sym">B</i>(<i class="sym">x</i> − <i class="sym">C</i>)) + <i class="sym">D</i>.</li>
+      <li>Use the repeat of a <b>periodic function</b> to predict values far away.</li>
+    </ul>
+  </div>
+</header>
+
+<main>
+<!-- ===================== §1 Things that repeat ===================== -->
+<section class="prose">
+  <h2><span class="n">1</span>Things that repeat</h2>
+  <p>A lot of the world comes back around. The tide rises and falls about twice a day. A seat on a Ferris wheel climbs, peaks, drops and climbs again. The number of daylight hours swings from summer to winter and back every year. A guitar string vibrates back and forth hundreds of times a second.</p>
+  <p>A pattern that repeats exactly, over and over, is called a <b>periodic function</b>. The length of one full repeat is its <b>period</b>. And the most important repeating shape of all comes straight from the circle you met in 5.B.1.</p>
+</section>
+
+<!-- ===================== §2 Circle -> wave ===================== -->
+<section class="prose">
+  <h2><span class="n">2</span>A circle, unrolled</h2>
+  <p>Put a point on a circle of radius 1 (the <b>unit circle</b>), at angle <i class="sym">θ</i> from 5.B.1. As <i class="sym">θ</i> grows, the point travels around. Its <span class="sn">height</span> above the center goes up to 1, back down through 0, down to −1, and back. That height is called the <b>sine</b> of <i class="sym">θ</i>, written sin <i class="sym">θ</i>. Plot it against <i class="sym">θ</i>, and the circle unrolls into a wave.</p>
+  <p>The point’s <span class="cs">across</span> position, left or right of center, is the <b>cosine</b>, cos <i class="sym">θ</i>. It makes the very same wave shape, just starting at its top instead of its middle. (5.B.2 explores sine and cosine on the circle in depth.)</p>
+</section>
+<section class="wide">
+  <div class="card" id="unroll">
+    <div class="card-h"><span class="tag">Explore</span><h3>The circle unrolls into a wave</h3>
+      <span class="sub">Press Play to send the point around. Choose which wave to trace, and how many turns.</span></div>
+    <div class="row togs" id="traceBtns"><button data-t="sin">trace sine (height)</button><button data-t="cos">trace cosine (across)</button><button data-t="both">both</button>
+      <span style="width:18px"></span><button data-n="1">1 turn</button><button data-n="2">2 turns</button>
+      <span style="flex:1"></span><button class="primary" id="uPlay">Play</button><button id="uReset">Reset</button></div>
+    <svg class="nl" id="uSvg" viewBox="0 0 1000 330" role="img" aria-label="Unit circle and sine wave"></svg>
+    <div class="chips">
+      <div class="chip"><small>angle θ</small><b id="uTh"></b></div>
+      <div class="chip"><small>degrees</small><b id="uDeg"></b></div>
+      <div class="chip"><small>sin θ (height)</small><b id="uSin" style="color:var(--sin)"></b></div>
+      <div class="chip"><small>cos θ (across)</small><b id="uCos" style="color:var(--cos)"></b></div>
+    </div>
+    <div class="readout" id="uOut"></div>
+    <div class="legend">
+      <span><i class="sw pt"></i>the point, at angle <i class="sym">θ</i></span>
+      <span><i class="sw" style="background:var(--sin)"></i>its height: sin <i class="sym">θ</i></span>
+      <span><i class="sw" style="background:var(--cos)"></i>its across position: cos <i class="sym">θ</i></span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §3 Anatomy of a wave ===================== -->
+<section class="prose">
+  <h2><span class="n">3</span>The parts of a wave</h2>
+  <p>Real waves aren’t always exactly 1 tall, centered on 0, and 2π long. You can reshape the basic sine wave in four ways, and each has a name:</p>
+  <ol class="notice">
+    <li><b class="am">Amplitude <i class="sym">A</i></b>: how far the wave swings above and below its middle. A wave with amplitude 2 is twice as tall. (Stretching up and down, like 1.B.2.)</li>
+    <li><b>Midline <i class="sym">D</i></b>: the level the wave swings around. Raising <i class="sym">D</i> lifts the whole wave (a slide, like 1.B.1).</li>
+    <li><b class="pe">Period <i class="sym">P</i></b>: the length of one full cycle, from one peak to the next. Its flip side is <b>frequency</b>: how many cycles fit in one unit, <i class="sym">f</i> = 1 ÷ <i class="sym">P</i>.</li>
+    <li><b class="sh">Phase shift <i class="sym">C</i></b>: how far the wave is slid left or right. A sine wave normally starts at its midline going up at <i class="sym">x</i> = 0; with a shift of <i class="sym">C</i>, it starts there at <i class="sym">x</i> = <i class="sym">C</i>.</li>
+  </ol>
+  <p>Build your own below. The ghost wave is the plain sine wave, for comparison. The real-world presets show the same four numbers describing tides, a Ferris wheel, daylight and sound.</p>
+</section>
+<section class="wide">
+  <div class="card" id="builder">
+    <div class="card-h"><span class="tag">Explore</span><h3>The wave builder</h3>
+      <span class="sub">Pick a preset or type the four numbers. π forms work (pi/2, 2pi). Press Play to draw the wave.</span></div>
+    <div class="row" id="presets"></div>
+    <div class="desc" id="presetDesc"></div>
+    <div class="inputs">
+      <label class="field fA"><span>Amplitude <i>A</i></span><input id="inA" type="text" inputmode="text" autocomplete="off"></label>
+      <label class="field fP"><span>Period <i>P</i></span><input id="inP" type="text" inputmode="text" autocomplete="off"></label>
+      <label class="field fC"><span>Shift <i>C</i></span><input id="inC" type="text" inputmode="text" autocomplete="off"></label>
+      <label class="field fD"><span>Midline <i>D</i></span><input id="inD" type="text" inputmode="text" autocomplete="off"></label>
+      <div class="row" style="margin:0"><button class="primary" id="bPlay">Play</button></div>
+    </div>
+    <div class="err" id="bErr"></div>
+    <div class="eq" id="bEq" style="margin:6px 0 8px;display:inline-block"></div>
+    <svg class="nl" id="bSvg" viewBox="0 0 1000 380" role="img" aria-label="Wave graph"></svg>
+    <div class="readout" id="bOut"></div>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--wave)"></i>your wave</span>
+      <span><i class="sw" style="background:var(--amp)"></i>amplitude <i class="sym">A</i></span>
+      <span><i class="sw" style="background:var(--per)"></i>period <i class="sym">P</i></span>
+      <span><i class="sw" style="background:var(--shift)"></i>phase shift <i class="sym">C</i></span>
+      <span><i class="sw rl"></i>midline <i class="sym">y</i> = <i class="sym">D</i></span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §4 Cosine is shifted sine ===================== -->
+<section class="prose">
+  <h2><span class="n">4</span>Cosine is sine, slid over</h2>
+  <p>In the unrolling explorer, trace both waves. Cosine reaches its peak at <i class="sym">θ</i> = 0, while sine gets there a quarter turn later, at <i class="sym">θ</i> = π/2. They’re the same wave, a quarter period apart: <em class="key">cos θ = sin(θ + π/2)</em>. In the builder, the “Cosine” preset makes this exact wave with a phase shift of <i class="sym">C</i> = −π/2.</p>
+  <p>A common mistake is to think the minus sign means “slide right.” Inside the parentheses it’s the other way around: sin(<i class="sym">x</i> − <i class="sym">C</i>) slides the wave <b>right</b> by <i class="sym">C</i>, because the wave needs <i class="sym">x</i> to be <i class="sym">C</i> bigger to reach the same point. So sin(<i class="sym">x</i> + π/2) = sin(<i class="sym">x</i> − (−π/2)) slides <b>left</b>.</p>
+
+  <h2><span class="n">5</span>Using the repeat</h2>
+  <p>Here is the superpower of periodic functions: if you know one full cycle, you know <i>everything</i>. Suppose a pattern has period 12. Then its value at 30 is the same as at 30 − 12 = 18, and the same as at 18 − 12 = 6. <em class="key">Subtract whole periods until you land inside the first cycle.</em> That’s how sailors predict high tide days ahead, and how astronomers know exactly when the sun will rise next year. Periodic doesn’t have to mean wavy, either: a blinking light, a traffic signal, or the days of the week (period 7) all repeat.</p>
+</section>
+
+<!-- ===================== §6 In symbols ===================== -->
+<section class="prose">
+  <h2><span class="n">6</span>Now, in symbols</h2>
+  <p>The builder used four letters: amplitude <i class="sym">A</i>, period <i class="sym">P</i>, phase shift <i class="sym">C</i> and midline <i class="sym">D</i>. Mathematicians usually write the wave with a fifth letter, <i class="sym">B</i>, that packs the period inside the parentheses:</p>
+  <div class="math">\[ y = A \sin\!\big(B\,(x - C)\big) + D, \qquad B = \frac{2\pi}{P} \]<div class="cap">The basic wave \(y = \sin x\) has \(A = 1,\ B = 1\ (P = 2\pi),\ C = 0,\ D = 0\).</div></div>
+  <p>Frequency is the flip side of period:</p>
+  <div class="math">\[ f = \frac{1}{P} = \frac{B}{2\pi} \]<div class="cap">A note at 440 cycles per second has period \(1/440\) of a second.</div></div>
+  <p>And “periodic with period \(P\)” means:</p>
+  <div class="math">\[ f(x + P) = f(x) \quad \text{for every } x \]<div class="cap">Add one period and you’re back to the same value. Cosine and sine are related by \(\cos\theta = \sin(\theta + \tfrac{\pi}{2})\).</div></div>
+</section>
+
+<!-- ===================== §7 Where this goes ===================== -->
+<section class="prose">
+  <h2><span class="n">7</span>Where this goes</h2>
+  <ul class="goes">
+    <li><b>Next:</b> sine and cosine on the unit circle in depth, with tangent and the special angles (5.B.2), then the laws of sines and cosines for any triangle (5.B.3).</li>
+    <li><b>Later in this book:</b> in Calculus, the slope of the sine wave turns out to be the cosine wave. In <b>Fourier analysis</b>, every repeating signal, from a violin note to a heartbeat, can be built by adding up sine waves of different frequencies. That idea runs music apps, phone calls and medical imaging.</li>
+    <li><b>In the world:</b> musical pitch (frequency), loudness (amplitude), tides, seasons and daylight, the electricity in your walls (60 cycles per second in the US, 50 in much of the world), and the bounce of a spring.</li>
+  </ul>
+</section>
+
+<!-- ===================== §8 Vocabulary ===================== -->
+<section class="prose">
+  <h2><span class="n">8</span>Words to know</h2>
+  <div class="vocab">
+    <div class="term"><b>Periodic function</b>A pattern that repeats exactly: <i class="sym">f</i>(<i class="sym">x</i> + <i class="sym">P</i>) = <i class="sym">f</i>(<i class="sym">x</i>).</div>
+    <div class="term"><b>Cycle</b>One complete repeat of the pattern.</div>
+    <div class="term"><b>Period</b>The length of one cycle, from a peak to the next peak.</div>
+    <div class="term"><b>Frequency</b>How many cycles fit in one unit (of time, or of <i class="sym">x</i>): 1 ÷ period.</div>
+    <div class="term"><b>Amplitude</b>How far the wave swings above (or below) its midline.</div>
+    <div class="term"><b>Midline</b>The level the wave swings around, <i class="sym">y</i> = <i class="sym">D</i>.</div>
+    <div class="term"><b>Phase shift</b>How far the wave is slid left or right.</div>
+    <div class="term"><b>Sine and cosine</b>The height and across position of a point on the unit circle at angle <i class="sym">θ</i>.</div>
+    <div class="term"><b>Sinusoid</b>Any wave with the sine shape, whatever its amplitude, period, shift or midline.</div>
+  </div>
+</section>
+
+<!-- ===================== Quiz ===================== -->
+<section class="prose"><h2><span class="n">9</span>Check yourself</h2>
+  <p>Three kinds of questions: read a part of a wave from its graph, fill in a missing number in its equation, and use the repeat to predict a value. π forms like pi/2 are fine.</p>
+</section>
+<section class="wide">
+  <div class="card" id="quiz">
+    <div class="card-h"><span class="tag">Quiz</span><h3 id="qTitle"></h3><span class="score" id="score">Score: 0 / 0</span></div>
+    <div class="qtext" id="qText"></div>
+    <div class="eqbig" id="qEq"></div>
+    <svg class="nl" id="qSvg" viewBox="0 0 1000 380" role="img" aria-label="Quiz graph"></svg>
+    <div class="inputs">
+      <label class="field" id="qField"><span id="qLabel"></span><input id="qIn" type="text" inputmode="text" autocomplete="off"></label>
+      <div class="row" style="margin:0">
+        <button class="primary" id="qCheck">Check</button>
+        <button id="qShow">Show answer</button>
+        <button id="qReplay">Replay move</button>
+        <button id="qNew">New question</button>
+      </div>
+    </div>
+    <div class="err" id="qErr"></div>
+    <div class="feedback" id="qFb" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ===================== Pager (filled in by the shared navigation) ===================== -->
+<nav class="wide">
+  <div class="pager"></div>
+  <div class="meta">5.B.4 · Prerequisites: 1.B.1, 1.B.2, 5.B.1 · Leads to: 5.B.2, Calculus (derivative of sine), Fourier analysis</div>
+</nav>
+</main>
+
+<script>
+/* =====================================================================
+   1. HELPERS
+   ===================================================================== */
+const NS = 'http://www.w3.org/2000/svg';
+const $ = id => document.getElementById(id);
+const PI = Math.PI, TAU = 2 * Math.PI;
+function mk(tag, attrs, parent){                           // create an SVG element with attributes
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function txt(parent, x, y, s, cls, extra){                 // create an SVG text element
+  const t = mk('text', Object.assign({ x, y, class: cls || '' }, extra || {}), parent);
+  t.textContent = s;
+  return t;
+}
+const isInt = x => Math.abs(x - Math.round(x)) < 1e-9;
+function num(x, d){                                        // round for display, true minus sign, no "-0"
+  if (d === undefined) d = 2;
+  const r = Math.round(x * Math.pow(10, d)) / Math.pow(10, d);
+  if (r === 0) return '0';
+  return (r < 0 ? '−' : '') + String(Math.abs(r));
+}
+function piForm(v){                                        // tidy multiples of π: 3π/4, −π/2; else a decimal
+  const q = v / PI;
+  for (const den of [1, 2, 3, 4, 6, 8]){
+    const n = q * den;
+    if (Math.abs(n - Math.round(n)) < 1e-6){
+      const k = Math.round(n);
+      if (k === 0) return '0';
+      const s = k < 0 ? '−' : '', a = Math.abs(k);
+      return den === 1 ? `${s}${a === 1 ? '' : a}π` : `${s}${a === 1 ? '' : a}π/${den}`;
+    }
+  }
+  return num(v, 3);
+}
+function parseVal(s){                                      // numbers, fractions, and π forms (pi, 2pi, -pi/2, 3π/4)
+  s = String(s).trim().toLowerCase().replace(/\s+/g, '').replace(/π/g, 'pi').replace(/[−–]/g, '-').replace(/^\+/, '');
+  let m = s.match(/^(-?)(\d*\.?\d*)\*?pi(?:\/(\d+(?:\.\d+)?))?$/);
+  if (m){ const c = m[2] === '' ? 1 : parseFloat(m[2]); if (isNaN(c)) return NaN; return (m[1] ? -1 : 1) * c * PI / (m[3] ? parseFloat(m[3]) : 1); }
+  if (/^-?\d+(\.\d+)?$|^-?\.\d+$/.test(s)) return parseFloat(s);
+  m = s.match(/^(-?\d+)\/(\d+)$/);
+  if (m && +m[2] !== 0) return +m[1] / +m[2];
+  return NaN;
+}
+function niceStep(range, n){                               // 1, 2, 2.5, 5 × a power of ten
+  const raw = range / n, p = Math.pow(10, Math.floor(Math.log10(raw)));
+  for (const m of [1, 2, 2.5, 5, 10]) if (m * p >= raw - 1e-9) return m * p;
+  return 10 * p;
+}
+const ease = t => t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+
+const svgCss = document.createElement('style');
+svgCss.textContent = `
+  .grid{stroke:var(--line);stroke-width:1} .axis{stroke:var(--ink);stroke-width:1.5}
+  .tl{fill:var(--muted);font:500 12px var(--mono);text-anchor:middle} .tly{fill:var(--muted);font:500 12px var(--mono);text-anchor:end}
+  .tld{fill:var(--muted);font:500 10.5px var(--mono);text-anchor:middle;opacity:.8}
+  .circ{fill:none;stroke:var(--line2);stroke-width:1.5}
+  .pt{fill:var(--pt);stroke:var(--paper);stroke-width:2.5} .radius{stroke:var(--pt);stroke-width:2.5}
+  .sinSeg{stroke:var(--sin);stroke-width:4;stroke-linecap:round} .cosSeg{stroke:var(--cos);stroke-width:4;stroke-linecap:round}
+  .sinW{fill:none;stroke:var(--sin);stroke-width:3} .cosW{fill:none;stroke:var(--cos);stroke-width:3}
+  .link{stroke:var(--sin);stroke-width:1.3;stroke-dasharray:4 3} .linkC{stroke:var(--cos);stroke-width:1.3;stroke-dasharray:4 3}
+  .wdot{stroke:var(--paper);stroke-width:2}
+  .lab{font:600 12.5px var(--sans);paint-order:stroke;stroke:var(--bg);stroke-width:5px}
+  .sym{font:italic 600 16px var(--serif);paint-order:stroke;stroke:var(--bg);stroke-width:5px}
+  .wave{fill:none;stroke:var(--wave);stroke-width:3.5} .ghost{fill:none;stroke:var(--muted);stroke-width:1.5;stroke-dasharray:5 4;opacity:.6}
+  .mid{stroke:var(--ink);stroke-width:1.5;stroke-dasharray:7 5;opacity:.75}
+  .ampL{stroke:var(--amp);stroke-width:3} .perL{stroke:var(--per);stroke-width:3} .shL{stroke:var(--shift);stroke-width:3}
+  .ampH{fill:var(--amp)} .perH{fill:var(--per)} .shH{fill:var(--shift)}
+  .pat{fill:none;stroke:var(--wave);stroke-width:3} .patDot{fill:var(--wave);stroke:var(--paper);stroke-width:2}
+  .cycle{fill:var(--per);opacity:.08}
+  .qmark{fill:var(--bad);font:700 18px var(--mono);text-anchor:middle}
+`;
+document.head.appendChild(svgCss);
+
+/* =====================================================================
+   2. EXPLORER 1: the circle unrolls into a wave
+   ===================================================================== */
+const un = { mode: 'sin', turns: 1, e: 1, raf: 0 };
+function drawUnroll(){
+  [...$('traceBtns').querySelectorAll('button[data-t]')].forEach(b => b.classList.toggle('on', b.dataset.t === un.mode));
+  [...$('traceBtns').querySelectorAll('button[data-n]')].forEach(b => b.classList.toggle('on', +b.dataset.n === un.turns));
+  const svg = $('uSvg'); svg.innerHTML = ''; const g = mk('g', {}, svg);
+  const cx = 160, cy = 165, R = 115;                       // the unit circle: 1 unit = 115 px
+  const gL = 330, gR = 980, thMax = TAU * un.turns;
+  const GX = t => gL + t / thMax * (gR - gL), GY = v => cy - v * R;   // wave graph shares the circle's vertical scale
+  const th = thMax * un.e;
+  // Circle with axes
+  mk('line', { x1: cx - R - 18, y1: cy, x2: cx + R + 18, y2: cy, class: 'grid' }, g);
+  mk('line', { x1: cx, y1: cy - R - 18, x2: cx, y2: cy + R + 18, class: 'grid' }, g);
+  mk('circle', { cx, cy, r: R, class: 'circ' }, g);
+  txt(g, cx + R + 6, cy + 16, '1', 'tl'); txt(g, cx - 8, cy - R - 6, '1', 'tl');
+  // Graph axes with π ticks (and degrees underneath)
+  mk('line', { x1: gL, y1: cy, x2: gR, y2: cy, class: 'axis' }, g);
+  mk('line', { x1: gL, y1: cy - R - 10, x2: gL, y2: cy + R + 10, class: 'axis' }, g);
+  [-1, 1].forEach(v => { mk('line', { x1: gL, y1: GY(v), x2: gR, y2: GY(v), class: 'grid' }, g); txt(g, gL - 6, GY(v) + 4, num(v), 'tly'); });
+  for (let k = 1; k <= 4 * un.turns; k++){
+    const t = k * PI / 2, x = GX(t);
+    mk('line', { x1: x, y1: cy - R - 10, x2: x, y2: cy + R + 10, class: 'grid' }, g);
+    txt(g, x, cy + R + 28, piForm(t), 'tl'); txt(g, x, cy + R + 42, num(t * 180 / PI, 0) + '°', 'tld');
+  }
+  txt(g, gR - 4, cy - 8, 'θ', 'sym', { style: 'fill:var(--ink)', 'text-anchor': 'end' });
+  // The traced waves so far
+  const showS = un.mode !== 'cos', showC = un.mode !== 'sin';
+  const trace = (f, cls) => {
+    const n = Math.max(2, Math.ceil(th / 0.03)), pts = [];
+    for (let i = 0; i <= n; i++){ const t = th * i / n; pts.push(`${GX(t).toFixed(1)},${GY(f(t)).toFixed(1)}`); }
+    mk('path', { d: 'M' + pts.join(' L'), class: cls }, g);
+  };
+  if (showS) trace(Math.sin, 'sinW');
+  if (showC) trace(Math.cos, 'cosW');
+  // The point on the circle, its height (sine) and across (cosine) segments, and the links to the graph
+  const px = cx + R * Math.cos(th), py = cy - R * Math.sin(th);
+  mk('line', { x1: cx, y1: cy, x2: px, y2: py, class: 'radius' }, g);
+  if (showS){
+    mk('line', { x1: px, y1: cy, x2: px, y2: py, class: 'sinSeg' }, g);
+    mk('line', { x1: px, y1: py, x2: GX(th), y2: py, class: 'link' }, g);
+    mk('circle', { cx: GX(th), cy: GY(Math.sin(th)), r: 6.5, class: 'wdot', style: 'fill:var(--sin)' }, g);
+  }
+  if (showC){
+    mk('line', { x1: cx, y1: cy, x2: px, y2: cy, class: 'cosSeg' }, g);
+    mk('circle', { cx: GX(th), cy: GY(Math.cos(th)), r: 6.5, class: 'wdot', style: 'fill:var(--cos)' }, g);
+  }
+  mk('circle', { cx: px, cy: py, r: 7.5, class: 'pt' }, g);
+  // Chips and readout
+  $('uTh').textContent = un.e >= 1 ? piForm(th) : num(th, 2);
+  $('uDeg').textContent = num(th * 180 / PI, 0) + '°';
+  $('uSin').textContent = num(Math.sin(th), 3); $('uCos').textContent = num(Math.cos(th), 3);
+  const deg = th * 180 / PI;
+  let h;
+  if (un.e === 0) h = 'Press Play. Watch the purple point go around, and its height draw the wave.';
+  else if (un.e < 1) h = `At ${num(deg, 0)}° the point is ${num(Math.sin(th), 2)} ${Math.sin(th) >= 0 ? 'above' : 'below'} the center. ${deg % 360 < 90 ? 'Climbing toward the top.' : deg % 360 < 180 ? 'Past the top, coming down.' : deg % 360 < 270 ? 'Below the center, heading to the bottom.' : 'Coming back up to where it started.'}`;
+  else h = `One full turn of the circle (2π) makes one full cycle of the wave, so the wave’s <b>period is 2π</b>. Its height never goes above 1 or below −1: the <b>amplitude is 1</b>.` +
+    (un.turns === 2 ? ' The second turn draws exactly the same shape again: that’s what <b>periodic</b> means.' : '') +
+    (showC && showS ? ' Notice the green cosine wave is the orange sine wave slid a quarter turn (π/2) to the left.' : '');
+  $('uOut').innerHTML = h;
+}
+function playUnroll(){
+  cancelAnimationFrame(un.raf); un.e = 0;
+  const dur = 5200 * un.turns; let last = performance.now();
+  $('uPlay').textContent = 'Playing…';
+  const step = now => { un.e = Math.min(1, un.e + (now - last) / dur); last = now; drawUnroll(); if (un.e < 1) un.raf = requestAnimationFrame(step); else $('uPlay').textContent = 'Replay'; };
+  un.raf = requestAnimationFrame(step);
+}
+$('traceBtns').querySelectorAll('button[data-t]').forEach(b => b.onclick = () => { un.mode = b.dataset.t; drawUnroll(); });
+$('traceBtns').querySelectorAll('button[data-n]').forEach(b => b.onclick = () => { un.turns = +b.dataset.n; playUnroll(); });
+$('uPlay').onclick = playUnroll;
+$('uReset').onclick = () => { cancelAnimationFrame(un.raf); un.e = 0; $('uPlay').textContent = 'Play'; drawUnroll(); };
+
+/* =====================================================================
+   3. EXPLORER 2: the wave builder  y = A sin(2π(x − C)/P) + D
+   ===================================================================== */
+const PRESETS = [
+  { name: 'sin x',         A: 1,   P: TAU,  C: 0,       D: 0,  trig: true, d: 'The basic sine wave: amplitude 1, period 2π, no shift, midline 0.' },
+  { name: 'Taller',        A: 2,   P: TAU,  C: 0,       D: 0,  trig: true, d: 'Amplitude 2: the same wave stretched up and down to twice the height.' },
+  { name: 'Faster',        A: 1,   P: PI,   C: 0,       D: 0,  trig: true, d: 'Period π: two cycles fit where one used to. Twice the frequency.' },
+  { name: 'Raised',        A: 1,   P: TAU,  C: 0,       D: 1.5, trig: true, d: 'Midline 1.5: the whole wave slides up. It now swings between 0.5 and 2.5.' },
+  { name: 'Shifted right', A: 1,   P: TAU,  C: PI / 2,  D: 0,  trig: true, d: 'Phase shift π/2: the wave starts its climb at x = π/2 instead of 0.' },
+  { name: 'Cosine',        A: 1,   P: TAU,  C: -PI / 2, D: 0,  trig: true, d: 'Shift −π/2 (left a quarter period): this is exactly the cosine wave.' },
+  { name: 'Ferris wheel',  A: 20,  P: 4,    C: 1,       D: 22, x: 'minutes', y: 'height (m)', xmax: 12, ymin: 0, ymax: 45, d: 'A 40 m wheel whose center is 22 m up, turning once every 4 minutes. You board at the bottom at time 0.' },
+  { name: 'Tides',         A: 1.5, P: 12.4, C: 3.1,     D: 2,  x: 'hours', y: 'water depth (m)', xmax: 30, ymin: 0, ymax: 4, d: 'Water depth at a harbor: 2 m on average, rising and falling 1.5 m, high tide about every 12.4 hours.' },
+  { name: 'Daylight',      A: 3,   P: 365,  C: 80,      D: 12, x: 'day of the year', u: 'days', y: 'hours of daylight', xmax: 365, ymin: 0, ymax: 16, d: 'Hours of daylight in a mid-latitude city: 12 on average, 3 more in midsummer, 3 fewer in midwinter. Period: one year.' },
+  { name: 'Sound (A440)',  A: 1,   P: 1000 / 440, C: 0, D: 0,  x: 'milliseconds', y: 'air pressure', xmax: 10, ymin: -1.4, ymax: 1.4, d: 'The note A: the air pressure wave repeats every 1/440 of a second. That’s a frequency of 440 cycles per second (440 Hz).' },
+];
+const bw = { i: 0, A: 1, P: TAU, C: 0, D: 0, e: 1, raf: 0 };
+PRESETS.forEach((p, i) => { const b = document.createElement('button'); b.className = 'preset'; b.textContent = p.name; b.onclick = () => chooseB(i); $('presets').appendChild(b); });
+const fmtIn = (v, trig) => trig ? piForm(v).replace('π', 'pi').replace('−', '-') : num(v, 3).replace('−', '-');
+function chooseB(i){
+  const p = PRESETS[i]; Object.assign(bw, { i, A: p.A, P: p.P, C: p.C, D: p.D });
+  $('inA').value = fmtIn(p.A, false); $('inP').value = fmtIn(p.P, !!p.trig); $('inC').value = fmtIn(p.C, !!p.trig); $('inD').value = fmtIn(p.D, false);
+  [...$('presets').children].forEach((b, j) => b.classList.toggle('on', j === i));
+  $('presetDesc').textContent = p.d; $('bErr').textContent = '';
+  playB();
+}
+function readB(){
+  const v = ['inA', 'inP', 'inC', 'inD'].map(id => parseVal($(id).value));
+  if (v.some(isNaN)){ $('bErr').textContent = 'Fill in all four boxes with numbers (π forms like pi/2 are fine).'; return false; }
+  if (v[1] <= 0){ $('bErr').textContent = 'The period must be bigger than 0.'; return false; }
+  $('bErr').textContent = ''; [bw.A, bw.P, bw.C, bw.D] = v; return true;
+}
+['inA', 'inP', 'inC', 'inD'].forEach(id => {
+  $(id).addEventListener('input', () => { [...$('presets').children].forEach(b => b.classList.remove('on')); $('presetDesc').textContent = 'Custom wave.'; if (readB()){ bw.e = 1; drawB(); } });
+  $(id).addEventListener('focus', e => e.target.select());
+  $(id).addEventListener('keydown', e => { if (e.key === 'Enter') playB(); });
+});
+// Draw a wave graph with its parts labeled. W = {A, P, C, D, trig, x, y, xmax, ymin, ymax}; e = how much is drawn; o.labels, o.hide
+function drawWave(svg, W, e, o){
+  o = o || {};
+  svg.innerHTML = ''; const g = mk('g', {}, svg);
+  const L = 70, R = 975, T = 20, B = 330;
+  const trig = !!W.trig, xmax = W.xmax || 4 * PI;
+  const top = W.ymax !== undefined ? W.ymax : Math.max(2, Math.ceil(Math.abs(W.D) + Math.abs(W.A) + 0.5));
+  const bot = W.ymin !== undefined ? W.ymin : -top;
+  const X = v => L + v / xmax * (R - L), Y = v => B - (v - bot) / (top - bot) * (B - T);
+  // Grid: π/2 steps for trig waves, nice steps otherwise
+  if (trig){ for (let k = 0; k * PI / 2 <= xmax + 1e-9; k++){ const x = X(k * PI / 2); mk('line', { x1: x, y1: T, x2: x, y2: B, class: 'grid' }, g); txt(g, x, B + 18, piForm(k * PI / 2), 'tl'); } }
+  else { const s = niceStep(xmax, 10); for (let v = 0; v <= xmax + 1e-9; v += s){ mk('line', { x1: X(v), y1: T, x2: X(v), y2: B, class: 'grid' }, g); txt(g, X(v), B + 18, num(v, 1), 'tl'); } }
+  const ys = niceStep(top - bot, 6);
+  for (let v = Math.ceil(bot / ys) * ys; v <= top + 1e-9; v += ys){ mk('line', { x1: L, y1: Y(v), x2: R, y2: Y(v), class: 'grid' }, g); txt(g, L - 8, Y(v) + 4, num(v, 2), 'tly'); }
+  if (bot <= 0 && top >= 0) mk('line', { x1: L, y1: Y(0), x2: R, y2: Y(0), class: 'axis' }, g);
+  mk('line', { x1: L, y1: T, x2: L, y2: B, class: 'axis' }, g);
+  txt(g, (L + R) / 2, B + 40, W.x ? `x = ${W.x}` : 'x', 'lab', { style: 'fill:var(--muted)', 'text-anchor': 'middle' });
+  if (W.y) txt(g, 0, 0, W.y, 'lab', { style: 'fill:var(--muted)', 'text-anchor': 'middle', transform: `translate(16 ${(T + B) / 2}) rotate(-90)` });
+  const f = x => W.A * Math.sin(TAU * (x - W.C) / W.P) + W.D;
+  // Ghost of the plain sine wave (trig waves only)
+  if (trig && !o.noGhost){ const pts = []; for (let i = 0; i <= 400; i++){ const x = xmax * i / 400; pts.push(`${X(x).toFixed(1)},${Y(Math.sin(x)).toFixed(1)}`); } mk('path', { d: 'M' + pts.join(' L'), class: 'ghost' }, g); }
+  // Midline
+  if (!o.hide || o.hide !== 'D') mk('line', { x1: L, y1: Y(W.D), x2: R, y2: Y(W.D), class: 'mid' }, g);
+  // The wave itself, drawn left to right up to fraction e
+  const n = 600, pts = [];
+  for (let i = 0; i <= Math.round(n * e); i++){ const x = xmax * i / n; pts.push(`${X(x).toFixed(1)},${Y(f(x)).toFixed(1)}`); }
+  if (pts.length > 1) mk('path', { d: 'M' + pts.join(' L'), class: 'wave' }, g);
+  if (e < 1 || o.labels === false) return { X, Y };
+  // Labels for the four parts. Find the first peak at or after x = 0 (where the sine reaches its top).
+  let xp = W.C + W.P / 4 * Math.sign(W.A || 1);
+  if (W.A < 0) xp = W.C + 3 * W.P / 4;
+  while (xp - W.P >= -1e-9) xp -= W.P; while (xp < 0) xp += W.P;
+  const peakY = W.D + Math.abs(W.A);
+  // Amplitude bracket: from the midline up to the peak
+  if (o.hide !== 'A' && Math.abs(W.A) > 1e-9){
+    const ax = X(xp);
+    mk('line', { x1: ax, y1: Y(W.D), x2: ax, y2: Y(peakY), class: 'ampL' }, g);
+    mk('polygon', { points: `${ax},${Y(peakY)} ${ax - 5},${Y(peakY) + 9} ${ax + 5},${Y(peakY) + 9}`, class: 'ampH' }, g);
+    txt(g, ax + 9, (Y(W.D) + Y(peakY)) / 2 + 4, `A = ${num(Math.abs(W.A), 2)}`, 'lab', { style: 'fill:var(--amp)' });
+  }
+  // Period bracket: from this peak to the next one, drawn just above the peaks
+  if (o.hide !== 'P' && xp + W.P <= xmax + 1e-9){
+    const yb = Math.max(T + 10, Y(peakY) - 18), x1 = X(xp), x2 = X(xp + W.P);
+    mk('line', { x1, y1: yb, x2, y2: yb, class: 'perL' }, g);
+    mk('line', { x1, y1: yb - 6, x2: x1, y2: yb + 6, class: 'perL' }, g); mk('line', { x1: x2, y1: yb - 6, x2, y2: yb + 6, class: 'perL' }, g);
+    txt(g, (x1 + x2) / 2, yb - 7, `period P = ${trig ? piForm(W.P) : num(W.P, 2)}`, 'lab', { style: 'fill:var(--per)', 'text-anchor': 'middle' });
+  }
+  // Phase shift arrow along the midline from 0 to C
+  if (o.hide !== 'C' && Math.abs(W.C) > 1e-9 && W.C > -xmax && W.C < xmax){
+    const ys2 = Y(W.D) + 22, x0 = X(0), x1 = X(Math.max(0, Math.min(xmax, W.C)));
+    if (W.C > 0){
+      mk('line', { x1: x0, y1: ys2, x2: x1 - 8, y2: ys2, class: 'shL' }, g);
+      mk('polygon', { points: `${x1},${ys2} ${x1 - 10},${ys2 - 6} ${x1 - 10},${ys2 + 6}`, class: 'shH' }, g);
+      txt(g, (x0 + x1) / 2, ys2 + 18, `shift C = ${trig ? piForm(W.C) : num(W.C, 2)}`, 'lab', { style: 'fill:var(--shift)', 'text-anchor': 'middle' });
+    } else txt(g, x0 + 8, ys2 + 18, `shift C = ${trig ? piForm(W.C) : num(W.C, 2)} (to the left)`, 'lab', { style: 'fill:var(--shift)' });
+  }
+  if (o.hide !== 'D') txt(g, R - 4, Y(W.D) - 7, `midline y = ${num(W.D, 2)}`, 'lab', { style: 'fill:var(--ink)', 'text-anchor': 'end' });
+  return { X, Y };
+}
+function drawB(){
+  const p = PRESETS[bw.i] || {}, custom = ![...$('presets').children].some(b => b.classList.contains('on'));
+  const W = Object.assign({}, custom ? { trig: true } : p, { A: bw.A, P: bw.P, C: bw.C, D: bw.D });
+  if (custom){ W.xmax = Math.max(4 * PI, 2 * bw.P + Math.max(0, bw.C)); delete W.ymin; delete W.ymax; }
+  drawWave($('bSvg'), W, bw.e);
+  const trig = !!W.trig, B = TAU / bw.P;
+  const fx = v => trig ? piForm(v) : num(v, 3);
+  $('bEq').innerHTML = `<i>y</i> = <span class="am">${num(bw.A, 2)}</span> sin(<span class="pe">${trig ? (isInt(B) ? num(B, 0) : num(B, 3)) : num(B, 4)}</span>(<i>x</i> − <span class="sh">${fx(bw.C)}</span>)) + ${num(bw.D, 2)} &nbsp; <span style="color:var(--muted);font-size:.8em">with B = 2π ÷ P</span>`;
+  const f = 1 / bw.P;
+  let h = `Swings <b class="am">${num(Math.abs(bw.A), 2)}</b> above and below the midline <b>y = ${num(bw.D, 2)}</b>, so it runs from <b>${num(bw.D - Math.abs(bw.A), 2)}</b> to <b>${num(bw.D + Math.abs(bw.A), 2)}</b>. ` +
+    `One cycle every <b class="pe">${fx(bw.P)}</b>${W.x ? ' ' + (W.u || W.x) : ''}: a frequency of ${num(f, 4)} cycles per ${W.x ? (W.u || W.x).replace(/s$/, '') : 'unit'}.`;
+  if (p.name === 'Sound (A440)' && !custom) h += ` That’s 0.44 cycles per millisecond, or <b>440 cycles per second</b>.`;
+  if (p.name === 'Cosine' && !custom) h += ` It matches cos <i class="sym">x</i> exactly: it peaks at <i class="sym">x</i> = 0.`;
+  if (p.name === 'Ferris wheel' && !custom) h += ` At 2 minutes you’re at the top: 42 m.`;
+  $('bOut').innerHTML = h;
+}
+function playB(){
+  if (!readB()) return;
+  cancelAnimationFrame(bw.raf); bw.e = 0; let last = performance.now();
+  const step = now => { bw.e = Math.min(1, bw.e + (now - last) / 2200); last = now; drawB(); if (bw.e < 1) bw.raf = requestAnimationFrame(step); };
+  bw.raf = requestAnimationFrame(step);
+}
+$('bPlay').onclick = playB;
+
+/* =====================================================================
+   4. QUIZ
+   ===================================================================== */
+const rnd = arr => arr[Math.floor(Math.random() * arr.length)];
+const randInt = (lo, hi) => lo + Math.floor(Math.random() * (hi - lo + 1));
+const qz = { counted: false, done: false, right: 0, total: 0, e: 1, raf: 0 };
+function newQuestion(){
+  Object.assign(qz, { counted: false, done: false });
+  $('qErr').textContent = ''; $('qFb').className = 'feedback'; $('qFb').innerHTML = ''; $('qIn').value = ''; $('qEq').innerHTML = '';
+  qz.type = rnd(['read', 'match', 'predict']);
+  if (qz.type === 'read' || qz.type === 'match'){
+    const A = rnd([1, 2, 3]), Bv = rnd([1, 2, 0.5]), D = rnd([-1, 0, 1, 2]);
+    qz.W = { A, P: TAU / Bv, C: 0, D, trig: true, xmax: 4 * PI, ymax: Math.max(2, D + A + 1), ymin: Math.min(-2, D - A - 1) };
+    qz.B = Bv;
+    qz.ask = qz.type === 'read' ? rnd(['A', 'P', 'D']) : rnd(['A', 'B', 'D']);
+    const names = { A: 'amplitude', P: 'period', D: 'midline', B: 'B' };
+    if (qz.type === 'read'){
+      $('qTitle').textContent = 'Read the wave';
+      $('qText').innerHTML = `What is the <b>${names[qz.ask]}</b> of this wave?${qz.ask === 'P' ? ' (A π form like 2pi is fine.)' : qz.ask === 'D' ? ' Give the <i class="sym">y</i>-value of the midline.' : ''}`;
+    } else {
+      $('qTitle').textContent = 'Fill in the equation';
+      $('qText').innerHTML = `This wave has the form <i class="sym">y</i> = <i class="sym">A</i> sin(<i class="sym">B</i><i class="sym">x</i>) + <i class="sym">D</i>. Fill in the missing number.`;
+      const bl = '<span class="blank">?</span>';
+      $('qEq').innerHTML = `y = ${qz.ask === 'A' ? bl : A} sin(${qz.ask === 'B' ? bl : (Bv === 0.5 ? '½' : Bv)}x) ${qz.ask === 'D' ? '+ ' + bl : (D < 0 ? '− ' + Math.abs(D) : '+ ' + D)}`;
+    }
+    qz.ans = qz.ask === 'A' ? A : qz.ask === 'P' ? TAU / Bv : qz.ask === 'D' ? D : Bv;
+    $('qLabel').innerHTML = { A: 'Amplitude <i>A</i>', P: 'Period <i>P</i>', D: 'Midline <i>D</i>', B: 'Number <i>B</i>' }[qz.ask];
+    $('qField').className = 'field ' + { A: 'fA', P: 'fP', D: 'fD', B: 'fP' }[qz.ask];
+  } else {
+    qz.P = rnd([4, 5, 6]);
+    qz.vals = Array.from({ length: qz.P }, () => randInt(0, 5));
+    if (new Set(qz.vals).size < 3) qz.vals[1] = (qz.vals[0] + 2) % 6;           // make the pattern interesting
+    qz.N = qz.P * randInt(3, 8) + randInt(1, qz.P - 1);                       // never a whole number of cycles
+    qz.ans = qz.vals[qz.N % qz.P];
+    $('qTitle').textContent = 'Use the repeat';
+    $('qText').innerHTML = `This pattern is periodic with period <b class="pe">${qz.P}</b>: the shaded part repeats forever. What is its value at <i class="sym">x</i> = <b>${qz.N}</b>?`;
+    $('qLabel').innerHTML = `Value at x = ${qz.N}`; $('qField').className = 'field fP';
+  }
+  playQ();
+}
+function drawPattern(svg, e){
+  svg.innerHTML = ''; const g = mk('g', {}, svg);
+  const L = 70, R = 975, T = 30, B = 320, xmax = 3 * qz.P;
+  const X = v => L + v / xmax * (R - L), Y = v => B - v / 6 * (B - T);
+  for (let v = 0; v <= xmax; v++){ mk('line', { x1: X(v), y1: T, x2: X(v), y2: B, class: 'grid' }, g); txt(g, X(v), B + 18, String(v), 'tl'); }
+  for (let v = 0; v <= 6; v++){ mk('line', { x1: L, y1: Y(v), x2: R, y2: Y(v), class: 'grid' }, g); txt(g, L - 8, Y(v) + 4, String(v), 'tly'); }
+  mk('rect', { x: X(0), y: T, width: X(qz.P) - X(0), height: B - T, class: 'cycle' }, g);
+  txt(g, (X(0) + X(qz.P)) / 2, T - 8, 'one cycle', 'lab', { style: 'fill:var(--per)', 'text-anchor': 'middle' });
+  mk('line', { x1: L, y1: B, x2: R, y2: B, class: 'axis' }, g); mk('line', { x1: L, y1: T, x2: L, y2: B, class: 'axis' }, g);
+  const upto = Math.round(xmax * e), pts = [];
+  for (let x = 0; x <= upto; x++) pts.push(`${X(x)},${Y(qz.vals[x % qz.P])}`);
+  if (pts.length > 1) mk('path', { d: 'M' + pts.join(' L'), class: 'pat' }, g);
+  for (let x = 0; x <= upto; x++) mk('circle', { cx: X(x), cy: Y(qz.vals[x % qz.P]), r: 5, class: 'patDot' }, g);
+  txt(g, R - 4, B + 40, `…and so on, forever, to x = ${qz.N} and beyond`, 'lab', { style: 'fill:var(--muted)', 'text-anchor': 'end' });
+}
+function drawQ(){
+  if (qz.type === 'predict') drawPattern($('qSvg'), qz.e);
+  else drawWave($('qSvg'), qz.W, qz.e, { labels: qz.done, noGhost: true, hide: qz.done ? null : qz.ask });
+}
+function playQ(){
+  cancelAnimationFrame(qz.raf); qz.e = 0; let last = performance.now();
+  const step = now => { qz.e = Math.min(1, qz.e + (now - last) / 1800); last = now; drawQ(); if (qz.e < 1) qz.raf = requestAnimationFrame(step); };
+  qz.raf = requestAnimationFrame(step);
+}
+function countQ(ok){ if (qz.counted) return; qz.counted = true; qz.total++; if (ok) qz.right++; $('score').textContent = `Score: ${qz.right} / ${qz.total}`; }
+const close = (v, t) => Math.abs(v - t) < 0.02 * Math.max(1, Math.abs(t));
+function checkQ(){
+  const raw = $('qIn').value, v = parseVal(raw);
+  if (raw.trim() === '' || isNaN(v)){ $('qErr').textContent = 'Type a number (π forms like 2pi or pi/2 are fine).'; return; }
+  $('qErr').textContent = '';
+  let ok = false, msg;
+  if (qz.type === 'predict'){
+    const r = qz.N % qz.P, wrongP = qz.vals[(qz.N - 1) % qz.P];
+    if (v === qz.ans){ ok = true; msg = `<b>Right.</b> ${qz.N} = ${Math.floor(qz.N / qz.P)} × ${qz.P} + ${r}, so after ${Math.floor(qz.N / qz.P)} whole cycles you’re ${r} into the next one. The value at <i class="sym">x</i> = ${r} is <b>${qz.ans}</b>.`; }
+    else if (v === wrongP || v === qz.vals[(r + 1) % qz.P]) msg = `<b>Off by one step.</b> Subtract whole periods carefully: ${qz.N} − ${Math.floor(qz.N / qz.P)} × ${qz.P} = ${r}. Read the value at exactly <i class="sym">x</i> = ${r}.`;
+    else msg = `<b>Not quite.</b> Subtract ${qz.P} again and again from ${qz.N} until you land inside the shaded first cycle (0 to ${qz.P - 1}), then read the graph there.`;
+  } else {
+    const { A, D } = qz.W, B = qz.B, P = TAU / B;
+    if (close(v, qz.ans)){ ok = true; msg = `<b>Right.</b> ${{ A: `The wave swings ${A} above and below its midline.`, P: `One cycle, peak to peak, is ${piForm(P)} long.`, D: `The wave swings around the line y = ${D}.`, B: `The period is ${piForm(P)}, and B = 2π ÷ ${piForm(P)} = ${B === 0.5 ? '½' : B}.` }[qz.ask]}`; }
+    else if (qz.ask === 'A' && close(v, A + D) && D !== 0) msg = `<b>That’s the height of the top of the wave.</b> Amplitude is measured from the midline (y = ${D}), not from 0.`;
+    else if (qz.ask === 'A' && close(v, 2 * A)) msg = `<b>That’s the full distance from bottom to top.</b> Amplitude is only half of that: from the midline up to the peak.`;
+    else if (qz.ask === 'B' && close(v, P)) msg = `<b>That’s the period, not B.</b> B = 2π ÷ period. A shorter period means a bigger B.`;
+    else if (qz.ask === 'B' && close(v, 1 / B)) msg = `<b>Flipped.</b> More cycles in 2π means a bigger B. Count how many full cycles fit between 0 and 2π.`;
+    else if (qz.ask === 'P' && close(v, P / 2)) msg = `<b>That’s half a cycle.</b> Measure from one peak all the way to the next peak.`;
+    else if (qz.ask === 'P' && close(v, B)) msg = `<b>That’s B, not the period.</b> Measure the length of one cycle along the x-axis.`;
+    else if (qz.ask === 'D' && close(v, A)) msg = `<b>That’s the amplitude.</b> The midline is the level halfway between the top and the bottom.`;
+    else msg = qz.ask === 'D' ? `<b>Not quite.</b> Find the top and bottom of the wave and take the level halfway between them.` : qz.ask === 'P' || qz.ask === 'B' ? `<b>Not quite.</b> Find two neighboring peaks and measure the distance between them.` : `<b>Not quite.</b> Measure from the midline straight up to a peak.`;
+  }
+  countQ(ok);
+  if (ok){ qz.done = true; drawQ(); }
+  $('qFb').className = 'feedback ' + (ok ? 'ok' : 'bad'); $('qFb').innerHTML = msg;
+}
+function showQ(){
+  countQ(false); qz.done = true; $('qErr').textContent = ''; drawQ();
+  const fb = $('qFb'); fb.className = 'feedback info';
+  if (qz.type === 'predict'){ const r = qz.N % qz.P; fb.innerHTML = `${qz.N} = ${Math.floor(qz.N / qz.P)} × ${qz.P} + ${r}, so the value is the same as at <i class="sym">x</i> = ${r}: <b>${qz.ans}</b>.`; return; }
+  fb.innerHTML = `The ${({ A: 'amplitude', P: 'period', D: 'midline', B: 'number B' })[qz.ask]} is <b>${qz.ask === 'P' ? piForm(qz.ans) : (qz.ans === 0.5 ? '½' : num(qz.ans, 2))}</b>. The labels on the graph now show all the parts.`;
+}
+$('qCheck').onclick = checkQ; $('qShow').onclick = showQ; $('qReplay').onclick = playQ; $('qNew').onclick = newQuestion;
+$('qIn').addEventListener('input', () => { $('qErr').textContent = ''; });
+$('qIn').addEventListener('focus', e => e.target.select());
+$('qIn').addEventListener('keydown', e => { if (e.key === 'Enter') checkQ(); });
+
+/* =====================================================================
+   5. START
+   ===================================================================== */
+un.e = 1; drawUnroll(); $('uPlay').textContent = 'Replay';
+chooseB(0);
+newQuestion();
+</script>
+<script src="../shared/toc.js"></script>
+<script src="../shared/nav.js"></script>
+</body>
+</html>
