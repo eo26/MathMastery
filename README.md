@@ -29,6 +29,8 @@ title and Claude artifact id.
 
 ## Adding a page
 
-1. Create `<ID>/body.html`.
+1. Create `<ID>/body.html` and build it: `python3 build_page.py <ID> "<title>" --site`.
 2. Add the page to `shared/toc.js` (`built: true`) and to `pages.json`.
-3. Run `python3 build_all.py --site && python3 make_home.py`, then commit.
+3. Commit. Every page and the home page load `shared/toc.js` directly, so no other page needs rebuilding.
+
+Rebuild everything (`build_all.py --site`) only when `shared/head.html` or a page's `body.html` changes.

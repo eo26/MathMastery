@@ -9,15 +9,21 @@ site = '--site' in sys.argv                                   # site mode switch
 head = open('shared/head.html').read()                         # fonts, MathJax, book-wide CSS, ends with <body>
 head = head.replace(head[head.index('<title>'):head.index('</title>') + 8], f'<title>{title}</title>')
 nav_css = open('shared/nav.css').read()
-extra = f'<style>\n{nav_css}</style>\n'
 if site:
-    extra = '<meta name="mm-site" content="1">\n' + extra       # nav.js looks for this tag
+    # GitHub build: every page links the SAME shared files, so a contents change is one edit to shared/toc.js
+    extra = '<meta name="mm-site" content="1">\n<link rel="stylesheet" href="../shared/nav.css">\n'
+else:
+    # Claude-artifact build: artifacts can't share files, so the nav is inlined into each page
+    extra = f'<style>\n{nav_css}</style>\n'
 head = head.replace('</head>', extra + '</head>')
 
 body = open(f'{pid}/body.html').read()
-nav = open('shared/toc.js').read() + '\n' + open('shared/nav.js').read()
 assert body.rstrip().endswith('</html>'), 'body.html must end with </body></html>'
-body = body.replace('</body>', f'<script>\n{nav}</script>\n</body>')   # navigation runs after the page's own script
+if site:
+    nav_tags = '<script src="../shared/toc.js"></script>\n<script src="../shared/nav.js"></script>\n'
+else:
+    nav_tags = '<script>\n' + open('shared/toc.js').read() + '\n' + open('shared/nav.js').read() + '</script>\n'
+body = body.replace('</body>', nav_tags + '</body>')   # navigation runs after the page's own script
 
 # Site builds go in the page folder (committed to GitHub); artifact builds go in _artifact/ (ignored by git)
 import os
