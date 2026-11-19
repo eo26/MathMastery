@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>5.B.1 Angles and Radians · MathMastery</title>
+<!-- Fonts: a book serif for prose, a clean sans for UI, a mono for numbers -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<!-- MathJax renders the few formulas on the page (SVG output needs no external stylesheet) -->
+<script>
+  window.MathJax = { tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] }, svg: { fontCache: 'global' } };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<style>
+/* ===================== Theme ===================== */
+:root{
+  --bg:#f7f5ef; --paper:#ffffff; --ink:#1f1e1d; --muted:#6b6a66; --line:#e4e0d5; --line2:#c9c5b8;
+  --accent:#534AB7; --accent-bg:#EEEDFE;
+  --pos:#1D9E75; --neg:#D85A30; --pt:#7F77DD; --pt-soft:#AFA9EC; --pt-dark:#534AB7;
+  --pos-new:#9FE1CB; --neg-new:#F0997B; --ok:#3B6D11; --ok-bg:#EAF3DE; --bad:#A32D2D; --bad-bg:#FCEBEB; --note-bg:#FAF3E3; --note-line:#E7C98A;
+  --serif:"Source Serif 4", Georgia, "Times New Roman", serif;
+  --sans:"IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#191817; --paper:#232220; --ink:#ecebe6; --muted:#a3a29c; --line:#383733; --line2:#55534e;
+    --accent:#AFA9EC; --accent-bg:#2c2852; --pt-dark:#CECBF6; --pt-soft:#6f68b8; --pos-new:#5DCAA5; --neg-new:#F5C4B3;
+    --ok:#C0DD97; --ok-bg:#24400d; --bad:#F7C1C1; --bad-bg:#5a1c1c; --note-bg:#2b261b; --note-line:#6b5626;
+  }
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.7 var(--serif);-webkit-font-smoothing:antialiased}
+
+/* ===================== Layout ===================== */
+.topbar{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1000px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:14px;font:500 13px/1 var(--sans);color:var(--muted)}
+.brand{color:var(--ink);font-weight:600;letter-spacing:.02em}
+.brand b{color:var(--accent)}
+.crumbs{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pid{font-family:var(--mono);color:var(--accent);background:var(--accent-bg);padding:4px 8px;border-radius:6px}
+.prose{max-width:720px;margin:0 auto;padding:0 20px}
+.wide{max-width:1000px;margin:0 auto;padding:0 20px}
+
+/* ===================== Hero ===================== */
+.hero{padding:48px 0 12px}
+.kicker{font:600 13px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1{font:700 46px/1.1 var(--serif);margin:12px 0 14px;letter-spacing:-.01em}
+.dek{font-size:21px;color:var(--muted);margin:0 0 22px;font-style:italic}
+.tiers{display:flex;gap:6px;flex-wrap:wrap;font:500 13px/1 var(--sans);margin-bottom:8px}
+.tier{padding:7px 12px;border-radius:999px;border:1px solid var(--line2);color:var(--muted)}
+.tier.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.tier small{opacity:.7;margin-left:4px}
+
+/* ===================== Text elements ===================== */
+h2{font:700 28px/1.25 var(--serif);margin:56px 0 10px;display:flex;gap:12px;align-items:baseline}
+h2 .n{font:600 14px/1 var(--mono);color:var(--accent);min-width:28px}
+p{margin:0 0 16px}
+em.key{font-style:normal;background:linear-gradient(transparent 62%,var(--accent-bg) 62%);padding:0 2px}
+.goals{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:18px 22px;margin:22px 0 0;font:15.5px/1.6 var(--sans)}
+.goals h3{font:600 12px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
+.goals ul{margin:0;padding-left:20px}
+.note{background:var(--note-bg);border-left:4px solid var(--note-line);border-radius:0 10px 10px 0;padding:14px 18px;margin:20px 0;font:15.5px/1.6 var(--sans)}
+.note b{font-weight:600}
+.notice{list-style:none;padding:0;margin:8px 0 18px;counter-reset:n}
+.notice li{position:relative;padding:12px 0 12px 46px;border-top:1px solid var(--line)}
+.notice li:last-child{border-bottom:1px solid var(--line)}
+.notice li::before{counter-increment:n;content:counter(n);position:absolute;left:4px;top:13px;width:26px;height:26px;border-radius:50%;background:var(--accent-bg);color:var(--accent);font:600 13px/26px var(--mono);text-align:center}
+.goes{list-style:none;padding:0;margin:8px 0 18px}
+.goes li{padding:12px 0;border-top:1px solid var(--line)}
+.goes li:last-child{border-bottom:1px solid var(--line)}
+.math{overflow-x:auto;margin:12px 0 18px;padding:14px 18px;background:var(--paper);border:1px solid var(--line);border-radius:12px}
+.math .cap{font:14px/1.5 var(--sans);color:var(--muted);margin-top:4px}
+.mono{font-family:var(--mono);font-size:.92em;white-space:nowrap}
+.pos{color:var(--pos);font-weight:600}.neg{color:var(--neg);font-weight:600}.pt{color:var(--pt-dark);font-weight:600}
+
+/* ===================== Vocabulary ===================== */
+.vocab{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin:14px 0 8px}
+.term{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font:14.5px/1.5 var(--sans)}
+.term b{display:block;font:600 15px/1.3 var(--serif);margin-bottom:4px}
+
+/* ===================== Interactive cards ===================== */
+.card{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:18px 20px 20px;margin:26px 0;box-shadow:0 1px 0 var(--line),0 12px 32px -22px rgba(0,0,0,.25);font-family:var(--sans)}
+.card-h{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.card-h .tag{font:600 11px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--accent);background:var(--accent-bg);padding:5px 8px;border-radius:6px}
+.card-h h3{font:600 18px/1.3 var(--sans);margin:0}
+.card-h .sub{color:var(--muted);font-size:14.5px;flex-basis:100%}
+.panel-label{font:600 11px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:12px 0 4px;display:flex;justify-content:space-between}
+.panel-label span:last-child{letter-spacing:0;text-transform:none;font-weight:500}
+svg.nl{display:block;width:100%;height:auto;border:1px solid var(--line);border-radius:12px;background:var(--bg);touch-action:manipulation}
+svg.clickable{cursor:pointer}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:12px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0}
+button{font:500 14px/1 var(--sans);padding:9px 14px;border-radius:9px;border:1px solid var(--line2);background:var(--paper);color:var(--ink);cursor:pointer;transition:background .15s,border-color .15s}
+button:hover{border-color:var(--ink)}
+button.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+button.preset.on{background:var(--accent-bg);border-color:var(--accent);color:var(--accent)}
+button:disabled{opacity:.45;cursor:default}
+.desc{min-height:24px;color:var(--muted);font-size:14.5px;margin:2px 0 6px}
+.inputs{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;margin:12px 0 4px}
+.field{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.field input{width:92px;font:500 18px/1 var(--mono);padding:9px 10px;border-radius:9px;border:2px solid var(--line2);background:var(--bg);color:var(--ink);text-align:center}
+.field input:focus{outline:none;border-color:var(--accent)}
+.field i,.eq i,.sym{font:italic 600 1.15em var(--serif);text-transform:none;letter-spacing:0;color:var(--pt-dark)}
+.field.start input{border-color:var(--pt-soft)}
+.field.slide input{border-color:var(--pt)}
+.eq{font:500 20px/1 var(--mono);padding:10px 14px;background:var(--bg);border-radius:10px;border:1px solid var(--line)}
+.err{color:var(--bad);font-size:14px;min-height:20px;margin:2px 0}
+.readout{margin-top:12px;padding:12px 14px;background:var(--bg);border-radius:10px;border:1px solid var(--line);font-size:15px;line-height:1.55;min-height:48px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:12px;font-size:13px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{display:inline-block;width:14px;height:14px;border-radius:50%}
+.sw.pos{background:var(--pos)}.sw.neg{border:2.4px solid var(--neg)}
+.sw.x{position:relative;background:var(--pos);opacity:.45}.sw.x::after{content:'✕';position:absolute;inset:-1px 0 0 0;color:var(--neg);font:700 13px/1 var(--sans);text-align:center}
+.sw.posnew{background:var(--pos-new);border:1.5px solid var(--pos)}.sw.negnew{border:2.4px solid var(--neg-new)}.sw.pt{background:var(--pt)}
+.sw.mv{width:22px;height:4px;border-radius:2px;background:var(--pt-soft)}
+.sw.rl{width:22px;height:0;border-top:2px dashed var(--ink);border-radius:0;opacity:.7}
+.feedback{margin-top:10px;padding:12px 14px;border-radius:10px;font-size:15px;line-height:1.55;display:none}
+.feedback.ok{display:block;background:var(--ok-bg);color:var(--ok)}
+.feedback.bad{display:block;background:var(--bad-bg);color:var(--bad)}
+.feedback.info{display:block;background:var(--accent-bg);color:var(--accent)}
+.score{margin-left:auto;font:600 14px/1 var(--mono);color:var(--muted)}
+
+/* ===================== Footer nav ===================== */
+.pager{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:56px 0 18px;font-family:var(--sans)}
+.pager a,.pager div{display:block;padding:16px 18px;border:1px solid var(--line);border-radius:14px;background:var(--paper);color:var(--ink);text-decoration:none}
+.pager small{display:block;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.pager .next{text-align:right}
+.pager .soon{opacity:.6}
+.meta{font:13px/1.6 var(--sans);color:var(--muted);text-align:center;padding:10px 0 50px}
+
+@media (max-width:720px){
+  body{font-size:17px}
+  h1{font-size:34px}
+  .dek{font-size:18px}
+  h2{font-size:24px}
+  .card{padding:14px 12px 16px;border-radius:14px}
+  .crumbs{display:none}
+  svg.nl{min-width:640px}
+}
+</style>
+<meta name="mm-site" content="1">
+<style>
+/* ===================== Navigation: Contents menu and Previous/Next ===================== */
+.topbar-in{position:relative}
+.tocbtn{font:500 13px/1 var(--sans);padding:7px 11px;border-radius:8px;border:1px solid var(--line2);background:var(--paper);color:var(--ink);cursor:pointer}
+.tocbtn:hover,.tocbtn[aria-expanded="true"]{border-color:var(--accent);color:var(--accent)}
+.tocpanel{position:absolute;top:calc(100% + 6px);right:20px;width:440px;max-height:72vh;overflow:auto;background:var(--paper);border:1px solid var(--line);border-radius:14px;box-shadow:0 22px 48px -20px rgba(0,0,0,.4);padding:14px 14px 10px;display:none;z-index:20;font-family:var(--sans)}
+.tocpanel.open{display:block}
+.tocch{font:600 12px/1.3 var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin:2px 6px 4px}
+.toctier{font:600 11px/1.3 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:12px 6px 4px}
+.tocrow{display:flex;gap:10px;align-items:baseline;padding:7px 8px;border-radius:8px;color:var(--ink);text-decoration:none;font:14.5px/1.35 var(--sans)}
+a.tocrow:hover{background:var(--accent-bg)}
+.tocrow .tid{font:500 12.5px var(--mono);color:var(--accent);min-width:44px}
+.tocrow.cur{background:var(--accent-bg);font-weight:600}
+.tocrow.coming{color:var(--muted)}.tocrow.coming .tid{color:var(--muted)}
+.tocrow small{margin-left:auto;color:var(--muted);font-size:12px;white-space:nowrap}
+.pager .soon{opacity:1}
+.pager .soon .dimtxt{opacity:.6;display:block}
+.pager a:hover{border-color:var(--accent)}
+.pager .skip{display:inline-block;margin-top:8px;padding:0;border:none;background:none;color:var(--accent);font-size:14px;font-weight:500;text-decoration:none}
+.pager .skip:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<style>
+/* ===================== Page-specific styles (5.B.1) ===================== */
+/* degrees (protractor) = amber; radians (the radius string) = teal for the first radius, purple/lilac for the rest; the angle = purple */
+:root{ --deg:#B26A12; --deg-soft:#FBEBD2; --r:#0F8A7A; --s1:#6A5FD0; --s2:#B9B3F0; --beta:#0F8A7A; }
+@media (prefers-color-scheme:dark){ :root{ --deg:#F0B860; --deg-soft:#3d2c10; --r:#5DCAB5; --s1:#9E97EC; --s2:#5E57A8; --beta:#5DCAB5; } }
+.dg{color:var(--deg);font-weight:700}.rd{color:var(--r);font-weight:700}
+.field.fdeg input{border-color:var(--deg)}.field.frad input{border-color:var(--r)}.field.fth input{border-color:var(--pt)}
+.split{display:grid;grid-template-columns:540px 1fr;gap:20px;align-items:start}
+.chips{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.chip{border:1px solid var(--line);border-radius:12px;padding:10px 14px;background:var(--bg)}
+.chip small{display:block;font:600 11px var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:2px}
+.chip b{font:600 22px var(--mono)}
+.chip.d b{color:var(--deg)}.chip.r b{color:var(--r)}.chip.p b{color:var(--pt-dark)}.chip.t b{color:var(--ink)}
+.unitbtns button.on{background:var(--accent-bg);border-color:var(--accent);color:var(--accent)}
+table.conv{border-collapse:separate;border-spacing:0;width:100%;font:15px var(--mono);background:var(--paper);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+table.conv th{font:600 12px var(--sans);text-transform:uppercase;letter-spacing:.05em;color:var(--muted);padding:9px;border-bottom:1px solid var(--line)}
+table.conv td{padding:8px;text-align:center;border-bottom:1px solid var(--line)}
+table.conv tr:last-child td{border-bottom:none}
+table.conv td.d{color:var(--deg);font-weight:600}table.conv td.r{color:var(--r);font-weight:600}
+.qtext{font:17px/1.55 var(--serif);margin:4px 0 10px}
+</style>
+
+<!-- ===================== Top bar ===================== -->
+<div class="topbar"><div class="topbar-in">
+  <span class="brand">Math<b>Mastery</b></span>
+  <span class="crumbs">Chapter 5 · Trigonometry › Basics</span>
+  <span class="pid">5.B.1</span>
+</div></div>
+
+<!-- ===================== Hero ===================== -->
+<header class="prose hero">
+  <div class="kicker">Chapter 5 · Trigonometry</div>
+  <h1>Angles and Radians</h1>
+  <p class="dek">An angle is an amount of turning. Degrees cut a full turn into 360 slices; radians measure the turn with the circle’s own radius, wrapped around its edge like a string.</p>
+  <div class="tiers" aria-label="Tier">
+    <span class="tier on">Basics <small>you are here</small></span>
+    <span class="tier">Undergraduate</span>
+    <span class="tier">Masters</span>
+  </div>
+  <div class="goals">
+    <h3>On this page</h3>
+    <ul>
+      <li>See an <b>angle</b> as a turn from an <b>initial side</b> to a <b>terminal side</b>, including turns past a full circle and <b>clockwise</b> (negative) turns.</li>
+      <li>Measure the same turn in <b>degrees</b> and in <b>radians</b>, and convert between them.</li>
+      <li>Understand why a full turn is <b>2π radians</b>: it takes 2π radius-lengths of string to go around a circle.</li>
+      <li>Use <b>arc length</b> = radius × angle (in radians), and spot <b>coterminal</b> angles that land in the same place.</li>
+    </ul>
+  </div>
+</header>
+
+<main>
+<!-- ===================== §1 An angle is a turn ===================== -->
+<section class="prose">
+  <h2><span class="n">1</span>An angle is a turn</h2>
+  <p>Stand facing a wall, then turn to face a different direction. How much you turned is an <b>angle</b>. In a picture, an angle starts with a ray called the <b>initial side</b>, pointing right, and rotates around a point called the <b>vertex</b> to a new position, the <b>terminal side</b>.</p>
+  <p>By tradition, turning <b>counterclockwise</b> (the opposite way to a clock’s hands) counts as positive, and turning <b>clockwise</b> counts as negative. And nothing stops you from turning more than once around: a skateboarder’s “540” is one and a half full spins.</p>
+
+  <h2><span class="n">2</span>Two rulers for turning</h2>
+  <p><b>Degrees</b> cut one full turn into <b>360</b> equal slices. Nobody knows for certain why 360, but it’s a wonderfully divisible number (it splits evenly into halves, thirds, quarters, fifths, sixths, eighths, tenths and twelfths), and ancient astronomers liked that a year has roughly 360 days. A quarter turn is 90°, a half turn is 180°.</p>
+  <p><b>Radians</b> come from the circle itself. Take a piece of string exactly as long as the circle’s <b>radius</b> (center to edge), and lay it along the edge. The angle it covers is <em class="key">1 radian</em>, about 57.3°. How many pieces of string fit around the whole circle? A little more than 6: exactly <b>2π ≈ 6.283</b>. So a full turn is 2π radians, a half turn is <b>π</b> radians, and a quarter turn is π/2.</p>
+  <p>The explorer shows both rulers at once: the <span class="dg">degree protractor</span> around the outside, and the <span class="rd">radius string</span> wrapping the circle inside.</p>
+</section>
+
+<!-- ===================== Explorer ===================== -->
+<section class="wide">
+  <div class="card" id="explorer">
+    <div class="card-h">
+      <span class="tag">Explore</span><h3>The angle sweeper</h3>
+      <span class="sub">Pick a preset or type an angle in degrees or radians (π-forms like 3pi/4 work), then press Play to sweep it out.</span>
+    </div>
+    <div class="row" id="presets"></div>
+    <div class="desc" id="presetDesc"></div>
+    <div class="inputs">
+      <label class="field fth"><span>Angle <i>θ</i></span><input id="inTh" type="text" inputmode="text" autocomplete="off"></label>
+      <div class="row unitbtns" id="units" style="margin:0"><button data-u="deg">degrees</button><button data-u="rad">radians</button></div>
+      <div class="row" style="margin:0"><button class="primary" id="play">Play</button><button id="reset">Reset</button></div>
+    </div>
+    <div class="err" id="exErr"></div>
+    <div class="split">
+      <svg class="nl" id="dial" viewBox="0 0 560 560" role="img" aria-label="Angle with protractor and radius string"></svg>
+      <div>
+        <div class="chips">
+          <div class="chip d"><small>Degrees</small><b id="cDeg"></b></div>
+          <div class="chip r"><small>Radians</small><b id="cRad"></b></div>
+          <div class="chip p"><small style="text-transform:none;letter-spacing:.02em">RADIANS IN π FORM</small><b id="cPi"></b></div>
+          <div class="chip t"><small>Full turns</small><b id="cTurn"></b></div>
+        </div>
+        <div class="readout" id="exOut" aria-live="polite"></div>
+        <div class="legend">
+          <span><i class="sw" style="background:var(--deg)"></i>degree protractor</span>
+          <span><i class="sw" style="background:var(--r)"></i>the radius <i class="sym">r</i>, and the first radius-length of string</span>
+          <span><i class="sw" style="background:linear-gradient(90deg,var(--s1) 50%,var(--s2) 50%)"></i>more radius-lengths of string</span>
+          <span><i class="sw pt"></i>the terminal side</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §3 Converting ===================== -->
+<section class="prose">
+  <h2><span class="n">3</span>Converting between degrees and radians</h2>
+  <p>Both rulers measure the same full turn, so <em class="key">360° = 2π radians</em>, or, halving both, <b>180° = π radians</b>. That single fact is all you need. Degrees and radians are in a <b>proportional relationship</b> (1.B.5): to go from degrees to radians, multiply by π/180; to go back, multiply by 180/π.</p>
+</section>
+<section class="wide"><div class="card"><table class="conv" id="convTable"></table></div></section>
+
+<!-- ===================== §4 Arc length ===================== -->
+<section class="prose">
+  <h2><span class="n">4</span>Arc length: why radians are so useful</h2>
+  <p>Here’s the payoff. The angle in radians <i>counts radius-lengths</i> of string along the edge. So if the radius is 3 cm and the angle is 2 radians, the curved edge (the <b>arc</b>) is 2 radius-lengths long: 2 × 3 = 6 cm. <em class="key">Arc length = radius × angle in radians.</em> With degrees, there’s no such simple rule.</p>
+  <p>The same angle on a bigger circle gives a longer arc, in exact proportion. Try it:</p>
+</section>
+<section class="wide">
+  <div class="card" id="arcCard">
+    <div class="card-h"><span class="tag">Compare</span><h3>Same angle, different circles</h3>
+      <span class="sub">The left circle has radius 1. Choose the radius <i class="sym">r</i> of the right circle and an angle <i class="sym">θ</i>.</span></div>
+    <div class="inputs">
+      <label class="field frad"><span>Radius <i>r</i></span><input id="inR" type="text" inputmode="decimal" autocomplete="off" value="3"></label>
+      <label class="field fth"><span>Angle <i>θ</i> (radians or °)</span><input id="inAt" type="text" inputmode="text" autocomplete="off" value="pi/2"></label>
+    </div>
+    <div class="err" id="arcErr"></div>
+    <svg class="nl" id="arcSvg" viewBox="0 0 1000 330" role="img" aria-label="Arc length on two circles"></svg>
+    <div class="readout" id="arcOut"></div>
+  </div>
+</section>
+
+<!-- ===================== §5 Coterminal ===================== -->
+<section class="prose">
+  <h2><span class="n">5</span>Different angles, same place</h2>
+  <p>Turn 270° counterclockwise, or 90° clockwise (−90°): you end up facing the same way. Angles whose terminal sides land in the same place are called <b>coterminal</b>. They always differ by a whole number of full turns: 360°, 720°, … (or 2π, 4π, … in radians). <em class="key">A common mistake</em> is to think −90° and 90° are the same place. They’re mirror images: one points down, the other up.</p>
+</section>
+<section class="wide">
+  <div class="card" id="coCard">
+    <div class="card-h"><span class="tag">Try it</span><h3>Do these two angles land in the same place?</h3>
+      <span class="sub">Type two angles (degrees, or radians with pi).</span></div>
+    <div class="inputs">
+      <label class="field fth"><span>Angle <i>α</i></span><input id="inAl" type="text" inputmode="text" autocomplete="off" value="-90"></label>
+      <label class="field frad"><span>Angle <i>β</i></span><input id="inBe" type="text" inputmode="text" autocomplete="off" value="270"></label>
+      <div class="row unitbtns" id="coUnits" style="margin:0"><button data-u="deg">degrees</button><button data-u="rad">radians</button></div>
+    </div>
+    <div class="err" id="coErr"></div>
+    <div class="split" style="grid-template-columns:360px 1fr">
+      <svg class="nl" id="coSvg" viewBox="0 0 360 360" role="img" aria-label="Two angles"></svg>
+      <div class="readout" id="coOut" style="margin-top:0"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §6 In symbols ===================== -->
+<section class="prose">
+  <h2><span class="n">6</span>Now, in symbols</h2>
+  <p>In the explorer, the angle was <i class="sym">θ</i> (the Greek letter theta) and the radius was <i class="sym">r</i>. The two rulers are tied together by one full turn:</p>
+  <div class="math">\[ 360^\circ = 2\pi \text{ radians} \qquad\Longrightarrow\qquad \theta_{\text{rad}} = \theta_{\text{deg}} \times \frac{\pi}{180}, \quad \theta_{\text{deg}} = \theta_{\text{rad}} \times \frac{180}{\pi} \]<div class="cap">Example: \(135^\circ \times \tfrac{\pi}{180} = \tfrac{3\pi}{4}\) radians.</div></div>
+  <p>The radius string gives the arc length \(s\):</p>
+  <div class="math">\[ s = r\,\theta \qquad (\theta \text{ in radians}) \]<div class="cap">For a fixed angle, \(s\) is proportional to \(r\). For a fixed circle, \(s\) is proportional to \(\theta\). Either way, the constant of proportionality is the other quantity.</div></div>
+  <p>And coterminal angles differ by whole turns:</p>
+  <div class="math">\[ \theta \quad\text{and}\quad \theta + 360^\circ \cdot n \qquad (n = \ldots, -2, -1, 0, 1, 2, \ldots) \]<div class="cap">In radians: \(\theta + 2\pi n\).</div></div>
+</section>
+
+<!-- ===================== §7 Where this goes ===================== -->
+<section class="prose">
+  <h2><span class="n">7</span>Where this goes</h2>
+  <ul class="goes">
+    <li><b>Next (5.B.2):</b> put a point where the terminal side meets a circle of radius 1. Its across and up coordinates are the <b>cosine</b> and <b>sine</b> of the angle: the start of trigonometry.</li>
+    <li><b>Later in this book:</b> waves and repeating patterns (5.B.4) are measured in radians. In Calculus, the slope of the sine curve is exactly cosine <i>only</i> in radians, which is why mathematicians almost always use them. In Linear Algebra, a <b>rotation</b> of the plane by θ is a matrix built from cos θ and sin θ.</li>
+    <li><b>In the world:</b> clock hands, steering wheels, the spin of a bike wheel (how far the bike rolls is radius × angle turned), skateboard and figure-skating spins (360, 540, 720), and the angle of a ramp.</li>
+  </ul>
+</section>
+
+<!-- ===================== §8 Vocabulary ===================== -->
+<section class="prose">
+  <h2><span class="n">8</span>Words to know</h2>
+  <div class="vocab">
+    <div class="term"><b>Angle</b>An amount of turning, from an initial side to a terminal side around a vertex.</div>
+    <div class="term"><b>Vertex</b>The point the angle turns around.</div>
+    <div class="term"><b>Initial side / terminal side</b>The ray where the turn starts (pointing right) and the ray where it ends.</div>
+    <div class="term"><b>Degree (°)</b>One 360th of a full turn.</div>
+    <div class="term"><b>Radian</b>The angle that wraps one radius-length of string along a circle’s edge. About 57.3°.</div>
+    <div class="term"><b>π (pi)</b>About 3.14159: the number of radius-lengths in half a circle. A full turn is 2π radians.</div>
+    <div class="term"><b>Arc length</b>The length along the curved edge: <i class="sym">s</i> = <i class="sym">r</i> × <i class="sym">θ</i>, with <i class="sym">θ</i> in radians.</div>
+    <div class="term"><b>Coterminal angles</b>Angles that land in the same place, differing by whole turns: −90° and 270°.</div>
+    <div class="term"><b>Counterclockwise / clockwise</b>Positive turning (against a clock’s hands) / negative turning (with them).</div>
+  </div>
+</section>
+
+<!-- ===================== Quiz ===================== -->
+<section class="prose"><h2><span class="n">9</span>Check yourself</h2>
+  <p>Four kinds of questions: convert degrees ↔ radians, read an angle from a picture, find an arc length, and find a coterminal angle. Radians can be typed as decimals or with pi (like 3pi/4).</p>
+</section>
+<section class="wide">
+  <div class="card" id="quiz">
+    <div class="card-h"><span class="tag">Quiz</span><h3 id="qTitle"></h3><span class="score" id="score">Score: 0 / 0</span></div>
+    <div class="qtext" id="qText"></div>
+    <svg class="nl" id="qSvg" viewBox="0 0 560 560" role="img" aria-label="Quiz picture" style="max-width:420px;margin:0 auto"></svg>
+    <div class="inputs">
+      <label class="field fth" id="qField"><span id="qLabel"></span><input id="qIn" type="text" inputmode="text" autocomplete="off"></label>
+      <div class="row" style="margin:0">
+        <button class="primary" id="qCheck">Check</button>
+        <button id="qShow">Show answer</button>
+        <button id="qReplay">Replay move</button>
+        <button id="qNew">New question</button>
+      </div>
+    </div>
+    <div class="err" id="qErr"></div>
+    <div class="feedback" id="qFb" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ===================== Pager (filled in by the shared navigation) ===================== -->
+<nav class="wide">
+  <div class="pager"></div>
+  <div class="meta">5.B.1 · Prerequisites: 1.B.3, 1.B.5 · Leads to: 5.B.2, 5.B.4, Calculus (derivatives of sine), Linear Algebra (rotations)</div>
+</nav>
+</main>
+
+<script>
+/* =====================================================================
+   1. HELPERS
+   ===================================================================== */
+const NS = 'http://www.w3.org/2000/svg';
+const $ = id => document.getElementById(id);
+const PI = Math.PI, TAU = 2 * Math.PI;
+function mk(tag, attrs, parent){                           // create an SVG element with attributes
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function txt(parent, x, y, s, cls, extra){                 // create an SVG text element
+  const t = mk('text', Object.assign({ x, y, class: cls || '' }, extra || {}), parent);
+  t.textContent = s;
+  return t;
+}
+const ease = t => t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+const isInt = x => Math.abs(x - Math.round(x)) < 1e-9;
+// Round for display (up to d decimals), with a true minus sign and no "-0"
+function num(x, d){
+  if (d === undefined) d = 2;
+  const r = Math.round(x * Math.pow(10, d)) / Math.pow(10, d);
+  if (r === 0) return '0';
+  return (r < 0 ? '−' : '') + String(Math.abs(r));
+}
+// Write a multiple of π as a tidy fraction when possible: 3π/4, −π/2, 2π
+function piForm(rad){
+  const q = rad / PI;
+  for (const den of [1, 2, 3, 4, 6, 8, 12]){
+    const n = q * den;
+    if (Math.abs(n - Math.round(n)) < 1e-6){
+      const k = Math.round(n);
+      if (k === 0) return '0';
+      const sign = k < 0 ? '−' : '', a = Math.abs(k);
+      return den === 1 ? `${sign}${a === 1 ? '' : a}π` : `${sign}${a === 1 ? '' : a}π/${den}`;
+    }
+  }
+  return `${num(q, 3)}π`;
+}
+// Turns as a fraction when tidy (3/8 turn), else a decimal
+function turnForm(rad){
+  const q = rad / TAU;
+  for (const den of [1, 2, 3, 4, 6, 8, 12]){
+    const n = q * den;
+    if (Math.abs(n - Math.round(n)) < 1e-6){
+      const k = Math.round(n);
+      if (k === 0) return '0';
+      return den === 1 ? `${num(k, 0)}` : `${k < 0 ? '−' : ''}${Math.abs(k)}/${den}`;
+    }
+  }
+  return num(q, 3);
+}
+// Parse a typed angle: plain numbers, fractions, and π forms like pi, 2pi, -pi/2, 3π/4, 1.5pi
+function parseAngle(s){
+  s = String(s).trim().toLowerCase().replace(/\s+/g, '').replace(/π/g, 'pi').replace(/[−–]/g, '-').replace(/°/g, '').replace(/^\+/, '');
+  let m = s.match(/^(-?)(\d*\.?\d*)\*?pi(?:\/(\d+(?:\.\d+)?))?$/);
+  if (m){
+    const coef = m[2] === '' ? 1 : parseFloat(m[2]);
+    if (isNaN(coef)) return NaN;
+    return (m[1] ? -1 : 1) * coef * PI / (m[3] ? parseFloat(m[3]) : 1);
+  }
+  if (/^-?\d+(\.\d+)?$|^-?\.\d+$/.test(s)) return parseFloat(s);
+  m = s.match(/^(-?\d+)\/(\d+)$/);
+  if (m && +m[2] !== 0) return +m[1] / +m[2];
+  return NaN;
+}
+const hasPi = s => /pi|π/i.test(String(s));
+const toRad = d => d * PI / 180, toDeg = r => r * 180 / PI;
+
+const svgCss = document.createElement('style');
+svgCss.textContent = `
+  .ring{fill:none;stroke:var(--deg-soft);stroke-width:26}
+  .ringEdge{fill:none;stroke:var(--deg);stroke-width:1.2;opacity:.6}
+  .dtk{stroke:var(--deg);stroke-width:1.2} .dtkM{stroke:var(--deg);stroke-width:1.8}
+  .dlb{fill:var(--deg);font:600 12px var(--mono);text-anchor:middle;dominant-baseline:middle}
+  .mainc{fill:none;stroke:var(--line2);stroke-width:1.5}
+  .rtk{stroke:var(--r);stroke-width:2} .rlb{fill:var(--r);font:600 11.5px var(--mono);text-anchor:middle;dominant-baseline:middle}
+  .pilb{fill:var(--pt-dark);font:600 12px var(--mono);text-anchor:middle;dominant-baseline:middle;paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+  .init{stroke:var(--ink);stroke-width:2.5} .term{stroke:var(--pt);stroke-width:4;stroke-linecap:round}
+  .radius{stroke:var(--r);stroke-width:5;stroke-linecap:round}
+  .str0{fill:none;stroke:var(--r);stroke-width:7;stroke-linecap:butt} .str1{fill:none;stroke:var(--s1);stroke-width:7} .str2{fill:none;stroke:var(--s2);stroke-width:7}
+  .snum{font:700 11px var(--mono);text-anchor:middle;dominant-baseline:middle;paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+  .wedge{fill:none;stroke:var(--pt);stroke-width:2} .wedgeH{fill:var(--pt)}
+  .vtx{fill:var(--ink)} .tdot{fill:var(--pt);stroke:var(--paper);stroke-width:2.5}
+  .side{font:600 11px var(--sans);paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+  .sym{font:italic 600 17px var(--serif)}
+  .beta{stroke:var(--beta);stroke-width:4;stroke-linecap:round} .betaW{fill:none;stroke:var(--beta);stroke-width:2}
+  .alab{font:600 13px var(--sans);paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+`;
+document.head.appendChild(svgCss);
+
+/* =====================================================================
+   2. THE DIAL: protractor ring, radius string, initial and terminal sides
+   ===================================================================== */
+const C = 280, R = 150, P1 = 206, P2 = 232;               // center, main circle radius, protractor band
+const pt = (r, a, cx, cy) => [(cx || C) + r * Math.cos(a), (cy || cx || C) - r * Math.sin(a)];   // polar -> svg (y up), around (cx, cy)
+// A path along a circle (or a gentle outward spiral, for more than one turn) from angle 0 to th
+function arcPath(r0, th, grow, c, from, cy){
+  from = from || 0;
+  const n = Math.max(2, Math.ceil(Math.abs(th - from) / 0.04)), pts = [];
+  for (let i = 0; i <= n; i++){
+    const a = from + (th - from) * i / n, r = r0 + grow * Math.abs(a) / TAU;
+    pts.push(pt(r, a, c, cy).map(v => v.toFixed(1)).join(','));
+  }
+  return 'M' + pts.join(' L');
+}
+// Draw the angle dial. o: {th (radians), e (0..1), quiz (hide labels), showString}
+function renderDial(svg, o){
+  svg.innerHTML = '';
+  const g = mk('g', {}, svg);
+  // Protractor ring with degree ticks
+  mk('circle', { cx: C, cy: C, r: (P1 + P2) / 2, class: 'ring' }, g);
+  mk('circle', { cx: C, cy: C, r: P1, class: 'ringEdge' }, g); mk('circle', { cx: C, cy: C, r: P2, class: 'ringEdge' }, g);
+  for (let d = 0; d < 360; d += 5){
+    const a = toRad(d), long = d % 30 === 0, med = d % 10 === 0 || (o.quiz && d % 15 === 0);
+    const [x1, y1] = pt(P1, a), [x2, y2] = pt(P1 + (long ? 22 : med ? 13 : 7), a);
+    mk('line', { x1, y1, x2, y2, class: long ? 'dtkM' : 'dtk' }, g);
+    const showLbl = o.quiz ? d % 90 === 0 : long;
+    if (showLbl){ const [lx, ly] = pt(250, a); txt(g, lx, ly, d + '°', 'dlb'); }
+  }
+  // The main circle, with a tick at every whole radian (1, 2, ... 6) and the π landmarks
+  mk('circle', { cx: C, cy: C, r: R, class: 'mainc' }, g);
+  if (!o.quiz){
+    for (let i = 1; i <= 6; i++){
+      const [x1, y1] = pt(R - 8, i), [x2, y2] = pt(R + 8, i), [lx, ly] = pt(R - 20, i);
+      mk('line', { x1, y1, x2, y2, class: 'rtk' }, g);
+      const thN = ((o.th * ease(o.e)) % TAU + TAU) % TAU;
+      if (Math.abs(thN - i) > 0.14) txt(g, lx, ly, String(i), 'rlb');
+    }
+    const thN = ((o.th * ease(o.e)) % TAU + TAU) % TAU;           // where the terminal side points now
+    [[PI / 2, 'π/2'], [PI, 'π'], [3 * PI / 2, '3π/2'], [TAU, '2π']].forEach(([a, l]) => {
+      const near = Math.min(Math.abs(thN - (a % TAU)), TAU - Math.abs(thN - (a % TAU))) < 0.12;
+      const [lx, ly] = pt(R + 30, a + (near ? 0.13 : 0));          // nudge the label off the terminal side
+      txt(g, lx, ly + (a === TAU ? -12 : 0), l, 'pilb');
+    });
+  }
+  const th = o.th * ease(o.e);
+  const full = Math.abs(o.th) > TAU + 1e-6, grow = full ? 10 : 0;
+  // The radius string along the edge: one segment per radian, first one teal (it equals the radius)
+  if (o.showString !== false && Math.abs(th) > 1e-4){
+    const dir = Math.sign(th), total = Math.abs(th);
+    for (let i = 0; i < Math.ceil(total - 1e-9); i++){
+      const a0 = dir * i, a1 = dir * Math.min(i + 1, total);
+      mk('path', { d: arcPath(R, a1, grow, C, a0), class: i === 0 ? 'str0' : (i % 2 ? 'str1' : 'str2') }, g);
+      if (!o.quiz && i === 0 && total > 0.6){
+        const am = dir * 0.5, [lx, ly] = pt(R + 18, am);
+        txt(g, lx, ly, 'r', 'sym', { style: 'fill:var(--r)', 'text-anchor': 'middle', 'dominant-baseline': 'middle' });   // first string piece = one radius
+      }
+    }
+  }
+  // Initial side, the radius (teal) along it, and the vertex
+  const [ix, iy] = pt(P2 + 4, 0);
+  mk('line', { x1: C, y1: C, x2: ix, y2: iy, class: 'init' }, g);
+  mk('line', { x1: C, y1: C, x2: C + R, y2: C, class: 'radius' }, g);
+  if (!o.quiz){ txt(g, C + R / 2, C + 20, 'r', 'sym', { style: 'fill:var(--r)', 'text-anchor': 'middle' }); txt(g, C + 178, C + 20, 'initial side', 'side', { style: 'fill:var(--ink)' }); }
+  // The turning wedge near the vertex (a small spiral for many turns) with an arrowhead showing direction
+  if (Math.abs(th) > 0.02){
+    const w0 = 34, wg = full ? 9 : 0;
+    mk('path', { d: arcPath(w0, th, wg), class: 'wedge' }, g);
+    const re = w0 + wg * Math.abs(th) / TAU, [hx, hy] = pt(re, th), tang = th + Math.sign(th) * PI / 2;
+    const [bx, by] = [hx - 8 * Math.cos(tang), hy + 8 * Math.sin(tang)];
+    const nx = -Math.sin(tang) * 4, ny = -Math.cos(tang) * 4;
+    mk('polygon', { points: `${hx},${hy} ${bx + nx},${by + ny} ${bx - nx},${by - ny}`, class: 'wedgeH' }, g);
+  }
+  // Terminal side
+  const [tx, ty] = pt(P2 + 4, th);
+  mk('line', { x1: C, y1: C, x2: tx, y2: ty, class: 'term' }, g);
+  const [dx, dy] = pt(R + grow * Math.abs(th) / TAU, th);
+  mk('circle', { cx: dx, cy: dy, r: 6.5, class: 'tdot' }, g);
+  mk('circle', { cx: C, cy: C, r: 4.5, class: 'vtx' }, g);
+  if (!o.quiz && o.e >= 1 && Math.abs(th) > 0.15){
+    const [lx, ly] = pt(R * 0.62, th + (th > 0 ? -0.18 : 0.18));
+    txt(g, lx, ly, 'terminal side', 'side', { style: 'fill:var(--pt-dark)', 'text-anchor': 'middle' });
+  }
+}
+
+/* =====================================================================
+   3. EXPLORER
+   ===================================================================== */
+const PRESETS = [
+  { name: '90°',       th: PI / 2,   d: 'A quarter turn: 90°, or π/2 radians. About 1.57 radius-lengths of string.' },
+  { name: '1 radian',  th: 1,        d: 'Exactly one radius-length of string along the edge. The teal string is as long as the teal radius: about 57.3°.' },
+  { name: '180° = π',  th: PI,       d: 'A half turn: 180°, or π radians. It takes π ≈ 3.14 radius-lengths to get halfway around.' },
+  { name: '60°',       th: PI / 3,   d: 'One sixth of a turn: 60° = π/3 radians, just over 1 radius-length.' },
+  { name: '360° = 2π', th: TAU,      d: 'A full turn: 360°, or 2π ≈ 6.28 radius-lengths. Count the strings: six whole ones and a little extra.' },
+  { name: '450°',      th: 5 * PI / 2, d: 'More than one turn: a full circle plus a quarter. It lands in the same place as 90°.' },
+  { name: '−90°',      th: -PI / 2,  d: 'Clockwise, so negative: −90° = −π/2. It lands pointing down, the same place as 270°.' },
+  { name: '720°',      th: 2 * TAU,  d: 'Two full turns: 4π radians. The string spirals around twice.' },
+];
+const ex = { th: PI / 2, unit: 'deg', e: 1, raf: 0, playing: false };
+PRESETS.forEach((p, i) => {
+  const b = document.createElement('button');
+  b.className = 'preset'; b.textContent = p.name; b.onclick = () => choosePreset(i);
+  $('presets').appendChild(b);
+});
+function markPreset(i){
+  [...$('presets').children].forEach((b, j) => b.classList.toggle('on', j === i));
+  $('presetDesc').textContent = i === null ? 'Custom angle.' : PRESETS[i].d;
+}
+function showInput(){ $('inTh').value = ex.unit === 'deg' ? num(toDeg(ex.th), 2) : (piForm(ex.th).includes('.') ? num(ex.th, 3) : piForm(ex.th).replace('π', 'pi').replace('−', '-')); }
+function setUnit(u){ ex.unit = u; [...$('units').children].forEach(b => b.classList.toggle('on', b.dataset.u === u)); }
+[...$('units').children].forEach(b => b.onclick = () => { setUnit(b.dataset.u); showInput(); });
+function choosePreset(i){
+  ex.th = PRESETS[i].th;
+  if (Math.abs(toDeg(ex.th) - Math.round(toDeg(ex.th))) > 1e-6) setUnit('rad');   // e.g. 1 radian isn't a whole number of degrees: show it in radians
+  showInput(); $('exErr').textContent = ''; markPreset(i);
+  stopEx(); ex.e = 0; drawEx(); playEx();
+}
+function readEx(){
+  const raw = $('inTh').value, v = parseAngle(raw);
+  if (isNaN(v)){ $('exErr').textContent = 'Type an angle, like 135, 2.5 or 3pi/4.'; return false; }
+  // A π form is always radians; otherwise use the selected unit
+  const th = hasPi(raw) ? v : (ex.unit === 'deg' ? toRad(v) : v);
+  if (Math.abs(th) > 3 * TAU + 1e-9){ $('exErr').textContent = 'Keep it to three full turns or less (±1080°, ±6π).'; return false; }
+  $('exErr').textContent = ''; ex.th = th; return true;
+}
+$('inTh').addEventListener('input', () => { markPreset(null); stopEx(); if (readEx()){ ex.e = 0; drawEx(); } });
+$('inTh').addEventListener('focus', e => e.target.select());
+$('inTh').addEventListener('keydown', e => { if (e.key === 'Enter') playEx(); });
+function drawEx(){
+  renderDial($('dial'), { th: ex.th, e: ex.e });
+  const th = ex.th * ease(ex.e);
+  $('cDeg').textContent = num(toDeg(th), 1) + '°';
+  $('cRad').textContent = num(th, 3);
+  $('cPi').textContent = ex.e >= 1 ? piForm(th) : num(th / PI, 2) + 'π';
+  $('cTurn').textContent = ex.e >= 1 ? turnForm(th) : num(th / TAU, 2);
+  let h;
+  if (ex.e === 0) h = `Press Play to sweep out the angle from the initial side.`;
+  else if (ex.e < 1) h = `Turning… ${num(toDeg(th), 0)}° so far, ${num(Math.abs(th), 2)} radius-lengths of string along the edge.`;
+  else {
+    const t = ex.th, d = toDeg(t);
+    h = `The terminal side turned <b>${num(d, 2)}°</b> ${t < 0 ? '<b>clockwise</b> (negative)' : 'counterclockwise'}. `;
+    const pf = piForm(t), radTxt = pf.includes('.') ? `${num(t, 3)} radian${Math.abs(Math.abs(t) - 1) < 1e-9 ? '' : 's'} (${pf})` : `${pf} radians`;
+    h += `Along the edge that’s <b class="rd">${num(Math.abs(t), 3)}</b> radius-length${Math.abs(Math.abs(t) - 1) < 1e-9 ? '' : 's'} of string, so the angle is <b>${radTxt}</b>. `;
+    if (Math.abs(t) > TAU + 1e-6 || t < 0){
+      let co = ((d % 360) + 360) % 360;
+      const n = Math.abs(Math.round((d - co) / 360));
+      h += `It lands in the same place as <b>${num(co, 2)}°</b> (coterminal): they’re ${n} full turn${n === 1 ? '' : 's'} apart.`;
+    } else h += `Check: ${num(d, 2)}° × π/180 = ${pf.includes('.') ? num(t, 3) : pf}.`;
+  }
+  $('exOut').innerHTML = h;
+}
+function playEx(){
+  if (ex.playing){ stopEx(); return; }
+  if (!readEx()) return;
+  if (ex.e >= 1) ex.e = 0;
+  ex.playing = true; $('play').textContent = 'Pause';
+  const dur = 1400 + 500 * Math.min(6, Math.abs(ex.th));
+  let last = performance.now();
+  const step = now => { ex.e = Math.min(1, ex.e + (now - last) / dur); last = now; drawEx(); if (ex.e < 1 && ex.playing) ex.raf = requestAnimationFrame(step); else stopEx(); };
+  ex.raf = requestAnimationFrame(step);
+}
+function stopEx(){ ex.playing = false; cancelAnimationFrame(ex.raf); $('play').textContent = ex.e >= 1 ? 'Replay' : 'Play'; }
+$('play').onclick = playEx;
+$('reset').onclick = () => { stopEx(); ex.e = 0; $('play').textContent = 'Play'; drawEx(); };
+
+/* =====================================================================
+   4. CONVERSION TABLE
+   ===================================================================== */
+$('convTable').innerHTML = `<tr><th>Turn</th><th>Degrees</th><th>Radians (π form)</th><th>Radians (decimal)</th></tr>` +
+  [[1 / 12, 'one twelfth'], [1 / 8, 'one eighth'], [1 / 6, 'one sixth'], [1 / 4, 'quarter'], [1 / 2, 'half'], [3 / 4, 'three quarters'], [1, 'full'], [180 / PI / 360, '1 radian']]
+  .map(([t, n]) => `<tr><td>${n}</td><td class="d">${num(t * 360, 1)}°</td><td class="r">${n === '1 radian' ? '1' : piForm(t * TAU)}</td><td>${num(t * TAU, 3)}</td></tr>`).join('');
+
+/* =====================================================================
+   5. ARC LENGTH: same angle, two circles
+   ===================================================================== */
+function drawArc(){
+  const r = parseNum2($('inR').value), raw = $('inAt').value, v = parseAngle(raw);
+  if (isNaN(r) || isNaN(v)){ $('arcErr').textContent = 'Fill in both boxes (radius like 3, angle like pi/2, 2 or 90°).'; return; }
+  // An angle with pi, or one small enough to be radians, is radians; otherwise read it as degrees
+  const th = hasPi(raw) ? v : (Math.abs(v) <= TAU + 1e-9 && !/°/.test(raw) && !(Math.abs(v) >= 10) ? v : toRad(v));
+  if (r <= 0 || r > 3.5){ $('arcErr').textContent = 'Use a radius bigger than 0 and up to 3.5 so the circle fits.'; return; }
+  if (th <= 0 || th > TAU + 1e-9){ $('arcErr').textContent = 'Use an angle between 0 and one full turn (2π or 360°).'; return; }
+  $('arcErr').textContent = '';
+  const svg = $('arcSvg'); svg.innerHTML = ''; const g = mk('g', {}, svg);
+  const S = 40;                                            // pixels per unit, the same for both circles
+  const draw = (cx, rr, label) => {
+    const cy = 168, rp = rr * S;
+    mk('circle', { cx, cy, r: rp, class: 'mainc' }, g);
+    mk('line', { x1: cx, y1: cy, x2: cx + rp, y2: cy, class: 'radius' }, g);
+    txt(g, cx + rp / 2, cy + 18, rr === 1 ? 'r = 1' : `r = ${num(rr)}`, 'alab', { style: 'fill:var(--r)', 'text-anchor': 'middle' });
+    mk('path', { d: arcPath(rp, th, 0, cx, 0, cy), class: 'str1' }, g);
+    const [tx, ty] = [cx + rp * Math.cos(th), cy - rp * Math.sin(th)];
+    mk('line', { x1: cx, y1: cy, x2: tx, y2: ty, class: 'term' }, g);
+    mk('circle', { cx, cy, r: 4, class: 'vtx' }, g);
+    txt(g, cx, cy + Math.max(rp, 40) + 34, label, 'alab', { style: 'fill:var(--ink)', 'text-anchor': 'middle' });
+  };
+  draw(200, 1, `arc s = 1 × ${num(th, 3)} = ${num(th, 3)}`);
+  draw(640, r, `arc s = ${num(r)} × ${num(th, 3)} = ${num(r * th, 3)}`);
+  txt(g, 420, 40, `same angle θ = ${piForm(th)} rad (${num(toDeg(th), 1)}°)`, 'alab', { style: 'fill:var(--pt-dark)', 'text-anchor': 'middle' });
+  $('arcOut').innerHTML = `On the radius-1 circle, the arc is <b>${num(th, 3)}</b> long: the angle in radians <i>is</i> the arc length. ` +
+    `On the radius-${num(r)} circle, every radius-length of string is ${num(r)} times longer, so the arc is ${num(r)} × ${num(th, 3)} = <b>${num(r * th, 3)}</b>. ` +
+    `That’s <i class="sym">s</i> = <i class="sym">r</i> · <i class="sym">θ</i>: for a fixed angle, the arc is proportional to the radius (1.B.5).`;
+}
+function parseNum2(s){ const v = parseAngle(s); return hasPi(s) ? NaN : v; }
+['inR', 'inAt'].forEach(id => { $(id).addEventListener('input', drawArc); $(id).addEventListener('focus', e => e.target.select()); });
+
+/* =====================================================================
+   6. COTERMINAL CHECKER
+   ===================================================================== */
+let coUnit = 'deg';
+[...$('coUnits').children].forEach(b => b.onclick = () => { coUnit = b.dataset.u; [...$('coUnits').children].forEach(x => x.classList.toggle('on', x === b)); drawCo(); });
+function drawCo(){
+  [...$('coUnits').children].forEach(x => x.classList.toggle('on', x.dataset.u === coUnit));
+  const ra = $('inAl').value, rb = $('inBe').value, va = parseAngle(ra), vb = parseAngle(rb);
+  if (isNaN(va) || isNaN(vb)){ $('coErr').textContent = 'Type two angles (like −90 and 270, or -pi/2 and 3pi/2).'; return; }
+  const a = hasPi(ra) || coUnit === 'rad' ? va : toRad(va), b = hasPi(rb) || coUnit === 'rad' ? vb : toRad(vb);
+  if (Math.abs(a) > 3 * TAU || Math.abs(b) > 3 * TAU){ $('coErr').textContent = 'Keep each angle within three full turns.'; return; }
+  $('coErr').textContent = '';
+  const svg = $('coSvg'); svg.innerHTML = ''; const g = mk('g', {}, svg), c = 180, rr = 120;
+  mk('circle', { cx: c, cy: c, r: rr, class: 'mainc' }, g);
+  mk('line', { x1: c, y1: c, x2: c + rr + 20, y2: c, class: 'init' }, g);
+  const ray = (th, cls, wcls, w0, col, lbl) => {
+    const full = Math.abs(th) > TAU + 1e-6;
+    mk('path', { d: arcPath(w0, th, full ? 8 : 0, c), class: wcls }, g);
+    mk('line', { x1: c, y1: c, x2: c + (rr + 20) * Math.cos(th), y2: c - (rr + 20) * Math.sin(th), class: cls }, g);
+    txt(g, c + (rr + 34) * Math.cos(th), c - (rr + 34) * Math.sin(th) + 4, lbl, 'alab', { style: `fill:${col}`, 'text-anchor': 'middle' });
+  };
+  ray(a, 'term', 'wedge', 26, 'var(--pt-dark)', 'α');
+  ray(b, 'beta', 'betaW', 46, 'var(--beta)', 'β');
+  mk('circle', { cx: c, cy: c, r: 4, class: 'vtx' }, g);
+  const diff = toDeg(b - a), turns = diff / 360;
+  const da = num(toDeg(a), 2), db = num(toDeg(b), 2);
+  let h;
+  if (isInt(turns)) h = `<b style="color:var(--ok)">Same place: coterminal.</b> ${db}° − (${da}°) = ${num(diff, 2)}°, which is ${num(turns, 0)} full turn${Math.abs(turns) === 1 ? '' : 's'}${turns === 0 ? ' (they’re the same angle)' : ''}.`;
+  else h = `<b style="color:var(--bad)">Different places.</b> ${db}° − (${da}°) = ${num(diff, 2)}°, which is ${num(turns, 3)} turns: not a whole number of turns.` +
+    (isInt((toDeg(a) + toDeg(b)) / 360) ? ` They’re <b>mirror images</b> across the initial side: one turns up, the other down.` : '');
+  $('coOut').innerHTML = h;
+}
+['inAl', 'inBe'].forEach(id => { $(id).addEventListener('input', drawCo); $(id).addEventListener('focus', e => e.target.select()); });
+
+/* =====================================================================
+   7. QUIZ
+   ===================================================================== */
+const rnd = arr => arr[Math.floor(Math.random() * arr.length)];
+const STD = [30, 45, 60, 90, 120, 135, 150, 180, 210, 225, 240, 270, 300, 315, 330, 360];
+const qz = { counted: false, done: false, right: 0, total: 0, e: 1, raf: 0 };
+function newQuestion(){
+  Object.assign(qz, { counted: false, done: false });
+  $('qErr').textContent = ''; $('qFb').className = 'feedback'; $('qFb').innerHTML = ''; $('qIn').value = '';
+  qz.type = rnd(['d2r', 'r2d', 'read', 'arc', 'cot']);
+  qz.th = toRad(rnd(STD));
+  if (qz.type === 'd2r'){
+    if (Math.random() < 0.25) qz.th = -qz.th;
+    $('qTitle').textContent = 'Degrees → radians';
+    $('qText').innerHTML = `Write <b class="dg">${num(toDeg(qz.th), 0)}°</b> in radians. You can type a decimal or a π form like 3pi/4.`;
+    $('qLabel').innerHTML = 'Radians'; $('qField').className = 'field frad'; qz.ans = qz.th; qz.unitAns = 'rad';
+  } else if (qz.type === 'r2d'){
+    $('qTitle').textContent = 'Radians → degrees';
+    $('qText').innerHTML = `Write <b class="rd">${piForm(qz.th)}</b> radians in degrees.`;
+    $('qLabel').innerHTML = 'Degrees'; $('qField').className = 'field fdeg'; qz.ans = toDeg(qz.th); qz.unitAns = 'deg';
+  } else if (qz.type === 'read'){
+    qz.th = toRad(rnd(STD.filter(d => d % 90 !== 0)));
+    qz.unitAns = Math.random() < 0.5 ? 'deg' : 'rad';
+    $('qTitle').textContent = 'Read the angle';
+    $('qText').innerHTML = `How big is this angle (counterclockwise from the initial side)? Answer in <b>${qz.unitAns === 'deg' ? 'degrees' : 'radians'}</b>. The small ticks are every 15°.`;
+    $('qLabel').innerHTML = qz.unitAns === 'deg' ? 'Degrees' : 'Radians'; $('qField').className = 'field ' + (qz.unitAns === 'deg' ? 'fdeg' : 'frad');
+    qz.ans = qz.unitAns === 'deg' ? toDeg(qz.th) : qz.th;
+  } else if (qz.type === 'arc'){
+    qz.r = rnd([2, 3, 4, 5, 10]); qz.th = rnd([PI / 2, PI / 3, PI, PI / 6, 2 * PI / 3]); qz.inDeg = Math.random() < 0.5;
+    qz.ans = qz.r * qz.th; qz.unitAns = 'len';
+    $('qTitle').textContent = 'Find the arc length';
+    $('qText').innerHTML = `A circle has radius <b class="rd">${qz.r} cm</b>. How long is the arc cut off by an angle of <b>${qz.inDeg ? num(toDeg(qz.th), 0) + '°' : piForm(qz.th) + ' radians'}</b>? (A π form like 5pi/3 or a decimal is fine.)`;
+    $('qLabel').innerHTML = 'Arc length (cm)'; $('qField').className = 'field fth';
+  } else {
+    const d = rnd([-30, -45, -90, -120, -150, -270, 390, 405, 450, 540, 765, -200]);
+    qz.th = toRad(d); qz.unitAns = 'deg';
+    let co = ((d % 360) + 360) % 360; qz.ans = co;
+    $('qTitle').textContent = 'Find a coterminal angle';
+    $('qText').innerHTML = `Give the angle between <b>0°</b> and <b>360°</b> that lands in the same place as <b>${num(d, 0)}°</b>.`;
+    $('qLabel').innerHTML = 'Degrees (0 to 360)'; $('qField').className = 'field fdeg';
+  }
+  playQuiz();
+}
+function drawQuiz(){
+  const svg = $('qSvg');
+  if (qz.type === 'read') renderDial(svg, { th: qz.th, e: qz.e, quiz: !qz.done, showString: qz.done });
+  else if (qz.type === 'd2r' || qz.type === 'r2d' || qz.type === 'cot') renderDial(svg, { th: qz.th, e: qz.done ? qz.e : 0, quiz: !qz.done, showString: qz.done });
+  else renderDial(svg, { th: qz.th, e: qz.e, quiz: true, showString: qz.done });
+}
+function playQuiz(){
+  cancelAnimationFrame(qz.raf); qz.e = 0;
+  let last = performance.now();
+  const step = now => { qz.e = Math.min(1, qz.e + (now - last) / 1800); last = now; drawQuiz(); if (qz.e < 1) qz.raf = requestAnimationFrame(step); };
+  qz.raf = requestAnimationFrame(step);
+}
+function countQ(ok){ if (qz.counted) return; qz.counted = true; qz.total++; if (ok) qz.right++; $('score').textContent = `Score: ${qz.right} / ${qz.total}`; }
+const close = (v, t, tol) => Math.abs(v - t) <= tol;
+function checkQ(){
+  const raw = $('qIn').value, v = parseAngle(raw);
+  if (raw.trim() === '' || isNaN(v)){ $('qErr').textContent = 'Type a number (radians can be written like 3pi/4).'; return; }
+  $('qErr').textContent = '';
+  let ok = false, msg;
+  if (qz.unitAns === 'rad'){
+    const deg = toDeg(qz.th);
+    if (close(v, qz.ans, 0.01)){ ok = true; msg = `<b>Right.</b> ${num(deg, 0)}° × π/180 = <b>${piForm(qz.ans)}</b> ≈ ${num(qz.ans, 3)} radians.`; }
+    else if (!hasPi(raw) && close(v, deg, 0.5)) msg = `<b>That’s still in degrees.</b> Multiply by π/180 to turn degrees into radians.`;
+    else if (close(v, deg * 180 / PI, 1)) msg = `<b>That conversion went the wrong way.</b> Degrees → radians multiplies by π/180, not 180/π.`;
+    else if (close(v, -qz.ans, 0.01)) msg = `<b>Right size, wrong sign.</b> ${deg < 0 ? 'The angle is clockwise, so it’s negative.' : 'The angle is counterclockwise, so it’s positive.'}`;
+    else msg = `<b>Not quite.</b> Use 180° = π: what fraction of 180 is ${num(deg, 0)}?`;
+  } else if (qz.unitAns === 'deg'){
+    const tol = qz.type === 'read' ? 3 : 0.5;
+    if (close(v, qz.ans, tol)){ ok = true; msg = qz.type === 'cot' ? `<b>Right.</b> ${num(toDeg(qz.th), 0)}° and ${num(qz.ans, 0)}° are ${Math.abs(Math.round((toDeg(qz.th) - qz.ans) / 360))} full turn${Math.abs(Math.round((toDeg(qz.th) - qz.ans) / 360)) === 1 ? '' : 's'} apart, so they land in the same place.` : `<b>Right: ${num(qz.ans, 0)}°.</b>`; }
+    else if (qz.type === 'r2d' && close(v, qz.th, 0.01)) msg = `<b>That’s the radian value as a decimal.</b> Multiply by 180/π to get degrees.`;
+    else if (qz.type === 'r2d' && close(v, qz.th * PI / 180, 0.01)) msg = `<b>That conversion went the wrong way.</b> Radians → degrees multiplies by 180/π.`;
+    else if (qz.type === 'cot' && close(v, -toDeg(qz.th), 0.5)) msg = `<b>That’s the mirror image, not the same place.</b> Flipping the sign reflects the angle across the initial side. Add or subtract 360° instead.`;
+    else if (qz.type === 'cot' && close((v - qz.ans) % 360, 0, 0.5)) msg = `<b>Same place, but outside 0° to 360°.</b> Add or subtract 360° until it’s in range.`;
+    else if (qz.type === 'read' && close(v, 360 - qz.ans, 3)) msg = `<b>You measured the other way around.</b> Measure counterclockwise from the initial side (pointing right).`;
+    else msg = qz.type === 'read' ? `<b>Not quite.</b> Use the labeled quarter marks (90°, 180°, 270°) and count 15° ticks from there.` : qz.type === 'cot' ? `<b>Not quite.</b> Add (or subtract) 360° until the answer is between 0° and 360°.` : `<b>Not quite.</b> Use π = 180°.`;
+  } else {
+    const degWrong = qz.r * toDeg(qz.th);
+    if (close(v, qz.ans, Math.max(0.02, qz.ans * 0.01))){ ok = true; msg = `<b>Right.</b> <i class="sym">s</i> = <i class="sym">r</i> × <i class="sym">θ</i> = ${qz.r} × ${piForm(qz.th)} = <b>${piForm(qz.ans)}</b> ≈ ${num(qz.ans, 2)} cm.`; }
+    else if (close(v, degWrong, 1)) msg = `<b>You used degrees.</b> The rule <i class="sym">s</i> = <i class="sym">r</i> × <i class="sym">θ</i> needs <i class="sym">θ</i> in <b>radians</b>: ${num(toDeg(qz.th), 0)}° = ${piForm(qz.th)}.`;
+    else if (close(v, qz.th, 0.01)) msg = `<b>That’s the angle, not the arc.</b> Multiply by the radius (${qz.r} cm).`;
+    else msg = `<b>Not quite.</b> Arc length = radius × angle in radians.`;
+  }
+  countQ(ok);
+  if (ok){ qz.done = true; playQuiz(); }
+  $('qFb').className = 'feedback ' + (ok ? 'ok' : 'bad'); $('qFb').innerHTML = msg;
+}
+function showQ(){
+  countQ(false); qz.done = true; $('qErr').textContent = ''; playQuiz();
+  const fb = $('qFb'); fb.className = 'feedback info';
+  if (qz.unitAns === 'rad') fb.innerHTML = `${num(toDeg(qz.th), 0)}° = <b>${piForm(qz.ans)}</b> ≈ ${num(qz.ans, 3)} radians.`;
+  else if (qz.type === 'arc') fb.innerHTML = `<i class="sym">s</i> = ${qz.r} × ${piForm(qz.th)} = <b>${piForm(qz.ans)}</b> ≈ ${num(qz.ans, 2)} cm.`;
+  else if (qz.type === 'cot') fb.innerHTML = `<b>${num(qz.ans, 0)}°</b>: ${num(toDeg(qz.th), 0)}° ${toDeg(qz.th) < qz.ans ? '+' : '−'} ${num(Math.abs(toDeg(qz.th) - qz.ans), 0)}° (whole turns) = ${num(qz.ans, 0)}°.`;
+  else fb.innerHTML = `<b>${num(qz.ans, qz.unitAns === 'deg' ? 0 : 3)}${qz.unitAns === 'deg' ? '°' : ''}</b>${qz.type === 'r2d' ? `: ${piForm(qz.th)} × 180/π` : ''}.`;
+}
+$('qCheck').onclick = checkQ; $('qShow').onclick = showQ; $('qReplay').onclick = playQuiz; $('qNew').onclick = newQuestion;
+$('qIn').addEventListener('input', () => { $('qErr').textContent = ''; });
+$('qIn').addEventListener('focus', e => e.target.select());
+$('qIn').addEventListener('keydown', e => { if (e.key === 'Enter') checkQ(); });
+
+/* =====================================================================
+   8. START
+   ===================================================================== */
+setUnit('deg'); markPreset(0); showInput(); ex.e = 1; drawEx(); $('play').textContent = 'Replay';
+drawArc(); drawCo(); newQuestion();
+</script>
+<script>
+/* MathMastery table of contents: the single source of truth for page order, titles and links.
+   - built: true  -> the page exists in the site build (GitHub)
+   - url          -> the page's published Claude artifact (used when not in site mode)
+   - ext: true    -> an existing standalone explorer linked as-is: always opens its url, in both builds
+   Add a page here, rebuild every page, and the Contents menu and Previous/Next update everywhere. */
+window.MM_TOC = [
+  { ch: 1, title: 'Numbers & Arithmetic', pages: [
+    { id: '1.B.1', title: 'Counting and the Number Line',            built: true, url: 'https://claude.ai/artifact/Ms2KnDNrzSW8oPYWgvfwQK' },
+    { id: '1.B.2', title: 'Multiplication as Stretching',            built: true, url: 'https://claude.ai/artifact/HXpqpyjnx9cBwEzYFxqd8L' },
+    { id: '1.B.3', title: 'Fractions, Decimals, and the Gaps Between Them' },
+    { id: '1.B.4', title: 'Equivalent Ratios',                       built: true, url: 'https://claude.ai/artifact/8RtDdq54Mbx1eML3iH4sDF' },
+    { id: '1.B.5', title: 'The Constant of Proportionality',         built: true, url: 'https://claude.ai/artifact/6CRFQvbG3Dkin62BeT9PKL' },
+    { id: '1.B.6', title: 'Graphing Proportional Relationships',     built: true, url: 'https://claude.ai/artifact/Dk2wz7bzT1rKY3QduyGiKM' },
+    { id: '1.B.7', title: 'Converting Customary and Metric Units',   built: true, url: 'https://claude.ai/artifact/FXQApxvApHWy3Y4ao9oF9o' },
+    { id: '1.B.8', title: 'Proportional Reasoning: Solving Problems', built: true, url: 'https://claude.ai/artifact/5BczAcmrhUzUdGzmV9sUiN' },
+    { id: '1.B.9', title: 'Why We Invented Each New Kind of Number' },
+  ]},
+  { ch: 3, title: 'Algebra', pages: [
+    { id: '3.B.1', title: 'Variables and Expressions' },
+    { id: '3.B.2', title: 'Solving Equations' },
+    { id: '3.B.3', title: 'Functions' },
+    { id: '3.B.4', title: 'Exponents and Exponential Growth' },
+    { id: '3.B.5', title: 'Logarithms (Log Explorer)', ext: true, url: 'https://claude.ai/artifact/GkbAXj1R4V1LharhQ9WgZP' },
+  ]},
+  { ch: 5, title: 'Trigonometry', pages: [
+    { id: '5.B.1', title: 'Angles and Radians', built: true, url: 'https://claude.ai/artifact/FBpVrV9tcTSwwi2UQ4LXH3' },
+    { id: '5.B.2', title: 'Sine, Cosine and Tangent on the Unit Circle (Trig Explorer)', ext: true, url: 'https://claude.ai/artifact/4xY54b5XpeoyG9FocJ9ZFZ' },
+    { id: '5.B.3', title: 'Laws of Sines and Cosines (Trig Explorer, Any triangle tab)', ext: true, url: 'https://claude.ai/artifact/4xY54b5XpeoyG9FocJ9ZFZ' },
+    { id: '5.B.4', title: 'Waves and Periodic Functions' },
+  ]},
+  { ch: 7, title: 'Linear Algebra', pages: [
+    { id: '7.B.1', title: 'Vectors: Arrows and Lists' },
+    { id: '7.B.2', title: 'Linear Combinations and Span' },
+    { id: '7.B.3', title: 'The Dot Product' },
+    { id: '7.B.4', title: 'A Matrix Is a Move (Matrix Transformer)', ext: true, url: 'https://claude.ai/artifact/UPYx73qewW2rkDX2VR4YTS' },
+    { id: '7.B.5', title: 'Matrix Multiplication: One Move After Another' },
+    { id: '7.B.6', title: 'The Determinant' },
+    { id: '7.B.7', title: 'Inverse Matrices' },
+  ]},
+  { ch: 8, title: 'Calculus', pages: [
+    { id: '8.B.1', title: 'Limits' },
+    { id: '8.B.2', title: 'Derivatives' },
+    { id: '8.B.3', title: 'Integrals' },
+    { id: '8.U.1', title: 'Infinite Series' },
+    { id: '8.U.2', title: 'Power Series' },
+    { id: '8.U.3', title: 'Taylor Approximations (Taylor Explorer)', ext: true, url: 'https://claude.ai/artifact/NbkDNnFSAGmLb5UqG4MBiB' },
+  ]},
+];
+
+/* MathMastery navigation: a Contents menu in the top bar and live Previous/Next cards.
+   Works in two places without edits:
+   - as published Claude artifacts: links use each page's artifact url
+   - on the GitHub site: a <meta name="mm-site"> tag (added by build_page.py --site) switches every link
+     to a relative path like ../1-B-4/index.html */
+(function(){
+  const SITE = !!document.querySelector('meta[name="mm-site"]');            // which kind of build is this?
+  const TIERS = { B: 'Basics', U: 'Undergraduate', M: 'Masters' };
+  // Flatten the table of contents into one ordered list of pages
+  const pages = [];
+  (window.MM_TOC || []).forEach(ch => ch.pages.forEach(p => pages.push(Object.assign({ ch: ch.ch, chTitle: ch.title }, p))));
+  const ready = p => p.ext ? !!p.url : (SITE ? !!p.built : !!p.url);          // can we link to this page?
+  const href = p => (p.ext || !SITE) ? p.url : `../${p.id.replace(/\./g, '-')}/index.html`;   // explorers always use their own url
+  const pidEl = document.querySelector('.pid');
+  const curId = pidEl ? pidEl.textContent.trim() : '';
+  const cur = pages.findIndex(p => p.id === curId);
+  const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+
+  /* ---------- Contents menu in the top bar ---------- */
+  const bar = document.querySelector('.topbar-in');
+  if (bar){
+    const btn = document.createElement('button');
+    btn.className = 'tocbtn'; btn.type = 'button'; btn.setAttribute('aria-expanded', 'false');
+    btn.innerHTML = '☰&nbsp; Contents';
+    bar.insertBefore(btn, pidEl || null);
+    const panel = document.createElement('div');
+    panel.className = 'tocpanel'; panel.setAttribute('role', 'menu');
+    let h = '';
+    (window.MM_TOC || []).forEach(ch => {
+      h += `<div class="tocch">Chapter ${ch.ch} · ${esc(ch.title)}</div>`;
+      let lastTier = '';
+      ch.pages.forEach(p => {
+        const tier = p.id.split('.')[1];
+        if (tier !== lastTier){ h += `<div class="toctier">${TIERS[tier] || tier}</div>`; lastTier = tier; }
+        const isCur = p.id === curId;
+        const inner = `<span class="tid">${p.id}</span><span>${esc(p.title)}</span>${isCur ? '<small>you are here</small>' : (p.ext ? '<small>explorer ↗</small>' : (ready(p) ? '' : '<small>coming</small>'))}`;
+        h += ready(p) && !isCur
+          ? `<a class="tocrow" href="${href(p)}">${inner}</a>`
+          : `<div class="tocrow ${isCur ? 'cur' : 'coming'}">${inner}</div>`;
+      });
+    });
+    panel.innerHTML = h;
+    bar.appendChild(panel);
+    const setOpen = open => { panel.classList.toggle('open', open); btn.setAttribute('aria-expanded', String(open)); };
+    btn.addEventListener('click', e => { e.stopPropagation(); setOpen(!panel.classList.contains('open')); });
+    document.addEventListener('click', e => { if (!panel.contains(e.target)) setOpen(false); });   // click outside closes
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') setOpen(false); });
+  }
+
+  /* ---------- Previous / Next cards ---------- */
+  const pager = document.querySelector('.pager');
+  if (pager && cur >= 0){
+    // The nearest page in a direction that can actually be opened (for "skip ahead" links)
+    const nearestReady = (from, step) => { for (let j = from; j >= 0 && j < pages.length; j += step) if (ready(pages[j])) return pages[j]; return null; };
+    const card = (p, dir) => {
+      const head = `<small>${dir < 0 ? '← Previous' : 'Next →'}</small>`;
+      const cls = dir > 0 ? 'next' : '';
+      if (!p) return `<div class="${cls} soon"><span class="dimtxt">${head}${dir < 0 ? 'Start of the book' : 'End of what’s written so far'}</span></div>`;
+      if (ready(p)) return `<a class="${cls}" href="${href(p)}">${head}${p.id} ${esc(p.title)}</a>`;
+      const alt = nearestReady(pages.indexOf(p) + dir, dir);
+      const skip = alt ? `<a class="skip" href="${href(alt)}">${dir < 0 ? '← Back to' : 'Skip ahead to'} ${alt.id} ${esc(alt.title)}${dir > 0 ? ' →' : ''}</a>` : '';
+      return `<div class="${cls} soon"><span class="dimtxt">${head}${p.id} ${esc(p.title)} (coming)</span>${skip}</div>`;
+    };
+    pager.innerHTML = card(pages[cur - 1], -1) + card(pages[cur + 1], 1);
+  }
+})();
+</script>
+</body>
+</html>
