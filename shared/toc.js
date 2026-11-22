@@ -7,7 +7,7 @@ window.MM_TOC = [
   { ch: 1, title: 'Numbers & Arithmetic', pages: [
     { id: '1.B.1', title: 'Counting and the Number Line',            built: true, url: 'https://claude.ai/artifact/Ms2KnDNrzSW8oPYWgvfwQK' },
     { id: '1.B.2', title: 'Multiplication as Stretching',            built: true, url: 'https://claude.ai/artifact/HXpqpyjnx9cBwEzYFxqd8L' },
-    { id: '1.B.3', title: 'Fractions, Decimals, and the Gaps Between Them' },
+    { id: '1.B.3', title: 'Fractions, Decimals, and the Gaps Between Them', url: 'https://claude.ai/artifact/8JgKEEYt4rYFQiWRpaWNmN', built: true },
     { id: '1.B.4', title: 'Equivalent Ratios',                       built: true, url: 'https://claude.ai/artifact/8RtDdq54Mbx1eML3iH4sDF' },
     { id: '1.B.5', title: 'The Constant of Proportionality',         built: true, url: 'https://claude.ai/artifact/6CRFQvbG3Dkin62BeT9PKL' },
     { id: '1.B.6', title: 'Graphing Proportional Relationships',     built: true, url: 'https://claude.ai/artifact/Dk2wz7bzT1rKY3QduyGiKM' },
