@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>7.B.2 Linear Combinations and Span · MathMastery</title>
+<!-- Fonts: a book serif for prose, a clean sans for UI, a mono for numbers -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<!-- MathJax renders the few formulas on the page (SVG output needs no external stylesheet) -->
+<script>
+  window.MathJax = { tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] }, svg: { fontCache: 'global' } };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<style>
+/* ===================== Theme ===================== */
+:root{
+  --bg:#f7f5ef; --paper:#ffffff; --ink:#1f1e1d; --muted:#6b6a66; --line:#e4e0d5; --line2:#c9c5b8;
+  --accent:#534AB7; --accent-bg:#EEEDFE;
+  --pos:#1D9E75; --neg:#D85A30; --pt:#7F77DD; --pt-soft:#AFA9EC; --pt-dark:#534AB7;
+  --pos-new:#9FE1CB; --neg-new:#F0997B; --ok:#3B6D11; --ok-bg:#EAF3DE; --bad:#A32D2D; --bad-bg:#FCEBEB; --note-bg:#FAF3E3; --note-line:#E7C98A;
+  --serif:"Source Serif 4", Georgia, "Times New Roman", serif;
+  --sans:"IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#191817; --paper:#232220; --ink:#ecebe6; --muted:#a3a29c; --line:#383733; --line2:#55534e;
+    --accent:#AFA9EC; --accent-bg:#2c2852; --pt-dark:#CECBF6; --pt-soft:#6f68b8; --pos-new:#5DCAA5; --neg-new:#F5C4B3;
+    --ok:#C0DD97; --ok-bg:#24400d; --bad:#F7C1C1; --bad-bg:#5a1c1c; --note-bg:#2b261b; --note-line:#6b5626;
+  }
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.7 var(--serif);-webkit-font-smoothing:antialiased}
+
+/* ===================== Layout ===================== */
+.topbar{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1000px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:14px;font:500 13px/1 var(--sans);color:var(--muted)}
+.brand{color:var(--ink);font-weight:600;letter-spacing:.02em}
+.brand b{color:var(--accent)}
+.crumbs{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pid{font-family:var(--mono);color:var(--accent);background:var(--accent-bg);padding:4px 8px;border-radius:6px}
+.prose{max-width:720px;margin:0 auto;padding:0 20px}
+.wide{max-width:1000px;margin:0 auto;padding:0 20px}
+
+/* ===================== Hero ===================== */
+.hero{padding:48px 0 12px}
+.kicker{font:600 13px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1{font:700 46px/1.1 var(--serif);margin:12px 0 14px;letter-spacing:-.01em}
+.dek{font-size:21px;color:var(--muted);margin:0 0 22px;font-style:italic}
+.tiers{display:flex;gap:6px;flex-wrap:wrap;font:500 13px/1 var(--sans);margin-bottom:8px}
+.tier{padding:7px 12px;border-radius:999px;border:1px solid var(--line2);color:var(--muted)}
+.tier.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.tier small{opacity:.7;margin-left:4px}
+
+/* ===================== Text elements ===================== */
+h2{font:700 28px/1.25 var(--serif);margin:56px 0 10px;display:flex;gap:12px;align-items:baseline}
+h2 .n{font:600 14px/1 var(--mono);color:var(--accent);min-width:28px}
+p{margin:0 0 16px}
+em.key{font-style:normal;background:linear-gradient(transparent 62%,var(--accent-bg) 62%);padding:0 2px}
+.goals{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:18px 22px;margin:22px 0 0;font:15.5px/1.6 var(--sans)}
+.goals h3{font:600 12px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
+.goals ul{margin:0;padding-left:20px}
+.note{background:var(--note-bg);border-left:4px solid var(--note-line);border-radius:0 10px 10px 0;padding:14px 18px;margin:20px 0;font:15.5px/1.6 var(--sans)}
+.note b{font-weight:600}
+.notice{list-style:none;padding:0;margin:8px 0 18px;counter-reset:n}
+.notice li{position:relative;padding:12px 0 12px 46px;border-top:1px solid var(--line)}
+.notice li:last-child{border-bottom:1px solid var(--line)}
+.notice li::before{counter-increment:n;content:counter(n);position:absolute;left:4px;top:13px;width:26px;height:26px;border-radius:50%;background:var(--accent-bg);color:var(--accent);font:600 13px/26px var(--mono);text-align:center}
+.goes{list-style:none;padding:0;margin:8px 0 18px}
+.goes li{padding:12px 0;border-top:1px solid var(--line)}
+.goes li:last-child{border-bottom:1px solid var(--line)}
+.math{overflow-x:auto;margin:12px 0 18px;padding:14px 18px;background:var(--paper);border:1px solid var(--line);border-radius:12px}
+.math .cap{font:14px/1.5 var(--sans);color:var(--muted);margin-top:4px}
+.mono{font-family:var(--mono);font-size:.92em;white-space:nowrap}
+.pos{color:var(--pos);font-weight:600}.neg{color:var(--neg);font-weight:600}.pt{color:var(--pt-dark);font-weight:600}
+
+/* ===================== Vocabulary ===================== */
+.vocab{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin:14px 0 8px}
+.term{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font:14.5px/1.5 var(--sans)}
+.term b{display:block;font:600 15px/1.3 var(--serif);margin-bottom:4px}
+
+/* ===================== Interactive cards ===================== */
+.card{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:18px 20px 20px;margin:26px 0;box-shadow:0 1px 0 var(--line),0 12px 32px -22px rgba(0,0,0,.25);font-family:var(--sans)}
+.card-h{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.card-h .tag{font:600 11px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--accent);background:var(--accent-bg);padding:5px 8px;border-radius:6px}
+.card-h h3{font:600 18px/1.3 var(--sans);margin:0}
+.card-h .sub{color:var(--muted);font-size:14.5px;flex-basis:100%}
+.panel-label{font:600 11px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:12px 0 4px;display:flex;justify-content:space-between}
+.panel-label span:last-child{letter-spacing:0;text-transform:none;font-weight:500}
+svg.nl{display:block;width:100%;height:auto;border:1px solid var(--line);border-radius:12px;background:var(--bg);touch-action:manipulation}
+svg.clickable{cursor:pointer}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:12px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0}
+button{font:500 14px/1 var(--sans);padding:9px 14px;border-radius:9px;border:1px solid var(--line2);background:var(--paper);color:var(--ink);cursor:pointer;transition:background .15s,border-color .15s}
+button:hover{border-color:var(--ink)}
+button.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+button.preset.on{background:var(--accent-bg);border-color:var(--accent);color:var(--accent)}
+button:disabled{opacity:.45;cursor:default}
+.desc{min-height:24px;color:var(--muted);font-size:14.5px;margin:2px 0 6px}
+.inputs{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;margin:12px 0 4px}
+.field{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.field input{width:92px;font:500 18px/1 var(--mono);padding:9px 10px;border-radius:9px;border:2px solid var(--line2);background:var(--bg);color:var(--ink);text-align:center}
+.field input:focus{outline:none;border-color:var(--accent)}
+.field i,.eq i,.sym{font:italic 600 1.15em var(--serif);text-transform:none;letter-spacing:0;color:var(--pt-dark)}
+.field.start input{border-color:var(--pt-soft)}
+.field.slide input{border-color:var(--pt)}
+.eq{font:500 20px/1 var(--mono);padding:10px 14px;background:var(--bg);border-radius:10px;border:1px solid var(--line)}
+.err{color:var(--bad);font-size:14px;min-height:20px;margin:2px 0}
+.readout{margin-top:12px;padding:12px 14px;background:var(--bg);border-radius:10px;border:1px solid var(--line);font-size:15px;line-height:1.55;min-height:48px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:12px;font-size:13px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{display:inline-block;width:14px;height:14px;border-radius:50%}
+.sw.pos{background:var(--pos)}.sw.neg{border:2.4px solid var(--neg)}
+.sw.x{position:relative;background:var(--pos);opacity:.45}.sw.x::after{content:'✕';position:absolute;inset:-1px 0 0 0;color:var(--neg);font:700 13px/1 var(--sans);text-align:center}
+.sw.posnew{background:var(--pos-new);border:1.5px solid var(--pos)}.sw.negnew{border:2.4px solid var(--neg-new)}.sw.pt{background:var(--pt)}
+.sw.mv{width:22px;height:4px;border-radius:2px;background:var(--pt-soft)}
+.sw.rl{width:22px;height:0;border-top:2px dashed var(--ink);border-radius:0;opacity:.7}
+.feedback{margin-top:10px;padding:12px 14px;border-radius:10px;font-size:15px;line-height:1.55;display:none}
+.feedback.ok{display:block;background:var(--ok-bg);color:var(--ok)}
+.feedback.bad{display:block;background:var(--bad-bg);color:var(--bad)}
+.feedback.info{display:block;background:var(--accent-bg);color:var(--accent)}
+.score{margin-left:auto;font:600 14px/1 var(--mono);color:var(--muted)}
+
+/* ===================== Footer nav ===================== */
+.pager{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:56px 0 18px;font-family:var(--sans)}
+.pager a,.pager div{display:block;padding:16px 18px;border:1px solid var(--line);border-radius:14px;background:var(--paper);color:var(--ink);text-decoration:none}
+.pager small{display:block;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.pager .next{text-align:right}
+.pager .soon{opacity:.6}
+.meta{font:13px/1.6 var(--sans);color:var(--muted);text-align:center;padding:10px 0 50px}
+
+@media (max-width:720px){
+  body{font-size:17px}
+  h1{font-size:34px}
+  .dek{font-size:18px}
+  h2{font-size:24px}
+  .card{padding:14px 12px 16px;border-radius:14px}
+  .crumbs{display:none}
+  svg.nl{min-width:640px}
+}
+</style>
+<meta name="mm-site" content="1">
+<link rel="stylesheet" href="../shared/nav.css">
+</head>
+<body>
+<style>
+/* ===================== Page-specific styles (7.B.2) ===================== */
+/* u and its weight c = purple, v and its weight d = amber, the combination = blue, target = coral */
+:root{ --cu:#7F77DD; --cv:#C98A0B; --cr:#2F6FDB; --ct:#D85A30; --ok:#1D9E75; }
+@media (prefers-color-scheme:dark){ :root{ --cu:#AFA9EC; --cv:#F0C24B; --cr:#6EA2F5; --ct:#F0997B; --ok:#5DCAA5; } }
+.ku{color:var(--cu);font-weight:700}.kv{color:var(--cv);font-weight:700}.kr{color:var(--cr);font-weight:700}.kt{color:var(--ct);font-weight:700}
+.field.fu input{border-color:var(--cu)}.field.fv input{border-color:var(--cv)}.field.fr input{border-color:var(--cr)}
+.col{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;border-left:2px solid var(--ink);border-right:2px solid var(--ink);border-radius:5px;padding:1px 8px;margin:0 4px;font:600 16px/1.25 var(--mono)}
+.eqchip{display:inline-flex;align-items:center;flex-wrap:wrap;gap:4px;font:600 16px var(--mono);border:1px solid var(--line);border-radius:12px;padding:8px 16px;background:var(--bg);margin:2px 0 8px}
+.inputs .grp{display:flex;gap:8px;align-items:flex-end;padding-right:10px;border-right:1px dashed var(--line);margin-right:4px}
+.inputs .grp:last-of-type{border-right:none}
+.field.sm input{width:70px}
+.modes{display:flex;gap:6px;margin:4px 0 10px}
+.modes button.on{background:var(--accent-bg);border-color:var(--accent);color:var(--accent)}
+.choice{display:flex;gap:8px;flex-wrap:wrap;margin:0}.choice button{min-width:110px}
+.qtext{font:17px/1.55 var(--serif);margin:4px 0 10px}
+</style>
+
+<!-- ===================== Top bar ===================== -->
+<div class="topbar"><div class="topbar-in">
+  <span class="brand">Math<b>Mastery</b></span>
+  <span class="crumbs">Chapter 7 · Linear Algebra › Basics</span>
+  <span class="pid">7.B.2</span>
+</div></div>
+
+<!-- ===================== Hero ===================== -->
+<header class="prose hero">
+  <div class="kicker">Chapter 7 · Linear Algebra</div>
+  <h1>Linear Combinations and Span</h1>
+  <p class="dek">Give yourself two moves and the freedom to repeat each one, stretch it, or run it backwards. Where can you get to? Usually everywhere. Sometimes only along a line. That question is the heart of linear algebra.</p>
+  <div class="tiers" aria-label="Tier">
+    <span class="tier on">Basics <small>you are here</small></span>
+    <span class="tier">Undergraduate</span>
+    <span class="tier">Masters</span>
+  </div>
+  <div class="goals">
+    <h3>On this page</h3>
+    <ul>
+      <li>Build a <b>linear combination</b> <i class="sym">c</i><b class="ku">u</b> + <i class="sym">d</i><b class="kv">v</b>: scale each vector by a <b>weight</b>, then add tip to tail.</li>
+      <li>Find the weights that reach a target point.</li>
+      <li>See the <b>span</b>: everything you can reach. Two vectors pointing different ways span the whole plane; two on the same line span only that line.</li>
+      <li>See what changes when the weights must be <b>whole numbers</b>: game moves and coins.</li>
+    </ul>
+  </div>
+</header>
+
+<main>
+<!-- ===================== §1 Linear combinations ===================== -->
+<section class="prose">
+  <h2><span class="n">1</span>Mixing two moves</h2>
+  <p>In 7.B.1 you could do two things with vectors: <b>scale</b> them and <b>add</b> them. Do both at once and you get a <b>linear combination</b>:</p>
+  <p style="text-align:center"><i class="sym">c</i> <b class="ku">u</b> + <i class="sym">d</i> <b class="kv">v</b></p>
+  <p>Walk <b class="ku">u</b> some number of times (<i class="sym">c</i>), then walk <b class="kv">v</b> some number of times (<i class="sym">d</i>). The numbers <i class="sym">c</i> and <i class="sym">d</i> are the <b>weights</b> (also called <b>coefficients</b>). They can be whole numbers, fractions, or negative (walk backwards). With <b class="ku">u</b> = [2, 1], <b class="kv">v</b> = [1, 2], <i class="sym">c</i> = 2 and <i class="sym">d</i> = 1: 2[2, 1] + 1[1, 2] = [4, 2] + [1, 2] = [5, 4].</p>
+  <p>The faint slanted grid in the explorer is made of copies of <b class="ku">u</b> and <b class="kv">v</b>. Every crossing point is a combination with whole-number weights, just as the ordinary grid is made of copies of [1, 0] and [0, 1].</p>
+</section>
+
+<section class="wide">
+  <div class="card" id="main">
+    <div class="card-h"><span class="tag">Explore</span><h3>The combination machine</h3>
+      <span class="sub">Type the weights <i class="sym">c</i> and <i class="sym">d</i>, or drag the blue tip and the weights follow. Switch to <b>Target</b> to find the weights that reach a marked point.</span></div>
+    <div class="modes"><button id="modeE" class="on">Explore</button><button id="modeT">Target challenge</button></div>
+    <div class="row" id="mPresets"></div>
+    <div class="desc" id="mDesc"></div>
+    <div class="inputs">
+      <div class="grp"><label class="field fu sm"><span><b>u</b>: first</span><input id="u1" type="text" inputmode="decimal" autocomplete="off"></label>
+        <label class="field fu sm"><span><b>u</b>: second</span><input id="u2" type="text" inputmode="decimal" autocomplete="off"></label></div>
+      <div class="grp"><label class="field fv sm"><span><b>v</b>: first</span><input id="v1" type="text" inputmode="decimal" autocomplete="off"></label>
+        <label class="field fv sm"><span><b>v</b>: second</span><input id="v2" type="text" inputmode="decimal" autocomplete="off"></label></div>
+      <div class="grp"><label class="field fu sm"><span>Weight <i>c</i></span><input id="wc" type="text" inputmode="decimal" autocomplete="off"></label>
+        <label class="field fv sm"><span>Weight <i>d</i></span><input id="wd" type="text" inputmode="decimal" autocomplete="off"></label></div>
+    </div>
+    <div class="row" style="margin:6px 0 0"><button class="primary" id="mPlay">Play</button><button id="mSquash">Squash v onto u’s line</button><span id="tBtns" style="display:none"><button id="tNew">New target</button><button id="tShow">Show me the weights</button></span></div>
+    <div class="err" id="mErr"></div>
+    <div class="eqchip" id="mEq"></div>
+    <svg class="nl" id="mSvg" viewBox="0 0 1000 460" role="img" aria-label="Linear combination of two vectors" style="cursor:crosshair;touch-action:none"></svg>
+    <div class="readout" id="mOut"></div>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--cu)"></i><i>c</i> <b>u</b>: <i>c</i> copies of <b>u</b></span>
+      <span><i class="sw" style="background:var(--cv)"></i><i>d</i> <b>v</b>: then <i>d</i> copies of <b>v</b></span>
+      <span><i class="sw" style="background:var(--cr)"></i>the combination <i>c</i><b>u</b> + <i>d</i><b>v</b></span>
+      <span><i class="sw" style="background:var(--line2)"></i>grid of whole-number combinations</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §2 Span ===================== -->
+<section class="prose">
+  <h2><span class="n">2</span>Span: everywhere you can reach</h2>
+  <p>Now let the weights be <i>any</i> numbers. The set of every point you can reach, every <i class="sym">c</i><b class="ku">u</b> + <i class="sym">d</i><b class="kv">v</b>, is called the <b>span</b> of <b class="ku">u</b> and <b class="kv">v</b>.</p>
+  <ul>
+    <li>If <b class="ku">u</b> and <b class="kv">v</b> point in <b>different directions</b>, the slanted grid covers the whole plane, and fractional weights fill in the gaps between its lines. <em class="key">The span is the entire plane:</em> every point has exactly one pair of weights.</li>
+    <li>If <b class="kv">v</b> is just a <b>multiple</b> of <b class="ku">u</b> (they lie on the same line), the grid collapses. Walking <b class="kv">v</b> is no different from walking more <b class="ku">u</b>. <em class="key">The span is only a line,</em> and any point off it is out of reach, whatever the weights. Try “Squash v onto u’s line” above.</li>
+    <li>If both are the zero vector, you can’t move at all: the span is a single <b>point</b>, the origin.</li>
+  </ul>
+  <p>Vectors like the squashed pair, where one is a combination of the others, are called <b>linearly dependent</b>: one of them is redundant. Vectors that each add a genuinely new direction are <b>linearly independent</b>. (More on both in the Undergraduate tier.)</p>
+</section>
+
+<!-- ===================== §3 Whole-number moves ===================== -->
+<section class="prose">
+  <h2><span class="n">3</span>When the weights must be whole numbers</h2>
+  <p>A game piece can’t make half a move. Suppose a piece has two jumps, <b class="ku">u</b> = [2, 1] and <b class="kv">v</b> = [1, 2], each usable forwards or backwards any whole number of times (a bit like a chess knight). Its span is the whole plane, yet it <b>can’t</b> reach every square! Reaching [1, 0] would need <i class="sym">c</i> = 2/3 and <i class="sym">d</i> = −1/3: fractions of a jump. Only one square in three is reachable.</p>
+</section>
+<section class="wide">
+  <div class="card" id="jumps">
+    <div class="card-h"><span class="tag">Explore</span><h3>Two kinds of jump</h3>
+      <span class="sub">Filled dots are squares the piece can reach with whole numbers of jumps (forwards or backwards); hollow dots can’t be reached. Click any square to see the weights it would need.</span></div>
+    <div class="row" id="jPresets"></div>
+    <div class="desc" id="jDesc"></div>
+    <div class="inputs">
+      <div class="grp"><label class="field fu sm"><span>Jump <b>u</b>: first</span><input id="j1" type="text" inputmode="numeric" autocomplete="off"></label>
+        <label class="field fu sm"><span>second</span><input id="j2" type="text" inputmode="numeric" autocomplete="off"></label></div>
+      <div class="grp"><label class="field fv sm"><span>Jump <b>v</b>: first</span><input id="j3" type="text" inputmode="numeric" autocomplete="off"></label>
+        <label class="field fv sm"><span>second</span><input id="j4" type="text" inputmode="numeric" autocomplete="off"></label></div>
+    </div>
+    <div class="err" id="jErr"></div>
+    <svg class="nl" id="jSvg" viewBox="0 0 1000 420" role="img" aria-label="Reachable squares" style="cursor:pointer"></svg>
+    <div class="readout" id="jOut"></div>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--cr)"></i>reachable square</span>
+      <span><i class="sw" style="background:transparent;border:1.5px solid var(--muted)"></i>out of reach</span>
+      <span><i class="sw" style="background:var(--ct)"></i>the square you clicked</span>
+    </div>
+  </div>
+</section>
+
+<section class="prose">
+  <p>The same question in one dimension is about <b>coins</b>. With only 5¢ and 7¢ coins, which amounts can you pay exactly? Every amount is a combination 5<i class="sym">c</i> + 7<i class="sym">d</i>, but now the weights must be whole and <b>not negative</b> (you can’t pay with −2 coins). Small amounts like 3¢ are impossible, yet past a certain point every amount works.</p>
+</section>
+<section class="wide">
+  <div class="card" id="coins">
+    <div class="card-h"><span class="tag">Try it</span><h3>Which amounts can two coins make?</h3>
+      <span class="sub">Type two coin sizes. Filled cells are amounts you can pay exactly with some number of each coin. Click a cell to see how.</span></div>
+    <div class="row" id="cPresets"></div>
+    <div class="inputs">
+      <label class="field fu"><span>Coin <i>p</i> (¢)</span><input id="cp" type="text" inputmode="numeric" autocomplete="off" value="5"></label>
+      <label class="field fv"><span>Coin <i>q</i> (¢)</span><input id="cq" type="text" inputmode="numeric" autocomplete="off" value="7"></label>
+    </div>
+    <div class="err" id="cErr"></div>
+    <svg class="nl" id="cSvg" viewBox="0 0 1000 200" role="img" aria-label="Makeable amounts" style="cursor:pointer"></svg>
+    <div class="readout" id="cOut"></div>
+  </div>
+</section>
+
+<!-- ===================== §4 In symbols ===================== -->
+<section class="prose">
+  <h2><span class="n">4</span>Now, in symbols</h2>
+  <p>A linear combination of <b>u</b> and <b>v</b> with weights \(c\) and \(d\), entry by entry:</p>
+  <div class="math">\[ c\,\mathbf{u} + d\,\mathbf{v} = c\begin{bmatrix} u_1 \\ u_2 \end{bmatrix} + d\begin{bmatrix} v_1 \\ v_2 \end{bmatrix} = \begin{bmatrix} c\,u_1 + d\,v_1 \\ c\,u_2 + d\,v_2 \end{bmatrix} \]<div class="cap">Finding the weights for a target means solving two equations for two unknowns, \(c\) and \(d\).</div></div>
+  <div class="math">\[ \operatorname{span}(\mathbf{u}, \mathbf{v}) = \{\, c\,\mathbf{u} + d\,\mathbf{v} \;:\; c, d \in \mathbb{R} \,\} \]<div class="cap">The span is a set of vectors: all combinations with real weights.</div></div>
+  <div class="math">\[ u_1 v_2 - u_2 v_1 \ne 0 \;\Longrightarrow\; \operatorname{span}(\mathbf{u}, \mathbf{v}) = \mathbb{R}^2 \]<div class="cap">This number is zero exactly when <b>u</b> and <b>v</b> lie on one line. It’s the <b>determinant</b> (7.B.6), and it also measures how much area one cell of the slanted grid covers. For the jumps [2, 1] and [1, 2] it’s 3, which is why only one square in 3 was reachable.</div></div>
+</section>
+
+<!-- ===================== §5 Where this goes ===================== -->
+<section class="prose">
+  <h2><span class="n">5</span>Where this goes</h2>
+  <ul class="goes">
+    <li><b>Next (7.B.3):</b> the dot product measures how much two vectors point the same way, which gives a quick way to tell a direction’s share of a combination.</li>
+    <li><b>Later in this book:</b> a matrix (7.B.4) is a machine that makes linear combinations of its columns. Solving for the weights is solving a system of equations; the slanted grid’s cell area is the determinant (7.B.6); and “which weights?” is undone by the inverse matrix (7.B.7). Span and independence become basis and dimension in the Undergraduate tier.</li>
+    <li><b>In the world:</b> mixing two paints or two ingredients in different amounts, combining a few basic sound waves into any musical note, describing every color with three primaries, and building any position from steps along chosen directions.</li>
+  </ul>
+</section>
+
+<!-- ===================== §6 Vocabulary ===================== -->
+<section class="prose">
+  <h2><span class="n">6</span>Words to know</h2>
+  <div class="vocab">
+    <div class="term"><b>Linear combination</b>A sum of scaled vectors, like <i>c</i><b>u</b> + <i>d</i><b>v</b>.</div>
+    <div class="term"><b>Weight (coefficient)</b>The scalar multiplying each vector in a combination: <i>c</i> and <i>d</i>.</div>
+    <div class="term"><b>Span</b>The set of all linear combinations of some vectors: everywhere they can reach with any weights.</div>
+    <div class="term"><b>Linearly dependent</b>At least one vector is a combination of the others (for two vectors: they lie on one line). It adds nothing new to the span.</div>
+    <div class="term"><b>Linearly independent</b>No vector is a combination of the others; each adds a new direction.</div>
+    <div class="term"><b>Lattice</b>The grid of points reachable with whole-number weights.</div>
+  </div>
+</section>
+
+<!-- ===================== Quiz ===================== -->
+<section class="prose"><h2><span class="n">7</span>Check yourself</h2>
+  <p>Four kinds of questions: compute a combination, find the weights for a target, decide whether the span is a point, a line or the plane, and decide whether a point is in the span.</p>
+</section>
+<section class="wide">
+  <div class="card" id="quiz">
+    <div class="card-h"><span class="tag">Quiz</span><h3 id="qTitle"></h3><span class="score" id="score">Score: 0 / 0</span></div>
+    <div class="qtext" id="qText"></div>
+    <div class="choice" id="qChoice"></div>
+    <div class="inputs" id="qInputs">
+      <label class="field" id="qF1"><span id="qL1"></span><input id="q1" type="text" inputmode="decimal" autocomplete="off"></label>
+      <label class="field" id="qF2"><span id="qL2"></span><input id="q2" type="text" inputmode="decimal" autocomplete="off"></label>
+      <div class="row" style="margin:0"><button class="primary" id="qCheck">Check</button></div>
+    </div>
+    <div class="row" style="margin:8px 0 0"><button id="qShow">Show answer</button><button id="qNew">New question</button></div>
+    <div class="err" id="qErr"></div>
+    <div class="feedback" id="qFb" aria-live="polite"></div>
+    <svg class="nl" id="qSvg" viewBox="0 0 1000 340" role="img" aria-label="Quiz picture"></svg>
+  </div>
+</section>
+
+<!-- ===================== Pager (filled in by the shared navigation) ===================== -->
+<nav class="wide">
+  <div class="pager"></div>
+  <div class="meta">7.B.2 · Prerequisites: 7.B.1 · Leads to: 7.B.3 (dot product), 7.B.4 (matrices), 7.B.6 (determinant)</div>
+</nav>
+</main>
+
+<script>
+/* =====================================================================
+   1. HELPERS
+   ===================================================================== */
+const NS = 'http://www.w3.org/2000/svg';
+const $ = id => document.getElementById(id);
+function mk(tag, attrs, parent){                           // create an SVG element with attributes
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function txt(parent, x, y, s, cls, extra){                 // create an SVG text element
+  extra = Object.assign({}, extra || {});
+  // a CSS class's text-anchor beats the attribute, so move a requested anchor into the style
+  if (extra['text-anchor']){ extra.style = (extra.style ? extra.style + ';' : '') + 'text-anchor:' + extra['text-anchor']; delete extra['text-anchor']; }
+  const t = mk('text', Object.assign({ x, y, class: cls || '' }, extra), parent);
+  t.textContent = s;
+  return t;
+}
+function num(x, d){ if (d === undefined) d = 2; const r = Math.round(x * Math.pow(10, d)) / Math.pow(10, d); return r === 0 ? '0' : (r < 0 ? '−' : '') + String(Math.abs(r)); }
+const pn = x => x < 0 ? `(${num(x)})` : num(x);              // a number, in parentheses when negative
+// Parse typed input: integers, decimals, a leading minus, and fractions a/b
+function parseNum(s){
+  s = String(s).trim().replace(/[−–]/g, '-').replace(/\s+/g, '');
+  if (/^-?\d+(\.\d+)?$|^-?\.\d+$/.test(s)) return parseFloat(s);
+  const m = s.match(/^(-?\d+)\/(\d+)$/);
+  if (m && +m[2] !== 0) return +m[1] / +m[2];
+  return NaN;
+}
+// Show a weight as a fraction when it is a simple one (2/3, −1/2), otherwise as a decimal
+function fracStr(x){
+  for (const d of [1, 2, 3, 4, 5, 6, 8]){ const n = Math.round(x * d); if (Math.abs(n / d - x) < 1e-9){ if (d === 1) return num(n); const g = gcdI(Math.abs(n), d); return `${n < 0 ? '−' : ''}${Math.abs(n) / g}/${d / g}`; } }
+  return num(x, 3);
+}
+const gcdI = (a, b) => { a = Math.abs(a); b = Math.abs(b); while (b){ [a, b] = [b, a % b]; } return a; };
+const ease = t => t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+const clamp01 = t => Math.max(0, Math.min(1, t));
+const colHTML = (a, b, col) => `<span class="col" style="color:${col || 'inherit'}"><span>${num(a)}</span><span>${num(b)}</span></span>`;
+const C = { u: 'var(--cu)', v: 'var(--cv)', r: 'var(--cr)', t: 'var(--ct)', ok: 'var(--ok)' };
+const cps = x => `${fracStr(x)} ${Math.abs(x) === 1 ? 'copy' : 'copies'}`;   // "1 copy", "2 copies", "1/2 copies"
+const det = (u, v) => u[0] * v[1] - u[1] * v[0];
+const cross = det, sgn = x => x < 0 ? -1 : 1;
+// Solve c·u + d·v = p for the weights (Cramer's rule). Returns null when u and v lie on one line.
+function solve(u, v, p){ const D = det(u, v); if (Math.abs(D) < 1e-9) return null; return [det(p, v) / D, det(u, p) / D]; }
+function readAll(ids, errId, msg){
+  const out = ids.map(id => parseNum($(id).value));
+  if (ids.some(id => $(id).value.trim() === '') || out.some(isNaN)){ $(errId).textContent = msg || 'Fill in every box with a number.'; return null; }
+  $(errId).textContent = ''; return out;
+}
+
+const svgCss = document.createElement('style');
+svgCss.textContent = `
+  .grid{stroke:var(--line);stroke-width:1} .axis{stroke:var(--ink);stroke-width:1.6;opacity:.7}
+  .tl{fill:var(--muted);font:500 11px var(--mono)}
+  .lab{font:700 15px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:5px}
+  .labS{font:600 12.5px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+  .cap{fill:var(--muted);font:500 12px var(--sans)}
+  .bn{fill:var(--ink);font:600 12px var(--mono)}
+`;
+document.head.appendChild(svgCss);
+
+/* =====================================================================
+   2. THE PLANE (grid, axes, arrows, labels) — same helpers as 7.B.1
+   ===================================================================== */
+function plane(svg, W, H, box, maxU, noLabels){
+  svg.innerHTML = ''; const g = mk('g', {}, svg);
+  const pad = 1;
+  const u = Math.min(maxU || 44, (W - 40) / (box.x1 - box.x0 + 2 * pad), (H - 30) / (box.y1 - box.y0 + 2 * pad));
+  const cx = W / 2 - u * (box.x0 + box.x1) / 2, cy = H / 2 + u * (box.y0 + box.y1) / 2;   // pixel position of the origin
+  const X = x => cx + x * u, Y = y => cy - y * u;
+  const xa = Math.ceil((0 - cx) / u), xb = Math.floor((W - cx) / u), ya = Math.ceil((cy - H) / u), yb = Math.floor(cy / u);
+  for (let k = xa; k <= xb; k++) mk('line', { x1: X(k), y1: 0, x2: X(k), y2: H, class: 'grid' }, g);
+  for (let k = ya; k <= yb; k++) mk('line', { x1: 0, y1: Y(k), x2: W, y2: Y(k), class: 'grid' }, g);
+  mk('line', { x1: 0, y1: Y(0), x2: W, y2: Y(0), class: 'axis' }, g);
+  mk('line', { x1: X(0), y1: 0, x2: X(0), y2: H, class: 'axis' }, g);
+  const step = noLabels ? 1e9 : u >= 30 ? 1 : u >= 15 ? 2 : 5;               // thin out tick labels when the grid is tight
+  for (let k = xa; k <= xb; k++) if (k && k % step === 0 && X(k) > 12 && X(k) < W - 12) txt(g, X(k), Y(0) + 15, k < 0 ? '−' + (-k) : String(k), 'tl', { 'text-anchor': 'middle' });
+  for (let k = ya; k <= yb; k++) if (k && k % step === 0 && Y(k) > 10 && Y(k) < H - 6) txt(g, X(0) - 6, Y(k) + 4, k < 0 ? '−' + (-k) : String(k), 'tl', { 'text-anchor': 'end' });
+  return { g, X, Y, u, W, H, xa, xb, ya, yb, inv: (px, py) => [(px - cx) / u, (cy - py) / u] };
+}
+function boxOf(pts){ const xs = pts.map(p => p[0]).concat(0), ys = pts.map(p => p[1]).concat(0); return { x0: Math.min(...xs), x1: Math.max(...xs), y0: Math.min(...ys), y1: Math.max(...ys) }; }
+function arrow(P, p, q, col, o){
+  o = o || {};
+  const x1 = P.X(p[0]), y1 = P.Y(p[1]), x2 = P.X(q[0]), y2 = P.Y(q[1]), L = Math.hypot(x2 - x1, y2 - y1), w = o.w || 3, op = o.op === undefined ? 1 : o.op;
+  const st = `stroke:${col};stroke-width:${w};opacity:${op}${o.dash ? ';stroke-dasharray:' + o.dash : ''}`;
+  if (L < 2){ mk('circle', { cx: x1, cy: y1, r: 5, style: `fill:${col};opacity:${op}` }, P.g); return; }
+  const ux = (x2 - x1) / L, uy = (y2 - y1) / L, h = Math.min(13 + w, L * 0.45);
+  mk('line', { x1, y1, x2: x2 - ux * h * 0.8, y2: y2 - uy * h * 0.8, style: st + ';stroke-linecap:round' }, P.g);
+  mk('polygon', { points: `${x2},${y2} ${x2 - ux * h - uy * h * .45},${y2 - uy * h + ux * h * .45} ${x2 - ux * h + uy * h * .45},${y2 - uy * h - ux * h * .45}`, style: `fill:${col};opacity:${op}` }, P.g);
+}
+function sideLabel(P, p, q, s, str, col, cls, t, off){
+  t = t === undefined ? .5 : t; const axisRule = !off; off = off || 18;
+  const x1 = P.X(p[0]), y1 = P.Y(p[1]), x2 = P.X(q[0]), y2 = P.Y(q[1]), L = Math.hypot(x2 - x1, y2 - y1) || 1;
+  let nx = (y2 - y1) / L * s, ny = -(x2 - x1) / L * s;       // screen-space normal (left of travel when s = +1)
+  if (axisRule && p[1] === 0 && q[1] === 0 && ny > 0){ nx = -nx; ny = -ny; }   // on the x-axis: label above (tick labels are below)
+  if (axisRule && p[0] === 0 && q[0] === 0 && nx < 0){ nx = -nx; ny = -ny; }   // on the y-axis: label right (tick labels are left)
+  txt(P.g, x1 + (x2 - x1) * t + nx * off, y1 + (y2 - y1) * t + ny * off + 5, str, cls || 'lab', { 'text-anchor': 'middle', style: `fill:${col}` });
+}
+// The slanted grid: lines through k·u parallel to v, and through k·v parallel to u (whole-number combinations sit on the crossings)
+function lattice(P, u, v, op){
+  const D = det(u, v), far = 60;
+  const line = (p, d, col) => mk('line', { x1: P.X(p[0] - far * d[0]), y1: P.Y(p[1] - far * d[1]), x2: P.X(p[0] + far * d[0]), y2: P.Y(p[1] + far * d[1]), style: `stroke:${col};stroke-width:1.2;opacity:${op}` }, P.g);
+  if (Math.abs(D) < 1e-9){                                  // u and v on one line: everything collapses onto it
+    const d = (u[0] || u[1]) ? u : v;
+    if (d[0] || d[1]) mk('line', { x1: P.X(-far * d[0]), y1: P.Y(-far * d[1]), x2: P.X(far * d[0]), y2: P.Y(far * d[1]), style: `stroke:${C.r};stroke-width:14;opacity:.16;stroke-linecap:round` }, P.g);
+    return;
+  }
+  for (let k = -14; k <= 14; k++){ if (Math.abs(k * u[0]) > 40 || Math.abs(k * u[1]) > 40) continue; line([k * u[0], k * u[1]], v, C.v); }
+  for (let k = -14; k <= 14; k++){ if (Math.abs(k * v[0]) > 40 || Math.abs(k * v[1]) > 40) continue; line([k * v[0], k * v[1]], u, C.u); }
+}
+// A scaled vector drawn as copies: an arrow, plus a dot at each whole copy along the way
+function copies(P, start, w, k, col){
+  const n = Math.floor(Math.abs(k) + 1e-9), s = sgn(k);
+  for (let i = 1; i <= n; i++){ if (Math.abs(i - Math.abs(k)) < 1e-9) break; mk('circle', { cx: P.X(start[0] + s * i * w[0]), cy: P.Y(start[1] + s * i * w[1]), r: 4, style: `fill:${col}` }, P.g); }
+  arrow(P, start, [start[0] + k * w[0], start[1] + k * w[1]], col, { w: 4 });
+}
+
+/* =====================================================================
+   3. THE COMBINATION MACHINE (explore + target)
+   ===================================================================== */
+const MP = [
+  { n: 'Slanted pair', u: [2, 1], v: [1, 2], c: 2, d: 1, d0: 'Two different directions: the slanted grid covers the whole plane.' },
+  { n: 'The usual grid', u: [1, 0], v: [0, 1], c: 3, d: 2, d0: 'u = [1, 0] and v = [0, 1]: the weights are just the coordinates. The ordinary grid is a special case.' },
+  { n: 'Diagonal pair', u: [1, 1], v: [-1, 1], c: 1.5, d: 0.5, d0: 'Two diagonal directions at right angles: a tilted square grid.' },
+  { n: 'Backwards', u: [3, 1], v: [-1, 2], c: -1, d: 1.5, d0: 'Negative weights walk backwards along a vector.' },
+  { n: 'Same line', u: [2, 1], v: [4, 2], c: 1, d: 0.5, d0: 'v = 2u: both point along one line, so the span is only that line.' },
+];
+const mm = { u: [2, 1], v: [1, 2], c: 2, d: 1, t: 1, raf: 0, mode: 'E', target: null, drag: false, vSaved: null };
+MP.forEach((p, i) => { const b = document.createElement('button'); b.className = 'preset'; b.textContent = p.n; b.onclick = () => { loadM(p); markM(i); if (mm.mode === 'T') newTarget(); else playM(); }; $('mPresets').appendChild(b); });
+function markM(i){ [...$('mPresets').children].forEach((b, j) => b.classList.toggle('on', j === i)); $('mDesc').textContent = i === null ? 'Custom vectors.' : MP[i].d0; }
+function fill(ids, vals){ ids.forEach((id, k) => { $(id).value = fracStr(vals[k]); }); }
+function loadM(p){ mm.u = p.u.slice(); mm.v = p.v.slice(); mm.c = p.c; mm.d = p.d; mm.vSaved = null; $('mSquash').textContent = 'Squash v onto u’s line'; fill(['u1', 'u2', 'v1', 'v2', 'wc', 'wd'], [...mm.u, ...mm.v, mm.c, mm.d]); }
+const MBOX = { x0: -9, x1: 9, y0: -4.6, y1: 4.6 };
+function readM(){
+  const r = readAll(['u1', 'u2', 'v1', 'v2', 'wc', 'wd'], 'mErr'); if (!r) return false;
+  if (r.slice(0, 4).some(x => Math.abs(x) > 5)){ $('mErr').textContent = 'Keep the components of u and v between −5 and 5.'; return false; }
+  if (Math.abs(r[4]) > 8 || Math.abs(r[5]) > 8){ $('mErr').textContent = 'Keep the weights between −8 and 8.'; return false; }
+  mm.u = [r[0], r[1]]; mm.v = [r[2], r[3]]; mm.c = r[4]; mm.d = r[5]; return true;
+}
+function drawM(){
+  const P = plane($('mSvg'), 1000, 460, MBOX, 46), { u, v, c, d } = mm, e = mm.t;
+  lattice(P, u, v, .35);
+  // whole-number combination points (lattice dots) within view
+  if (Math.abs(det(u, v)) > 1e-9) for (let i = -12; i <= 12; i++) for (let j = -12; j <= 12; j++){
+    const p = [i * u[0] + j * v[0], i * u[1] + j * v[1]];
+    if (Math.abs(p[0]) <= 10 && Math.abs(p[1]) <= 5) mk('circle', { cx: P.X(p[0]), cy: P.Y(p[1]), r: 2.4, style: 'fill:var(--muted);opacity:.6' }, P.g);
+  }
+  // u and v themselves (faint, from the origin)
+  arrow(P, [0, 0], u, C.u, { w: 2.5, op: .45 }); arrow(P, [0, 0], v, C.v, { w: 2.5, op: .45 });
+  // the target, if any
+  if (mm.mode === 'T' && mm.target){
+    const T = mm.target; mk('circle', { cx: P.X(T[0]), cy: P.Y(T[1]), r: 13, style: `fill:none;stroke:${C.t};stroke-width:3` }, P.g);
+    mk('circle', { cx: P.X(T[0]), cy: P.Y(T[1]), r: 4, style: `fill:${C.t}` }, P.g);
+    txt(P.g, P.X(T[0]) + 16, P.Y(T[1]) - 14, `target (${num(T[0])}, ${num(T[1])})`, 'labS', { style: `fill:${C.t}` });
+  }
+  // build the combination: c·u first, then d·v from its tip (animated: first leg grows, then the second)
+  const e1 = ease(clamp01(e / .45)), e2 = ease(clamp01((e - .45) / .45)), e3 = clamp01((e - .9) / .1);
+  const cu = [c * e1 * u[0], c * e1 * u[1]];
+  if (Math.abs(c * e1) > 1e-6) copies(P, [0, 0], u, c * e1, C.u);
+  const dv = [d * e2 * v[0], d * e2 * v[1]], tip = [cu[0] + dv[0], cu[1] + dv[1]];
+  if (e2 > 0 && Math.abs(d * e2) > 1e-6) copies(P, cu, v, d * e2, C.v);
+  const s = sgn(cross([c * u[0], c * u[1]], [d * v[0], d * v[1]]) || 1);
+  if (e >= 1){
+    if (c) sideLabel(P, [0, 0], [c * u[0], c * u[1]], -s, `${fracStr(c)}u`, C.u);
+    if (d) sideLabel(P, [c * u[0], c * u[1]], tip, -s, `${fracStr(d)}v`, C.v);
+  }
+  if (e3 > 0){
+    arrow(P, [0, 0], tip, C.r, { w: 4.5, op: e3 });
+    mk('circle', { cx: P.X(tip[0]), cy: P.Y(tip[1]), r: 7, style: `fill:${C.r};stroke:var(--paper);stroke-width:2;opacity:${e3}` }, P.g);
+    if (tip[0] || tip[1]) txt(P.g, P.X(tip[0]) + (tip[0] >= 0 ? 12 : -12), P.Y(tip[1]) + (tip[1] >= 0 ? -12 : 22), `(${num(tip[0])}, ${num(tip[1])})`, 'labS', { 'text-anchor': tip[0] >= 0 ? 'start' : 'end', style: `fill:${C.r}` });
+  }
+  mk('circle', { cx: P.X(0), cy: P.Y(0), r: 4.5, style: 'fill:var(--ink)' }, P.g);
+  mm.P = P;
+  const R = [c * u[0] + d * v[0], c * u[1] + d * v[1]];
+  $('mEq').innerHTML = `<span class="ku">${fracStr(c)}</span>${colHTML(u[0], u[1], C.u)} + <span class="kv">${fracStr(d)}</span>${colHTML(v[0], v[1], C.v)} = <span class="col"><span>${num(c * u[0])} + ${pn(d * v[0])}</span><span>${num(c * u[1])} + ${pn(d * v[1])}</span></span> = ${colHTML(R[0], R[1], C.r)}`;
+  readoutM(R);
+}
+function readoutM(R){
+  const { u, v } = mm, D = det(u, v), dep = Math.abs(D) < 1e-9;
+  let h = `<b class="kr">${fracStr(mm.c)}u + ${fracStr(mm.d)}v = [${num(R[0])}, ${num(R[1])}]</b>: ${cps(mm.c)} of <b class="ku">u</b>, then ${cps(mm.d)} of <b class="kv">v</b>. `;
+  if (dep) h += `<b class="kv">v</b> lies on <b class="ku">u</b>’s line (${u[0] || u[1] ? `v = ${fracStr(v[0] ? v[0] / (u[0] || 1e-12) : v[1] / u[1])}u` : 'u is zero'}), so the grid has collapsed onto the shaded line: <b>the span is just that line.</b> Points off it can’t be reached with any weights.`;
+  else h += 'Because <b class="ku">u</b> and <b class="kv">v</b> point in different directions, <b>the span is the whole plane</b>: every point is reachable, with exactly one pair of weights.';
+  if (mm.mode === 'T' && mm.target){
+    const T = mm.target, gap = Math.hypot(R[0] - T[0], R[1] - T[1]);
+    h = gap < 1e-6 ? `<b style="color:${C.ok}">Target reached!</b> ${fracStr(mm.c)}<b class="ku">u</b> + ${fracStr(mm.d)}<b class="kv">v</b> = [${num(T[0])}, ${num(T[1])}].` + (Number.isInteger(mm.c) && Number.isInteger(mm.d) ? ' Whole-number weights: the target sits on a crossing of the slanted grid.' : ' Fractional weights: the target sits between the grid lines.')
+      : `You’re at [${num(R[0])}, ${num(R[1])}], ${num(gap, 2)} away from the <b class="kt">target</b> [${num(T[0])}, ${num(T[1])}]. Adjust <i>c</i> (moves along <b class="ku">u</b>) and <i>d</i> (moves along <b class="kv">v</b>), or drag the tip. Tip: follow the slanted grid lines.` + (dep ? ' (With u and v on one line, you can only reach targets on that line.)' : '');
+  }
+  $('mOut').innerHTML = h;
+}
+function playM(){ if (!readM()) return; cancelAnimationFrame(mm.raf); mm.t = 0; let last = performance.now();
+  const step = now => { mm.t = Math.min(1, mm.t + (now - last) / 1800); last = now; drawM(); if (mm.t < 1) mm.raf = requestAnimationFrame(step); };
+  mm.raf = requestAnimationFrame(step); }
+// Target mode: pick weights in halves, keep the target inside the view and away from the origin
+function newTarget(){
+  if (!readM()) return;
+  const { u, v } = mm, dep = Math.abs(det(u, v)) < 1e-9; let T, tries = 0, cc, dd;
+  do { cc = Math.round((Math.random() * 6 - 3) * 2) / 2; dd = dep ? 0 : Math.round((Math.random() * 6 - 3) * 2) / 2; T = [cc * u[0] + dd * v[0], cc * u[1] + dd * v[1]]; tries++; }
+  while ((Math.abs(T[0]) > 8.5 || Math.abs(T[1]) > 4.3 || Math.hypot(T[0], T[1]) < 1.5 || (Math.abs(cc - mm.c) < 1e-9 && Math.abs(dd - mm.d) < 1e-9)) && tries < 300);
+  mm.target = T; mm.answer = [cc, dd]; mm.c = 0; mm.d = 0; fill(['wc', 'wd'], [0, 0]); mm.t = 1; drawM();
+}
+$('modeE').onclick = () => { mm.mode = 'E'; $('modeE').classList.add('on'); $('modeT').classList.remove('on'); $('tBtns').style.display = 'none'; mm.target = null; drawM(); };
+$('modeT').onclick = () => { mm.mode = 'T'; $('modeT').classList.add('on'); $('modeE').classList.remove('on'); $('tBtns').style.display = ''; newTarget(); };
+$('tNew').onclick = newTarget;
+$('tShow').onclick = () => { if (!mm.target) return; const w = solve(mm.u, mm.v, mm.target) || mm.answer; mm.c = w[0]; mm.d = w[1]; fill(['wc', 'wd'], w); playM(); };
+$('mPlay').onclick = playM;
+// Squash: animate v onto the nearest multiple of u, and back
+$('mSquash').onclick = () => {
+  if (!readM()) return; cancelAnimationFrame(mm.raf);
+  const { u } = mm, uu = u[0] * u[0] + u[1] * u[1]; if (!uu){ $('mErr').textContent = 'u is the zero vector; give it a direction first.'; return; }
+  let from = mm.v.slice(), to;
+  if (mm.vSaved){ to = mm.vSaved; mm.vSaved = null; $('mSquash').textContent = 'Squash v onto u’s line'; }
+  else { let k = Math.round((from[0] * u[0] + from[1] * u[1]) / uu * 2) / 2; if (!k) k = 1; to = [k * u[0], k * u[1]]; mm.vSaved = from; $('mSquash').textContent = 'Un-squash v'; }
+  let t = 0, last = performance.now();
+  const step = now => { t = Math.min(1, t + (now - last) / 1400); last = now; const e = ease(t); mm.v = [from[0] + (to[0] - from[0]) * e, from[1] + (to[1] - from[1]) * e]; fill(['v1', 'v2'], mm.v.map(x => Math.round(x * 1000) / 1000)); mm.t = 1; drawM(); if (t < 1) mm.raf = requestAnimationFrame(step); else { mm.v = to.slice(); fill(['v1', 'v2'], to); markM(null); drawM(); } };
+  mm.raf = requestAnimationFrame(step);
+};
+['u1', 'u2', 'v1', 'v2', 'wc', 'wd'].forEach(id => {
+  $(id).addEventListener('input', () => { if (['u1', 'u2', 'v1', 'v2'].includes(id)){ markM(null); mm.vSaved = null; $('mSquash').textContent = 'Squash v onto u’s line'; } cancelAnimationFrame(mm.raf); if (readM()){ mm.t = 1; drawM(); } });
+  $(id).addEventListener('focus', e => e.target.select());
+  $(id).addEventListener('keydown', e => { if (e.key === 'Enter') playM(); });
+});
+// Dragging the tip: solve for the weights (snapped to halves). On one line, only c can change.
+function dragTo(ev){
+  const svg = $('mSvg'), pt = svg.createSVGPoint(); pt.x = ev.clientX; pt.y = ev.clientY;
+  const p = pt.matrixTransform(svg.getScreenCTM().inverse()), q = mm.P.inv(p.x, p.y), { u, v } = mm;
+  let w = solve(u, v, q);
+  if (!w){ const uu = u[0] * u[0] + u[1] * u[1]; if (!uu) return; w = [(q[0] * u[0] + q[1] * u[1]) / uu, 0]; }
+  w = w.map(x => Math.max(-8, Math.min(8, Math.round(x * 2) / 2)));
+  if (w[0] !== mm.c || w[1] !== mm.d || mm.t < 1){ cancelAnimationFrame(mm.raf); mm.c = w[0]; mm.d = w[1]; fill(['wc', 'wd'], w); mm.t = 1; drawM(); }
+}
+$('mSvg').addEventListener('pointerdown', ev => { if (!readM()) return; mm.drag = true; $('mSvg').setPointerCapture(ev.pointerId); dragTo(ev); });
+$('mSvg').addEventListener('pointermove', ev => { if (mm.drag) dragTo(ev); });
+$('mSvg').addEventListener('pointerup', () => { mm.drag = false; });
+
+/* =====================================================================
+   4. TWO KINDS OF JUMP (whole-number weights)
+   ===================================================================== */
+const JP = [
+  { n: '[2, 1] and [1, 2]', u: [2, 1], v: [1, 2], d: 'Knight-like jumps. Every square is in the span, but only one in three is reachable with whole jumps.' },
+  { n: '[1, 0] and [0, 1]', u: [1, 0], v: [0, 1], d: 'One step east or one step north: every square is reachable.' },
+  { n: '[2, 0] and [0, 2]', u: [2, 0], v: [0, 2], d: 'Double steps only: you can only land where both coordinates are even.' },
+  { n: '[1, 1] and [1, −1]', u: [1, 1], v: [1, -1], d: 'Diagonal steps, like a checkers piece: you stay on squares of one color.' },
+  { n: '[3, 1] and [1, 2]', u: [3, 1], v: [1, 2], d: 'The grid cell has area 5, so one square in five is reachable.' },
+];
+const jm = { u: [2, 1], v: [1, 2], click: [1, 0] };
+JP.forEach((p, i) => { const b = document.createElement('button'); b.className = 'preset'; b.textContent = p.n; b.onclick = () => { jm.u = p.u.slice(); jm.v = p.v.slice(); fill(['j1', 'j2', 'j3', 'j4'], [...jm.u, ...jm.v]); markJ(i); drawJ(); }; $('jPresets').appendChild(b); });
+function markJ(i){ [...$('jPresets').children].forEach((b, j) => b.classList.toggle('on', j === i)); $('jDesc').textContent = i === null ? 'Custom jumps.' : JP[i].d; }
+function readJ(){
+  const r = readAll(['j1', 'j2', 'j3', 'j4'], 'jErr', 'Fill in every box with a whole number.'); if (!r) return false;
+  if (r.some(x => !Number.isInteger(x) || Math.abs(x) > 4)){ $('jErr').textContent = 'Use whole numbers from −4 to 4 for the jumps.'; return false; }
+  jm.u = [r[0], r[1]]; jm.v = [r[2], r[3]]; return true;
+}
+function drawJ(){
+  if (!readJ()) return;
+  const P = plane($('jSvg'), 1000, 420, { x0: -10, x1: 10, y0: -4.5, y1: 4.5 }, 44, true), { u, v } = jm, D = det(u, v);
+  lattice(P, u, v, .22);
+  let reach = 0, tot = 0;
+  for (let x = P.xa; x <= P.xb; x++) for (let y = P.ya; y <= P.yb; y++){
+    const w = solve(u, v, [x, y]);
+    const ok = w ? Math.abs(w[0] - Math.round(w[0])) < 1e-9 && Math.abs(w[1] - Math.round(w[1])) < 1e-9 : false;
+    if (Math.abs(x) <= 9 && Math.abs(y) <= 4){ tot++; if (ok) reach++; }
+    mk('circle', { cx: P.X(x), cy: P.Y(y), r: ok ? 5 : 3.6, style: ok ? `fill:${C.r}` : 'fill:var(--paper);stroke:var(--muted);stroke-width:1.3' }, P.g);
+  }
+  arrow(P, [0, 0], u, C.u, { w: 3 }); arrow(P, [0, 0], v, C.v, { w: 3 });
+  sideLabel(P, [0, 0], u, -sgn(D || 1), 'u', C.u); sideLabel(P, [0, 0], v, sgn(D || 1), 'v', C.v);
+  // the clicked square: show the path (c jumps of u, then d jumps of v) if it's reachable
+  const T = jm.click, w = solve(u, v, T);
+  let h;
+  if (!w) h = `These two jumps lie on one line, so the piece can never leave that line. The span is a line, not the plane.`;
+  else {
+    const whole = Math.abs(w[0] - Math.round(w[0])) < 1e-9 && Math.abs(w[1] - Math.round(w[1])) < 1e-9;
+    if (whole){
+      const c = Math.round(w[0]), d = Math.round(w[1]);
+      let pos = [0, 0];
+      for (let i = 0; i < Math.abs(c); i++){ const q = [pos[0] + sgn(c) * u[0], pos[1] + sgn(c) * u[1]]; arrow(P, pos, q, C.u, { w: 2.6, op: .85 }); pos = q; }
+      for (let i = 0; i < Math.abs(d); i++){ const q = [pos[0] + sgn(d) * v[0], pos[1] + sgn(d) * v[1]]; arrow(P, pos, q, C.v, { w: 2.6, op: .85 }); pos = q; }
+      h = `[${num(T[0])}, ${num(T[1])}] = <b class="ku">${num(c)}</b>·u + <b class="kv">${num(d)}</b>·v: ${Math.abs(c)} jump${Math.abs(c) === 1 ? '' : 's'} of <b class="ku">u</b>${c < 0 ? ' backwards' : ''}, then ${Math.abs(d)} jump${Math.abs(d) === 1 ? '' : 's'} of <b class="kv">v</b>${d < 0 ? ' backwards' : ''}. <b>Reachable.</b>`;
+    } else h = `[${num(T[0])}, ${num(T[1])}] would need <i>c</i> = <b class="ku">${fracStr(w[0])}</b> and <i>d</i> = <b class="kv">${fracStr(w[1])}</b>. It’s in the span, but you can’t make a fraction of a jump: <b>out of reach</b>.`;
+    h += ` On this board, ${reach} of ${tot} squares are reachable (about 1 in ${Math.abs(D)}, the area of one slanted grid cell).`;
+  }
+  mk('circle', { cx: P.X(T[0]), cy: P.Y(T[1]), r: 10, style: `fill:none;stroke:${C.t};stroke-width:3` }, P.g);
+  mk('circle', { cx: P.X(0), cy: P.Y(0), r: 4.5, style: 'fill:var(--ink)' }, P.g);
+  jm.P = P; $('jOut').innerHTML = h;
+}
+$('jSvg').addEventListener('click', ev => {
+  if (!jm.P) return; const svg = $('jSvg'), pt = svg.createSVGPoint(); pt.x = ev.clientX; pt.y = ev.clientY;
+  const p = pt.matrixTransform(svg.getScreenCTM().inverse()), q = jm.P.inv(p.x, p.y);
+  jm.click = [Math.max(-9, Math.min(9, Math.round(q[0]))), Math.max(-4, Math.min(4, Math.round(q[1])))]; drawJ();
+});
+['j1', 'j2', 'j3', 'j4'].forEach(id => { $(id).addEventListener('input', () => { markJ(null); drawJ(); }); $(id).addEventListener('focus', e => e.target.select()); });
+
+/* =====================================================================
+   5. COINS (whole, non-negative weights in one dimension)
+   ===================================================================== */
+const cn = { p: 5, q: 7, pick: 31, N: 50 };
+[[5, 7], [3, 5], [4, 6], [2, 5], [10, 25]].forEach(([p, q]) => { const b = document.createElement('button'); b.className = 'preset'; b.textContent = `${p}¢ and ${q}¢`; b.onclick = () => { $('cp').value = p; $('cq').value = q; drawCoins(); }; $('cPresets').appendChild(b); });
+// Find whole c, d ≥ 0 with c·p + d·q = n (fewest coins), or null
+function makeAmt(n, p, q){ let best = null; for (let d = 0; d * q <= n; d++){ const r = n - d * q; if (r % p === 0){ const c = r / p; if (!best || c + d < best[0] + best[1]) best = [c, d]; } } return best; }
+function drawCoins(){
+  const r = readAll(['cp', 'cq'], 'cErr', 'Type two whole numbers.'); if (!r) return;
+  if (r.some(x => !Number.isInteger(x) || x < 1 || x > 25)){ $('cErr').textContent = 'Use whole coin sizes from 1 to 25.'; return; }
+  const [p, q] = r; cn.p = p; cn.q = q; const N = Math.max(50, Math.min(80, p * q + 6)); cn.N = N;
+  const svg = $('cSvg'); svg.innerHTML = ''; const g = mk('g', {}, svg);
+  const L = 20, W = 960, cw = W / (N + 1), y = 60;
+  let lastBad = -1;
+  for (let n = 0; n <= N; n++){
+    const m = makeAmt(n, p, q); if (!m) lastBad = n;
+    mk('rect', { x: L + n * cw + 1, y, width: cw - 2, height: 40, rx: 3, style: m ? `fill:${C.r};opacity:.8` : 'fill:var(--paper);stroke:var(--line2);stroke-width:1' }, g);
+    if (n % 5 === 0) txt(g, L + n * cw + cw / 2, y + 58, String(n), 'bn', { 'text-anchor': 'middle' });
+  }
+  const pk = Math.min(cn.pick, N);
+  mk('rect', { x: L + pk * cw - 1, y: y - 3, width: cw + 2, height: 46, rx: 4, style: `fill:none;stroke:${C.t};stroke-width:3` }, g);
+  txt(g, L + pk * cw + cw / 2, y - 12, `${pk}¢`, 'labS', { 'text-anchor': 'middle', style: `fill:${C.t}` });
+  txt(g, L, y + 90, 'amount (¢) →  filled = can be paid exactly', 'cap');
+  cn.geo = { L, cw, y, N };
+  const m = makeAmt(pk, p, q), G = gcdI(p, q);
+  let h = m ? `<b class="kt">${pk}¢</b> = <b class="ku">${m[0]}</b> × ${p}¢ + <b class="kv">${m[1]}</b> × ${q}¢. ` : `<b class="kt">${pk}¢</b> can’t be paid exactly: no whole, non-negative numbers of ${p}¢ and ${q}¢ coins add to it. `;
+  if (G > 1) h += `Both coins are multiples of ${G}, so only multiples of ${G} can ever be made, however many coins you have.`;
+  else h += `Because ${p} and ${q} share no common factor, every amount from <b>${p * q - p - q + 1}¢</b> on can be made; the largest impossible amount is ${p * q - p - q}¢ (= ${p} × ${q} − ${p} − ${q}).`;
+  $('cOut').innerHTML = h;
+}
+$('cSvg').addEventListener('click', ev => {
+  if (!cn.geo) return; const svg = $('cSvg'), pt = svg.createSVGPoint(); pt.x = ev.clientX; pt.y = ev.clientY;
+  const p = pt.matrixTransform(svg.getScreenCTM().inverse()), n = Math.floor((p.x - cn.geo.L) / cn.geo.cw);
+  if (n >= 0 && n <= cn.geo.N){ cn.pick = n; drawCoins(); }
+});
+['cp', 'cq'].forEach(id => { $(id).addEventListener('input', drawCoins); $(id).addEventListener('focus', e => e.target.select()); });
+
+/* =====================================================================
+   6. QUIZ
+   ===================================================================== */
+const rnd = arr => arr[Math.floor(Math.random() * arr.length)];
+const randInt = (lo, hi) => lo + Math.floor(Math.random() * (hi - lo + 1));
+const nz = (a) => { let x; do { x = randInt(-a, a); } while (x === 0); return x; };
+const qz = { counted: false, done: false, right: 0, total: 0 };
+const vstr = p => `[${num(p[0])}, ${num(p[1])}]`;
+function setMode(kind, labels){
+  $('qChoice').style.display = kind === 'choice' ? '' : 'none'; $('qInputs').style.display = kind === 'choice' ? 'none' : '';
+  if (kind === 'choice'){ $('qChoice').innerHTML = ''; labels.forEach((l, i) => { const b = document.createElement('button'); b.textContent = l; b.onclick = () => answerChoice(i); $('qChoice').appendChild(b); }); }
+  else { $('qL1').textContent = labels[0]; $('qL2').textContent = labels[1]; $('qF1').className = 'field ' + labels[2]; $('qF2').className = 'field ' + labels[3]; }
+}
+// Independent pairs with small determinants, so weights come out as small whole numbers
+function indepPair(){ let u, v; do { u = [nz(3), randInt(-3, 3)]; v = [randInt(-3, 3), nz(3)]; } while (Math.abs(det(u, v)) < 1 || Math.abs(det(u, v)) > 7); return [u, v]; }
+function newQuestion(){
+  Object.assign(qz, { counted: false, done: false });
+  $('qErr').textContent = ''; $('qFb').className = 'feedback'; $('qFb').innerHTML = ''; $('q1').value = ''; $('q2').value = ''; $('qSvg').style.display = 'none';
+  qz.type = rnd(['comp', 'find', 'find', 'kind', 'inspan']);
+  if (qz.type === 'comp'){
+    [qz.u, qz.v] = indepPair(); qz.c = nz(3); qz.d = nz(2); qz.ans = [qz.c * qz.u[0] + qz.d * qz.v[0], qz.c * qz.u[1] + qz.d * qz.v[1]];
+    $('qTitle').textContent = 'Compute the combination';
+    $('qText').innerHTML = `<b class="ku">u</b> = ${vstr(qz.u)}, <b class="kv">v</b> = ${vstr(qz.v)}. Find <b class="kr">${qz.c}u + ${pn(qz.d)}v</b>.`;
+    setMode('fields', ['First component', 'Second component', '', '']);
+  } else if (qz.type === 'find'){
+    let T; do { [qz.u, qz.v] = indepPair(); qz.c = nz(3); qz.d = randInt(-3, 3); T = [qz.c * qz.u[0] + qz.d * qz.v[0], qz.c * qz.u[1] + qz.d * qz.v[1]]; } while (Math.abs(T[0]) > 9 || Math.abs(T[1]) > 9);
+    qz.T = T; qz.ans = [qz.c, qz.d];
+    $('qTitle').textContent = 'Find the weights';
+    $('qText').innerHTML = `<b class="ku">u</b> = ${vstr(qz.u)}, <b class="kv">v</b> = ${vstr(qz.v)}. Find <i>c</i> and <i>d</i> with <i>c</i><b class="ku">u</b> + <i>d</i><b class="kv">v</b> = <b class="kt">${vstr(T)}</b>. (Hint: write one equation for each component.)`;
+    setMode('fields', ['Weight c', 'Weight d', 'fu', 'fv']);
+  } else if (qz.type === 'kind'){
+    const kind = rnd([0, 1, 1, 2, 2]);
+    if (kind === 2) [qz.u, qz.v] = indepPair();
+    else if (kind === 1){ const u = [nz(3), randInt(-3, 3)], k = rnd([2, -1, -2, 3, 0]); qz.u = u; qz.v = [k * u[0], k * u[1]]; if (Math.random() < .5) [qz.u, qz.v] = [qz.v, qz.u]; }
+    else { qz.u = [0, 0]; qz.v = [0, 0]; }
+    qz.kind = kind;
+    $('qTitle').textContent = 'Point, line or plane?';
+    $('qText').innerHTML = `What is the span of <b class="ku">u</b> = ${vstr(qz.u)} and <b class="kv">v</b> = ${vstr(qz.v)}?`;
+    setMode('choice', ['Just a point', 'A line', 'The whole plane']);
+  } else {
+    const u = [nz(3), randInt(-3, 3)], k = rnd([2, -1, 3, -2]); qz.u = u; qz.v = [k * u[0], k * u[1]];
+    qz.yes = Math.random() < .5; const m = rnd([2, -2, 3, -1, 4]);
+    let T = [m * u[0], m * u[1]];
+    if (!qz.yes){ const off = rnd([[1, 0], [0, 1], [-1, 0], [0, -1], [1, 1]]); T = [T[0] + off[0], T[1] + off[1]]; if (Math.abs(det(u, T)) < 1e-9) T = [T[0] + 1, T[1]]; }
+    qz.T = T; qz.m = m;
+    $('qTitle').textContent = 'Is it in the span?';
+    $('qText').innerHTML = `<b class="ku">u</b> = ${vstr(qz.u)}, <b class="kv">v</b> = ${vstr(qz.v)}. Can some combination <i>c</i><b class="ku">u</b> + <i>d</i><b class="kv">v</b> reach <b class="kt">${vstr(T)}</b>?`;
+    setMode('choice', ['Yes, it’s reachable', 'No, it’s out of reach']);
+  }
+}
+function countQ(ok){ if (qz.counted) return; qz.counted = true; qz.total++; if (ok) qz.right++; $('score').textContent = `Score: ${qz.right} / ${qz.total}`; }
+function drawQ(){
+  $('qSvg').style.display = '';
+  const { u, v } = qz, pts = [u, v];
+  if (qz.T) pts.push(qz.T); if (qz.ans && qz.type !== 'find') pts.push(qz.ans);
+  if (qz.type === 'comp' || qz.type === 'find'){ const c = qz.type === 'find' ? qz.ans[0] : qz.c; pts.push([c * u[0], c * u[1]]); }
+  const P = plane($('qSvg'), 1000, 340, boxOf(pts), 40);
+  lattice(P, u, v, .3);
+  arrow(P, [0, 0], u, C.u, { w: 3, op: .6 }); arrow(P, [0, 0], v, C.v, { w: 3, op: .6 });
+  if (qz.type === 'comp' || qz.type === 'find'){
+    const [c, d] = qz.type === 'find' ? qz.ans : [qz.c, qz.d], cu = [c * u[0], c * u[1]], R = [cu[0] + d * v[0], cu[1] + d * v[1]];
+    copies(P, [0, 0], u, c, C.u); if (d) copies(P, cu, v, d, C.v);
+    arrow(P, [0, 0], R, C.r, { w: 4.5 });
+    const s = sgn(cross(cu, [d * v[0], d * v[1]]) || 1);
+    sideLabel(P, [0, 0], cu, -s, `${num(c)}u`, C.u); if (d) sideLabel(P, cu, R, -s, `${num(d)}v`, C.v);
+  }
+  if (qz.T){ mk('circle', { cx: P.X(qz.T[0]), cy: P.Y(qz.T[1]), r: 11, style: `fill:none;stroke:${C.t};stroke-width:3` }, P.g); txt(P.g, P.X(qz.T[0]) + 14, P.Y(qz.T[1]) - 12, vstr(qz.T), 'labS', { style: `fill:${C.t}` }); }
+  mk('circle', { cx: P.X(0), cy: P.Y(0), r: 4.5, style: 'fill:var(--ink)' }, P.g);
+}
+function checkQ(){
+  const r = readAll(['q1', 'q2'], 'qErr', 'Fill in both boxes with a number.'); if (!r) return;
+  const near = (p, q) => Math.abs(p[0] - q[0]) < 0.011 && Math.abs(p[1] - q[1]) < 0.011, ok = near(r, qz.ans);
+  let msg;
+  if (qz.type === 'comp'){
+    const { u, v, c, d } = qz;
+    if (ok) msg = `<b>Right: ${vstr(qz.ans)}.</b> ${c}u = ${vstr([c * u[0], c * u[1]])} and ${d}v = ${vstr([d * v[0], d * v[1]])}; add entry by entry.`;
+    else if (near(r, [u[0] + v[0], u[1] + v[1]])) msg = '<b>That’s u + v.</b> Multiply each vector by its weight first.';
+    else if (near(r, [c * u[0] + v[0], c * u[1] + v[1]])) msg = `<b>You forgot to scale v.</b> Multiply v by ${d} before adding.`;
+    else if (near(r, [u[0] + d * v[0], u[1] + d * v[1]])) msg = `<b>You forgot to scale u.</b> Multiply u by ${c} before adding.`;
+    else if (near(r, [c * u[0] - d * v[0], c * u[1] - d * v[1]])) msg = '<b>Check the sign on the second term.</b>';
+    else if (Math.abs(r[0] - qz.ans[0]) < .011) msg = '<b>First component right.</b> Recheck the second: weight times second component, for each vector, then add.';
+    else if (Math.abs(r[1] - qz.ans[1]) < .011) msg = '<b>Second component right.</b> Recheck the first.';
+    else msg = `<b>Not quite.</b> Scale each vector, then add: ${c}·${vstr(u)} + ${pn(d)}·${vstr(v)}.`;
+  } else {
+    const { u, v, T } = qz, R = [r[0] * u[0] + r[1] * v[0], r[0] * u[1] + r[1] * v[1]];
+    if (ok) msg = `<b>Right: c = ${num(qz.ans[0])}, d = ${num(qz.ans[1])}.</b> Check: ${num(qz.ans[0])}·${vstr(u)} + ${pn(qz.ans[1])}·${vstr(v)} = ${vstr(T)}.`;
+    else if (near(r, [qz.ans[1], qz.ans[0]])) msg = '<b>You swapped c and d.</b> c goes with u, d goes with v.';
+    else msg = `<b>Not quite.</b> Your weights give ${vstr(R)}, not ${vstr(T)}. Write the two equations: ${num(u[0])}c + ${pn(v[0])}d = ${num(T[0])} and ${num(u[1])}c + ${pn(v[1])}d = ${num(T[1])}, then solve.`;
+  }
+  countQ(ok); if (ok){ qz.done = true; drawQ(); }
+  $('qFb').className = 'feedback ' + (ok ? 'ok' : 'bad'); $('qFb').innerHTML = msg;
+}
+function answerChoice(i){
+  if (qz.done) return; qz.done = true; let ok, msg;
+  if (qz.type === 'kind'){
+    ok = i === qz.kind; const { u, v } = qz, zero = p => !p[0] && !p[1];
+    const why = qz.kind === 2 ? `They point in different directions (u₁v₂ − u₂v₁ = ${num(det(u, v))} ≠ 0), so together they reach every point.`
+      : qz.kind === 1 ? (zero(u) || zero(v) ? 'One vector is zero, so it adds nothing; the other sweeps out one line.' : `One is a multiple of the other, so they lie on one line: v is just more (or backwards) u.`)
+      : 'Both are the zero vector: every combination is [0, 0].';
+    msg = `<b>${ok ? 'Right' : 'Not this time'}: ${['just a point', 'a line', 'the whole plane'][qz.kind]}.</b> ${why}`;
+  } else {
+    ok = (i === 0) === qz.yes; const { u, T } = qz;
+    msg = `<b>${ok ? 'Right' : 'Not this time'}: ${qz.yes ? 'yes' : 'no'}.</b> v is a multiple of u, so the span is just the line through u. ` +
+      (qz.yes ? `${vstr(T)} = ${qz.m}·${vstr(u)} lies on that line.` : `${vstr(T)} isn’t a multiple of ${vstr(u)}: no single number times u gives it, so it’s off the line.`);
+  }
+  countQ(ok); drawQ();
+  $('qFb').className = 'feedback ' + (ok ? 'ok' : 'bad'); $('qFb').innerHTML = msg;
+}
+function showQ(){
+  countQ(false); qz.done = true; $('qErr').textContent = ''; drawQ();
+  const fb = $('qFb'); fb.className = 'feedback info';
+  if (qz.type === 'comp') fb.innerHTML = `<b>${vstr(qz.ans)}</b>, built tip to tail below.`;
+  else if (qz.type === 'find') fb.innerHTML = `<b>c = ${num(qz.ans[0])}, d = ${num(qz.ans[1])}</b>: ${cps(qz.ans[0])} of u, then ${cps(qz.ans[1])} of v, land on the target.`;
+  else if (qz.type === 'kind') fb.innerHTML = `<b>${['Just a point', 'A line', 'The whole plane'][qz.kind]}.</b>`;
+  else fb.innerHTML = `<b>${qz.yes ? 'Yes' : 'No'}.</b> The span is the line through u; the target is ${qz.yes ? 'on' : 'off'} it.`;
+}
+$('qCheck').onclick = checkQ; $('qShow').onclick = showQ; $('qNew').onclick = newQuestion;
+['q1', 'q2'].forEach(id => { $(id).addEventListener('input', () => { $('qErr').textContent = ''; }); $(id).addEventListener('focus', e => e.target.select()); $(id).addEventListener('keydown', e => { if (e.key === 'Enter') checkQ(); }); });
+
+/* =====================================================================
+   7. START
+   ===================================================================== */
+loadM(MP[0]); markM(0); drawM();
+fill(['j1', 'j2', 'j3', 'j4'], [2, 1, 1, 2]); markJ(0); drawJ();
+drawCoins();
+newQuestion();
+</script>
+<script src="../shared/toc.js"></script>
+<script src="../shared/nav.js"></script>
+</body>
+</html>

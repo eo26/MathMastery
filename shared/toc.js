@@ -30,7 +30,7 @@ window.MM_TOC = [
   ]},
   { ch: 7, title: 'Linear Algebra', pages: [
     { id: '7.B.1', title: 'Vectors: Arrows and Lists', url: 'https://claude.ai/artifact/VTgdf4vZNvotfwDq58B8bx', built: true },
-    { id: '7.B.2', title: 'Linear Combinations and Span' },
+    { id: '7.B.2', title: 'Linear Combinations and Span', url: 'https://claude.ai/artifact/AEB3V1XuSEPRrc2SmgovLu', built: true },
     { id: '7.B.3', title: 'The Dot Product' },
     { id: '7.B.4', title: 'A Matrix Is a Move (Matrix Transformer)', ext: true, url: 'https://claude.ai/artifact/UPYx73qewW2rkDX2VR4YTS' },
     { id: '7.B.5', title: 'Matrix Multiplication: One Move After Another' },
