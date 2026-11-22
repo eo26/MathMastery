@@ -1,0 +1,820 @@
+<style>
+/* ===================== Page-specific styles (7.B.1) ===================== */
+/* first entry (x, east) = green, second entry (y, north) = orange, v / u / a = purple, second vector = amber, results = blue */
+:root{ --cx:#1D9E75; --cy:#D85A30; --cv:#7F77DD; --cw:#C98A0B; --cr:#2F6FDB; }
+@media (prefers-color-scheme:dark){ :root{ --cx:#5DCAA5; --cy:#F0997B; --cv:#AFA9EC; --cw:#F0C24B; --cr:#6EA2F5; } }
+.kx{color:var(--cx);font-weight:700}.ky{color:var(--cy);font-weight:700}.kv{color:var(--cv);font-weight:700}.kw{color:var(--cw);font-weight:700}.kr{color:var(--cr);font-weight:700}
+.field.fx input{border-color:var(--cx)}.field.fy input{border-color:var(--cy)}.field.fv input{border-color:var(--cv)}.field.fw input{border-color:var(--cw)}.field.fr input{border-color:var(--cr)}
+.col{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;border-left:2px solid var(--ink);border-right:2px solid var(--ink);border-radius:5px;padding:1px 8px;margin:0 4px;font:600 16px/1.25 var(--mono)}
+.eqchip{display:inline-flex;align-items:center;flex-wrap:wrap;gap:4px;font:600 16px var(--mono);border:1px solid var(--line);border-radius:12px;padding:8px 16px;background:var(--bg);margin:2px 0 8px}
+.inputs .grp{display:flex;gap:8px;align-items:flex-end;padding-right:10px;border-right:1px dashed var(--line);margin-right:4px}
+.inputs .grp:last-of-type{border-right:none}
+.field.sm input{width:70px}
+table.lists{border-collapse:collapse;margin:10px 0 14px;font:15px var(--sans)}
+table.lists th,table.lists td{border:1px solid var(--line);padding:6px 14px;text-align:center}
+table.lists th{background:var(--paper);font-weight:600}
+table.lists td.m{font-family:var(--mono)}
+.qtext{font:17px/1.55 var(--serif);margin:4px 0 10px}
+pre.code{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:12px 16px;overflow-x:auto;font:13.5px/1.6 var(--mono);margin:10px 0 16px}
+</style>
+
+<!-- ===================== Top bar ===================== -->
+<div class="topbar"><div class="topbar-in">
+  <span class="brand">Math<b>Mastery</b></span>
+  <span class="crumbs">Chapter 7 · Linear Algebra › Basics</span>
+  <span class="pid">7.B.1</span>
+</div></div>
+
+<!-- ===================== Hero ===================== -->
+<header class="prose hero">
+  <div class="kicker">Chapter 7 · Linear Algebra</div>
+  <h1>Vectors: Arrows and Lists</h1>
+  <p class="dek">A vector is a move: so far this way, so far that way. Draw it and it’s an arrow; write it down and it’s a list of numbers. Linear algebra is the art of using both at once.</p>
+  <div class="tiers" aria-label="Tier">
+    <span class="tier on">Basics <small>you are here</small></span>
+    <span class="tier">Undergraduate</span>
+    <span class="tier">Masters</span>
+  </div>
+  <div class="goals">
+    <h3>On this page</h3>
+    <ul>
+      <li>See a <b>vector</b> as an arrow (a move) and as a list of <b>components</b> [<i class="sym">a</i>, <i class="sym">b</i>], and switch between them.</li>
+      <li><b>Add</b> vectors tip to tail, <b>scale</b> them by a number, and <b>subtract</b> to get the arrow from one tip to another.</li>
+      <li>Find a vector’s <b>length</b> with the Pythagorean theorem.</li>
+      <li>See why any list of numbers, like a color or a shopping list, is a vector too.</li>
+    </ul>
+  </div>
+</header>
+
+<main>
+<!-- ===================== §1 Arrow and list ===================== -->
+<section class="prose">
+  <h2><span class="n">1</span>A vector is a move</h2>
+  <p>A treasure map says: from the old oak, walk <b class="kx">3 paces east</b> and <b class="ky">2 paces north</b>. That instruction is a <b>vector</b>. You can draw it as an <b>arrow</b> from where you start to where you end, or write it as a <b>list</b> of two numbers:</p>
+  <p style="text-align:center"><b class="kv">v</b> = <span class="col"><span class="kx">3</span><span class="ky">2</span></span> &nbsp;or, on one line, &nbsp;<b class="kv">v</b> = [<span class="kx">3</span>, <span class="ky">2</span>].</p>
+  <p>The numbers are the vector’s <b>components</b>: the first, <i class="sym">a</i>, is how far to move along the <span class="kx">x</span> direction (east is positive, west negative); the second, <i class="sym">b</i>, is how far along <span class="ky">y</span> (north positive, south negative). Written stacked like that, it’s a <b>column vector</b>.</p>
+  <p><em class="key">A vector is a move, not a place.</em> “3 east, 2 north” works from any starting point, so the same arrow can be drawn anywhere. When it starts at the origin (0, 0), its tip lands on the point (3, 2), which is why the list and the point look alike.</p>
+</section>
+
+<section class="wide">
+  <div class="card" id="main">
+    <div class="card-h"><span class="tag">Explore</span><h3>Arrow and list, linked</h3>
+      <span class="sub">Drag the arrow’s tip on the grid, or type the components <i class="sym">a</i> and <i class="sym">b</i>. Press Play to walk it: first <i class="sym">a</i> steps along x, then <i class="sym">b</i> steps along y.</span></div>
+    <div class="row" id="mPresets"></div>
+    <div class="desc" id="mDesc"></div>
+    <div class="inputs">
+      <label class="field fx"><span>First component <i>a</i></span><input id="mA" type="text" inputmode="decimal" autocomplete="off"></label>
+      <label class="field fy"><span>Second component <i>b</i></span><input id="mB" type="text" inputmode="decimal" autocomplete="off"></label>
+      <div class="row" style="margin:0"><button class="primary" id="mPlay">Play</button><button id="mReset">Reset</button><button id="mCopies">Draw it elsewhere</button></div>
+    </div>
+    <div class="err" id="mErr"></div>
+    <div class="eqchip" id="mEq"></div>
+    <svg class="nl" id="mSvg" viewBox="0 0 1000 450" role="img" aria-label="A vector on a grid" style="cursor:crosshair;touch-action:none"></svg>
+    <div class="readout" id="mOut"></div>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--cx)"></i><i>a</i>: steps along x</span>
+      <span><i class="sw" style="background:var(--cy)"></i><i>b</i>: steps along y</span>
+      <span><i class="sw" style="background:var(--cv)"></i>the vector <b>v</b> = [<i>a</i>, <i>b</i>]</span>
+      <span><svg width="26" height="12" viewBox="0 0 26 12" aria-hidden="true"><path d="M2,10 Q7,0 12,10 Q17,0 22,10" fill="none" stroke="var(--cx)" stroke-width="2"/></svg>one hop = one unit step</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §2 Adding ===================== -->
+<section class="prose">
+  <h2><span class="n">2</span>Adding vectors: one move, then another</h2>
+  <p>Walk <b class="kv">u</b>, then walk <b class="kw">v</b> starting where <b class="kv">u</b> ended. The single arrow from your start to your finish is the sum <b class="kr">u + v</b>. This is <b>tip to tail</b>: put the tail of <b class="kw">v</b> on the tip of <b class="kv">u</b>.</p>
+  <p>In the list form it’s even easier: add <span class="kx">first to first</span> and <span class="ky">second to second</span>. [3, 1] + [1, 2] = [3 + 1, 1 + 2] = [4, 3]. The east steps add up, and the north steps add up.</p>
+  <p>The same idea runs the physical world. A boat aiming east while a current pushes it south actually travels along the <b>sum</b> of the two velocities. Two people pulling a sled with ropes in different directions move it along the sum of their <b>forces</b>.</p>
+</section>
+<section class="wide">
+  <div class="card" id="add">
+    <div class="card-h"><span class="tag">Explore</span><h3>Tip to tail</h3>
+      <span class="sub">Type <b class="kv">u</b> and <b class="kw">v</b>, or pick a scene, then press Play. <b class="kw">v</b> slides over to start at the tip of <b class="kv">u</b>. The faint copies close the parallelogram: <b class="kw">v</b> then <b class="kv">u</b> lands in the same place.</span></div>
+    <div class="row" id="aPresets"></div>
+    <div class="desc" id="aDesc"></div>
+    <div class="inputs">
+      <div class="grp"><label class="field fv sm"><span><b>u</b>: first</span><input id="aU1" type="text" inputmode="decimal" autocomplete="off"></label>
+        <label class="field fv sm"><span><b>u</b>: second</span><input id="aU2" type="text" inputmode="decimal" autocomplete="off"></label></div>
+      <div class="grp"><label class="field fw sm"><span><b>v</b>: first</span><input id="aV1" type="text" inputmode="decimal" autocomplete="off"></label>
+        <label class="field fw sm"><span><b>v</b>: second</span><input id="aV2" type="text" inputmode="decimal" autocomplete="off"></label></div>
+      <div class="row" style="margin:0"><button class="primary" id="aPlay">Play</button></div>
+    </div>
+    <div class="err" id="aErr"></div>
+    <div class="eqchip" id="aEq"></div>
+    <svg class="nl" id="aSvg" viewBox="0 0 1000 400" role="img" aria-label="Adding two vectors"></svg>
+    <div class="readout" id="aOut"></div>
+  </div>
+</section>
+
+<!-- ===================== §3 Scaling ===================== -->
+<section class="prose">
+  <h2><span class="n">3</span>Scaling: stretch, squeeze, flip</h2>
+  <p>Multiplying a vector by a plain number <i class="sym">k</i> stretches it, just as multiplying stretched the number line in 1.B.2. 2<b class="kv">v</b> is two copies of <b class="kv">v</b> laid end to end: same direction, twice as long. ½<b class="kv">v</b> is half as long. And −1 · <b class="kv">v</b> points the <b>opposite way</b>: walk the same move backwards. A plain number used this way is called a <b>scalar</b>, because it <i>scales</i>.</p>
+  <p>In the list, every component gets multiplied: 2 · [3, 1] = [6, 2]. Double the wind and both its east and north parts double.</p>
+</section>
+<section class="wide">
+  <div class="card" id="scl">
+    <div class="card-h"><span class="tag">Explore</span><h3>Multiply by a scalar <i>k</i></h3>
+      <span class="sub">Type a vector <b class="kv">v</b> and a scalar <i class="sym">k</i> (fractions like 1/2 are fine), then press Play to stretch from 1 · <b class="kv">v</b> to <i class="sym">k</i> · <b class="kv">v</b>.</span></div>
+    <div class="row" id="sPresets"></div>
+    <div class="desc" id="sDesc"></div>
+    <div class="inputs">
+      <div class="grp"><label class="field fv sm"><span><b>v</b>: first</span><input id="sV1" type="text" inputmode="decimal" autocomplete="off"></label>
+        <label class="field fv sm"><span><b>v</b>: second</span><input id="sV2" type="text" inputmode="decimal" autocomplete="off"></label></div>
+      <div class="grp"><label class="field fr sm"><span>Scalar <i>k</i></span><input id="sK" type="text" inputmode="decimal" autocomplete="off"></label></div>
+      <div class="row" style="margin:0"><button class="primary" id="sPlay">Play</button></div>
+    </div>
+    <div class="err" id="sErr"></div>
+    <div class="eqchip" id="sEq"></div>
+    <svg class="nl" id="sSvg" viewBox="0 0 1000 380" role="img" aria-label="Scaling a vector"></svg>
+    <div class="readout" id="sOut"></div>
+  </div>
+</section>
+
+<!-- ===================== §4 Subtracting ===================== -->
+<section class="prose">
+  <h2><span class="n">4</span>Subtracting: the arrow from one tip to another</h2>
+  <p>You’re standing at the tip of <b class="kv">a</b>; the treasure is at the tip of <b class="kw">b</b>. What move gets you there? It’s <b class="kr">b − a</b>, the arrow <b>from the tip of a to the tip of b</b>. Check: walk <b class="kv">a</b>, then <b class="kr">b − a</b>, and you’re at <b class="kw">b</b>, because <b class="kv">a</b> + (<b class="kw">b</b> − <b class="kv">a</b>) = <b class="kw">b</b>.</p>
+  <p>Order matters: <b>a − b</b> is the same arrow pointing the other way. And in the list form you subtract entry by entry: [5, 4] − [2, 1] = [3, 3].</p>
+</section>
+<section class="wide">
+  <div class="card" id="sub">
+    <div class="card-h"><span class="tag">Explore</span><h3>From here to there</h3>
+      <span class="sub">Type <b class="kv">a</b> and <b class="kw">b</b>. The blue arrow is <b class="kr">b − a</b>, from tip to tip. Its faint copy starts at the origin, so you can read its components off the grid.</span></div>
+    <div class="row" id="dPresets"></div>
+    <div class="desc" id="dDesc"></div>
+    <div class="inputs">
+      <div class="grp"><label class="field fv sm"><span><b>a</b>: first</span><input id="dA1" type="text" inputmode="decimal" autocomplete="off"></label>
+        <label class="field fv sm"><span><b>a</b>: second</span><input id="dA2" type="text" inputmode="decimal" autocomplete="off"></label></div>
+      <div class="grp"><label class="field fw sm"><span><b>b</b>: first</span><input id="dB1" type="text" inputmode="decimal" autocomplete="off"></label>
+        <label class="field fw sm"><span><b>b</b>: second</span><input id="dB2" type="text" inputmode="decimal" autocomplete="off"></label></div>
+      <div class="row" style="margin:0"><button id="dSwap">Show a − b instead</button></div>
+    </div>
+    <div class="err" id="dErr"></div>
+    <div class="eqchip" id="dEq"></div>
+    <svg class="nl" id="dSvg" viewBox="0 0 1000 380" role="img" aria-label="Subtracting vectors"></svg>
+    <div class="readout" id="dOut"></div>
+  </div>
+</section>
+
+<!-- ===================== §5 Length ===================== -->
+<section class="prose">
+  <h2><span class="n">5</span>How long is a vector?</h2>
+  <p>The walk <span class="kx">along x</span> and the walk <span class="ky">along y</span> meet at a right angle, so the arrow is the long side (hypotenuse) of a right triangle. The Pythagorean theorem gives its length, called its <b>magnitude</b>, written ‖<b>v</b>‖:</p>
+  <p style="text-align:center">‖<b class="kv">v</b>‖ = √(<span class="kx">a</span>² + <span class="ky">b</span>²)</p>
+  <p>For [3, 4] that’s √(9 + 16) = √25 = 5. Signs don’t matter, since squaring makes them positive: [−3, 4] is just as long. And the length is shorter than the walk: 5 beats 3 + 4 = 7, because the straight arrow cuts the corner.</p>
+</section>
+<section class="wide">
+  <div class="card" id="len">
+    <div class="card-h"><span class="tag">Explore</span><h3>Squares on the sides</h3>
+      <span class="sub">Type the components. The green and orange squares have areas <i class="sym">a</i>² and <i class="sym">b</i>²; together they exactly match the purple square on the arrow.</span></div>
+    <div class="row" id="lPresets"></div>
+    <div class="inputs">
+      <label class="field fx"><span>First component <i>a</i></span><input id="lA" type="text" inputmode="decimal" autocomplete="off" value="3"></label>
+      <label class="field fy"><span>Second component <i>b</i></span><input id="lB" type="text" inputmode="decimal" autocomplete="off" value="4"></label>
+    </div>
+    <div class="err" id="lErr"></div>
+    <svg class="nl" id="lSvg" viewBox="0 0 1000 380" role="img" aria-label="Pythagorean squares"></svg>
+    <div class="readout" id="lOut"></div>
+  </div>
+</section>
+
+<!-- ===================== §6 Lists of data ===================== -->
+<section class="prose">
+  <h2><span class="n">6</span>Vectors are lists, so lists are vectors</h2>
+  <p>Nothing about the list form needs exactly two numbers, or arrows at all. A grocery order for two days is a list, and the total order is the sum, entry by entry:</p>
+  <table class="lists">
+    <tr><th></th><th>apples</th><th>eggs</th><th>milk (L)</th></tr>
+    <tr><td>Monday</td><td class="m">4</td><td class="m">6</td><td class="m">1</td></tr>
+    <tr><td>Tuesday</td><td class="m">2</td><td class="m">12</td><td class="m">2</td></tr>
+    <tr><td><b>Total</b></td><td class="m"><b>6</b></td><td class="m"><b>18</b></td><td class="m"><b>3</b></td></tr>
+  </table>
+  <p>That’s [4, 6, 1] + [2, 12, 2] = [6, 18, 3]: vector addition. Ordering the same thing every day for a week is 7 · [4, 6, 1]: scaling. A list of three numbers is a vector in 3 <b>dimensions</b>; a list of 100 numbers is a vector in 100 dimensions. We can’t draw a 100-dimensional arrow, but the arithmetic is exactly the same.</p>
+  <p>Every color on your screen is a vector too: [red, green, blue], each from 0 to 255. Adding two colors of light, or averaging two paints, is vector arithmetic.</p>
+</section>
+<section class="wide">
+  <div class="card" id="rgb">
+    <div class="card-h"><span class="tag">Explore</span><h3>Colors are vectors</h3>
+      <span class="sub">Type two colors as [red, green, blue] lists (0 to 255). The sum adds light (capped at 255, the brightest a screen can show); the average ½(<b>c₁</b> + <b>c₂</b>) is the blend halfway between.</span></div>
+    <div class="row" id="cPresets"></div>
+    <div class="inputs">
+      <div class="grp"><label class="field sm"><span><b>c₁</b> red</span><input id="c1r" type="text" inputmode="numeric" autocomplete="off"></label><label class="field sm"><span>green</span><input id="c1g" type="text" inputmode="numeric" autocomplete="off"></label><label class="field sm"><span>blue</span><input id="c1b" type="text" inputmode="numeric" autocomplete="off"></label></div>
+      <div class="grp"><label class="field sm"><span><b>c₂</b> red</span><input id="c2r" type="text" inputmode="numeric" autocomplete="off"></label><label class="field sm"><span>green</span><input id="c2g" type="text" inputmode="numeric" autocomplete="off"></label><label class="field sm"><span>blue</span><input id="c2b" type="text" inputmode="numeric" autocomplete="off"></label></div>
+    </div>
+    <div class="err" id="cErr"></div>
+    <svg class="nl" id="cSvg" viewBox="0 0 1000 330" role="img" aria-label="Color vectors"></svg>
+    <div class="readout" id="cOut"></div>
+  </div>
+</section>
+
+<!-- ===================== §7 In symbols ===================== -->
+<section class="prose">
+  <h2><span class="n">7</span>Now, in symbols</h2>
+  <p>Vectors are usually written in bold (<b>v</b>) or with an arrow (\(\vec v\)). With <b>u</b> = [\(u_1, u_2\)] and <b>v</b> = [\(v_1, v_2\)] and a scalar \(k\):</p>
+  <div class="math">\[ \mathbf{u} + \mathbf{v} = \begin{bmatrix} u_1 + v_1 \\ u_2 + v_2 \end{bmatrix}, \qquad k\,\mathbf{v} = \begin{bmatrix} k\,v_1 \\ k\,v_2 \end{bmatrix}, \qquad \mathbf{b} - \mathbf{a} = \begin{bmatrix} b_1 - a_1 \\ b_2 - a_2 \end{bmatrix} \]<div class="cap">Everything happens entry by entry. Subtraction is adding \((-1)\,\mathbf{a}\).</div></div>
+  <div class="math">\[ \lVert \mathbf{v} \rVert = \sqrt{v_1^2 + v_2^2}, \qquad \lVert k\,\mathbf{v} \rVert = |k|\,\lVert \mathbf{v} \rVert \]<div class="cap">Scaling by \(k\) multiplies the length by \(|k|\): \(-2\mathbf{v}\) is twice as long as \(\mathbf{v}\), just pointing the other way.</div></div>
+  <div class="math">\[ \mathbf{v} = \begin{bmatrix} v_1 \\ v_2 \\ \vdots \\ v_n \end{bmatrix} \in \mathbb{R}^n, \qquad \lVert \mathbf{v} \rVert = \sqrt{v_1^2 + v_2^2 + \cdots + v_n^2} \]<div class="cap">A list of \(n\) real numbers is a vector in \(\mathbb{R}^n\), “n-dimensional space.” The same rules hold in any dimension.</div></div>
+  <p>In code, a vector is simply an array, and libraries like NumPy do the entry-by-entry arithmetic for you:</p>
+  <pre class="code"><code>import numpy as np                  # NumPy: Python's library for arrays of numbers
+u = np.array([3, 1])                # the vector u = [3, 1]
+v = np.array([1, 2])                # the vector v = [1, 2]
+print(u + v)                        # tip to tail, entry by entry  -> [4 3]
+print(2 * v)                        # scale every entry by 2       -> [2 4]
+print(np.linalg.norm([3, 4]))       # length sqrt(3^2 + 4^2)       -> 5.0
+day = np.array([4, 6, 1])           # apples, eggs, milk: a 3-D vector
+print(7 * day)                      # a week of the same order     -> [28 42  7]</code></pre>
+</section>
+
+<!-- ===================== §8 Where this goes ===================== -->
+<section class="prose">
+  <h2><span class="n">8</span>Where this goes</h2>
+  <ul class="goes">
+    <li><b>Next (7.B.2):</b> combine scaling and adding, like 2<b>u</b> + 3<b>v</b>, and ask which arrows you can reach. That’s a linear combination, and the set you can reach is the span.</li>
+    <li><b>Later in this book:</b> the dot product (7.B.3) measures how much two vectors point the same way; matrices (7.B.4) move every vector at once; and in calculus (Chapter 8) the gradient is a vector pointing uphill.</li>
+    <li><b>In the world:</b> velocities and forces in physics and games, positions in GPS and maps, colors on screens, and in data science every row of a spreadsheet, every image and every word in a language model is stored as a long list of numbers: a vector.</li>
+  </ul>
+</section>
+
+<!-- ===================== §9 Vocabulary ===================== -->
+<section class="prose">
+  <h2><span class="n">9</span>Words to know</h2>
+  <div class="vocab">
+    <div class="term"><b>Vector</b>A quantity with both a size and a direction: an arrow, or equivalently a list of numbers like [3, 2].</div>
+    <div class="term"><b>Component</b>One number in a vector’s list: how far it moves along one direction.</div>
+    <div class="term"><b>Column vector</b>A vector written as its components stacked in a column.</div>
+    <div class="term"><b>Tail / tip</b>Where an arrow starts and where it ends.</div>
+    <div class="term"><b>Tip to tail</b>Adding vectors by starting the second where the first ends.</div>
+    <div class="term"><b>Scalar</b>A plain number used to multiply (scale) a vector.</div>
+    <div class="term"><b>Magnitude (length)</b>How long the arrow is: ‖<b>v</b>‖ = √(<i>a</i>² + <i>b</i>²).</div>
+    <div class="term"><b>Zero vector</b>[0, 0]: the move that goes nowhere. Adding it changes nothing.</div>
+    <div class="term"><b>Dimension</b>How many components a vector has: 2 for arrows in the plane, 3 for space, any <i>n</i> for data.</div>
+  </div>
+</section>
+
+<!-- ===================== Quiz ===================== -->
+<section class="prose"><h2><span class="n">10</span>Check yourself</h2>
+  <p>Two kinds of questions: compute a sum, difference or scaled vector, and find a vector’s length. Answers like 1/2 and √2 (or sqrt(2)) are fine.</p>
+</section>
+<section class="wide">
+  <div class="card" id="quiz">
+    <div class="card-h"><span class="tag">Quiz</span><h3 id="qTitle"></h3><span class="score" id="score">Score: 0 / 0</span></div>
+    <div class="qtext" id="qText"></div>
+    <div class="inputs">
+      <label class="field fx" id="qF1"><span id="qL1">First component</span><input id="q1" type="text" inputmode="decimal" autocomplete="off"></label>
+      <label class="field fy" id="qF2"><span>Second component</span><input id="q2" type="text" inputmode="decimal" autocomplete="off"></label>
+      <div class="row" style="margin:0">
+        <button class="primary" id="qCheck">Check</button>
+        <button id="qShow">Show answer</button>
+        <button id="qNew">New question</button>
+      </div>
+    </div>
+    <div class="err" id="qErr"></div>
+    <div class="feedback" id="qFb" aria-live="polite"></div>
+    <svg class="nl" id="qSvg" viewBox="0 0 1000 340" role="img" aria-label="Quiz picture"></svg>
+  </div>
+</section>
+
+<!-- ===================== Pager (filled in by the shared navigation) ===================== -->
+<nav class="wide">
+  <div class="pager"></div>
+  <div class="meta">7.B.1 · Prerequisites: 1.B.1, 1.B.2, the Pythagorean theorem · Leads to: 7.B.2 (linear combinations), 7.B.3 (dot product), 7.B.4 (matrices)</div>
+</nav>
+</main>
+
+<script>
+/* =====================================================================
+   1. HELPERS
+   ===================================================================== */
+const NS = 'http://www.w3.org/2000/svg';
+const $ = id => document.getElementById(id);
+function mk(tag, attrs, parent){                           // create an SVG element with attributes
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function txt(parent, x, y, s, cls, extra){                 // create an SVG text element
+  extra = Object.assign({}, extra || {});
+  // a CSS class's text-anchor beats the attribute, so move a requested anchor into the style
+  if (extra['text-anchor']){ extra.style = (extra.style ? extra.style + ';' : '') + 'text-anchor:' + extra['text-anchor']; delete extra['text-anchor']; }
+  const t = mk('text', Object.assign({ x, y, class: cls || '' }, extra), parent);
+  t.textContent = s;
+  return t;
+}
+function num(x, d){ if (d === undefined) d = 2; const r = Math.round(x * Math.pow(10, d)) / Math.pow(10, d); return r === 0 ? '0' : (r < 0 ? '−' : '') + String(Math.abs(r)); }
+// Parse typed input: integers, decimals, a leading minus, fractions a/b, and square roots like √2, sqrt(2), 2√3
+function parseNum(s){
+  s = String(s).trim().replace(/[−–]/g, '-').replace(/\s+/g, '');
+  if (/^-?\d+(\.\d+)?$|^-?\.\d+$/.test(s)) return parseFloat(s);
+  let m = s.match(/^(-?\d+)\/(\d+)$/);
+  if (m && +m[2] !== 0) return +m[1] / +m[2];
+  m = s.match(/^(-?)(\d*\.?\d*)\*?(?:√|sqrt)\(?(\d+(?:\.\d+)?)\)?$/);
+  if (m){ const c = m[2] === '' ? 1 : parseFloat(m[2]); if (!isNaN(c)) return (m[1] ? -1 : 1) * c * Math.sqrt(+m[3]); }
+  return NaN;
+}
+const ease = t => t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+const clamp01 = t => Math.max(0, Math.min(1, t));
+const pn = x => x < 0 ? `(${num(x)})` : num(x);   // a number, in parentheses when negative (for sums like 4 + (−2))
+const colHTML = (a, b, c1, c2) => `<span class="col"><span style="color:${c1 || 'inherit'}">${num(a)}</span><span style="color:${c2 || 'inherit'}">${num(b)}</span></span>`;
+const C = { x: 'var(--cx)', y: 'var(--cy)', v: 'var(--cv)', w: 'var(--cw)', r: 'var(--cr)' };
+// Read a list of text inputs as numbers; returns null (and shows the error) if any is empty or invalid
+function readAll(ids, errId, msg){
+  const out = ids.map(id => parseNum($(id).value));
+  if (ids.some(id => $(id).value.trim() === '') || out.some(isNaN)){ $(errId).textContent = msg || 'Fill in every box with a number.'; return null; }
+  $(errId).textContent = ''; return out;
+}
+
+const svgCss = document.createElement('style');
+svgCss.textContent = `
+  .grid{stroke:var(--line);stroke-width:1} .axis{stroke:var(--ink);stroke-width:1.6;opacity:.75}
+  .tl{fill:var(--muted);font:500 11px var(--mono)}
+  .lab{font:700 15px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:5px}
+  .labS{font:600 12.5px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+  .cap{fill:var(--muted);font:500 12px var(--sans)}
+  .bt{fill:var(--ink);font:600 13px var(--sans)}
+  .bn{fill:var(--ink);font:600 12px var(--mono)}
+`;
+document.head.appendChild(svgCss);
+
+/* =====================================================================
+   2. THE PLANE: grid, axes, arrows and labels (shared by every card)
+   ===================================================================== */
+// box = {x0, x1, y0, y1} in math units (what must be visible). Returns P with X(), Y(), u (pixels per unit), g.
+function plane(svg, W, H, box, maxU){
+  svg.innerHTML = ''; const g = mk('g', {}, svg);
+  const pad = 1;
+  const u = Math.min(maxU || 44, (W - 40) / (box.x1 - box.x0 + 2 * pad), (H - 30) / (box.y1 - box.y0 + 2 * pad));
+  const cx = W / 2 - u * (box.x0 + box.x1) / 2, cy = H / 2 + u * (box.y0 + box.y1) / 2;   // pixel position of the origin
+  const X = x => cx + x * u, Y = y => cy - y * u;
+  const xa = Math.ceil((0 - cx) / u), xb = Math.floor((W - cx) / u), ya = Math.ceil((cy - H) / u), yb = Math.floor(cy / u);
+  for (let k = xa; k <= xb; k++) mk('line', { x1: X(k), y1: 0, x2: X(k), y2: H, class: 'grid' }, g);
+  for (let k = ya; k <= yb; k++) mk('line', { x1: 0, y1: Y(k), x2: W, y2: Y(k), class: 'grid' }, g);
+  mk('line', { x1: 0, y1: Y(0), x2: W, y2: Y(0), class: 'axis' }, g);
+  mk('line', { x1: X(0), y1: 0, x2: X(0), y2: H, class: 'axis' }, g);
+  const step = u >= 30 ? 1 : u >= 15 ? 2 : 5;               // thin out tick labels when the grid is tight
+  for (let k = xa; k <= xb; k++) if (k && k % step === 0 && X(k) > 12 && X(k) < W - 12) txt(g, X(k), Y(0) + 15, k < 0 ? '−' + (-k) : String(k), 'tl', { 'text-anchor': 'middle' });
+  for (let k = ya; k <= yb; k++) if (k && k % step === 0 && Y(k) > 10 && Y(k) < H - 6) txt(g, X(0) - 6, Y(k) + 4, k < 0 ? '−' + (-k) : String(k), 'tl', { 'text-anchor': 'end' });
+  return { g, X, Y, u, W, H, inv: (px, py) => [(px - cx) / u, (cy - py) / u] };
+}
+// Bounding box of a set of points, always including the origin
+function boxOf(pts){ const xs = pts.map(p => p[0]).concat(0), ys = pts.map(p => p[1]).concat(0); return { x0: Math.min(...xs), x1: Math.max(...xs), y0: Math.min(...ys), y1: Math.max(...ys) }; }
+// An arrow from p to q (math coords), with a drawn arrowhead. o = {w, dash, op}
+function arrow(P, p, q, col, o){
+  o = o || {};
+  const x1 = P.X(p[0]), y1 = P.Y(p[1]), x2 = P.X(q[0]), y2 = P.Y(q[1]), L = Math.hypot(x2 - x1, y2 - y1), w = o.w || 3;
+  const st = `stroke:${col};stroke-width:${w};opacity:${o.op === undefined ? 1 : o.op}${o.dash ? ';stroke-dasharray:' + o.dash : ''}`;
+  if (L < 2){ mk('circle', { cx: x1, cy: y1, r: 5, style: `fill:${col};opacity:${o.op === undefined ? 1 : o.op}` }, P.g); return; }
+  const ux = (x2 - x1) / L, uy = (y2 - y1) / L, h = Math.min(13 + w, L * 0.45);
+  mk('line', { x1, y1, x2: x2 - ux * h * 0.8, y2: y2 - uy * h * 0.8, style: st + ';stroke-linecap:round' }, P.g);
+  mk('polygon', { points: `${x2},${y2} ${x2 - ux * h - uy * h * .45},${y2 - uy * h + ux * h * .45} ${x2 - ux * h + uy * h * .45},${y2 - uy * h - ux * h * .45}`, style: `fill:${col};opacity:${o.op === undefined ? 1 : o.op}` }, P.g);
+}
+// A label beside the middle of the segment p→q, on side s (+1 = left of the direction of travel, −1 = right)
+function sideLabel(P, p, q, s, str, col, cls, t, off){
+  t = t === undefined ? .5 : t; const axisRule = !off; off = off || 18;   // a custom offset (the walk legs) skips the axis rule
+  const x1 = P.X(p[0]), y1 = P.Y(p[1]), x2 = P.X(q[0]), y2 = P.Y(q[1]), L = Math.hypot(x2 - x1, y2 - y1) || 1;
+  let nx = (y2 - y1) / L * s, ny = -(x2 - x1) / L * s;       // screen-space normal (left of travel when s = +1)
+  if (axisRule && p[1] === 0 && q[1] === 0 && ny > 0){ nx = -nx; ny = -ny; }   // on the x-axis: keep the label above (tick labels are below)
+  if (axisRule && p[0] === 0 && q[0] === 0 && nx < 0){ nx = -nx; ny = -ny; }   // on the y-axis: keep the label right (tick labels are left)
+  const mx = x1 + (x2 - x1) * t + nx * off, my = y1 + (y2 - y1) * t + ny * off + 5;
+  txt(P.g, mx, my, str, cls || 'lab', { 'text-anchor': 'middle', style: `fill:${col}` });
+}
+// Unit hops along an axis-parallel leg from p to q (one small arc per unit step), bulging toward side s
+function hops(P, p, q, col, s, op){
+  const dx = q[0] - p[0], dy = q[1] - p[1], len = Math.abs(dx) + Math.abs(dy);
+  if (len < 1e-9) return;
+  const n = Math.ceil(len - 1e-9), ux = dx / len, uy = dy / len;
+  for (let k = 0; k < n; k++){
+    const a = k, b = Math.min(len, k + 1), pa = [p[0] + ux * a, p[1] + uy * a], pb = [p[0] + ux * b, p[1] + uy * b];
+    const xa = P.X(pa[0]), ya = P.Y(pa[1]), xb = P.X(pb[0]), yb = P.Y(pb[1]), L = Math.hypot(xb - xa, yb - ya);
+    const nx = (yb - ya) / L * s, ny = -(xb - xa) / L * s, hgt = Math.min(14, L * 0.35);
+    mk('path', { d: `M${xa},${ya} Q${(xa + xb) / 2 + nx * hgt * 2},${(ya + yb) / 2 + ny * hgt * 2} ${xb},${yb}`, style: `fill:none;stroke:${col};stroke-width:1.8;opacity:${op === undefined ? .9 : op}` }, P.g);
+  }
+}
+const cross = (p, q) => p[0] * q[1] - p[1] * q[0];
+const sgn = x => x < 0 ? -1 : 1;
+
+/* =====================================================================
+   3. ARROW AND LIST (main explorer, fixed grid, draggable)
+   ===================================================================== */
+const MP = [
+  { n: '[3, 2]', v: [3, 2], d: 'The treasure map: 3 east, 2 north.' },
+  { n: '[−4, 3]', v: [-4, 3], d: 'A negative first component means west: 4 west, 3 north.' },
+  { n: '[5, 0]', v: [5, 0], d: 'Straight east: the second component is 0, so no north–south move.' },
+  { n: '[0, −3]', v: [0, -3], d: 'Straight south: 0 east, 3 south.' },
+  { n: '[−3, −2]', v: [-3, -2], d: 'Exactly the opposite move to [3, 2]: same length, reversed.' },
+  { n: '[2.5, 1.5]', v: [2.5, 1.5], d: 'Components don’t have to be whole numbers.' },
+  { n: '[0, 0]', v: [0, 0], d: 'The zero vector: the move that goes nowhere.' },
+];
+const mm = { a: 3, b: 2, t: 1, raf: 0, copies: false, drag: false };
+MP.forEach((p, i) => { const b = document.createElement('button'); b.className = 'preset'; b.textContent = p.n; b.onclick = () => { setMain(p.v[0], p.v[1]); markM(i); playM(); }; $('mPresets').appendChild(b); });
+function markM(i){ [...$('mPresets').children].forEach((b, j) => b.classList.toggle('on', j === i)); $('mDesc').textContent = i === null ? 'Custom vector.' : MP[i].d; }
+function setMain(a, b){ mm.a = a; mm.b = b; $('mA').value = num(a); $('mB').value = num(b); $('mErr').textContent = ''; }
+const MBOX = { x0: -10, x1: 10, y0: -4.6, y1: 4.6 };
+function drawM(){
+  const P = plane($('mSvg'), 1000, 450, MBOX, 46), { a, b } = mm, t = mm.t;
+  const p1 = clamp01(t / .42), p2 = clamp01((t - .42) / .42), p3 = clamp01((t - .84) / .16);
+  const sB = b >= 0 ? -1 : 1, sA = a >= 0 ? 1 : -1;          // legs bulge away from the triangle's inside
+  // copies of the same vector starting elsewhere
+  if (mm.copies && (a || b)){
+    // candidate starting points; keep copies that fit on the grid and stay clear of the main triangle
+    const bx = [Math.min(0, a) - 1, Math.max(0, a) + 1, Math.min(0, b) - 1, Math.max(0, b) + 1];
+    const clear = s => { const x0 = Math.min(s[0], s[0] + a), x1 = Math.max(s[0], s[0] + a), y0 = Math.min(s[1], s[1] + b), y1 = Math.max(s[1], s[1] + b); return x1 < bx[0] || x0 > bx[1] || y1 < bx[2] || y0 > bx[3]; };
+    const starts = [[-8, -3], [-7, 1], [4, -4], [5, 1], [-8, 3], [5, -1], [-3, -4], [2, 3], [-5, -2], [6, 3]].filter(s => Math.abs(s[0] + a) <= 9.5 && Math.abs(s[0]) <= 9.5 && Math.abs(s[1] + b) <= 4.4 && Math.abs(s[1]) <= 4.4 && clear(s)).slice(0, 3);
+    starts.forEach(s => { arrow(P, s, [s[0] + a, s[1] + b], C.v, { w: 2.5, op: .4 }); sideLabel(P, s, [s[0] + a, s[1] + b], sgn(a * b || 1), 'v', C.v, 'labS'); });
+  }
+  // the walk: a along x (green), then b along y (orange), as hops on the grid
+  mk('line', { x1: P.X(0), y1: P.Y(0), x2: P.X(a * p1), y2: P.Y(0), style: `stroke:${C.x};stroke-width:3.5;stroke-linecap:round` }, P.g);
+  hops(P, [0, 0], [a * p1, 0], C.x, sB * sgn(a || 1));
+  if (p1 >= 1 && a) sideLabel(P, [0, 0], [a, 0], sB * sgn(a), `a = ${num(a)}`, C.x, 'lab', .5, 40);
+  if (p2 > 0){
+    mk('line', { x1: P.X(a), y1: P.Y(0), x2: P.X(a), y2: P.Y(b * p2), style: `stroke:${C.y};stroke-width:3.5;stroke-linecap:round` }, P.g);
+    hops(P, [a, 0], [a, b * p2], C.y, -sA * sgn(b || 1));
+    if (p2 >= 1 && b) sideLabel(P, [a, 0], [a, b], -sA * sgn(b), `b = ${num(b)}`, C.y, 'lab', .5, 52);
+  }
+  if (t < .84){ const w = p2 > 0 ? [a, b * p2] : [a * p1, 0]; mk('circle', { cx: P.X(w[0]), cy: P.Y(w[1]), r: 7, style: `fill:var(--ink)` }, P.g); }
+  // the vector itself
+  if (p3 > 0){
+    arrow(P, [0, 0], [a, b], C.v, { w: 4, op: p3 });
+    if (a || b){
+      sideLabel(P, [0, 0], [a, b], sgn(a * b || 1) * (a < 0 && b === 0 ? -1 : 1), 'v', C.v, 'lab', .45);
+      txt(P.g, P.X(a) + (a >= 0 ? 12 : -12), P.Y(b) + (b >= 0 ? -10 : 22), `(${num(a)}, ${num(b)})`, 'labS', { 'text-anchor': a >= 0 ? 'start' : 'end', style: `fill:${C.v};opacity:${p3}` });
+    }
+  }
+  mk('circle', { cx: P.X(0), cy: P.Y(0), r: 4.5, style: 'fill:var(--ink)' }, P.g);
+  mm.P = P;
+  // the list form and the readout
+  $('mEq').innerHTML = `<b class="kv">v</b> = ${colHTML(a, b, C.x, C.y)} = [<span class="kx">${num(a)}</span>, <span class="ky">${num(b)}</span>] &nbsp;&nbsp;‖<b class="kv">v</b>‖ ≈ ${num(Math.hypot(a, b), 3)}`;
+  const dir = (x, pos, neg) => x === 0 ? '' : `${num(Math.abs(x))} step${Math.abs(x) === 1 ? '' : 's'} ${x > 0 ? pos : neg}`;
+  let h;
+  if (!a && !b) h = 'The <b>zero vector</b> [0, 0]: no steps at all. Its arrow has no length and no direction; it’s drawn as a dot.';
+  else h = `<b class="kv">v</b> = [${num(a)}, ${num(b)}] means <span class="kx">${dir(a, 'right (east)', 'left (west)') || '0 steps along x'}</span>, then <span class="ky">${dir(b, 'up (north)', 'down (south)') || '0 steps along y'}</span>. Starting at the origin, the tip lands on the point (${num(a)}, ${num(b)}).` + (mm.copies ? ' The faint copies are the <b>same vector</b>: same move, different starting point.' : '');
+  $('mOut').innerHTML = h;
+}
+function readM(){
+  const r = readAll(['mA', 'mB'], 'mErr'); if (!r) return false;
+  if (Math.abs(r[0]) > 9 || Math.abs(r[1]) > 4){ $('mErr').textContent = 'Keep a between −9 and 9 and b between −4 and 4 so the arrow fits on the grid.'; return false; }
+  mm.a = r[0]; mm.b = r[1]; return true;
+}
+function playM(){
+  if (!readM()) return; cancelAnimationFrame(mm.raf); mm.t = 0; let last = performance.now();
+  const dur = 900 + 260 * (Math.abs(mm.a) + Math.abs(mm.b));
+  const step = now => { mm.t = Math.min(1, mm.t + (now - last) / dur); last = now; drawM(); if (mm.t < 1) mm.raf = requestAnimationFrame(step); };
+  mm.raf = requestAnimationFrame(step);
+}
+$('mPlay').onclick = playM;
+$('mReset').onclick = () => { cancelAnimationFrame(mm.raf); mm.t = 0; drawM(); };
+$('mCopies').onclick = () => { mm.copies = !mm.copies; $('mCopies').textContent = mm.copies ? 'Hide the copies' : 'Draw it elsewhere'; drawM(); };
+['mA', 'mB'].forEach(id => {
+  $(id).addEventListener('input', () => { markM(null); cancelAnimationFrame(mm.raf); if (readM()){ mm.t = 1; drawM(); } });
+  $(id).addEventListener('focus', e => e.target.select());
+  $(id).addEventListener('keydown', e => { if (e.key === 'Enter') playM(); });
+});
+// Dragging the tip: convert the pointer to grid coordinates and snap to halves
+function dragTo(ev){
+  const svg = $('mSvg'), pt = svg.createSVGPoint(); pt.x = ev.clientX; pt.y = ev.clientY;
+  const p = pt.matrixTransform(svg.getScreenCTM().inverse()), [x, y] = mm.P.inv(p.x, p.y);
+  const a = Math.max(-9, Math.min(9, Math.round(x * 2) / 2)), b = Math.max(-4, Math.min(4, Math.round(y * 2) / 2));
+  if (a !== mm.a || b !== mm.b || mm.t < 1){ cancelAnimationFrame(mm.raf); setMain(a, b); markM(null); mm.t = 1; drawM(); }
+}
+$('mSvg').addEventListener('pointerdown', ev => { mm.drag = true; $('mSvg').setPointerCapture(ev.pointerId); dragTo(ev); });
+$('mSvg').addEventListener('pointermove', ev => { if (mm.drag) dragTo(ev); });
+$('mSvg').addEventListener('pointerup', () => { mm.drag = false; });
+
+/* =====================================================================
+   4. TIP TO TAIL (adding)
+   ===================================================================== */
+const AP = [
+  { n: 'Map', u: [3, 1], v: [1, 2], d: 'Walk 3 east and 1 north, then 1 east and 2 north. Altogether: 4 east, 3 north.' },
+  { n: 'Boat + current', u: [4, 0], v: [0, -2], d: 'A boat aims east at 4 km/h; the river current pushes it south at 2 km/h. It actually travels along the sum.' },
+  { n: 'Two pulls', u: [3, 2], v: [3, -2], d: 'Two people pull a sled, one angled left, one right. The north–south parts cancel; the sled goes straight ahead.' },
+  { n: 'Cancel out', u: [4, 1], v: [-4, -1], d: 'Equal and opposite: the sum is the zero vector. A tug of war with nobody winning.' },
+  { n: 'Swap the order', u: [1, 2], v: [3, 1], d: 'Same two moves in the other order: the sum is the same (the other side of the parallelogram).' },
+];
+const ad = { u: [3, 1], v: [1, 2], t: 1, raf: 0 };
+AP.forEach((p, i) => { const b = document.createElement('button'); b.className = 'preset'; b.textContent = p.n; b.onclick = () => { ad.u = p.u.slice(); ad.v = p.v.slice(); fillPair(['aU1', 'aU2', 'aV1', 'aV2'], ad.u.concat(ad.v)); markP('aPresets', 'aDesc', AP, i); playA(); }; $('aPresets').appendChild(b); });
+function fillPair(ids, vals){ ids.forEach((id, k) => { $(id).value = num(vals[k]); }); }
+function markP(rowId, descId, list, i){ [...$(rowId).children].forEach((b, j) => b.classList.toggle('on', j === i)); $(descId).textContent = i === null ? 'Custom vectors.' : list[i].d; }
+function drawA(){
+  const { u, v } = ad, s = [u[0] + v[0], u[1] + v[1]], e = ease(ad.t);
+  const P = plane($('aSvg'), 1000, 400, boxOf([u, v, s]), 44);
+  const off = [u[0] * e, u[1] * e];                         // where v's tail is right now (slides from 0 to the tip of u)
+  arrow(P, [0, 0], v, C.w, { w: 2.5, op: .3, dash: '7 5' });  // v's starting place (faint), and later one side of the parallelogram
+  if (ad.t >= 1){ arrow(P, v, s, C.v, { w: 2.5, op: .3, dash: '7 5' }); }
+  arrow(P, [0, 0], u, C.v, { w: 4 });
+  const su = sgn(cross(u, v) || 1);
+  sideLabel(P, [0, 0], u, -su, 'u', C.v);
+  arrow(P, off, [off[0] + v[0], off[1] + v[1]], C.w, { w: 4 });
+  sideLabel(P, off, [off[0] + v[0], off[1] + v[1]], -su, 'v', C.w);
+  if (ad.t >= 1){
+    arrow(P, [0, 0], s, C.r, { w: 4.5 });
+    if (s[0] || s[1]) sideLabel(P, [0, 0], s, su, 'u + v', C.r, 'lab', .5);
+    else txt(P.g, P.X(0) + 12, P.Y(0) - 12, 'u + v = 0', 'lab', { style: `fill:${C.r}` });
+  }
+  mk('circle', { cx: P.X(0), cy: P.Y(0), r: 4.5, style: 'fill:var(--ink)' }, P.g);
+  $('aEq').innerHTML = `<b class="kv">u</b> + <b class="kw">v</b> = ${colHTML(u[0], u[1], C.v, C.v)} + ${colHTML(v[0], v[1], C.w, C.w)} = <span class="col"><span>${num(u[0])} + ${pn(v[0])}</span><span>${num(u[1])} + ${pn(v[1])}</span></span> = ${ad.t >= 1 ? colHTML(s[0], s[1], C.r, C.r) : '?'}`;
+  $('aOut').innerHTML = ad.t < 1 ? 'Sliding <b class="kw">v</b> so its tail sits on the tip of <b class="kv">u</b>…' :
+    (s[0] || s[1] ? `Walk <b class="kv">u</b>, then <b class="kw">v</b>: you finish at (${num(s[0])}, ${num(s[1])}), so <b class="kr">u + v</b> = [${num(s[0])}, ${num(s[1])}]. Entry by entry: ${num(u[0])} + ${pn(v[0])} = ${num(s[0])} and ${num(u[1])} + ${pn(v[1])} = ${num(s[1])}. The faint path (<b class="kw">v</b> first, then <b class="kv">u</b>) ends at the same spot, so the order doesn’t matter. Length of the sum ≈ ${num(Math.hypot(s[0], s[1]), 2)}.`
+      : `The second move undoes the first: <b class="kr">u + v</b> = [0, 0], the zero vector. You end where you started.`);
+}
+function readA(){
+  const r = readAll(['aU1', 'aU2', 'aV1', 'aV2'], 'aErr'); if (!r) return false;
+  if (r.some(x => Math.abs(x) > 8)){ $('aErr').textContent = 'Keep every component between −8 and 8.'; return false; }
+  ad.u = [r[0], r[1]]; ad.v = [r[2], r[3]]; return true;
+}
+function playA(){ if (!readA()) return; cancelAnimationFrame(ad.raf); ad.t = 0; let last = performance.now();
+  const step = now => { ad.t = Math.min(1, ad.t + (now - last) / 1500); last = now; drawA(); if (ad.t < 1) ad.raf = requestAnimationFrame(step); };
+  ad.raf = requestAnimationFrame(step); }
+$('aPlay').onclick = playA;
+['aU1', 'aU2', 'aV1', 'aV2'].forEach(id => { $(id).addEventListener('input', () => { markP('aPresets', 'aDesc', AP, null); cancelAnimationFrame(ad.raf); if (readA()){ ad.t = 1; drawA(); } }); $(id).addEventListener('focus', e => e.target.select()); $(id).addEventListener('keydown', e => { if (e.key === 'Enter') playA(); }); });
+
+/* =====================================================================
+   5. SCALING
+   ===================================================================== */
+const SP = [
+  { n: '× 2', v: [3, 1], k: 2, d: 'The wind blows twice as hard: same direction, twice as long. Two copies of v end to end.' },
+  { n: '× 3', v: [2, 1], k: 3, d: 'Three copies of v, laid tip to tail.' },
+  { n: '× ½', v: [4, 2], k: 0.5, d: 'Half speed: half as long, same direction.' },
+  { n: '× (−1)', v: [3, 2], k: -1, d: 'Turn around: same length, opposite direction.' },
+  { n: '× (−2)', v: [2, 1], k: -2, d: 'Flip and double: two copies pointing backwards.' },
+  { n: '× 0', v: [3, 2], k: 0, d: 'Times zero: everything collapses to the zero vector.' },
+];
+const sc = { v: [3, 1], k: 2, t: 1, raf: 0 };
+SP.forEach((p, i) => { const b = document.createElement('button'); b.className = 'preset'; b.textContent = p.n; b.onclick = () => { sc.v = p.v.slice(); sc.k = p.k; fillPair(['sV1', 'sV2'], sc.v); $('sK').value = p.k === 0.5 ? '1/2' : num(p.k); markP('sPresets', 'sDesc', SP, i); playS(); }; $('sPresets').appendChild(b); });
+function drawS(){
+  const { v, k } = sc, kk = 1 + (k - 1) * ease(sc.t), w = [kk * v[0], kk * v[1]], kv = [k * v[0], k * v[1]];
+  const P = plane($('sSvg'), 1000, 380, boxOf([v, kv]), 44);
+  arrow(P, [0, 0], v, C.v, { w: 3, op: .45, dash: '7 5' });
+  sideLabel(P, [0, 0], v, 1, 'v', C.v, 'lab', .5);
+  // copies end to end for a whole-number k (after the stretch finishes)
+  if (sc.t >= 1 && Number.isInteger(k) && Math.abs(k) >= 2 && Math.abs(k) <= 6){
+    const s = sgn(k);
+    for (let i = 0; i < Math.abs(k); i++){
+      const p = [s * i * v[0], s * i * v[1]], q = [s * (i + 1) * v[0], s * (i + 1) * v[1]];
+      mk('line', { x1: P.X(p[0]), y1: P.Y(p[1]), x2: P.X(q[0]), y2: P.Y(q[1]), style: `stroke:${C.r};stroke-width:10;opacity:${i % 2 ? .18 : .32};stroke-linecap:butt` }, P.g);
+      sideLabel(P, p, q, -1, String(i + 1), C.r, 'labS', .5, 22);
+    }
+  }
+  arrow(P, [0, 0], w, C.r, { w: 4 });
+  if (Math.abs(kk) > 0.05) sideLabel(P, [0, 0], w, 1, `${num(kk, 2)}v`, C.r, 'lab', .75);
+  mk('circle', { cx: P.X(0), cy: P.Y(0), r: 4.5, style: 'fill:var(--ink)' }, P.g);
+  $('sEq').innerHTML = `<i>k</i> <b class="kv">v</b> = ${num(k)} · ${colHTML(v[0], v[1], C.v, C.v)} = <span class="col"><span>${num(k)} · ${pn(v[0])}</span><span>${num(k)} · ${pn(v[1])}</span></span> = ${sc.t >= 1 ? colHTML(kv[0], kv[1], C.r, C.r) : '?'}`;
+  if (sc.t < 1){ $('sOut').innerHTML = `Stretching… ${num(kk, 2)} · <b class="kv">v</b>`; return; }
+  const L = Math.hypot(v[0], v[1]);
+  let h = `${num(k)} · [${num(v[0])}, ${num(v[1])}] = <b class="kr">[${num(kv[0])}, ${num(kv[1])}]</b>: every component multiplied by ${num(k)}. `;
+  if (k === 0) h += 'Everything collapses to the zero vector.';
+  else h += `Length: ${num(L, 2)} → ${num(Math.abs(k) * L, 2)}, which is |${num(k)}| = ${num(Math.abs(k))} times as long. ` + (k < 0 ? 'The minus sign points it the <b>opposite way</b>.' : Math.abs(k) < 1 ? 'Shorter, same direction.' : 'Same direction.');
+  $('sOut').innerHTML = h;
+}
+function readS(){
+  const r = readAll(['sV1', 'sV2', 'sK'], 'sErr'); if (!r) return false;
+  if (Math.abs(r[0]) > 6 || Math.abs(r[1]) > 6 || Math.abs(r[2]) > 6){ $('sErr').textContent = 'Keep the components and k between −6 and 6.'; return false; }
+  sc.v = [r[0], r[1]]; sc.k = r[2]; return true;
+}
+function playS(){ if (!readS()) return; cancelAnimationFrame(sc.raf); sc.t = 0; let last = performance.now();
+  const step = now => { sc.t = Math.min(1, sc.t + (now - last) / 1600); last = now; drawS(); if (sc.t < 1) sc.raf = requestAnimationFrame(step); };
+  sc.raf = requestAnimationFrame(step); }
+$('sPlay').onclick = playS;
+['sV1', 'sV2', 'sK'].forEach(id => { $(id).addEventListener('input', () => { markP('sPresets', 'sDesc', SP, null); cancelAnimationFrame(sc.raf); if (readS()){ sc.t = 1; drawS(); } }); $(id).addEventListener('focus', e => e.target.select()); $(id).addEventListener('keydown', e => { if (e.key === 'Enter') playS(); }); });
+
+/* =====================================================================
+   6. SUBTRACTING: FROM HERE TO THERE
+   ===================================================================== */
+const DP = [
+  { n: 'You → treasure', a: [2, 1], b: [5, 4], d: 'You’re at the tip of a, the treasure at the tip of b. The move you still need is b − a.' },
+  { n: 'Steer into the wind', a: [0, -2], b: [4, 0], d: 'You want to go b = 4 east; the wind pushes you a = 2 south. Aim along b − a: a little north, and the wind brings you back on course.' },
+  { n: 'It’s behind you', a: [4, 1], b: [-2, -1], d: 'The target is behind you: b − a points back past the origin.' },
+  { n: 'Same spot', a: [3, 2], b: [3, 2], d: 'Already there: b − a is the zero vector.' },
+];
+const sb = { a: [2, 1], b: [5, 4], swap: false };
+DP.forEach((p, i) => { const b = document.createElement('button'); b.className = 'preset'; b.textContent = p.n; b.onclick = () => { sb.a = p.a.slice(); sb.b = p.b.slice(); fillPair(['dA1', 'dA2', 'dB1', 'dB2'], sb.a.concat(sb.b)); markP('dPresets', 'dDesc', DP, i); drawD(); }; $('dPresets').appendChild(b); });
+function drawD(){
+  const r = readAll(['dA1', 'dA2', 'dB1', 'dB2'], 'dErr'); if (!r) return;
+  if (r.some(x => Math.abs(x) > 8)){ $('dErr').textContent = 'Keep every component between −8 and 8.'; return; }
+  const a = [r[0], r[1]], b = [r[2], r[3]];
+  const [from, to] = sb.swap ? [b, a] : [a, b], d = [to[0] - from[0], to[1] - from[1]], nm = sb.swap ? 'a − b' : 'b − a';
+  const P = plane($('dSvg'), 1000, 380, boxOf([a, b, d]), 44);
+  arrow(P, [0, 0], d, C.r, { w: 2.5, op: .35, dash: '7 5' });
+  if (d[0] || d[1]) sideLabel(P, [0, 0], d, -sgn(cross(d, from) || 1), nm, C.r, 'labS', .55);
+  arrow(P, [0, 0], a, C.v, { w: 4 }); arrow(P, [0, 0], b, C.w, { w: 4 });
+  const s = sgn(cross(a, b) || 1);
+  sideLabel(P, [0, 0], a, -s, 'a', C.v); sideLabel(P, [0, 0], b, s, 'b', C.w);
+  if (d[0] || d[1]){ arrow(P, from, to, C.r, { w: 4.5 }); sideLabel(P, from, to, sgn(cross([to[0] - from[0], to[1] - from[1]], [-from[0], -from[1]]) || 1) * -1, nm, C.r, 'lab'); }
+  else mk('circle', { cx: P.X(a[0]), cy: P.Y(a[1]), r: 9, style: `fill:none;stroke:${C.r};stroke-width:3` }, P.g);
+  mk('circle', { cx: P.X(0), cy: P.Y(0), r: 4.5, style: 'fill:var(--ink)' }, P.g);
+  const [A, B] = sb.swap ? ['b', 'a'] : ['a', 'b'];
+  $('dEq').innerHTML = `<b class="kr">${nm}</b> = ${colHTML(to[0], to[1], sb.swap ? C.v : C.w, sb.swap ? C.v : C.w)} − ${colHTML(from[0], from[1], sb.swap ? C.w : C.v, sb.swap ? C.w : C.v)} = ${colHTML(d[0], d[1], C.r, C.r)}`;
+  $('dOut').innerHTML = (d[0] || d[1]) ? `<b class="kr">${nm}</b> = [${num(d[0])}, ${num(d[1])}] is the arrow from the tip of <b>${A}</b> to the tip of <b>${B}</b>. Check: <b>${A}</b> + (<b>${nm}</b>) = [${num(from[0])} + ${pn(d[0])}, ${num(from[1])} + ${pn(d[1])}] = [${num(to[0])}, ${num(to[1])}] = <b>${B}</b>. Distance between the tips ≈ ${num(Math.hypot(d[0], d[1]), 2)}.` + (sb.swap ? '' : ' Press “Show a − b” to see the same arrow reversed.')
+    : 'The two tips coincide: <b class="kr">b − a</b> = [0, 0]. No move needed.';
+}
+$('dSwap').onclick = () => { sb.swap = !sb.swap; $('dSwap').textContent = sb.swap ? 'Show b − a instead' : 'Show a − b instead'; drawD(); };
+['dA1', 'dA2', 'dB1', 'dB2'].forEach(id => { $(id).addEventListener('input', () => { markP('dPresets', 'dDesc', DP, null); drawD(); }); $(id).addEventListener('focus', e => e.target.select()); });
+
+/* =====================================================================
+   7. LENGTH: SQUARES ON THE SIDES
+   ===================================================================== */
+[[3, 4], [6, 8], [5, 12], [1, 1], [-3, 4], [5, 0]].forEach(([a, b]) => { const btn = document.createElement('button'); btn.className = 'preset'; btn.textContent = `[${num(a)}, ${num(b)}]`; btn.onclick = () => { $('lA').value = num(a); $('lB').value = num(b); drawLen(); }; $('lPresets').appendChild(btn); });
+function drawLen(){
+  const r = readAll(['lA', 'lB'], 'lErr'); if (!r) return;
+  if (Math.abs(r[0]) > 15 || Math.abs(r[1]) > 15){ $('lErr').textContent = 'Keep the components between −15 and 15.'; return; }
+  const [a0, b0] = r, a = Math.abs(a0), b = Math.abs(b0), c = Math.hypot(a, b);
+  const svg = $('lSvg'); svg.innerHTML = ''; const g = mk('g', {}, svg);
+  // Picture in math units: O = (0,0), A = (a,0), B = (a,b). Squares: below OA, right of AB, and outward (upper left) on OB.
+  const x0 = -b, x1 = a + b, y0 = -a, y1 = a + b;          // extent of all three squares
+  const W = 600, H = 360, u = Math.min(40, (W - 40) / Math.max(1, x1 - x0), (H - 40) / Math.max(1, y1 - y0));
+  const ox = 20 + (W - 40 - u * (x1 - x0)) / 2 - u * x0, oy = 20 + (H - 40 - u * (y1 - y0)) / 2 + u * y1;
+  const X = x => ox + x * u, Y = y => oy - y * u, pts = arr => arr.map(([x, y]) => `${X(x)},${Y(y)}`).join(' ');
+  const sqA = [[0, 0], [a, 0], [a, -a], [0, -a]], sqB = [[a, 0], [a + b, 0], [a + b, b], [a, b]], sqC = [[0, 0], [a, b], [a - b, b + a], [-b, a]];
+  mk('polygon', { points: pts(sqC), style: `fill:${C.v};fill-opacity:.18;stroke:${C.v};stroke-width:2` }, g);
+  if (a) mk('polygon', { points: pts(sqA), style: `fill:${C.x};fill-opacity:.2;stroke:${C.x};stroke-width:2` }, g);
+  if (b) mk('polygon', { points: pts(sqB), style: `fill:${C.y};fill-opacity:.2;stroke:${C.y};stroke-width:2` }, g);
+  // unit cells inside the leg squares, so the areas can be counted (only when whole numbers and not too fine)
+  const cells = (n, p0, e1, e2, col) => { if (!Number.isInteger(n) || n < 2 || u < 7) return; for (let k = 1; k < n; k++){
+    mk('line', { x1: X(p0[0] + e1[0] * k), y1: Y(p0[1] + e1[1] * k), x2: X(p0[0] + e1[0] * k + e2[0] * n), y2: Y(p0[1] + e1[1] * k + e2[1] * n), style: `stroke:${col};stroke-width:1;opacity:.45` }, g);
+    mk('line', { x1: X(p0[0] + e2[0] * k), y1: Y(p0[1] + e2[1] * k), x2: X(p0[0] + e2[0] * k + e1[0] * n), y2: Y(p0[1] + e2[1] * k + e1[1] * n), style: `stroke:${col};stroke-width:1;opacity:.45` }, g); } };
+  cells(a, [0, 0], [1, 0], [0, -1], C.x); cells(b, [a, 0], [1, 0], [0, 1], C.y);
+  if (Number.isInteger(c) && c > 1 && c <= 20){ const e1 = [a / c, b / c], e2 = [-b / c, a / c]; cells(c, [0, 0], e1, e2, C.v); }
+  // the triangle: the legs (the walk) and the arrow
+  mk('line', { x1: X(0), y1: Y(0), x2: X(a), y2: Y(0), style: `stroke:${C.x};stroke-width:4` }, g);
+  mk('line', { x1: X(a), y1: Y(0), x2: X(a), y2: Y(b), style: `stroke:${C.y};stroke-width:4` }, g);
+  mk('line', { x1: X(0), y1: Y(0), x2: X(a), y2: Y(b), style: `stroke:${C.v};stroke-width:4.5` }, g);
+  if (a && b) mk('polyline', { points: `${X(a) - 10},${Y(0)} ${X(a) - 10},${Y(0) - 10} ${X(a)},${Y(0) - 10}`, style: 'fill:none;stroke:var(--ink);stroke-width:1.3' }, g);
+  if (a) txt(g, X(a / 2), Y(-a / 2) + 5, `a² = ${num(a * a)}`, 'lab', { 'text-anchor': 'middle', style: `fill:${C.x}` });
+  if (b) txt(g, X(a + b / 2), Y(b / 2) + 5, `b² = ${num(b * b)}`, 'lab', { 'text-anchor': 'middle', style: `fill:${C.y}` });
+  txt(g, X((a - b) / 2), Y((a + b) / 2) + 5, `‖v‖² = ${num(c * c)}`, 'lab', { 'text-anchor': 'middle', style: `fill:${C.v}` });
+  // the arithmetic, on the right
+  const t = (y, s, col, big) => txt(g, 660, y, s, big ? 'lab' : 'bt', { style: `fill:${col || 'var(--ink)'}${big ? ';font-size:20px' : ''}` });
+  t(70, `v = [${num(a0)}, ${num(b0)}]`, C.v, true);
+  t(120, `a² + b² = ${num(a0 * a0)} + ${num(b0 * b0)} = ${num(c * c)}`);
+  t(160, `‖v‖ = √${num(c * c)}${Number.isInteger(c) ? ' = ' + c : ' ≈ ' + num(c, 3)}`, C.v, true);
+  t(210, `Walking the legs: ${num(a)} + ${num(b)} = ${num(a + b)}`, 'var(--muted)');
+  t(236, `The straight arrow is shorter.`, 'var(--muted)');
+  let h = `The green square (area ${num(a * a)}) and the orange square (area ${num(b * b)}) together have area ${num(c * c)}, exactly the purple square on the arrow. So ‖<b class="kv">v</b>‖ = √${num(c * c)} ${Number.isInteger(c) ? '= <b>' + c + '</b>' : '≈ <b>' + num(c, 3) + '</b>'}.`;
+  if (a0 < 0 || b0 < 0) h += ' The minus sign doesn’t matter: squaring makes it positive, so the picture uses the sizes of the steps.';
+  if (a === 1 && b === 1) h += ' √2 again: the diagonal of a unit square from 1.B.9.';
+  if (!a || !b) h += ' With one component 0, the vector lies along an axis and its length is just the other component’s size.';
+  $('lOut').innerHTML = h;
+}
+['lA', 'lB'].forEach(id => { $(id).addEventListener('input', drawLen); $(id).addEventListener('focus', e => e.target.select()); });
+
+/* =====================================================================
+   8. COLORS ARE VECTORS
+   ===================================================================== */
+const CP = [
+  { n: 'Red + green light', c1: [255, 0, 0], c2: [0, 255, 0] },
+  { n: 'Red + blue light', c1: [255, 0, 0], c2: [0, 0, 255] },
+  { n: 'Orange + sky blue', c1: [255, 140, 0], c2: [60, 170, 255] },
+  { n: 'Black + white', c1: [0, 0, 0], c2: [255, 255, 255] },
+];
+const CIDS = ['c1r', 'c1g', 'c1b', 'c2r', 'c2g', 'c2b'];
+CP.forEach(p => { const b = document.createElement('button'); b.className = 'preset'; b.textContent = p.n; b.onclick = () => { fillPair(CIDS, p.c1.concat(p.c2)); drawC(); }; $('cPresets').appendChild(b); });
+function drawC(){
+  const r = readAll(CIDS, 'cErr'); if (!r) return;
+  if (r.some(x => x < 0 || x > 255 || !Number.isInteger(x))){ $('cErr').textContent = 'Each color component is a whole number from 0 to 255.'; return; }
+  const c1 = r.slice(0, 3), c2 = r.slice(3), sum = c1.map((x, k) => x + c2[k]), cap = sum.map(x => Math.min(255, x)), avg = c1.map((x, k) => (x + c2[k]) / 2);
+  const svg = $('cSvg'); svg.innerHTML = ''; const g = mk('g', {}, svg);
+  const rows = [['c₁', c1], ['c₂', c2], ['c₁ + c₂', sum], ['½(c₁ + c₂)', avg]], CH = ['#E5484D', '#30A46C', '#3E63DD'], NAMES = ['red', 'green', 'blue'];
+  rows.forEach(([name, v], i) => {
+    const y = 20 + i * 76, shown = v.map(x => Math.min(255, Math.round(x)));
+    txt(g, 20, y + 34, name, 'bt', { style: 'font-size:15px' });
+    mk('rect', { x: 140, y: y, width: 90, height: 56, rx: 8, style: `fill:rgb(${shown.join(',')});stroke:var(--line2);stroke-width:1` }, g);
+    txt(g, 250, y + 34, `[${v.map(x => num(x, 1)).join(', ')}]`, 'bn', { style: 'font-size:14px' });
+    v.forEach((x, k) => {                                    // one bar per channel, out of 255
+      const bx = 480 + k * 170, bw = 150;
+      mk('rect', { x: bx, y: y + 10, width: bw, height: 16, rx: 3, style: 'fill:var(--paper);stroke:var(--line);stroke-width:1' }, g);
+      mk('rect', { x: bx, y: y + 10, width: bw * Math.min(255, x) / 255, height: 16, rx: 3, style: `fill:${CH[k]}` }, g);
+      if (x > 255) txt(g, bx + bw + 4, y + 23, '!', 'bn', { style: 'fill:var(--bad)' });
+      if (i === 0) txt(g, bx, y + 2, NAMES[k], 'cap');
+      txt(g, bx, y + 44, num(x, 1) + (x > 255 ? ' → 255' : ''), 'bn', { style: `fill:${x > 255 ? 'var(--bad)' : 'var(--ink)'}` });
+    });
+  });
+  const over = sum.some(x => x > 255);
+  $('cOut').innerHTML = `<b>c₁ + c₂</b> = [${sum.join(', ')}]: add red to red, green to green, blue to blue. ${over ? `A screen can’t go past 255, so the parts marked ! are capped at 255 (shown as [${cap.join(', ')}]). ` : ''}` +
+    `<b>½(c₁ + c₂)</b> = [${avg.map(x => num(x, 1)).join(', ')}]: scale the sum by ½ to get the color halfway between, just like the midpoint of two fractions in 1.B.3.`;
+}
+CIDS.forEach(id => { $(id).addEventListener('input', drawC); $(id).addEventListener('focus', e => e.target.select()); });
+
+/* =====================================================================
+   9. QUIZ
+   ===================================================================== */
+const rnd = arr => arr[Math.floor(Math.random() * arr.length)];
+const randInt = (lo, hi) => lo + Math.floor(Math.random() * (hi - lo + 1));
+const qz = { counted: false, done: false, right: 0, total: 0 };
+const nz = () => { let x; do { x = randInt(-4, 4); } while (x === 0); return x; };
+const LENS = [[3, 4], [4, 3], [6, 8], [-3, 4], [5, 12], [-8, -6], [0, -7], [1, 1], [2, 2], [1, 2], [-5, 0]];
+function newQuestion(){
+  Object.assign(qz, { counted: false, done: false });
+  $('qErr').textContent = ''; $('qFb').className = 'feedback'; $('qFb').innerHTML = ''; $('q1').value = ''; $('q2').value = '';
+  $('qSvg').style.display = 'none';
+  qz.type = rnd(['add', 'sub', 'scale', 'combo', 'len', 'len']);
+  const two = !qz.type.startsWith('len');
+  $('qF2').style.display = two ? '' : 'none'; $('qL1').textContent = two ? 'First component' : 'Length ‖v‖';
+  $('qF1').className = 'field ' + (two ? 'fx' : 'fv');
+  if (qz.type === 'add' || qz.type === 'sub'){
+    qz.u = [nz(), randInt(-4, 4)]; qz.v = [randInt(-4, 4), nz()];
+    const s = qz.type === 'add' ? 1 : -1; qz.ans = [qz.u[0] + s * qz.v[0], qz.u[1] + s * qz.v[1]];
+    $('qTitle').textContent = qz.type === 'add' ? 'Add the vectors' : 'Subtract the vectors';
+    $('qText').innerHTML = `<b class="kv">u</b> = [${num(qz.u[0])}, ${num(qz.u[1])}] and <b class="kw">v</b> = [${num(qz.v[0])}, ${num(qz.v[1])}]. Find <b class="kr">u ${qz.type === 'add' ? '+' : '−'} v</b>.`;
+  } else if (qz.type === 'scale'){
+    qz.k = rnd([2, 3, -1, -2, 0.5, -3]);
+    qz.v = qz.k === 0.5 ? [2 * nz(), 2 * randInt(-2, 2)] : [nz(), randInt(-3, 3)];
+    qz.ans = [qz.k * qz.v[0], qz.k * qz.v[1]];
+    $('qTitle').textContent = 'Scale the vector';
+    $('qText').innerHTML = `<b class="kv">v</b> = [${num(qz.v[0])}, ${num(qz.v[1])}]. Find <b class="kr">${qz.k === 0.5 ? '½' : num(qz.k)} · v</b>.`;
+  } else if (qz.type === 'combo'){
+    qz.u = [nz(), randInt(-3, 3)]; qz.v = [randInt(-3, 3), nz()]; qz.k = rnd([2, 3]);
+    qz.ans = [qz.k * qz.u[0] + qz.v[0], qz.k * qz.u[1] + qz.v[1]];
+    $('qTitle').textContent = 'Scale, then add';
+    $('qText').innerHTML = `<b class="kv">u</b> = [${num(qz.u[0])}, ${num(qz.u[1])}] and <b class="kw">v</b> = [${num(qz.v[0])}, ${num(qz.v[1])}]. Find <b class="kr">${qz.k}u + v</b>.`;
+  } else {
+    qz.v = rnd(LENS); qz.len = Math.hypot(qz.v[0], qz.v[1]);
+    $('qTitle').textContent = 'How long is it?';
+    $('qText').innerHTML = `Find the length ‖<b class="kv">v</b>‖ of <b class="kv">v</b> = [${num(qz.v[0])}, ${num(qz.v[1])}]. ${Number.isInteger(qz.len) ? '' : '(Type a decimal like 1.41, or a root like √2.)'}`;
+  }
+}
+function countQ(ok){ if (qz.counted) return; qz.counted = true; qz.total++; if (ok) qz.right++; $('score').textContent = `Score: ${qz.right} / ${qz.total}`; }
+function drawQ(){
+  $('qSvg').style.display = '';
+  if (qz.type === 'len'){
+    const v = qz.v, P = plane($('qSvg'), 1000, 340, boxOf([v]), 40);
+    mk('line', { x1: P.X(0), y1: P.Y(0), x2: P.X(v[0]), y2: P.Y(0), style: `stroke:${C.x};stroke-width:3.5` }, P.g);
+    mk('line', { x1: P.X(v[0]), y1: P.Y(0), x2: P.X(v[0]), y2: P.Y(v[1]), style: `stroke:${C.y};stroke-width:3.5` }, P.g);
+    if (v[0]) sideLabel(P, [0, 0], [v[0], 0], v[1] >= 0 ? -sgn(v[0]) : sgn(v[0]), `${num(Math.abs(v[0]))}`, C.x);
+    if (v[1]) sideLabel(P, [v[0], 0], v, v[0] >= 0 ? -sgn(v[1]) : sgn(v[1]), `${num(Math.abs(v[1]))}`, C.y);
+    arrow(P, [0, 0], v, C.v, { w: 4 }); sideLabel(P, [0, 0], v, sgn(v[0] * v[1] || 1), `‖v‖ = ${Number.isInteger(qz.len) ? qz.len : '√' + (v[0] * v[0] + v[1] * v[1])}`, C.v);
+    return;
+  }
+  const items = [];
+  if (qz.type === 'scale'){
+    const P = plane($('qSvg'), 1000, 340, boxOf([qz.v, qz.ans]), 40);
+    arrow(P, [0, 0], qz.v, C.v, { w: 3, op: .5, dash: '7 5' }); sideLabel(P, [0, 0], qz.v, 1, 'v', C.v);
+    arrow(P, [0, 0], qz.ans, C.r, { w: 4 }); if (qz.ans[0] || qz.ans[1]) sideLabel(P, [0, 0], qz.ans, -1, `${qz.k === 0.5 ? '½' : num(qz.k)}v`, C.r);
+    return;
+  }
+  // add / sub / combo: first move from the origin, second tip to tail, result in blue
+  const first = qz.type === 'combo' ? [qz.k * qz.u[0], qz.k * qz.u[1]] : qz.u;
+  const second = qz.type === 'sub' ? [-qz.v[0], -qz.v[1]] : qz.v;
+  const end = [first[0] + second[0], first[1] + second[1]];
+  const P = plane($('qSvg'), 1000, 340, boxOf([first, end, qz.v]), 40), s = sgn(cross(first, second) || 1);
+  arrow(P, [0, 0], first, C.v, { w: 3.5 }); sideLabel(P, [0, 0], first, -s, qz.type === 'combo' ? `${qz.k}u` : 'u', C.v);
+  arrow(P, first, end, C.w, { w: 3.5 }); sideLabel(P, first, end, -s, qz.type === 'sub' ? '−v' : 'v', C.w);
+  if (end[0] || end[1]){ arrow(P, [0, 0], end, C.r, { w: 4.5 }); sideLabel(P, [0, 0], end, s, 'answer', C.r); }
+  mk('circle', { cx: P.X(0), cy: P.Y(0), r: 4.5, style: 'fill:var(--ink)' }, P.g);
+}
+function checkQ(){
+  if (qz.type === 'len'){
+    const raw = $('q1').value.trim(), x = parseNum(raw);
+    if (raw === '' || isNaN(x)){ $('qErr').textContent = 'Type a number, like 5, 2.24 or √5.'; return; }
+    $('qErr').textContent = '';
+    const [a, b] = qz.v, ok = Math.abs(x - qz.len) <= 0.011; let msg;
+    if (ok) msg = `<b>Right.</b> √(${num(a)}² + ${num(b)}²) = √${a * a + b * b}${Number.isInteger(qz.len) ? ' = ' + qz.len : ' ≈ ' + num(qz.len, 3)}.`;
+    else if (Math.abs(x - (Math.abs(a) + Math.abs(b))) < 0.01) msg = `<b>That’s the walk along the legs, ${num(Math.abs(a))} + ${num(Math.abs(b))}.</b> The arrow cuts the corner, so it’s shorter: use √(a² + b²).`;
+    else if (Math.abs(x - (a * a + b * b)) < 0.01) msg = `<b>You found a² + b² = ${a * a + b * b}; now take the square root.</b>`;
+    else if (x < 0) msg = '<b>Lengths are never negative.</b> Squaring removes the signs: use √(a² + b²).';
+    else if (Math.abs(x - Math.abs(a + b)) < 0.01 || Math.abs(x - Math.sqrt(Math.abs(a * a - b * b))) < 0.01) msg = '<b>Not quite.</b> Square each component, add the squares, then take the square root.';
+    else msg = `<b>Not quite.</b> Square each component (${a * a} and ${b * b}), add, then take the square root.`;
+    countQ(ok); if (ok){ qz.done = true; drawQ(); }
+    $('qFb').className = 'feedback ' + (ok ? 'ok' : 'bad'); $('qFb').innerHTML = msg; return;
+  }
+  const r = readAll(['q1', 'q2'], 'qErr', 'Fill in both components with a number.'); if (!r) return;
+  const [x, y] = r, [ax, ay] = qz.ans, okx = Math.abs(x - ax) < 0.011, oky = Math.abs(y - ay) < 0.011, ok = okx && oky;
+  const near = (p, q) => Math.abs(p[0] - q[0]) < 0.011 && Math.abs(p[1] - q[1]) < 0.011;
+  let msg;
+  if (ok) msg = `<b>Right: [${num(ax)}, ${num(ay)}].</b> ` + (qz.type === 'scale' ? `Each component times ${qz.k === 0.5 ? '½' : num(qz.k)}.` : qz.type === 'combo' ? `${qz.k}u = [${num(qz.k * qz.u[0])}, ${num(qz.k * qz.u[1])}], then add v entry by entry.` : 'Entry by entry, and the picture shows it tip to tail.');
+  else if ((qz.type === 'add' && near(r, [qz.u[0] - qz.v[0], qz.u[1] - qz.v[1]])) ) msg = '<b>You subtracted.</b> u + v adds first to first and second to second.';
+  else if (qz.type === 'sub' && near(r, [qz.u[0] + qz.v[0], qz.u[1] + qz.v[1]])) msg = '<b>You added.</b> u − v subtracts each component of v.';
+  else if (qz.type === 'sub' && near(r, [qz.v[0] - qz.u[0], qz.v[1] - qz.u[1]])) msg = '<b>That’s v − u, the reverse arrow.</b> u − v goes from the tip of v to the tip of u: take u’s components minus v’s.';
+  else if ((qz.type === 'add' || qz.type === 'sub') && near(r, [qz.u[0] + (qz.type === 'add' ? 1 : -1) * qz.v[1], qz.u[1] + (qz.type === 'add' ? 1 : -1) * qz.v[0]])) msg = '<b>You crossed the components.</b> Combine first with first and second with second.';
+  else if (qz.type === 'scale' && near(r, [qz.k * qz.v[0], qz.v[1]])) msg = `<b>Only the first component got scaled.</b> Multiply <i>every</i> component by ${qz.k === 0.5 ? '½' : num(qz.k)}.`;
+  else if (qz.type === 'scale' && near(r, [qz.k + qz.v[0], qz.k + qz.v[1]])) msg = '<b>You added k instead of multiplying.</b> Scaling multiplies each component.';
+  else if (qz.type === 'scale' && near(r, [-qz.ans[0], -qz.ans[1]])) msg = '<b>Check the sign.</b> A negative scalar flips the direction; a positive one doesn’t.';
+  else if (qz.type === 'combo' && near(r, [qz.u[0] + qz.v[0], qz.u[1] + qz.v[1]])) msg = `<b>That’s u + v.</b> Scale u by ${qz.k} first: ${qz.k}u = [${num(qz.k * qz.u[0])}, ${num(qz.k * qz.u[1])}].`;
+  else if (qz.type === 'combo' && near(r, [qz.k * (qz.u[0] + qz.v[0]), qz.k * (qz.u[1] + qz.v[1])])) msg = `<b>You scaled v too.</b> Only u gets multiplied by ${qz.k}.`;
+  else if (okx) msg = `<b>Your first component is right.</b> Recheck the second.`;
+  else if (oky) msg = `<b>Your second component is right.</b> Recheck the first.`;
+  else msg = '<b>Not quite.</b> Work entry by entry: first components together, second components together.';
+  countQ(ok); if (ok){ qz.done = true; drawQ(); }
+  $('qFb').className = 'feedback ' + (ok ? 'ok' : 'bad'); $('qFb').innerHTML = msg;
+}
+function showQ(){
+  countQ(false); qz.done = true; $('qErr').textContent = ''; drawQ();
+  const fb = $('qFb'); fb.className = 'feedback info';
+  if (qz.type === 'len'){ const [a, b] = qz.v; fb.innerHTML = `‖v‖ = √(${num(a)}² + ${num(b)}²) = √${a * a + b * b} ${Number.isInteger(qz.len) ? '= <b>' + qz.len + '</b>' : '≈ <b>' + num(qz.len, 3) + '</b>'}.`; }
+  else fb.innerHTML = `<b>[${num(qz.ans[0])}, ${num(qz.ans[1])}]</b>, shown tip to tail below.`;
+}
+$('qCheck').onclick = checkQ; $('qShow').onclick = showQ; $('qNew').onclick = newQuestion;
+['q1', 'q2'].forEach(id => { $(id).addEventListener('input', () => { $('qErr').textContent = ''; }); $(id).addEventListener('focus', e => e.target.select()); $(id).addEventListener('keydown', e => { if (e.key === 'Enter') checkQ(); }); });
+
+/* =====================================================================
+   10. START
+   ===================================================================== */
+setMain(3, 2); markM(0); drawM();
+fillPair(['aU1', 'aU2', 'aV1', 'aV2'], [3, 1, 1, 2]); markP('aPresets', 'aDesc', AP, 0); drawA();
+fillPair(['sV1', 'sV2'], [3, 1]); $('sK').value = '2'; markP('sPresets', 'sDesc', SP, 0); drawS();
+fillPair(['dA1', 'dA2', 'dB1', 'dB2'], [2, 1, 5, 4]); markP('dPresets', 'dDesc', DP, 0); drawD();
+drawLen();
+fillPair(CIDS, [255, 140, 0, 60, 170, 255]); drawC();
+newQuestion();
+</script>
+</body>
+</html>

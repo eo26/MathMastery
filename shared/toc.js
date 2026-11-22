@@ -29,7 +29,7 @@ window.MM_TOC = [
     { id: '5.B.4', title: 'Waves and Periodic Functions', built: true, url: 'https://claude.ai/artifact/Ge7zmxuBizyzBUH5Ub8pz2' },
   ]},
   { ch: 7, title: 'Linear Algebra', pages: [
-    { id: '7.B.1', title: 'Vectors: Arrows and Lists' },
+    { id: '7.B.1', title: 'Vectors: Arrows and Lists', url: 'https://claude.ai/artifact/VTgdf4vZNvotfwDq58B8bx', built: true },
     { id: '7.B.2', title: 'Linear Combinations and Span' },
     { id: '7.B.3', title: 'The Dot Product' },
     { id: '7.B.4', title: 'A Matrix Is a Move (Matrix Transformer)', ext: true, url: 'https://claude.ai/artifact/UPYx73qewW2rkDX2VR4YTS' },
