@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>1.B.9 Why We Invented Each New Kind of Number · MathMastery</title>
+<!-- Fonts: a book serif for prose, a clean sans for UI, a mono for numbers -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<!-- MathJax renders the few formulas on the page (SVG output needs no external stylesheet) -->
+<script>
+  window.MathJax = { tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] }, svg: { fontCache: 'global' } };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<style>
+/* ===================== Theme ===================== */
+:root{
+  --bg:#f7f5ef; --paper:#ffffff; --ink:#1f1e1d; --muted:#6b6a66; --line:#e4e0d5; --line2:#c9c5b8;
+  --accent:#534AB7; --accent-bg:#EEEDFE;
+  --pos:#1D9E75; --neg:#D85A30; --pt:#7F77DD; --pt-soft:#AFA9EC; --pt-dark:#534AB7;
+  --pos-new:#9FE1CB; --neg-new:#F0997B; --ok:#3B6D11; --ok-bg:#EAF3DE; --bad:#A32D2D; --bad-bg:#FCEBEB; --note-bg:#FAF3E3; --note-line:#E7C98A;
+  --serif:"Source Serif 4", Georgia, "Times New Roman", serif;
+  --sans:"IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#191817; --paper:#232220; --ink:#ecebe6; --muted:#a3a29c; --line:#383733; --line2:#55534e;
+    --accent:#AFA9EC; --accent-bg:#2c2852; --pt-dark:#CECBF6; --pt-soft:#6f68b8; --pos-new:#5DCAA5; --neg-new:#F5C4B3;
+    --ok:#C0DD97; --ok-bg:#24400d; --bad:#F7C1C1; --bad-bg:#5a1c1c; --note-bg:#2b261b; --note-line:#6b5626;
+  }
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.7 var(--serif);-webkit-font-smoothing:antialiased}
+
+/* ===================== Layout ===================== */
+.topbar{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1000px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:14px;font:500 13px/1 var(--sans);color:var(--muted)}
+.brand{color:var(--ink);font-weight:600;letter-spacing:.02em}
+.brand b{color:var(--accent)}
+.crumbs{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pid{font-family:var(--mono);color:var(--accent);background:var(--accent-bg);padding:4px 8px;border-radius:6px}
+.prose{max-width:720px;margin:0 auto;padding:0 20px}
+.wide{max-width:1000px;margin:0 auto;padding:0 20px}
+
+/* ===================== Hero ===================== */
+.hero{padding:48px 0 12px}
+.kicker{font:600 13px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1{font:700 46px/1.1 var(--serif);margin:12px 0 14px;letter-spacing:-.01em}
+.dek{font-size:21px;color:var(--muted);margin:0 0 22px;font-style:italic}
+.tiers{display:flex;gap:6px;flex-wrap:wrap;font:500 13px/1 var(--sans);margin-bottom:8px}
+.tier{padding:7px 12px;border-radius:999px;border:1px solid var(--line2);color:var(--muted)}
+.tier.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.tier small{opacity:.7;margin-left:4px}
+
+/* ===================== Text elements ===================== */
+h2{font:700 28px/1.25 var(--serif);margin:56px 0 10px;display:flex;gap:12px;align-items:baseline}
+h2 .n{font:600 14px/1 var(--mono);color:var(--accent);min-width:28px}
+p{margin:0 0 16px}
+em.key{font-style:normal;background:linear-gradient(transparent 62%,var(--accent-bg) 62%);padding:0 2px}
+.goals{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:18px 22px;margin:22px 0 0;font:15.5px/1.6 var(--sans)}
+.goals h3{font:600 12px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
+.goals ul{margin:0;padding-left:20px}
+.note{background:var(--note-bg);border-left:4px solid var(--note-line);border-radius:0 10px 10px 0;padding:14px 18px;margin:20px 0;font:15.5px/1.6 var(--sans)}
+.note b{font-weight:600}
+.notice{list-style:none;padding:0;margin:8px 0 18px;counter-reset:n}
+.notice li{position:relative;padding:12px 0 12px 46px;border-top:1px solid var(--line)}
+.notice li:last-child{border-bottom:1px solid var(--line)}
+.notice li::before{counter-increment:n;content:counter(n);position:absolute;left:4px;top:13px;width:26px;height:26px;border-radius:50%;background:var(--accent-bg);color:var(--accent);font:600 13px/26px var(--mono);text-align:center}
+.goes{list-style:none;padding:0;margin:8px 0 18px}
+.goes li{padding:12px 0;border-top:1px solid var(--line)}
+.goes li:last-child{border-bottom:1px solid var(--line)}
+.math{overflow-x:auto;margin:12px 0 18px;padding:14px 18px;background:var(--paper);border:1px solid var(--line);border-radius:12px}
+.math .cap{font:14px/1.5 var(--sans);color:var(--muted);margin-top:4px}
+.mono{font-family:var(--mono);font-size:.92em;white-space:nowrap}
+.pos{color:var(--pos);font-weight:600}.neg{color:var(--neg);font-weight:600}.pt{color:var(--pt-dark);font-weight:600}
+
+/* ===================== Vocabulary ===================== */
+.vocab{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin:14px 0 8px}
+.term{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font:14.5px/1.5 var(--sans)}
+.term b{display:block;font:600 15px/1.3 var(--serif);margin-bottom:4px}
+
+/* ===================== Interactive cards ===================== */
+.card{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:18px 20px 20px;margin:26px 0;box-shadow:0 1px 0 var(--line),0 12px 32px -22px rgba(0,0,0,.25);font-family:var(--sans)}
+.card-h{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.card-h .tag{font:600 11px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--accent);background:var(--accent-bg);padding:5px 8px;border-radius:6px}
+.card-h h3{font:600 18px/1.3 var(--sans);margin:0}
+.card-h .sub{color:var(--muted);font-size:14.5px;flex-basis:100%}
+.panel-label{font:600 11px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:12px 0 4px;display:flex;justify-content:space-between}
+.panel-label span:last-child{letter-spacing:0;text-transform:none;font-weight:500}
+svg.nl{display:block;width:100%;height:auto;border:1px solid var(--line);border-radius:12px;background:var(--bg);touch-action:manipulation}
+svg.clickable{cursor:pointer}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:12px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0}
+button{font:500 14px/1 var(--sans);padding:9px 14px;border-radius:9px;border:1px solid var(--line2);background:var(--paper);color:var(--ink);cursor:pointer;transition:background .15s,border-color .15s}
+button:hover{border-color:var(--ink)}
+button.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+button.preset.on{background:var(--accent-bg);border-color:var(--accent);color:var(--accent)}
+button:disabled{opacity:.45;cursor:default}
+.desc{min-height:24px;color:var(--muted);font-size:14.5px;margin:2px 0 6px}
+.inputs{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;margin:12px 0 4px}
+.field{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.field input{width:92px;font:500 18px/1 var(--mono);padding:9px 10px;border-radius:9px;border:2px solid var(--line2);background:var(--bg);color:var(--ink);text-align:center}
+.field input:focus{outline:none;border-color:var(--accent)}
+.field i,.eq i,.sym{font:italic 600 1.15em var(--serif);text-transform:none;letter-spacing:0;color:var(--pt-dark)}
+.field.start input{border-color:var(--pt-soft)}
+.field.slide input{border-color:var(--pt)}
+.eq{font:500 20px/1 var(--mono);padding:10px 14px;background:var(--bg);border-radius:10px;border:1px solid var(--line)}
+.err{color:var(--bad);font-size:14px;min-height:20px;margin:2px 0}
+.readout{margin-top:12px;padding:12px 14px;background:var(--bg);border-radius:10px;border:1px solid var(--line);font-size:15px;line-height:1.55;min-height:48px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:12px;font-size:13px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{display:inline-block;width:14px;height:14px;border-radius:50%}
+.sw.pos{background:var(--pos)}.sw.neg{border:2.4px solid var(--neg)}
+.sw.x{position:relative;background:var(--pos);opacity:.45}.sw.x::after{content:'✕';position:absolute;inset:-1px 0 0 0;color:var(--neg);font:700 13px/1 var(--sans);text-align:center}
+.sw.posnew{background:var(--pos-new);border:1.5px solid var(--pos)}.sw.negnew{border:2.4px solid var(--neg-new)}.sw.pt{background:var(--pt)}
+.sw.mv{width:22px;height:4px;border-radius:2px;background:var(--pt-soft)}
+.sw.rl{width:22px;height:0;border-top:2px dashed var(--ink);border-radius:0;opacity:.7}
+.feedback{margin-top:10px;padding:12px 14px;border-radius:10px;font-size:15px;line-height:1.55;display:none}
+.feedback.ok{display:block;background:var(--ok-bg);color:var(--ok)}
+.feedback.bad{display:block;background:var(--bad-bg);color:var(--bad)}
+.feedback.info{display:block;background:var(--accent-bg);color:var(--accent)}
+.score{margin-left:auto;font:600 14px/1 var(--mono);color:var(--muted)}
+
+/* ===================== Footer nav ===================== */
+.pager{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:56px 0 18px;font-family:var(--sans)}
+.pager a,.pager div{display:block;padding:16px 18px;border:1px solid var(--line);border-radius:14px;background:var(--paper);color:var(--ink);text-decoration:none}
+.pager small{display:block;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.pager .next{text-align:right}
+.pager .soon{opacity:.6}
+.meta{font:13px/1.6 var(--sans);color:var(--muted);text-align:center;padding:10px 0 50px}
+
+@media (max-width:720px){
+  body{font-size:17px}
+  h1{font-size:34px}
+  .dek{font-size:18px}
+  h2{font-size:24px}
+  .card{padding:14px 12px 16px;border-radius:14px}
+  .crumbs{display:none}
+  svg.nl{min-width:640px}
+}
+</style>
+<meta name="mm-site" content="1">
+<link rel="stylesheet" href="../shared/nav.css">
+</head>
+<body>
+<style>
+/* ===================== Page-specific styles (1.B.9) ===================== */
+/* one color per kind of number: N blue, Z teal, Q amber, R purple, C coral */
+:root{ --s0:#2F6FDB; --s1:#0F8A7A; --s2:#C98A0B; --s3:#7F77DD; --s4:#D85A30; }
+@media (prefers-color-scheme:dark){ :root{ --s0:#6EA2F5; --s1:#5DCAB5; --s2:#F0C24B; --s3:#AFA9EC; --s4:#F0997B; } }
+.c0{color:var(--s0);font-weight:700}.c1{color:var(--s1);font-weight:700}.c2{color:var(--s2);font-weight:700}.c3{color:var(--s3);font-weight:700}.c4{color:var(--s4);font-weight:700}
+.frac{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;margin:0 3px;font-family:var(--mono);line-height:1.15}
+.frac span:first-child{border-bottom:1.5px solid currentColor;padding:0 3px}
+.rungs{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 10px}
+.rung{display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-width:160px;text-align:left;border-width:1.5px}
+.rung small{font:500 12px var(--mono);color:var(--muted)}
+.rung b{font:700 15px var(--sans)}
+.rung.on{background:var(--bg)}
+.eqchip{display:inline-block;font:600 17px var(--mono);border:1px solid var(--line);border-radius:12px;padding:8px 16px;background:var(--bg);margin:2px 0 8px}
+.choice{display:flex;gap:8px;flex-wrap:wrap;margin:0}.choice button{min-width:78px;font:700 18px var(--sans)}
+.qtext{font:17px/1.55 var(--serif);margin:4px 0 10px}
+.proof{border:1px solid var(--line);border-left:4px solid var(--s3);border-radius:10px;padding:10px 18px;background:var(--paper);margin:14px 0}
+.proof ol{margin:6px 0 4px;padding-left:22px}.proof li{margin:6px 0}
+.proof h4{margin:4px 0 0;font:700 12px var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+</style>
+
+<!-- ===================== Top bar ===================== -->
+<div class="topbar"><div class="topbar-in">
+  <span class="brand">Math<b>Mastery</b></span>
+  <span class="crumbs">Chapter 1 · Numbers &amp; Arithmetic › Basics</span>
+  <span class="pid">1.B.9</span>
+</div></div>
+
+<!-- ===================== Hero ===================== -->
+<header class="prose hero">
+  <div class="kicker">Chapter 1 · Numbers &amp; Arithmetic</div>
+  <h1>Why We Invented Each New Kind of Number</h1>
+  <p class="dek">Every new kind of number was invented for the same reason: someone wrote down a simple question the old numbers couldn’t answer. Five questions, five kinds of number, and the last one turns out to be a turn.</p>
+  <div class="tiers" aria-label="Tier">
+    <span class="tier on">Basics <small>you are here</small></span>
+    <span class="tier">Undergraduate</span>
+    <span class="tier">Masters</span>
+  </div>
+  <div class="goals">
+    <h3>On this page</h3>
+    <ul>
+      <li>Climb the ladder <span class="c0">ℕ</span> → <span class="c1">ℤ</span> → <span class="c2">ℚ</span> → <span class="c3">ℝ</span> → <span class="c4">ℂ</span>, seeing the equation that forced each step.</li>
+      <li>See why each set sits <b>inside</b> the next one.</li>
+      <li>Find a length, the diagonal of a square, that <b>no fraction</b> can name, and see why.</li>
+      <li>Meet <b><i>i</i></b>, the number whose square is −1, as a <b>quarter turn</b>.</li>
+    </ul>
+  </div>
+</header>
+
+<main>
+<!-- ===================== §1 The ladder ===================== -->
+<section class="prose">
+  <h2><span class="n">1</span>A question the old numbers can’t answer</h2>
+  <p>Numbers began with counting: 0, 1, 2, 3, … Add two counts and you get another count, so the question 2 + 3 = <i class="sym">x</i> always has an answer. But ask <i class="sym">x</i> + 5 = 3, and the counting numbers are stuck. No count plus 5 makes 3.</p>
+  <p>Mathematicians don’t give up there. They <b>invent</b> the missing numbers, the negatives, so the question has an answer. Then a new question breaks the bigger system, and they invent again. <em class="key">Each new kind of number answers a question the old kind couldn’t, and keeps every old number inside it.</em></p>
+</section>
+
+<section class="wide">
+  <div class="card" id="ladder">
+    <div class="card-h"><span class="tag">Explore</span><h3>The number ladder</h3>
+      <span class="sub">Click a rung, or press Play to climb. Left: the numbers you have on that rung, with the new ones in their own color. Right: each new set wraps around the ones before.</span></div>
+    <div class="rungs" id="rungs"></div>
+    <div class="row" style="margin:0 0 6px"><button class="primary" id="lPlay">Play the story</button><button id="lReset">Back to the start</button></div>
+    <div class="eqchip" id="lEq"></div>
+    <svg class="nl" id="lSvg" viewBox="0 0 1000 300" role="img" aria-label="Number systems ladder"></svg>
+    <div class="readout" id="lOut"></div>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--s0)"></i>ℕ natural</span>
+      <span><i class="sw" style="background:var(--s1)"></i>ℤ integers</span>
+      <span><i class="sw" style="background:var(--s2)"></i>ℚ rationals</span>
+      <span><i class="sw" style="background:var(--s3)"></i>ℝ reals</span>
+      <span><i class="sw" style="background:var(--s4)"></i>ℂ complex</span>
+      <span><svg width="26" height="12" viewBox="0 0 26 12" aria-hidden="true"><rect x="1" y="1" width="24" height="10" rx="3" fill="none" stroke="var(--muted)" stroke-dasharray="4 3"/></svg>dashed = not invented yet</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §2 The first three steps ===================== -->
+<section class="prose">
+  <h2><span class="n">2</span>The first three rungs: count, go below zero, cut</h2>
+  <p><b class="c0">Natural numbers</b> (ℕ) are the counting numbers 0, 1, 2, 3, … (some books start at 1). You can always add them, and multiply them. You can’t always subtract.</p>
+  <p><b class="c1">Integers</b> (ℤ) add the negatives: …, −2, −1, 0, 1, 2, … In 1.B.1 they were the points left of 0 on the number line. Now subtraction always works. You can’t always divide: 3<i class="sym">x</i> = 2 has no integer answer.</p>
+  <p><b class="c2">Rational numbers</b> (ℚ) are all the fractions <i class="sym">a</i>/<i class="sym">b</i> of integers (with <i class="sym">b</i> ≠ 0), like 2/3, −5/4 and 7 = 7/1. In 1.B.3 they filled the line so densely that there’s always another one between any two. Now you can add, subtract, multiply and divide (except by 0) and never leave ℚ. A set where an operation never takes you outside is <b>closed</b> under that operation.</p>
+  <p>Each set is a <b>subset</b> of the next: every natural number is an integer, and every integer is a fraction (5 = 5/1). The new sets don’t replace the old ones; they wrap around them.</p>
+</section>
+
+<section class="wide">
+  <div class="card" id="classify">
+    <div class="card-h"><span class="tag">Try it</span><h3>Where does this number live?</h3>
+      <span class="sub">Type a number (like −4, 2/3, 0.333…, √2, pi, 3i or √−9) to find the smallest set it belongs to. It lives in every set outside that one too.</span></div>
+    <div class="row" id="kPresets"></div>
+    <div class="inputs">
+      <label class="field"><span>Number</span><input id="inK" type="text" autocomplete="off" value="0.75"></label>
+    </div>
+    <div class="err" id="kErr"></div>
+    <svg class="nl" id="kSvg" viewBox="0 0 1000 300" role="img" aria-label="Nested sets with the number marked"></svg>
+    <div class="readout" id="kOut"></div>
+  </div>
+</section>
+
+<!-- ===================== §3 sqrt 2 ===================== -->
+<section class="prose">
+  <h2><span class="n">3</span>A length no fraction can name</h2>
+  <p>The fractions are everywhere on the line. Surely every point is a fraction? Draw a square with sides of length 1. By the Pythagorean theorem, its diagonal <i class="sym">d</i> satisfies <i class="sym">d</i>² = 1² + 1² = 2, so <i class="sym">d</i> = <b>√2</b>. Now swing the diagonal down onto the number line like a compass. It lands at a perfectly real point, a little past 1.4.</p>
+  <p>Which fraction is it? Try cutting the line into finer and finer pieces below. Every time, √2 falls in a gap between two neighbouring fractions, never exactly on one.</p>
+</section>
+
+<section class="wide">
+  <div class="card" id="diag">
+    <div class="card-h"><span class="tag">Explore</span><h3>Hunting for √2 with fractions</h3>
+      <span class="sub">Press Play to swing the diagonal down. Then pick a piece size 1/<i class="sym">b</i>: the tool finds the two fractions with denominator <i class="sym">b</i> on either side of √2, and the bottom line zooms into the gap between them.</span></div>
+    <div class="row" id="dPresets"></div>
+    <div class="inputs">
+      <label class="field"><span>Denominator <i>b</i></span><input id="inD" type="text" inputmode="numeric" autocomplete="off" value="5"></label>
+      <div class="row" style="margin:0"><button class="primary" id="dPlay">Play</button></div>
+    </div>
+    <div class="err" id="dErr"></div>
+    <svg class="nl" id="dSvg" viewBox="0 0 1000 420" role="img" aria-label="Diagonal of a unit square swung onto the number line"></svg>
+    <div class="readout" id="dOut"></div>
+  </div>
+</section>
+
+<section class="prose">
+  <p>Trying fractions can never prove that <i>none</i> works, because there are infinitely many to try. But a short argument can. It was known to the ancient Greeks.</p>
+  <div class="proof">
+    <h4>Why no fraction squares to 2</h4>
+    <ol>
+      <li>Suppose some fraction did: √2 = <i class="sym">a</i>/<i class="sym">b</i>. Cancel common factors first, so <i class="sym">a</i> and <i class="sym">b</i> are <b>not both even</b>.</li>
+      <li>Square both sides: 2 = <i class="sym">a</i>²/<i class="sym">b</i>², so <i class="sym">a</i>² = 2<i class="sym">b</i>². That makes <i class="sym">a</i>² even.</li>
+      <li>An odd number times itself is odd, so if <i class="sym">a</i>² is even, <i class="sym">a</i> itself is even. Write <i class="sym">a</i> = 2<i class="sym">k</i>.</li>
+      <li>Then (2<i class="sym">k</i>)² = 4<i class="sym">k</i>² = 2<i class="sym">b</i>², so <i class="sym">b</i>² = 2<i class="sym">k</i>². By the same reasoning, <i class="sym">b</i> is even too.</li>
+      <li>Now <i class="sym">a</i> and <i class="sym">b</i> are both even, but we made sure they weren’t. The only way out: <b>no such fraction exists.</b></li>
+    </ol>
+  </div>
+  <p>A number that isn’t a fraction is <b>irrational</b>. √2, √3, √5 and π are all irrational, and their decimals go on forever <i>without</i> ever settling into a repeating block (compare 1/3 = 0.333… in 1.B.3). Put the rationals and the irrationals together and you get the <b class="c3">real numbers</b> (ℝ): every point on the number line, with no gaps at all.</p>
+</section>
+
+<!-- ===================== §4 i ===================== -->
+<section class="prose">
+  <h2><span class="n">4</span>The last rung: a number that is a turn</h2>
+  <p>The real numbers seem to have everything. But try <i class="sym">x</i>² = −1. A positive number squared is positive; a negative squared is also positive (−3 × −3 = 9); 0² = 0. No real number works.</p>
+  <p>Here’s the key, from 1.B.2: multiplying by −1 <b>flips</b> the line around 0. Picture that flip as a <b>half turn</b>, spinning the line 180° about 0. Then we want a number <i class="sym">i</i> where doing it twice is a half turn. That’s a <b>quarter turn</b>: 90°. A quarter turn lifts the line off itself, so the new number lives <b>above</b> the line, one unit up. That’s <i class="sym">i</i>, the <b>imaginary unit</b>. <em class="key">Multiplying by i turns every point a quarter turn counterclockwise around 0, and two quarter turns make the half turn: i² = −1.</em></p>
+  <p>The numbers now fill a whole plane: <i class="sym">a</i> + <i class="sym">b</i><i>i</i> sits <i class="sym">a</i> steps along the real line and <i class="sym">b</i> steps up. These are the <b class="c4">complex numbers</b> (ℂ). The name “imaginary” is just history; they are as real a tool as negatives were.</p>
+</section>
+
+<section class="wide">
+  <div class="card" id="turn">
+    <div class="card-h"><span class="tag">Explore</span><h3>Multiplying by <i>i</i> is a quarter turn</h3>
+      <span class="sub">Pick a starting point <i class="sym">z</i> = <i class="sym">a</i> + <i class="sym">b</i><i>i</i>, then press × <i>i</i> again and again. Each press turns the point 90° counterclockwise around 0. Press × (−1) to compare with a half turn.</span></div>
+    <div class="row" id="tPresets"></div>
+    <div class="inputs">
+      <label class="field"><span>Real part <i>a</i></span><input id="inTa" type="text" inputmode="decimal" autocomplete="off" value="1"></label>
+      <label class="field"><span>Imaginary part <i>b</i></span><input id="inTb" type="text" inputmode="decimal" autocomplete="off" value="0"></label>
+      <div class="row" style="margin:0"><button class="primary" id="tI">× i</button><button id="tNeg">× (−1)</button><button id="tReset">Reset</button></div>
+    </div>
+    <div class="err" id="tErr"></div>
+    <svg class="nl" id="tSvg" viewBox="0 0 1000 380" role="img" aria-label="Complex plane"></svg>
+    <div class="readout" id="tOut"></div>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--s3)"></i>the real number line</span>
+      <span><i class="sw" style="background:var(--s4)"></i>the point and its turns</span>
+      <span><i class="sw" style="background:var(--s4);opacity:.35"></i>where it was before</span>
+    </div>
+  </div>
+</section>
+
+<section class="prose">
+  <p>Is this the end? Remarkably, yes, for equations like these. The <b>Fundamental Theorem of Algebra</b> says every polynomial equation (things like <i class="sym">x</i>³ − 2<i class="sym">x</i> + 7 = 0) has a solution in ℂ. No new question of that kind forces another rung.</p>
+</section>
+
+<!-- ===================== §5 In symbols ===================== -->
+<section class="prose">
+  <h2><span class="n">5</span>Now, in symbols</h2>
+  <p>The ladder, with the subset sign \(\subset\) meaning “sits inside”:</p>
+  <div class="math">\[ \mathbb{N} \;\subset\; \mathbb{Z} \;\subset\; \mathbb{Q} \;\subset\; \mathbb{R} \;\subset\; \mathbb{C} \]<div class="cap">Each set solves an equation the one before couldn’t: \(x+5=3\), \(3x=2\), \(x^2=2\), \(x^2=-1\).</div></div>
+  <div class="math">\[ \mathbb{Q} = \left\{ \tfrac{a}{b} \;:\; a, b \in \mathbb{Z},\; b \ne 0 \right\}, \qquad \sqrt{2} \notin \mathbb{Q} \]<div class="cap">“\(\in\)” means “is a member of”; \(\notin\) means “is not.”</div></div>
+  <div class="math">\[ i^2 = -1, \qquad i\,(a + b\,i) = -b + a\,i \]<div class="cap">The point \((a, b)\) moves to \((-b, a)\): exactly a quarter turn counterclockwise.</div></div>
+</section>
+
+<!-- ===================== §6 Where this goes ===================== -->
+<section class="prose">
+  <h2><span class="n">6</span>Where this goes</h2>
+  <ul class="goes">
+    <li><b>Next (Chapter 2):</b> sets, subsets and the proof by contradiction you just used for √2 become tools of their own in Logic, Sets &amp; Proof.</li>
+    <li><b>Later in this book:</b> the gap-free real line is what makes <b>limits</b> and calculus work (Chapters 6 and 8). Turning by <i>i</i> grows into the unit circle and rotations (Chapter 5) and into eigenvalues of matrices (Chapter 7).</li>
+    <li><b>In the world:</b> negatives for temperatures and elevations, fractions for measuring, irrationals for diagonals and circles (π), and complex numbers for anything that rotates or oscillates: sound, light, electricity and waves.</li>
+  </ul>
+</section>
+
+<!-- ===================== §7 Vocabulary ===================== -->
+<section class="prose">
+  <h2><span class="n">7</span>Words to know</h2>
+  <div class="vocab">
+    <div class="term"><b>Natural numbers (ℕ)</b>The counting numbers 0, 1, 2, 3, … (some books start at 1).</div>
+    <div class="term"><b>Integers (ℤ)</b>The natural numbers and their negatives: …, −2, −1, 0, 1, 2, …</div>
+    <div class="term"><b>Rational numbers (ℚ)</b>Fractions <i class="sym">a</i>/<i class="sym">b</i> of integers with <i class="sym">b</i> ≠ 0. Their decimals terminate or repeat.</div>
+    <div class="term"><b>Irrational number</b>A real number that is not a fraction, like √2 or π. Its decimal never ends and never repeats.</div>
+    <div class="term"><b>Real numbers (ℝ)</b>Every point on the number line: the rationals and irrationals together.</div>
+    <div class="term"><b>Imaginary unit (<i>i</i>)</b>The number with <i>i</i>² = −1. Multiplying by <i>i</i> is a quarter turn.</div>
+    <div class="term"><b>Complex numbers (ℂ)</b>Numbers <i class="sym">a</i> + <i class="sym">b</i><i>i</i>: points in a plane, with the real line as one axis.</div>
+    <div class="term"><b>Set / subset</b>A collection of things; a subset is a set sitting entirely inside another (ℤ ⊂ ℚ).</div>
+    <div class="term"><b>Closed under an operation</b>Doing the operation never takes you outside the set (ℤ is closed under subtraction; ℕ isn’t).</div>
+  </div>
+</section>
+
+<!-- ===================== Quiz ===================== -->
+<section class="prose"><h2><span class="n">8</span>Check yourself</h2>
+  <p>Three kinds of questions: the smallest set a number belongs to, the first set where an equation has a solution, and where a point lands after turning by <i>i</i>.</p>
+</section>
+<section class="wide">
+  <div class="card" id="quiz">
+    <div class="card-h"><span class="tag">Quiz</span><h3 id="qTitle"></h3><span class="score" id="score">Score: 0 / 0</span></div>
+    <div class="qtext" id="qText"></div>
+    <div class="choice" id="qChoice"></div>
+    <div class="inputs" id="qInputs">
+      <label class="field"><span>Real part</span><input id="qA" type="text" inputmode="decimal" autocomplete="off"></label>
+      <label class="field"><span>Imaginary part</span><input id="qB" type="text" inputmode="decimal" autocomplete="off"></label>
+      <div class="row" style="margin:0"><button class="primary" id="qCheck">Check</button></div>
+    </div>
+    <div class="row" style="margin:8px 0 0"><button id="qShow">Show answer</button><button id="qNew">New question</button></div>
+    <div class="err" id="qErr"></div>
+    <svg class="nl" id="qSvg" viewBox="0 0 1000 300" role="img" aria-label="Quiz plane"></svg>
+    <div class="feedback" id="qFb" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ===================== Pager (filled in by the shared navigation) ===================== -->
+<nav class="wide">
+  <div class="pager"></div>
+  <div class="meta">1.B.9 · Prerequisites: 1.B.1, 1.B.2, 1.B.3 · Leads to: Chapter 2 (sets and proof), Chapter 5 (rotations), Chapter 6 (limits)</div>
+</nav>
+</main>
+
+<script>
+/* =====================================================================
+   1. HELPERS
+   ===================================================================== */
+const NS = 'http://www.w3.org/2000/svg';
+const $ = id => document.getElementById(id);
+function mk(tag, attrs, parent){                           // create an SVG element with attributes
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function txt(parent, x, y, s, cls, extra){                 // create an SVG text element
+  extra = Object.assign({}, extra || {});
+  // a CSS class's text-anchor beats the attribute, so move any requested anchor into the style
+  if (extra['text-anchor']){ extra.style = (extra.style ? extra.style + ';' : '') + 'text-anchor:' + extra['text-anchor']; delete extra['text-anchor']; }
+  const t = mk('text', Object.assign({ x, y, class: cls || '' }, extra), parent);
+  t.textContent = s;
+  return t;
+}
+const gcd = (a, b) => { a = Math.abs(a); b = Math.abs(b); while (b){ [a, b] = [b, a % b]; } return a || 1; };
+function num(x, d){ if (d === undefined) d = 3; const r = Math.round(x * Math.pow(10, d)) / Math.pow(10, d); return r === 0 ? '0' : (r < 0 ? '−' : '') + String(Math.abs(r)); }
+function parseNum(s){                                      // integers, decimals, a/b, leading minus
+  s = String(s).trim().replace(/[−–]/g, '-');
+  if (/^-?\d+(\.\d+)?$|^-?\.\d+$/.test(s)) return parseFloat(s);
+  const m = s.match(/^(-?\d+)\s*\/\s*(\d+)$/);
+  if (m && +m[2] !== 0) return +m[1] / +m[2];
+  return NaN;
+}
+const ease = t => t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+const SYM = ['ℕ', 'ℤ', 'ℚ', 'ℝ', 'ℂ'];
+const NAME = ['natural', 'integers', 'rational', 'real', 'complex'];
+const COL = j => `var(--s${j})`;
+// Write a + bi nicely: "2 + i", "−1 + 2i", "−i", "3"
+function fmtC(a, b){
+  const A = num(a, 2), B = Math.abs(b) === 1 ? '' : num(Math.abs(b), 2);
+  if (Math.abs(b) < 1e-9) return A;
+  const ip = `${B}i`;
+  if (Math.abs(a) < 1e-9) return (b < 0 ? '−' : '') + ip;
+  return `${A} ${b < 0 ? '−' : '+'} ${ip}`;
+}
+
+const svgCss = document.createElement('style');
+svgCss.textContent = `
+  .ax{stroke:var(--ink);stroke-width:1.6} .axF{stroke:var(--line2);stroke-width:1}
+  .tk{stroke:var(--ink);stroke-width:1.6} .tkG{stroke:var(--muted);stroke-width:1.2}
+  .lb{fill:var(--ink);font:600 12.5px var(--mono);text-anchor:middle} .lbG{fill:var(--muted);font:500 12px var(--mono);text-anchor:middle}
+  .halo{paint-order:stroke;stroke:var(--bg);stroke-width:5px}
+  .big{font:700 15px var(--mono);text-anchor:middle}
+  .cap{fill:var(--muted);font:500 12px var(--sans)}
+  .nestL{font:700 13px var(--sans)} .nestE{font:500 12px var(--mono)}
+  .sq{fill:none;stroke:var(--ink);stroke-width:1.8}
+  .sep{stroke:var(--line);stroke-width:1}
+  .grid{stroke:var(--line);stroke-width:1}
+`;
+document.head.appendChild(svgCss);
+// An arrowhead marker in a given color (re-created on each draw because the SVG is cleared)
+function arrowDefs(svg, id, color){
+  const d = mk('defs', {}, svg), m = mk('marker', { id, viewBox: '0 0 10 10', refX: 8, refY: 5, markerWidth: 7, markerHeight: 7, orient: 'auto-start-reverse' }, d);
+  mk('path', { d: 'M0,0 L10,5 L0,10 z', style: `fill:${color}` }, m);
+}
+// A circular arc around (cx, cy) from angle t0 to t1 (radians, math direction: counterclockwise is positive), as a path
+function arcD(cx, cy, r, t0, t1){
+  const n = Math.max(2, Math.ceil(Math.abs(t1 - t0) / 0.05)); let d = '';
+  for (let k = 0; k <= n; k++){ const t = t0 + (t1 - t0) * k / n; d += (k ? ' L' : 'M') + (cx + r * Math.cos(t)).toFixed(1) + ',' + (cy - r * Math.sin(t)).toFixed(1); }
+  return d;
+}
+
+/* =====================================================================
+   2. NESTED SETS PANEL (shared by the ladder and the classifier)
+   ===================================================================== */
+const EX = ['0, 1, 2, 3, …', '−1, −2, −3, …', '½, −2/3, 0.75', '√2, π', 'i, 2 + 3i'];
+// cur = newest set invented so far (−1..4); e = how far the newest one has faded in; mark = {j, label} to point at one set
+function drawNest(g, ox, oy, W, H, cur, e, mark, step){
+  step = step || 26;
+  for (let j = 4; j >= 0; j--){
+    const ins = (4 - j) * step, x = ox + ins, y = oy + ins, w = W - 2 * ins, h = H - 2 * ins;
+    const made = j <= cur, isNew = j === cur, marked = mark && mark.j === j;
+    mk('rect', { x, y, width: w, height: h, rx: 14, style: `fill:${COL(j)};fill-opacity:${marked ? .26 : made ? (isNew ? .1 * e : .1) : 0};stroke:${COL(j)};stroke-width:${isNew || marked ? 2.6 : 1.3};stroke-opacity:${made ? 1 : .45}${made ? '' : ';stroke-dasharray:5 5'}` }, g);
+    txt(g, x + 10, y + 18, `${SYM[j]} ${NAME[j]}${made ? '' : ' (not yet)'}`, 'nestL', { style: `fill:${COL(j)};opacity:${made ? 1 : .5}` });
+    if (made){
+      if (j === 0) txt(g, x + w / 2, y + h / 2 + 12, EX[0], 'nestE', { style: `fill:${COL(0)}`, 'text-anchor': 'middle' });
+      else txt(g, x + w - 10, y + 18, EX[j], 'nestE', { style: `fill:${COL(j)};opacity:${isNew ? e : 1}`, 'text-anchor': 'end' });
+    }
+    if (marked){
+      const mx = x + w / 2, my = j === 0 ? y + h / 2 - 8 : y + 17;
+      txt(g, mx, my, `● ${mark.label} lives here`, 'nestL', { style: `fill:${COL(j)};font-size:14px`, 'text-anchor': 'middle', class: 'nestL halo' });
+    }
+  }
+}
+
+/* =====================================================================
+   3. THE NUMBER LADDER
+   ===================================================================== */
+const RUNGS = [
+  { eq: '2 + 3 = x', sol: 'x = 5', why: 'Counting: 0, 1, 2, 3, … Adding (or multiplying) two counts always gives a count.', breaks: 'But <b>x + 5 = 3</b> has no answer here: no count plus 5 makes 3.' },
+  { eq: 'x + 5 = 3', sol: 'x = −2', why: 'Invent the negatives (1.B.1): now every subtraction has an answer.', breaks: 'But <b>3x = 2</b> has no answer here: no integer times 3 makes 2.' },
+  { eq: '3x = 2', sol: 'x = 2/3', why: 'Invent the fractions (1.B.3): now every division (except by 0) has an answer, and the line is crowded with points.', breaks: 'But <b>x² = 2</b> has no answer here: no fraction squared is exactly 2 (section 3).' },
+  { eq: 'x² = 2', sol: 'x = √2 ≈ 1.41421…', why: 'Fill every last gap in the line, including lengths like the diagonal of a unit square.', breaks: 'But <b>x² = −1</b> has no answer here: every real number squared is 0 or positive.' },
+  { eq: 'x² = −1', sol: 'x = i  (or −i)', why: 'Step off the line into a plane. i is a quarter turn: do it twice and you get a half turn, which is × (−1).', breaks: 'And the ladder stops here: every polynomial equation has a solution in ℂ.' },
+];
+const lad = { r: 0, e: 1, raf: 0, playing: false, timer: 0 };
+RUNGS.forEach((R, i) => {
+  const b = document.createElement('button'); b.className = 'rung';
+  b.style.borderColor = COL(i);
+  b.innerHTML = `<b style="color:${COL(i)}">${SYM[i]} ${NAME[i]}</b><small>${i ? 'solves ' + R.eq : R.eq}</small>`;
+  b.onclick = () => { stopL(); chooseL(i); };
+  $('rungs').appendChild(b);
+});
+function chooseL(i){ lad.r = i; lad.e = 0; animL(); }
+// Draw the left panel: the numbers available on rung r. New ones fade in with e.
+function drawView(g, r, e){
+  const L = 40, R = 570;
+  if (r <= 1){                                            // N and Z: dots on a line from −5 to 6
+    const lo = -5, hi = 6, y = 175, X = v => L + (v - lo) / (hi - lo) * (R - L);
+    mk('line', { x1: L - 10, y1: y, x2: R + 10, y2: y, class: 'axF' }, g);
+    for (let v = lo; v <= hi; v++){
+      mk('line', { x1: X(v), y1: y - 6, x2: X(v), y2: y + 6, class: 'tkG' }, g);
+      if (v >= 0) mk('circle', { cx: X(v), cy: y, r: 6.5, style: `fill:${COL(0)}` }, g);
+      else if (r === 1) mk('circle', { cx: X(v), cy: y, r: 6.5, style: `fill:${COL(1)};opacity:${e}` }, g);
+      else txt(g, X(v), y + 5, '?', 'lbG');
+      txt(g, X(v), y + 30, v < 0 ? '−' + (-v) : String(v), v < 0 && r === 0 ? 'lbG' : 'lb');
+    }
+    const s = r === 0 ? 5 : -2;
+    mk('circle', { cx: X(s), cy: y, r: 13, style: `fill:none;stroke:${COL(r)};stroke-width:2.5;opacity:${e}` }, g);
+    txt(g, X(s), y - 26, RUNGS[r].sol, 'big halo', { style: `fill:${COL(r)};opacity:${e}` });
+    txt(g, L, 40, r === 0 ? 'Only the dots exist: nothing left of 0 yet.' : 'The negatives fill in the left side.', 'cap');
+  } else if (r === 2){                                    // Q: fraction ticks between −1 and 2
+    const lo = -1, hi = 2, y = 175, X = v => L + (v - lo) / (hi - lo) * (R - L);
+    mk('line', { x1: L - 10, y1: y, x2: R + 10, y2: y, class: 'axF' }, g);
+    for (let d = 8; d >= 2; d--) for (let p = lo * d + 1; p < hi * d; p++){
+      if (gcd(p, d) !== 1) continue;                       // only fractions in lowest terms, each point once
+      const hh = 16 - d;
+      mk('line', { x1: X(p / d), y1: y - hh, x2: X(p / d), y2: y + hh, style: `stroke:${COL(2)};stroke-width:1.3;opacity:${e}` }, g);
+    }
+    for (let v = lo; v <= hi; v++){ mk('circle', { cx: X(v), cy: y, r: 6.5, style: `fill:${COL(v < 0 ? 1 : 0)}` }, g); txt(g, X(v), y + 34, v < 0 ? '−1' : String(v), 'lb'); }
+    txt(g, X(0.5), y + 34, '½', 'lb', { style: `fill:${COL(2)};opacity:${e}` });
+    mk('circle', { cx: X(2 / 3), cy: y, r: 7, style: `fill:${COL(2)};opacity:${e}` }, g);
+    txt(g, X(2 / 3), y - 30, 'x = 2/3', 'big halo', { style: `fill:${COL(2)};opacity:${e}` });
+    txt(g, L, 40, 'Every amber tick is a fraction (here up to eighths). There are always more in between.', 'cap');
+  } else if (r === 3){                                    // R: unit square, diagonal swung down to √2
+    const lo = -0.2, hi = 2.2, y = 268, X = v => L + (v - lo) / (hi - lo) * (R - L), u = X(1) - X(0);
+    mk('line', { x1: L - 10, y1: y, x2: R + 10, y2: y, class: 'axF' }, g);
+    for (let d = 10; d >= 2; d--) for (let p = 1; p < 2 * d + 1; p++){ if (gcd(p, d) !== 1) continue; mk('line', { x1: X(p / d), y1: y - (12 - d), x2: X(p / d), y2: y + (12 - d), style: `stroke:${COL(2)};stroke-width:1;opacity:.55` }, g); }
+    mk('line', { x1: X(lo), y1: y, x2: X(hi), y2: y, style: `stroke:${COL(3)};stroke-width:4;opacity:${e * .85}` }, g);
+    for (let v = 0; v <= 2; v++){ mk('circle', { cx: X(v), cy: y, r: 6, style: `fill:${COL(0)}` }, g); txt(g, X(v), y + 24, String(v), 'lb'); }
+    mk('rect', { x: X(0), y: y - u, width: u, height: u, class: 'sq' }, g);
+    mk('line', { x1: X(0), y1: y, x2: X(1), y2: y - u, style: `stroke:${COL(3)};stroke-width:2.5` }, g);
+    const t = Math.PI / 4 * (1 - e), rr = u * Math.SQRT2;
+    mk('path', { d: arcD(X(0), y, rr, Math.PI / 4, t), style: `fill:none;stroke:${COL(3)};stroke-width:2;stroke-dasharray:6 5` }, g);
+    mk('circle', { cx: X(0) + rr * Math.cos(t), cy: y - rr * Math.sin(t), r: 7, style: `fill:${COL(3)}` }, g);
+    txt(g, X(0.5) - 12, y - u / 2 - 6, 'd', 'big halo', { style: `fill:${COL(3)}` });
+    txt(g, X(0.5), y - u - 8, '1', 'lb');
+    if (e >= 1) txt(g, X(Math.SQRT2) + 14, y - 12, 'x = √2', 'big halo', { style: `fill:${COL(3)}`, 'text-anchor': 'start' });
+    ['d² = 1² + 1² = 2.', 'Swing d down onto the line:', 'it lands between the', 'amber fraction ticks.'].forEach((l, k) => txt(g, 425, 120 + 17 * k, l, 'cap'));
+  } else {                                                // C: the plane
+    const cx = 305, cy = 150, u = 55;
+    arrowDefs(g.ownerSVGElement, 'arL', COL(4));
+    for (let k = -5; k <= 5; k++){ mk('line', { x1: cx + k * u, y1: cy - 2.3 * u, x2: cx + k * u, y2: cy + 2.3 * u, class: 'grid', style: `opacity:${e}` }, g); }
+    for (let k = -2; k <= 2; k++) mk('line', { x1: cx - 5.2 * u, y1: cy - k * u, x2: cx + 5.2 * u, y2: cy - k * u, class: 'grid', style: `opacity:${e}` }, g);
+    mk('line', { x1: cx - 5.2 * u, y1: cy, x2: cx + 5.2 * u, y2: cy, style: `stroke:${COL(3)};stroke-width:4;opacity:.85` }, g);
+    mk('line', { x1: cx, y1: cy - 2.4 * u, x2: cx, y2: cy + 2.4 * u, style: `stroke:${COL(4)};stroke-width:1.6;stroke-dasharray:5 4;opacity:${e}` }, g);
+    for (let k = -5; k <= 5; k++) if (k) txt(g, cx + k * u, cy + 22, k < 0 ? '−' + (-k) : String(k), 'lb');
+    txt(g, cx - 10, cy + 22, '0', 'lb');
+    mk('path', { d: arcD(cx, cy, u, 0.08, Math.PI / 2 - 0.1), style: `fill:none;stroke:${COL(4)};stroke-width:2.4;opacity:${e}`, 'marker-end': 'url(#arL)' }, g);
+    mk('path', { d: arcD(cx, cy, u, Math.PI / 2 + 0.1, Math.PI - 0.08), style: `fill:none;stroke:${COL(4)};stroke-width:1.8;stroke-dasharray:4 4;opacity:${e * .8}`, 'marker-end': 'url(#arL)' }, g);
+    [[1, 'i'], [-1, '−i']].forEach(([s, l]) => { mk('circle', { cx, cy: cy - s * u, r: 7, style: `fill:${COL(4)};opacity:${e}` }, g); txt(g, cx - 14, cy - s * u + 5, l, 'big halo', { style: `fill:${COL(4)};opacity:${e}`, 'text-anchor': 'end' }); });
+    txt(g, cx + u * 0.8, cy - u * 0.95, '×i: quarter turn', 'cap', { style: `fill:${COL(4)};opacity:${e}` });
+    txt(g, cx - u * 2.6, cy - u * 0.55, '×i again → −1', 'cap', { style: `fill:${COL(4)};opacity:${e * .8}` });
+    txt(g, 30, 36, 'x = i or −i: off the line, one unit up or down.', 'cap');
+  }
+}
+function drawL(){
+  const svg = $('lSvg'); svg.innerHTML = ''; const g = mk('g', {}, svg);
+  const r = lad.r, e = ease(lad.e), R = RUNGS[r];
+  drawView(g, r, e);
+  mk('line', { x1: 605, y1: 12, x2: 605, y2: 288, class: 'sep' }, g);
+  drawNest(g, 618, 12, 372, 276, r, e, null);
+  [...$('rungs').children].forEach((b, j) => b.classList.toggle('on', j === r));
+  $('lEq').innerHTML = `<span style="color:${COL(r)}">${SYM[r]}</span> &nbsp;${R.eq} &nbsp;→&nbsp; <span style="color:${COL(r)}">${R.sol}</span>`;
+  $('lOut').innerHTML = `<b style="color:${COL(r)}">${SYM[r]} ${NAME[r]}${r === 1 || r === 4 ? '' : ' numbers'}.</b> ${R.why} ${R.breaks}`;
+}
+function animL(){
+  cancelAnimationFrame(lad.raf); let last = performance.now();
+  const step = now => { lad.e = Math.min(1, lad.e + (now - last) / 1300); last = now; drawL(); if (lad.e < 1) lad.raf = requestAnimationFrame(step); else if (lad.playing) lad.timer = setTimeout(nextL, 2600); };
+  lad.raf = requestAnimationFrame(step);
+}
+function nextL(){ if (!lad.playing) return; if (lad.r >= 4){ stopL(); return; } chooseL(lad.r + 1); }
+function stopL(){ lad.playing = false; clearTimeout(lad.timer); $('lPlay').textContent = 'Play the story'; }
+$('lPlay').onclick = () => {
+  if (lad.playing){ stopL(); return; }
+  lad.playing = true; $('lPlay').textContent = 'Pause';
+  if (lad.r >= 4){ chooseL(0); } else if (lad.e >= 1) nextL(); else animL();
+};
+$('lReset').onclick = () => { stopL(); cancelAnimationFrame(lad.raf); lad.r = 0; lad.e = 1; drawL(); };
+
+/* =====================================================================
+   4. CLASSIFIER: where does this number live?
+   ===================================================================== */
+// Returns {j, say} for the smallest set containing the typed number, or null if it can't be read
+function classify(raw){
+  let s = String(raw).trim().replace(/[−–]/g, '-').replace(/π/g, 'pi').replace(/√\s*\(?\s*(-?[\d.]+)\s*\)?/g, 'sqrt($1)').replace(/\s+/g, '');
+  let m;
+  if ((m = s.match(/^sqrt\((-?\d+(?:\.\d+)?)\)$/))){                                 // square roots
+    const n = +m[1];
+    if (n < 0){ const r = Math.sqrt(-n); return { j: 4, say: `√(${num(n)}) = ${Number.isInteger(r) ? (r === 1 ? '' : r) : '√' + (-n)}i: a square root of a negative number isn’t on the real line at all.` }; }
+    const r = Math.sqrt(n);
+    if (Number.isInteger(n) && Number.isInteger(r)) return { j: 0, say: `√${n} = ${r}, a counting number in disguise.` };
+    if (Number.isInteger(n)) return { j: 3, say: `${n} isn’t a perfect square, so √${n} ≈ ${num(r, 5)} is irrational${n === 2 ? ' (the proof in section 3)' : ' (the same argument as for √2 works)'}: real, but not a fraction.` };
+    return { j: 3, say: `√${n} ≈ ${num(r, 5)}: a real number.` };
+  }
+  if ((m = s.match(/^(-?\d*)\*?pi(?:\/(\d+))?$/))) return { j: 3, say: `π ≈ 3.14159… is irrational: its decimal never ends or repeats. So ${raw.trim()} is real, but not a fraction.` };
+  if (s === 'e') return { j: 3, say: 'e ≈ 2.71828… is irrational: a real number that isn’t a fraction.' };
+  if ((m = s.match(/^(-?\d+(?:\.\d+)?)?([+-]?)(\d+(?:\.\d+)?)?i$/))){                // a + bi, bi, i
+    if (!m[1] || !m[2]){ const t = s.replace('i', ''); return { j: 4, say: `${raw.trim()} is a multiple of i, which squares to a negative. It lives off the real line, in the complex plane.` }; }
+    return { j: 4, say: `${raw.trim()} has an imaginary part, so it’s a point off the real line: a complex number.` };
+  }
+  if ((m = s.match(/^(-?)(\d*)\.(\d*?)(\d+)(?:\.\.\.|…)$/))) return { j: 2, say: `A repeating decimal is always a fraction (0.333… = 1/3), so it’s rational.` };
+  if ((m = s.match(/^(-?\d+)\/(\d+)$/)) && +m[2] !== 0){
+    const a = +m[1], b = +m[2], g = gcd(a, b);
+    if (a % b === 0) return a / b >= 0 ? { j: 0, say: `${a}/${b} = ${a / b}, a counting number.` } : { j: 1, say: `${a}/${b} = −${-a / b}, a negative whole number: an integer.` };
+    return { j: 2, say: `${a}/${b}${g > 1 ? ` = ${a / g}/${b / g}` : ''} is a fraction that isn’t a whole number: rational.` };
+  }
+  if (/^-?\d+$/.test(s)){ const n = +s; return n >= 0 ? { j: 0, say: `${n} is a counting number.` } : { j: 1, say: `−${-n} is a negative whole number: an integer, not a counting number.` }; }
+  if ((m = s.match(/^(-?)(\d*)\.(\d+)$/))){
+    const v = parseFloat(s);
+    if (Number.isInteger(v)) return v >= 0 ? { j: 0, say: `${s} = ${v}.` } : { j: 1, say: `${s} = ${num(v)}, an integer.` };
+    const d = Math.pow(10, m[3].length), n = Math.round(Math.abs(v) * d), g = gcd(n, d);
+    return { j: 2, say: `${s} = ${m[1] ? '−' : ''}${n / g}/${d / g}: a terminating decimal is a fraction, so it’s rational.` };
+  }
+  return null;
+}
+['7', '−4', '0.75', '2/3', '0.333…', '√9', '√2', 'π', '3i', '√−9'].forEach(s => { const b = document.createElement('button'); b.className = 'preset'; b.textContent = s; b.onclick = () => { $('inK').value = s; drawK(); }; $('kPresets').appendChild(b); });
+function drawK(){
+  const raw = $('inK').value, c = raw.trim() ? classify(raw) : null;
+  const svg = $('kSvg'); svg.innerHTML = ''; const g = mk('g', {}, svg);
+  if (!c){ $('kErr').textContent = raw.trim() ? 'Try forms like −4, 2/3, 0.75, 0.333…, √2, sqrt(5), pi, 3i or 2+3i.' : 'Type a number.'; drawNest(g, 170, 10, 660, 280, 4, 1, null, 28); $('kOut').innerHTML = ''; return; }
+  $('kErr').textContent = '';
+  drawNest(g, 170, 10, 660, 280, 4, 1, { j: c.j, label: raw.trim() }, 28);
+  const outer = [1, 2, 3, 4].filter(k => k > c.j).map(k => SYM[k]).join(', ');
+  $('kOut').innerHTML = `<b style="color:${COL(c.j)}">Smallest set: ${SYM[c.j]} (${NAME[c.j]}).</b> ${c.say}${outer ? ` Because the sets nest, it also belongs to ${outer}.` : ''}`;
+}
+$('inK').addEventListener('input', drawK); $('inK').addEventListener('focus', e => e.target.select());
+
+/* =====================================================================
+   5. HUNTING FOR √2 WITH FRACTIONS
+   ===================================================================== */
+const dg = { e: 1, b: 5, raf: 0 };
+[2, 5, 12, 29, 70, 408].forEach(b => { const btn = document.createElement('button'); btn.className = 'preset'; btn.textContent = `b = ${b}`; btn.onclick = () => { $('inD').value = b; readD() && drawD(); }; $('dPresets').appendChild(btn); });
+function readD(){
+  const v = $('inD').value.trim(), b = +v;
+  if (!/^\d+$/.test(v) || b < 1 || b > 1000){ $('dErr').textContent = 'Type a whole number from 1 to 1000.'; return false; }
+  $('dErr').textContent = ''; dg.b = b; return true;
+}
+// Write a fraction squared out exactly: (a/b)² = a²/b²
+const sqStr = (a, b) => `(${a}/${b})² = ${a * a}/${b * b} ≈ ${num(a * a / (b * b), 6)}`;
+function drawD(){
+  const svg = $('dSvg'); svg.innerHTML = ''; const g = mk('g', {}, svg);
+  const L = 60, R = 940, y = 250, lo = -0.1, hi = 2.1, X = v => L + (v - lo) / (hi - lo) * (R - L), u = X(1) - X(0), e = ease(dg.e), b = dg.b;
+  const a = Math.floor(Math.SQRT2 * b), r2 = Math.SQRT2;    // a/b ≤ √2 < (a+1)/b
+  // top line: 0..2 with the square
+  mk('line', { x1: L - 10, y1: y, x2: R + 10, y2: y, class: 'ax' }, g);
+  if (u / b >= 5) for (let p = 1; p < 2 * b; p++) if (p % b) mk('line', { x1: X(p / b), y1: y - 6, x2: X(p / b), y2: y + 6, style: `stroke:${COL(2)};stroke-width:1.2` }, g);
+  for (let v = 0; v <= 2; v++){ mk('line', { x1: X(v), y1: y - 10, x2: X(v), y2: y + 10, class: 'tk' }, g); txt(g, X(v), y + 28, String(v), 'lb'); }
+  mk('rect', { x: X(0), y: y - u, width: u, height: u, class: 'sq' }, g);
+  mk('line', { x1: X(0), y1: y, x2: X(1), y2: y - u, style: `stroke:${COL(3)};stroke-width:2.5` }, g);
+  txt(g, X(0.5) - 14, y - u / 2 - 4, 'd', 'big halo', { style: `fill:${COL(3)}` }); txt(g, X(0.5), y - u - 8, 'side 1', 'lbG');
+  const t = Math.PI / 4 * (1 - e), rr = u * r2;
+  mk('path', { d: arcD(X(0), y, rr, Math.PI / 4, t), style: `fill:none;stroke:${COL(3)};stroke-width:2;stroke-dasharray:6 5` }, g);
+  mk('circle', { cx: X(0) + rr * Math.cos(t), cy: y - rr * Math.sin(t), r: 7, style: `fill:${COL(3)}` }, g);
+  if (e < 1){ $('dOut').innerHTML = 'Swinging the diagonal down…'; return; }
+  // the two neighbouring fractions on the top line, and the zoom funnel
+  [[a, 'lo'], [a + 1, 'hi']].forEach(([p, k]) => { mk('line', { x1: X(p / b), y1: y - 14, x2: X(p / b), y2: y + 14, style: `stroke:${COL(2)};stroke-width:2.4` }, g); });
+  txt(g, X(r2), y - 24, '√2', 'big halo', { style: `fill:${COL(3)}` });
+  const y2 = 370, ZL = 160, ZR = 840, Z = v => ZL + (v - a / b) * b * (ZR - ZL);
+  mk('polygon', { points: `${X(a / b)},${y + 14} ${X((a + 1) / b)},${y + 14} ${ZR},${y2 - 18} ${ZL},${y2 - 18}`, style: `fill:${COL(2)};opacity:.12` }, g);
+  mk('line', { x1: ZL - 30, y1: y2, x2: ZR + 30, y2: y2, class: 'ax' }, g);
+  [[a, ZL], [a + 1, ZR]].forEach(([p, x]) => { mk('line', { x1: x, y1: y2 - 12, x2: x, y2: y2 + 12, style: `stroke:${COL(2)};stroke-width:2.4` }, g); txt(g, x, y2 + 32, `${p}/${b}`, 'big', { style: `fill:${COL(2)}` }); });
+  mk('circle', { cx: Z(r2), cy: y2, r: 7, style: `fill:${COL(3)}` }, g);
+  txt(g, Z(r2), y2 - 24, '√2', 'big halo', { style: `fill:${COL(3)}` });
+  txt(g, 20, y2 + 5, `zoom ×${b}`, 'cap');
+  const lo2 = a * a, hi2 = (a + 1) * (a + 1), bb = b * b;
+  $('dOut').innerHTML = `With pieces of size 1/${b}: <b style="color:${COL(2)}">${a}/${b}</b> is just below and <b style="color:${COL(2)}">${a + 1}/${b}</b> just above. Check by squaring: ${sqStr(a, b)} (${lo2 === 2 * bb ? 'exactly 2!' : 'less than 2'}) and ${sqStr(a + 1, b)} (more than 2). ` +
+    `Neither is 2, so √2 sits strictly in the gap. ${b >= 29 ? `The gap is only 1/${b} wide, and ${Math.abs(lo2 - 2 * bb) === 1 || Math.abs(hi2 - 2 * bb) === 1 ? 'one of these misses by just 1/' + bb + ' when squared' : 'still the square misses'}. Close, but never exact.` : 'Try a bigger denominator: the gap shrinks, but √2 never lands on a cut.'}`;
+}
+function playD(){ if (!readD()) return; dg.e = 0; cancelAnimationFrame(dg.raf); let last = performance.now();
+  const step = now => { dg.e = Math.min(1, dg.e + (now - last) / 1600); last = now; drawD(); if (dg.e < 1) dg.raf = requestAnimationFrame(step); };
+  dg.raf = requestAnimationFrame(step); }
+$('dPlay').onclick = playD;
+$('inD').addEventListener('input', () => { if (readD()){ dg.e = 1; drawD(); } });
+$('inD').addEventListener('focus', e => e.target.select());
+$('inD').addEventListener('keydown', e => { if (e.key === 'Enter') playD(); });
+
+/* =====================================================================
+   6. MULTIPLYING BY i IS A QUARTER TURN
+   ===================================================================== */
+const tn = { path: [[1, 0]], ops: [], anim: null, raf: 0 };      // path: every position so far; ops: '×i' or '×(−1)' per step
+const rotQ = ([a, b], k) => { for (let s = 0; s < ((k % 4) + 4) % 4; s++) [a, b] = [-b, a]; return [a, b]; };   // k quarter turns
+[['1', 1, 0], ['2 + i', 2, 1], ['3', 3, 0], ['−1 + 2i', -1, 2], ['i', 0, 1]].forEach(([l, a, b]) => {
+  const btn = document.createElement('button'); btn.className = 'preset'; btn.textContent = l;
+  btn.onclick = () => { $('inTa').value = num(a); $('inTb').value = num(b); startT(); }; $('tPresets').appendChild(btn);
+});
+function startT(){
+  const a = parseNum($('inTa').value), b = parseNum($('inTb').value);
+  if (isNaN(a) || isNaN(b)){ $('tErr').textContent = 'Fill in both parts with a number.'; return false; }
+  if (Math.abs(a) > 4 || Math.abs(b) > 4){ $('tErr').textContent = 'Keep both parts between −4 and 4 so the turns fit on the picture.'; return false; }
+  if (a === 0 && b === 0){ $('tErr').textContent = 'Pick a point other than 0: turning 0 leaves it at 0.'; return false; }
+  $('tErr').textContent = ''; cancelAnimationFrame(tn.raf); tn.anim = null; tn.path = [[a, b]]; tn.ops = []; drawT(); return true;
+}
+// Draw a plane (shared by the explorer and the quiz answer). path = positions, anim = {from, quarter turns, t}
+function drawPlane(svg, cx, cy, u, nx, ny, path, anim, labels){
+  svg.innerHTML = ''; const g = mk('g', {}, svg); arrowDefs(svg, 'ar_' + svg.id, COL(4));
+  for (let k = -nx; k <= nx; k++) mk('line', { x1: cx + k * u, y1: cy - ny * u, x2: cx + k * u, y2: cy + ny * u, class: 'grid' }, g);
+  for (let k = -ny; k <= ny; k++) mk('line', { x1: cx - nx * u, y1: cy - k * u, x2: cx + nx * u, y2: cy - k * u, class: 'grid' }, g);
+  mk('line', { x1: cx - nx * u - 8, y1: cy, x2: cx + nx * u + 8, y2: cy, style: `stroke:${COL(3)};stroke-width:3` }, g);
+  mk('line', { x1: cx, y1: cy - ny * u - 8, x2: cx, y2: cy + ny * u + 8, class: 'ax' }, g);
+  for (let k = -nx; k <= nx; k++) if (k) txt(g, cx + k * u, cy + 18, k < 0 ? '−' + (-k) : String(k), 'lbG');
+  for (let k = -ny; k <= ny; k++) if (k) txt(g, cx - 14, cy - k * u + 4, (k < 0 ? '−' : '') + (Math.abs(k) === 1 ? '' : Math.abs(k)) + 'i', 'lbG', { 'text-anchor': 'end' });
+  txt(g, cx + nx * u - 4, cy - 8, 'real line', 'cap', { style: `fill:${COL(3)}`, 'text-anchor': 'end' });
+  const P = ([a, b]) => [cx + a * u, cy - b * u];
+  // completed turns: dashed arcs between consecutive positions, faded ghosts for earlier positions
+  for (let k = 1; k < path.length; k++){
+    const [a0, b0] = path[k - 1], [a1, b1] = path[k], r = Math.hypot(a0, b0) * u;
+    const t0 = Math.atan2(b0, a0); let t1 = Math.atan2(b1, a1); while (t1 <= t0 + 1e-9) t1 += 2 * Math.PI;
+    mk('path', { d: arcD(cx, cy, r, t0 + 0.06, t1 - 0.06), style: `fill:none;stroke:${COL(4)};stroke-width:1.8;stroke-dasharray:5 4;opacity:.55`, 'marker-end': `url(#ar_${svg.id})` }, g);
+  }
+  path.forEach((p, k) => {
+    const [x, y] = P(p), last = k === path.length - 1 && !anim;
+    if (!last){ mk('circle', { cx: x, cy: y, r: 6, style: `fill:${COL(4)};opacity:.35` }, g); }
+    if (labels && (last || k === 0)) txt(g, x + 10, y + (p[1] < 0 ? 24 : -10), (labels[k] || '') + fmtC(p[0], p[1]), 'lb halo', { 'text-anchor': 'start', style: `fill:${COL(4)}` });
+  });
+  // the moving point: from its start, turned by an eased fraction of its quarter turns
+  let cur = path[path.length - 1];
+  if (anim){ const r = Math.hypot(anim.from[0], anim.from[1]), t0 = Math.atan2(anim.from[1], anim.from[0]), t = t0 + anim.q * Math.PI / 2 * ease(anim.t);
+    mk('path', { d: arcD(cx, cy, r * u, t0, t), style: `fill:none;stroke:${COL(4)};stroke-width:2.4` }, g); cur = [r * Math.cos(t), r * Math.sin(t)]; }
+  const [x, y] = P(cur);
+  mk('line', { x1: cx, y1: cy, x2: x, y2: y, style: `stroke:${COL(4)};stroke-width:1.5;opacity:.6` }, g);
+  mk('circle', { cx: x, cy: y, r: 8, style: `fill:${COL(4)};stroke:var(--paper);stroke-width:2.5` }, g);
+  mk('circle', { cx, cy, r: 4, style: 'fill:var(--ink)' }, g);
+}
+function drawT(){
+  const labels = ['z = '].concat(tn.ops.map(() => ''));
+  drawPlane($('tSvg'), 330, 190, 40, 7, 4, tn.path, tn.anim, labels);
+  const svg = $('tSvg'), g = mk('g', {}, svg);
+  // a running log on the right
+  let y = 40; txt(g, 690, y, 'Step by step', 'nestL', { style: 'fill:var(--ink)' });
+  tn.path.forEach((p, k) => { if (k > 9) return; y += 26; txt(g, 690, y, k === 0 ? `z = ${fmtC(p[0], p[1])}` : `${tn.ops[k - 1]} → ${fmtC(p[0], p[1])}`, 'lb', { 'text-anchor': 'start', style: `fill:${k === 0 ? 'var(--ink)' : COL(4)}` }); });
+  const n = tn.path.length - 1, z = tn.path[0], w = tn.path[n];
+  let h;
+  if (n === 0) h = `Start: <b>z = ${fmtC(z[0], z[1])}</b>, the point (${num(z[0])}, ${num(z[1])}). Press × i.`;
+  else {
+    const last = tn.ops[n - 1], prev = tn.path[n - 1];
+    h = last === '× i' ? `× i turned (${num(prev[0])}, ${num(prev[1])}) a quarter turn to <b>(${num(w[0])}, ${num(w[1])})</b>: the parts swap places and the new real part changes sign. Same distance from 0.` :
+      `× (−1) is a half turn: (${num(prev[0])}, ${num(prev[1])}) → <b>(${num(w[0])}, ${num(w[1])})</b>.`;
+    const iCount = tn.ops.filter(o => o === '× i').length;
+    if (n >= 2 && tn.ops.slice(-2).every(o => o === '× i')) h += ` Two quarter turns in a row made a half turn, exactly what × (−1) does: that’s why <b>i² = −1</b>.`;
+    if (iCount >= 4 && tn.ops.every(o => o === '× i') && n % 4 === 0) h += ` Four quarter turns: back where you started, so i⁴ = 1.`;
+  }
+  $('tOut').innerHTML = h;
+}
+function turnT(q, label){
+  if (tn.anim) return;                                     // ignore presses mid-turn
+  if (tn.path.length > 9){ tn.path = [tn.path[tn.path.length - 1]]; tn.ops = []; }
+  const from = tn.path[tn.path.length - 1]; tn.anim = { from, q, t: 0 }; let last = performance.now();
+  const step = now => { tn.anim.t = Math.min(1, tn.anim.t + (now - last) / (700 * q)); last = now;
+    if (tn.anim.t >= 1){ tn.anim = null; tn.path.push(rotQ(from, q)); tn.ops.push(label); }
+    drawT(); if (tn.anim) tn.raf = requestAnimationFrame(step); };
+  tn.raf = requestAnimationFrame(step);
+}
+$('tI').onclick = () => turnT(1, '× i'); $('tNeg').onclick = () => turnT(2, '× (−1)'); $('tReset').onclick = () => startT();
+['inTa', 'inTb'].forEach(id => { $(id).addEventListener('input', () => startT()); $(id).addEventListener('focus', e => e.target.select()); });
+
+/* =====================================================================
+   7. QUIZ
+   ===================================================================== */
+const rnd = arr => arr[Math.floor(Math.random() * arr.length)];
+const randInt = (lo, hi) => lo + Math.floor(Math.random() * (hi - lo + 1));
+const qz = { counted: false, done: false, right: 0, total: 0 };
+const SMALL = [
+  ['7', 0, '7 is a counting number.'], ['√9', 0, '√9 = 3.'], ['12/4', 0, '12/4 = 3.'],
+  ['−4', 1, '−4 is a negative whole number.'], ['−12/3', 1, '−12/3 = −4.'],
+  ['0.75', 2, '0.75 = 3/4.'], ['−2/5', 2, '−2/5 is a fraction but not a whole number.'], ['0.333…', 2, 'A repeating decimal: 0.333… = 1/3.'],
+  ['√2', 3, '√2 is not a fraction (the proof in section 3), but it is a point on the line.'], ['π', 3, 'π is irrational: real but not a fraction.'], ['√5', 3, '5 isn’t a perfect square, so √5 is irrational.'],
+  ['i', 4, 'i² = −1; no real number squares to a negative.'], ['3i', 4, '(3i)² = −9: off the real line.'], ['√−9', 4, '√−9 = 3i.'], ['2 + i', 4, 'It has an imaginary part: a point off the line.'],
+];
+const EQS = [
+  ['x + 4 = 9', 0, 'x = 5'], ['2x = 10', 0, 'x = 5'], ['x² = 25', 0, 'x = 5 (or −5)'],
+  ['x + 9 = 4', 1, 'x = −5'], ['x + 7 = 0', 1, 'x = −7'],
+  ['5x = 3', 2, 'x = 3/5'], ['4x = −2', 2, 'x = −1/2'], ['x² = 9/4', 2, 'x = 3/2 (or −3/2)'],
+  ['x² = 7', 3, 'x = √7 (or −√7)'], ['x² = 3', 3, 'x = √3 (or −√3)'],
+  ['x² = −9', 4, 'x = 3i (or −3i)'], ['x² + 1 = 0', 4, 'x = i (or −i)'],
+];
+const WHY_NOT = [ 'In ℕ there are no negatives or fractions.', 'In ℤ there are no fractions.', 'In ℚ there is no exact square root of a non-square like 2.', 'In ℝ nothing squares to a negative.' ];
+const ROTS = [['i', 1], ['−1', 2], ['i²', 2], ['−i', 3], ['i³', 3]];
+// Build the five set buttons once
+SYM.forEach((s, j) => { const b = document.createElement('button'); b.textContent = s; b.title = NAME[j]; b.style.color = COL(j); b.onclick = () => answerSet(j); $('qChoice').appendChild(b); });
+function newQuestion(){
+  Object.assign(qz, { counted: false, done: false });
+  $('qErr').textContent = ''; $('qFb').className = 'feedback'; $('qFb').innerHTML = ''; $('qA').value = ''; $('qB').value = '';
+  $('qSvg').style.display = 'none';
+  qz.type = rnd(['small', 'eq', 'rot']);
+  const setMode = sets => { $('qChoice').style.display = sets ? '' : 'none'; $('qInputs').style.display = sets ? 'none' : ''; };
+  if (qz.type === 'small'){
+    qz.item = rnd(SMALL); setMode(true);
+    $('qTitle').textContent = 'Smallest set it belongs to';
+    $('qText').innerHTML = `What is the <b>smallest</b> set that contains <b class="mono" style="font-size:20px">${qz.item[0]}</b>?`;
+  } else if (qz.type === 'eq'){
+    qz.item = rnd(EQS); setMode(true);
+    $('qTitle').textContent = 'Which set does this equation need?';
+    $('qText').innerHTML = `What is the <b>first</b> set on the ladder (ℕ → ℤ → ℚ → ℝ → ℂ) where <b class="mono" style="font-size:20px">${qz.item[0]}</b> has a solution?`;
+  } else {
+    let a, b; do { a = randInt(-3, 3); b = randInt(-3, 3); } while ((a === 0 && b === 0) || (a === b && Math.random() < .7));
+    const [op, k] = rnd(ROTS); Object.assign(qz, { z: [a, b], op, k, ans: rotQ([a, b], k) }); setMode(false);
+    $('qTitle').textContent = 'Turn by i';
+    $('qText').innerHTML = `Start at <b>z = ${fmtC(a, b)}</b>, the point (${num(a)}, ${num(b)}). Multiply by <b>${op}</b>. Where does it land? Type the real and imaginary parts.`;
+  }
+}
+function countQ(ok){ if (qz.counted) return; qz.counted = true; qz.total++; if (ok) qz.right++; $('score').textContent = `Score: ${qz.right} / ${qz.total}`; }
+function answerSet(j){
+  if (qz.done) return;
+  const [thing, ans, note] = qz.item, ok = j === ans; countQ(ok); qz.done = qz.done || ok;
+  let msg;
+  if (qz.type === 'small'){
+    if (ok) msg = `<b>Right: ${SYM[ans]}.</b> ${note}`;
+    else if (j > ans) msg = `<b>It does live in ${SYM[j]}, but there’s a smaller set.</b> ${note} So the smallest is ${SYM[ans]} (and it’s in every set outside that too).`;
+    else msg = `<b>Not in ${SYM[j]}.</b> ${note} The smallest set is ${SYM[ans]}.`;
+  } else {
+    if (ok) msg = `<b>Right: ${SYM[ans]}.</b> ${note}${ans ? ' ' + WHY_NOT[ans - 1] : ''}`;
+    else if (j > ans) msg = `<b>It works in ${SYM[j]}, but you don’t need to climb that far.</b> ${note} is already in ${SYM[ans]}.`;
+    else msg = `<b>No solution in ${SYM[j]}.</b> ${WHY_NOT[j]} The answer, ${note}, first appears in ${SYM[ans]}.`;
+  }
+  qz.done = true;
+  $('qFb').className = 'feedback ' + (ok ? 'ok' : 'bad'); $('qFb').innerHTML = msg;
+}
+function showPlaneQ(){
+  $('qSvg').style.display = '';
+  const path = [qz.z]; for (let s = 1; s <= qz.k; s++) path.push(rotQ(qz.z, s));
+  drawPlane($('qSvg'), 500, 150, 34, 5, 4, path, null, ['z = '].concat(path.slice(1).map(() => '')));
+}
+function checkQ(){
+  if (qz.type !== 'rot') return;
+  const a = parseNum($('qA').value), b = parseNum($('qB').value);
+  if ($('qA').value.trim() === '' || $('qB').value.trim() === '' || isNaN(a) || isNaN(b)){ $('qErr').textContent = 'Fill in both parts with a number (use 0 for a missing part).'; return; }
+  $('qErr').textContent = '';
+  const [x, y] = qz.ans, [za, zb] = qz.z, same = (p, q) => Math.abs(p[0] - q[0]) < 0.01 && Math.abs(p[1] - q[1]) < 0.01;
+  const ok = same([a, b], qz.ans); let msg;
+  const turnWord = ['', 'a quarter turn', 'a half turn', 'three quarter turns'][qz.k];
+  if (ok) msg = `<b>Right.</b> × ${qz.op} is ${turnWord} counterclockwise: (${num(za)}, ${num(zb)}) → (${num(x)}, ${num(y)}) = ${fmtC(x, y)}.`;
+  else if (same([a, b], rotQ(qz.z, 4 - qz.k)) && qz.k !== 2) msg = `<b>You turned the wrong way.</b> Multiplying by i turns <i>counter</i>clockwise: (a, b) → (−b, a).`;
+  else if (same([a, b], qz.z)) msg = `<b>That’s where it started.</b> × ${qz.op} moves the point ${turnWord}.`;
+  else if (same([a, b], rotQ(qz.z, 2)) && qz.k !== 2) msg = `<b>That’s a half turn (× (−1)).</b> × ${qz.op} is ${turnWord}.`;
+  else if (same([a, b], rotQ(qz.z, 1)) && qz.k !== 1) msg = `<b>That’s one quarter turn (× i).</b> But ${qz.op} = ${qz.k === 2 ? 'i × i, two quarter turns' : 'i × i × i, three quarter turns (or one turn clockwise)'}.`;
+  else if (same([a, b], [zb, za])) msg = `<b>You swapped the parts but missed a sign.</b> A quarter turn sends (a, b) to (−b, a): the new real part is the <i>negative</i> of the old imaginary part.`;
+  else msg = `<b>Not quite.</b> Do it one quarter turn at a time: each × i sends (a, b) to (−b, a).`;
+  countQ(ok); if (ok) qz.done = true; if (ok) showPlaneQ();
+  $('qFb').className = 'feedback ' + (ok ? 'ok' : 'bad'); $('qFb').innerHTML = msg;
+}
+function showQ(){
+  countQ(false); qz.done = true; $('qErr').textContent = ''; const fb = $('qFb'); fb.className = 'feedback info';
+  if (qz.type === 'rot'){ showPlaneQ(); fb.innerHTML = `(${fmtC(qz.z[0], qz.z[1])}) × (${qz.op}) = <b>${fmtC(qz.ans[0], qz.ans[1])}</b>, the point (${num(qz.ans[0])}, ${num(qz.ans[1])}).`; }
+  else if (qz.type === 'small') fb.innerHTML = `<b>${SYM[qz.item[1]]} (${NAME[qz.item[1]]}).</b> ${qz.item[2]}`;
+  else fb.innerHTML = `<b>${SYM[qz.item[1]]}.</b> ${qz.item[2]}.${qz.item[1] ? ' ' + WHY_NOT[qz.item[1] - 1] : ''}`;
+}
+$('qCheck').onclick = checkQ; $('qShow').onclick = showQ; $('qNew').onclick = newQuestion;
+['qA', 'qB'].forEach(id => { $(id).addEventListener('input', () => { $('qErr').textContent = ''; }); $(id).addEventListener('focus', e => e.target.select()); $(id).addEventListener('keydown', e => { if (e.key === 'Enter') checkQ(); }); });
+
+/* =====================================================================
+   8. START
+   ===================================================================== */
+drawL(); drawK(); readD(); drawD(); startT(); newQuestion();
+</script>
+<script src="../shared/toc.js"></script>
+<script src="../shared/nav.js"></script>
+</body>
+</html>

@@ -13,7 +13,7 @@ window.MM_TOC = [
     { id: '1.B.6', title: 'Graphing Proportional Relationships',     built: true, url: 'https://claude.ai/artifact/Dk2wz7bzT1rKY3QduyGiKM' },
     { id: '1.B.7', title: 'Converting Customary and Metric Units',   built: true, url: 'https://claude.ai/artifact/FXQApxvApHWy3Y4ao9oF9o' },
     { id: '1.B.8', title: 'Proportional Reasoning: Solving Problems', built: true, url: 'https://claude.ai/artifact/5BczAcmrhUzUdGzmV9sUiN' },
-    { id: '1.B.9', title: 'Why We Invented Each New Kind of Number' },
+    { id: '1.B.9', title: 'Why We Invented Each New Kind of Number', url: 'https://claude.ai/artifact/8eeikn9pY3hdakM8VL4MhU', built: true },
   ]},
   { ch: 3, title: 'Algebra', pages: [
     { id: '3.B.1', title: 'Variables and Expressions' },
