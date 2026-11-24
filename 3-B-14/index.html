@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Logarithms</title>
+<!-- Fonts: a book serif for prose, a clean sans for UI, a mono for numbers -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<!-- MathJax renders the few formulas on the page (SVG output needs no external stylesheet) -->
+<script>
+  window.MathJax = { tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] }, svg: { fontCache: 'global' } };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<style>
+/* ===================== Theme ===================== */
+:root{
+  --bg:#f7f5ef; --paper:#ffffff; --ink:#1f1e1d; --muted:#6b6a66; --line:#e4e0d5; --line2:#c9c5b8;
+  --accent:#534AB7; --accent-bg:#EEEDFE;
+  --pos:#1D9E75; --neg:#D85A30; --pt:#7F77DD; --pt-soft:#AFA9EC; --pt-dark:#534AB7;
+  --pos-new:#9FE1CB; --neg-new:#F0997B; --ok:#3B6D11; --ok-bg:#EAF3DE; --bad:#A32D2D; --bad-bg:#FCEBEB; --note-bg:#FAF3E3; --note-line:#E7C98A;
+  --serif:"Source Serif 4", Georgia, "Times New Roman", serif;
+  --sans:"IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#191817; --paper:#232220; --ink:#ecebe6; --muted:#a3a29c; --line:#383733; --line2:#55534e;
+    --accent:#AFA9EC; --accent-bg:#2c2852; --pt-dark:#CECBF6; --pt-soft:#6f68b8; --pos-new:#5DCAA5; --neg-new:#F5C4B3;
+    --ok:#C0DD97; --ok-bg:#24400d; --bad:#F7C1C1; --bad-bg:#5a1c1c; --note-bg:#2b261b; --note-line:#6b5626;
+  }
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.7 var(--serif);-webkit-font-smoothing:antialiased}
+
+/* ===================== Layout ===================== */
+.topbar{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1000px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:14px;font:500 13px/1 var(--sans);color:var(--muted)}
+.brand{color:var(--ink);font-weight:600;letter-spacing:.02em}
+.brand b{color:var(--accent)}
+.crumbs{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pid{font-family:var(--mono);color:var(--accent);background:var(--accent-bg);padding:4px 8px;border-radius:6px}
+.prose{max-width:720px;margin:0 auto;padding:0 20px}
+.wide{max-width:1000px;margin:0 auto;padding:0 20px}
+
+/* ===================== Hero ===================== */
+.hero{padding:48px 0 12px}
+.kicker{font:600 13px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1{font:700 46px/1.1 var(--serif);margin:12px 0 14px;letter-spacing:-.01em}
+.dek{font-size:21px;color:var(--muted);margin:0 0 22px;font-style:italic}
+.tiers{display:flex;gap:6px;flex-wrap:wrap;font:500 13px/1 var(--sans);margin-bottom:8px}
+.tier{padding:7px 12px;border-radius:999px;border:1px solid var(--line2);color:var(--muted)}
+.tier.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.tier small{opacity:.7;margin-left:4px}
+
+/* ===================== Text elements ===================== */
+h2{font:700 28px/1.25 var(--serif);margin:56px 0 10px;display:flex;gap:12px;align-items:baseline}
+h2 .n{font:600 14px/1 var(--mono);color:var(--accent);min-width:28px}
+p{margin:0 0 16px}
+em.key{font-style:normal;background:linear-gradient(transparent 62%,var(--accent-bg) 62%);padding:0 2px}
+.goals{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:18px 22px;margin:22px 0 0;font:15.5px/1.6 var(--sans)}
+.goals h3{font:600 12px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
+.goals ul{margin:0;padding-left:20px}
+.note{background:var(--note-bg);border-left:4px solid var(--note-line);border-radius:0 10px 10px 0;padding:14px 18px;margin:20px 0;font:15.5px/1.6 var(--sans)}
+.note b{font-weight:600}
+.notice{list-style:none;padding:0;margin:8px 0 18px;counter-reset:n}
+.notice li{position:relative;padding:12px 0 12px 46px;border-top:1px solid var(--line)}
+.notice li:last-child{border-bottom:1px solid var(--line)}
+.notice li::before{counter-increment:n;content:counter(n);position:absolute;left:4px;top:13px;width:26px;height:26px;border-radius:50%;background:var(--accent-bg);color:var(--accent);font:600 13px/26px var(--mono);text-align:center}
+.goes{list-style:none;padding:0;margin:8px 0 18px}
+.goes li{padding:12px 0;border-top:1px solid var(--line)}
+.goes li:last-child{border-bottom:1px solid var(--line)}
+.math{overflow-x:auto;margin:12px 0 18px;padding:14px 18px;background:var(--paper);border:1px solid var(--line);border-radius:12px}
+.math .cap{font:14px/1.5 var(--sans);color:var(--muted);margin-top:4px}
+.mono{font-family:var(--mono);font-size:.92em;white-space:nowrap}
+.pos{color:var(--pos);font-weight:600}.neg{color:var(--neg);font-weight:600}.pt{color:var(--pt-dark);font-weight:600}
+
+/* ===================== Vocabulary ===================== */
+.vocab{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin:14px 0 8px}
+.term{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font:14.5px/1.5 var(--sans)}
+.term b{display:block;font:600 15px/1.3 var(--serif);margin-bottom:4px}
+
+/* ===================== Interactive cards ===================== */
+.card{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:18px 20px 20px;margin:26px 0;box-shadow:0 1px 0 var(--line),0 12px 32px -22px rgba(0,0,0,.25);font-family:var(--sans)}
+.card-h{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.card-h .tag{font:600 11px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--accent);background:var(--accent-bg);padding:5px 8px;border-radius:6px}
+.card-h h3{font:600 18px/1.3 var(--sans);margin:0}
+.card-h .sub{color:var(--muted);font-size:14.5px;flex-basis:100%}
+.panel-label{font:600 11px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:12px 0 4px;display:flex;justify-content:space-between}
+.panel-label span:last-child{letter-spacing:0;text-transform:none;font-weight:500}
+svg.nl{display:block;width:100%;height:auto;border:1px solid var(--line);border-radius:12px;background:var(--bg);touch-action:manipulation}
+svg.clickable{cursor:pointer}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:12px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0}
+button{font:500 14px/1 var(--sans);padding:9px 14px;border-radius:9px;border:1px solid var(--line2);background:var(--paper);color:var(--ink);cursor:pointer;transition:background .15s,border-color .15s}
+button:hover{border-color:var(--ink)}
+button.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+button.preset.on{background:var(--accent-bg);border-color:var(--accent);color:var(--accent)}
+button:disabled{opacity:.45;cursor:default}
+.desc{min-height:24px;color:var(--muted);font-size:14.5px;margin:2px 0 6px}
+.inputs{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;margin:12px 0 4px}
+.field{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.field input{width:92px;font:500 18px/1 var(--mono);padding:9px 10px;border-radius:9px;border:2px solid var(--line2);background:var(--bg);color:var(--ink);text-align:center}
+.field input:focus{outline:none;border-color:var(--accent)}
+.field i,.eq i,.sym{font:italic 600 1.15em var(--serif);text-transform:none;letter-spacing:0;color:var(--pt-dark)}
+.field.start input{border-color:var(--pt-soft)}
+.field.slide input{border-color:var(--pt)}
+.eq{font:500 20px/1 var(--mono);padding:10px 14px;background:var(--bg);border-radius:10px;border:1px solid var(--line)}
+.err{color:var(--bad);font-size:14px;min-height:20px;margin:2px 0}
+.readout{margin-top:12px;padding:12px 14px;background:var(--bg);border-radius:10px;border:1px solid var(--line);font-size:15px;line-height:1.55;min-height:48px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:12px;font-size:13px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{display:inline-block;width:14px;height:14px;border-radius:50%}
+.sw.pos{background:var(--pos)}.sw.neg{border:2.4px solid var(--neg)}
+.sw.x{position:relative;background:var(--pos);opacity:.45}.sw.x::after{content:'✕';position:absolute;inset:-1px 0 0 0;color:var(--neg);font:700 13px/1 var(--sans);text-align:center}
+.sw.posnew{background:var(--pos-new);border:1.5px solid var(--pos)}.sw.negnew{border:2.4px solid var(--neg-new)}.sw.pt{background:var(--pt)}
+.sw.mv{width:22px;height:4px;border-radius:2px;background:var(--pt-soft)}
+.sw.rl{width:22px;height:0;border-top:2px dashed var(--ink);border-radius:0;opacity:.7}
+.feedback{margin-top:10px;padding:12px 14px;border-radius:10px;font-size:15px;line-height:1.55;display:none}
+.feedback.ok{display:block;background:var(--ok-bg);color:var(--ok)}
+.feedback.bad{display:block;background:var(--bad-bg);color:var(--bad)}
+.feedback.info{display:block;background:var(--accent-bg);color:var(--accent)}
+.score{margin-left:auto;font:600 14px/1 var(--mono);color:var(--muted)}
+
+/* ===================== Footer nav ===================== */
+.pager{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:56px 0 18px;font-family:var(--sans)}
+.pager a,.pager div{display:block;padding:16px 18px;border:1px solid var(--line);border-radius:14px;background:var(--paper);color:var(--ink);text-decoration:none}
+.pager small{display:block;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.pager .next{text-align:right}
+.pager .soon{opacity:.6}
+.meta{font:13px/1.6 var(--sans);color:var(--muted);text-align:center;padding:10px 0 50px}
+
+@media (max-width:720px){
+  body{font-size:17px}
+  h1{font-size:34px}
+  .dek{font-size:18px}
+  h2{font-size:24px}
+  .card{padding:14px 12px 16px;border-radius:14px}
+  .crumbs{display:none}
+  svg.nl{min-width:640px}
+}
+</style>
+<meta name="mm-site" content="1">
+<link rel="stylesheet" href="../shared/nav.css">
+</head>
+<body>
+<style>
+/* ===================== Page-specific styles (3.B.14) ===================== */
+/* exponential (b^x) = orange, logarithm = blue, the moving point = purple, the mirror line y = x = gray */
+:root{ --ex:#D85A30; --lg:#2F6FDB; --pt:#7F77DD; --ok2:#1D9E75; --warn:#C2417D; }
+@media (prefers-color-scheme:dark){ :root{ --ex:#F0997B; --lg:#6EA2F5; --pt:#AFA9EC; --ok2:#5DCAA5; --warn:#EE7FB0; } }
+.kex{color:var(--ex);font-weight:700}.klg{color:var(--lg);font-weight:700}.kpt{color:var(--pt);font-weight:700}
+.field.fe input{border-color:var(--ex)}.field.fl input{border-color:var(--lg)}.field.fp input{border-color:var(--pt)}.field.sm input{width:84px}
+.split{display:grid;grid-template-columns:56% 44%;gap:0;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--paper)}
+.split svg{display:block;width:100%;height:auto;border:none;border-radius:0;touch-action:none}
+.split svg + svg{border-left:1px solid var(--line)}
+.eqs{font:15px/1.9 var(--mono);margin:10px 0 6px;padding:10px 16px;border:1px solid var(--line);border-radius:12px;background:var(--bg)}
+.eqs .lbl{display:inline-block;min-width:170px;font:600 12px var(--sans);letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+table.lists{border-collapse:collapse;margin:10px 0 14px;font:15px var(--sans)}
+table.lists th,table.lists td{border:1px solid var(--line);padding:6px 14px;text-align:left}
+table.lists th{background:var(--paper);font-weight:600}
+table.lists td.m{font-family:var(--mono)}
+pre.code{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:12px 16px;overflow-x:auto;font:13.5px/1.6 var(--mono);margin:10px 0 16px}
+.qtext{font:17px/1.55 var(--serif);margin:4px 0 10px}
+.qexpr{font:600 22px var(--mono);margin:6px 0 10px}
+select{font:500 15px var(--sans);padding:8px 10px;border-radius:9px;border:2px solid var(--line2);background:var(--bg);color:var(--ink)}
+.big{font:600 20px var(--mono);margin:6px 0}
+</style>
+
+<!-- ===================== Top bar ===================== -->
+<div class="topbar"><div class="topbar-in">
+  <span class="brand">Math<b>Mastery</b></span>
+  <span class="crumbs">Chapter 3 · Algebra › Basics</span>
+  <span class="pid">3.B.14</span>
+</div></div>
+
+<!-- ===================== Hero ===================== -->
+<header class="prose hero">
+  <div class="kicker">Chapter 3 · Algebra</div>
+  <h1>Logarithms</h1>
+  <p class="dek">A logarithm answers one question: how many times do I multiply? It turns multiplying into adding, solves for exponents, and squeezes enormous ranges (from a whisper to a jet engine) onto a scale you can read.</p>
+  <div class="tiers" aria-label="Tier">
+    <span class="tier on">Basics <small>you are here</small></span>
+    <span class="tier">Undergraduate</span>
+    <span class="tier">Masters</span>
+  </div>
+  <div class="goals">
+    <h3>On this page</h3>
+    <ul>
+      <li>Read log<sub><i>b</i></sub> <i>y</i> as “how many factors of <i>b</i> make <i>y</i>?”: the <b>logarithm</b> is the <b>inverse</b> of the exponential function.</li>
+      <li>See the curves <i>y</i> = <i>b</i><sup><i>x</i></sup> and <i>y</i> = log<sub><i>b</i></sub> <i>x</i> as mirror images, and use the <b>product</b>, <b>quotient</b> and <b>power rules</b>.</li>
+      <li>Meet the special base <b><i>e</i></b> ≈ 2.718 and the <b>natural logarithm</b> ln, and switch bases with the <b>change-of-base formula</b>.</li>
+      <li>Solve exponential equations (doubling time, <b>half-life</b>) and read <b>logarithmic scales</b>: decibels, earthquake magnitudes and pH.</li>
+    </ul>
+  </div>
+</header>
+
+<main>
+<!-- ===================== §1 ===================== -->
+<section class="prose">
+  <h2><span class="n">1</span>How many times do I multiply?</h2>
+  <p>Start at 1 and keep multiplying by 2: 2, 4, 8, 16, 32. How many 2s does it take to reach 32? Five, because 2⁵ = 32. That count is the <b>logarithm</b>: log<sub>2</sub> 32 = 5, read “log base 2 of 32 is 5.” The number you multiply by is the <b>base</b>.</p>
+  <p style="text-align:center;font:600 18px var(--mono)">log<sub>b</sub> y = x &nbsp;&nbsp;means exactly&nbsp;&nbsp; b<sup>x</sup> = y</p>
+  <p>A logarithm is an exponent: the one you need to put on <i>b</i> to get <i>y</i>. The count doesn’t have to be a whole number. 2³ = 8 and 2⁴ = 16, so log<sub>2</sub> 10 is somewhere between 3 and 4 (about 3.32: three doublings and a bit more). It can be negative too: log<sub>2</sub> (1/8) = −3, because going below 1 means dividing by 2 three times. And log<sub>b</sub> 1 = 0 for every base, since <i>b</i>⁰ = 1: zero multiplications.</p>
+</section>
+
+<section class="wide">
+  <div class="card" id="main">
+    <div class="card-h"><span class="tag">Explore</span><h3>Exponential and logarithm, mirrored</h3>
+      <span class="sub">Choose a base and either an exponent <i>x</i> or a value <i>y</i>; each updates the other. Left: the purple point on <span class="kex">y = bˣ</span> and its mirror image on <span class="klg">y = log_b x</span>, reflected across the dashed line y = x. Drag along the curves. Right: the same thing as repeated multiplication.</span></div>
+    <div class="row" id="lPresets"></div>
+    <div class="desc" id="lDesc"></div>
+    <div class="inputs">
+      <label class="field sm"><span>Base <i>b</i></span><input id="lB" type="text" inputmode="text" autocomplete="off"></label>
+      <label class="field fl sm"><span>Exponent <i>x</i> = log<sub>b</sub> y</span><input id="lX" type="text" inputmode="decimal" autocomplete="off"></label>
+      <label class="field fe sm"><span>Value <i>y</i> = b<sup>x</sup></span><input id="lY" type="text" inputmode="decimal" autocomplete="off"></label>
+    </div>
+    <div class="err" id="lErr"></div>
+    <div class="split" style="margin-top:12px">
+      <svg id="lSvg" viewBox="0 0 560 460" role="img" aria-label="Exponential and logarithm curves" style="cursor:grab"></svg>
+      <svg id="cSvg" viewBox="0 0 440 460" role="img" aria-label="Repeated multiplication"></svg>
+    </div>
+    <div class="eqs" id="lEqs"></div>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--ex)"></i>y = bˣ (exponential)</span>
+      <span><i class="sw" style="background:var(--lg)"></i>y = log_b x (logarithm)</span>
+      <span><svg width="26" height="12" viewBox="0 0 26 12" aria-hidden="true"><line x1="2" y1="6" x2="24" y2="6" stroke="var(--muted)" stroke-width="1.4" stroke-dasharray="5 4"/></svg>the mirror line y = x</span>
+      <span><svg width="26" height="12" viewBox="0 0 26 12" aria-hidden="true"><line x1="2" y1="10" x2="24" y2="2" stroke="var(--ex)" stroke-width="1.4" stroke-dasharray="2 3"/></svg>tangent to bˣ at x = 0 (slope ln b)</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §2 ===================== -->
+<section class="prose">
+  <h2><span class="n">2</span>The log undoes the exponent</h2>
+  <p>The function <i>x</i> ↦ <i>b</i><sup><i>x</i></sup> takes an exponent and gives a value; log<sub><i>b</i></sub> takes the value back to the exponent. They are <b>inverse functions</b> (3.B.13): log<sub><i>b</i></sub>(<i>b</i><sup><i>x</i></sup>) = <i>x</i> and <i>b</i><sup>log<sub><i>b</i></sub> <i>y</i></sup> = <i>y</i>. Swapping inputs and outputs flips a graph across the line <i>y</i> = <i>x</i>, which is why the two curves are mirror images.</p>
+  <p>Read the shapes from that mirror. <i>b</i><sup><i>x</i></sup> is always positive, so the log only accepts positive inputs: log<sub><i>b</i></sub> 0 and log<sub><i>b</i></sub>(−5) don’t exist. The exponential climbs faster and faster, so the log climbs slower and slower: going from 10 to 100 to 1000 adds just 1 each time to log<sub>10</sub>. That slow growth is what makes logs good at taming huge numbers.</p>
+</section>
+
+<!-- ===================== §3 ===================== -->
+<section class="prose">
+  <h2><span class="n">3</span>The log rules: multiplying becomes adding</h2>
+  <p>Exponents add when you multiply powers: 2³ · 2⁴ = 2⁷. Since logs <i>are</i> exponents, every exponent rule becomes a log rule:</p>
+  <table class="lists">
+    <tr><th>Rule</th><th>In symbols</th><th>Example</th><th>Because</th></tr>
+    <tr><td><b>Product rule</b></td><td class="m">log(MN) = log M + log N</td><td class="m">log₂ 32 = log₂ 4 + log₂ 8 = 2 + 3</td><td class="m">2² · 2³ = 2⁵</td></tr>
+    <tr><td><b>Quotient rule</b></td><td class="m">log(M/N) = log M − log N</td><td class="m">log₁₀ 50 − log₁₀ 5 = log₁₀ 10 = 1</td><td class="m">10ᵃ / 10ᶜ = 10ᵃ⁻ᶜ</td></tr>
+    <tr><td><b>Power rule</b></td><td class="m">log(Mᵖ) = p · log M</td><td class="m">log₂ 8⁵ = 5 · log₂ 8 = 15</td><td class="m">(2³)⁵ = 2¹⁵</td></tr>
+  </table>
+  <p>The product rule is why, before calculators, engineers multiplied with a <b>slide rule</b>: two rulers marked in logarithms, slid along each other so that adding lengths multiplies numbers. Try one:</p>
+</section>
+<section class="wide">
+  <div class="card" id="ruler">
+    <div class="card-h"><span class="tag">Explore</span><h3>The log ruler</h3>
+      <span class="sub">Every number sits at a distance log₁₀ of it from 1, so 10, 100 and 1000 are equally spaced. Type two numbers: their lengths add (multiply) or subtract (divide).</span></div>
+    <div class="row" id="rModes"></div>
+    <div class="inputs">
+      <label class="field fe sm"><span><i>M</i></span><input id="rM" type="text" inputmode="decimal" autocomplete="off"></label>
+      <label class="field fl sm"><span><i>N</i></span><input id="rN" type="text" inputmode="decimal" autocomplete="off"></label>
+    </div>
+    <div class="err" id="rErr"></div>
+    <svg class="nl" id="rSvg" viewBox="0 0 1000 230" role="img" aria-label="Logarithmic ruler" style="margin-top:10px"></svg>
+    <div class="eqs" id="rEqs"></div>
+  </div>
+</section>
+
+<!-- ===================== §4 ===================== -->
+<section class="prose">
+  <h2><span class="n">4</span>The natural base <i>e</i>, and switching bases</h2>
+  <p>Three bases matter most. Base 10 (the <b>common logarithm</b>, often written just log) counts digits: log<sub>10</sub> 1000 = 3. Base 2 counts doublings and halvings, which is how computers think. And base <b><i>e</i></b> = 2.71828…, written ln for the <b>natural logarithm</b>, is the one nature prefers.</p>
+  <p>Why such an odd number? Look at the dotted tangent line in the explorer: it shows how steeply <i>b</i><sup><i>x</i></sup> climbs as it passes through (0, 1). For base 2 the slope is about 0.69, for base 3 about 1.10. For base <i>e</i> it is exactly 1, and in fact <i>e</i><sup><i>x</i></sup> grows at a rate equal to its own value everywhere. Anything that grows in proportion to its own size (a bacteria colony, a chain reaction) is naturally written with <i>e</i>, and calculus (Chapter 8) is built around it. The slope of <i>b</i><sup><i>x</i></sup> at 0 is ln <i>b</i>.</p>
+  <p>Calculators usually have only log (base 10) and ln. The <b>change-of-base formula</b> gets you any other base: log<sub><i>b</i></sub> <i>y</i> = ln <i>y</i> / ln <i>b</i> (or log <i>y</i> / log <i>b</i>, the same ratio). For example, log<sub>2</sub> 10 = ln 10 / ln 2 = 2.3026 / 0.6931 ≈ 3.32.</p>
+</section>
+
+<!-- ===================== §5 ===================== -->
+<section class="prose">
+  <h2><span class="n">5</span>Solving for the exponent</h2>
+  <p>When the unknown is <i>in</i> the exponent, take a log of both sides and the power rule brings it down. To solve 2<sup><i>x</i></sup> = 50: <i>x</i> = log<sub>2</sub> 50 = ln 50 / ln 2 ≈ 5.64. Doubling and halving problems are exactly this kind of equation. A colony that doubles every <i>d</i> minutes has grown by a factor of 2<sup><i>t</i>/<i>d</i></sup> after <i>t</i> minutes, so reaching a factor <i>F</i> takes <i>t</i> = <i>d</i> · log<sub>2</sub> <i>F</i>. A radioactive material with <b>half-life</b> <i>h</i> keeps (1/2)<sup><i>t</i>/<i>h</i></sup> of itself.</p>
+</section>
+<section class="wide">
+  <div class="card" id="grow">
+    <div class="card-h"><span class="tag">Explore</span><h3>Doubling and half-life</h3>
+      <span class="sub">“Bacteria”: how long until a colony reaches a target size? “Half-life”: how old is a sample with a given fraction of carbon-14 left (radiocarbon dating)?</span></div>
+    <div class="row" id="gModes"></div>
+    <div class="inputs" id="gIn"></div>
+    <div class="err" id="gErr"></div>
+    <svg class="nl" id="gSvg" viewBox="0 0 1000 300" role="img" aria-label="Growth or decay over time" style="margin-top:10px"></svg>
+    <div class="eqs" id="gEqs"></div>
+  </div>
+</section>
+
+<!-- ===================== §6 ===================== -->
+<section class="prose">
+  <h2><span class="n">6</span>Logarithmic scales</h2>
+  <p>Some quantities span so many powers of ten that an ordinary scale is useless: the loudest sound you can stand is about a trillion times as intense as the quietest you can hear. A <b>logarithmic scale</b> records the logarithm instead, so each step means “multiply by 10” (or by some fixed factor). Small differences in the number mean big differences in the thing.</p>
+</section>
+<section class="wide">
+  <div class="card" id="scales">
+    <div class="card-h"><span class="tag">Explore</span><h3>Three log scales</h3>
+      <span class="sub">Pick a scale, then two things to compare. The readout turns the difference on the scale into a ratio. (Values are typical, approximate examples.)</span></div>
+    <div class="row" id="sModes"></div>
+    <div class="inputs">
+      <label class="field"><span>Compare</span><select id="sA"></select></label>
+      <label class="field"><span>with</span><select id="sB"></select></label>
+    </div>
+    <svg class="nl" id="sSvg" viewBox="0 0 1000 200" role="img" aria-label="A logarithmic scale" style="margin-top:10px"></svg>
+    <div class="readout" id="sOut"></div>
+  </div>
+</section>
+
+<!-- ===================== §7 ===================== -->
+<section class="prose">
+  <h2><span class="n">7</span>Now, in symbols</h2>
+  <div class="math">\[ \log_b y = x \iff b^x = y \qquad (b > 0,\ b \ne 1,\ y > 0) \]<div class="cap">The definition: a logarithm is an exponent.</div></div>
+  <div class="math">\[ \log_b(b^x) = x, \qquad b^{\log_b y} = y, \qquad \log_b 1 = 0, \qquad \log_b b = 1 \]<div class="cap">Inverses undo each other.</div></div>
+  <div class="math">\[ \log_b(MN) = \log_b M + \log_b N, \quad \log_b\frac{M}{N} = \log_b M - \log_b N, \quad \log_b(M^p) = p\log_b M \]<div class="cap">The product, quotient and power rules.</div></div>
+  <div class="math">\[ \log_b y = \frac{\ln y}{\ln b}, \qquad \ln y = \log_e y, \qquad e = \lim_{n\to\infty}\Big(1 + \frac1n\Big)^n \approx 2.71828 \]<div class="cap">Change of base, the natural log, and one definition of e (more in Chapter 8).</div></div>
+  <pre class="code"><code>import math                                    # Python's built-in math tools
+print(math.log(32, 2))                         # 5.0: log base 2 of 32 (2^5 = 32)
+x = math.log(50) / math.log(2)                 # solve 2^x = 50 with change of base (ln 50 / ln 2)
+print(round(x, 3), round(2 ** x, 6))           # 5.644  50.0  (check: 2^5.644 is 50)
+half_life = 5730                               # carbon-14 half-life in years
+age = half_life * math.log2(1 / 0.30)          # 30% left: solve (1/2)^(t/h) = 0.30 for t
+print(round(age))                              # 9953 years old
+print(10 ** ((110 - 60) / 10))                 # 100000.0: a 110 dB concert vs 60 dB talk, in intensity</code></pre>
+</section>
+
+<!-- ===================== §8 ===================== -->
+<section class="prose">
+  <h2><span class="n">8</span>Where this goes</h2>
+  <ul class="goes">
+    <li><b>Next (3.B.15):</b> complex numbers and the roots of polynomials, the last piece of Algebra Basics.</li>
+    <li><b>Later in this book:</b> in calculus, the derivative of ln <i>x</i> is 1/<i>x</i> and <i>e</i><sup><i>x</i></sup> is its own derivative (Chapter 8); in statistics, log scales tame skewed data and the log-likelihood turns products of probabilities into sums (Chapters 9–10); in computer science, “log <i>n</i>” measures how fast good algorithms are (binary search halves the problem each step).</li>
+    <li><b>In the world:</b> decibels, earthquake magnitudes, pH, star brightness (magnitudes), musical octaves (each doubles the frequency), radiocarbon dating, and drug doses that wear off with a half-life.</li>
+  </ul>
+</section>
+
+<!-- ===================== §9 ===================== -->
+<section class="prose">
+  <h2><span class="n">9</span>Words to know</h2>
+  <div class="vocab">
+    <div class="term"><b>Logarithm</b>log<sub>b</sub> y: the exponent you put on b to get y. log<sub>b</sub> y = x means b<sup>x</sup> = y.</div>
+    <div class="term"><b>Base</b>The number being multiplied repeatedly: 2 in log<sub>2</sub> 8. Must be positive and not 1.</div>
+    <div class="term"><b>Exponential function</b>y = b<sup>x</sup>: multiply by b each time x goes up by 1.</div>
+    <div class="term"><b>Inverse</b>A function that undoes another: log<sub>b</sub> undoes b<sup>x</sup>. Their graphs mirror across y = x.</div>
+    <div class="term"><b>Common logarithm</b>Base 10, often written just “log.” It counts powers of ten (digits).</div>
+    <div class="term"><b><i>e</i></b>≈ 2.71828: the base whose exponential has slope 1 at x = 0 and grows at a rate equal to its own value.</div>
+    <div class="term"><b>Natural logarithm</b>ln y = log<sub>e</sub> y.</div>
+    <div class="term"><b>Product, quotient, power rules</b>log(MN) = log M + log N, log(M/N) = log M − log N, log(Mᵖ) = p log M.</div>
+    <div class="term"><b>Change-of-base formula</b>log<sub>b</sub> y = ln y / ln b.</div>
+    <div class="term"><b>Doubling time / half-life</b>The time for a growing amount to double, or a decaying one to halve.</div>
+    <div class="term"><b>Logarithmic scale</b>A scale that records the log of a quantity, so each step multiplies the quantity by a fixed factor.</div>
+  </div>
+</section>
+
+<!-- ===================== Quiz ===================== -->
+<section class="prose"><h2><span class="n">10</span>Check yourself</h2>
+  <p>Three kinds of questions: evaluate a logarithm, use the log rules, and solve for <i>x</i>. Fractions like 1/2 are fine; round decimals to 2 places.</p>
+</section>
+<section class="wide">
+  <div class="card" id="quiz">
+    <div class="card-h"><span class="tag">Quiz</span><h3 id="qTitle"></h3><span class="score" id="score">Score: 0 / 0</span></div>
+    <div class="qtext" id="qText"></div>
+    <div class="qexpr" id="qExpr"></div>
+    <div class="inputs">
+      <label class="field fp sm"><span id="qL"></span><input id="q1" type="text" inputmode="decimal" autocomplete="off"></label>
+      <div class="row" style="margin:0"><button class="primary" id="qCheck">Check</button></div>
+    </div>
+    <div class="row" style="margin:10px 0 0"><button id="qShow">Show answer</button><button id="qNew">New question</button></div>
+    <div class="err" id="qErr"></div>
+    <div class="feedback" id="qFb" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ===================== Pager (filled in by the shared navigation) ===================== -->
+<nav class="wide">
+  <div class="pager"></div>
+  <div class="meta">3.B.14 · Prerequisites: 3.B.7 (exponents), 3.B.13 (inverse functions) · Leads to: 3.B.15, Chapter 8 (calculus of eˣ and ln x), Chapters 9–10 (log-likelihood)</div>
+</nav>
+</main>
+
+<script>
+/* =====================================================================
+   1. HELPERS
+   ===================================================================== */
+const NS = 'http://www.w3.org/2000/svg';
+const $ = id => document.getElementById(id);
+const E = Math.E;
+function mk(tag, attrs, parent){                           // create an SVG element with attributes
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function txt(parent, x, y, s, cls, extra){                 // create an SVG text element
+  extra = Object.assign({}, extra || {});
+  // a CSS class's text-anchor beats the attribute, so move a requested anchor into the style
+  if (extra['text-anchor']){ extra.style = (extra.style ? extra.style + ';' : '') + 'text-anchor:' + extra['text-anchor']; delete extra['text-anchor']; }
+  const t = mk('text', Object.assign({ x, y, class: cls || '' }, extra), parent);
+  t.textContent = s;
+  return t;
+}
+function num(x, d){ if (d === undefined) d = 3; const r = Math.round(x * Math.pow(10, d)) / Math.pow(10, d); return r === 0 ? '0' : (r < 0 ? '−' : '') + String(Math.abs(r)); }
+// Big and small numbers stay readable: 1,000,000 → "1,000,000"; 0.000012 → "1.2 × 10⁻⁵"
+const SUP = { '-': '⁻', 0: '⁰', 1: '¹', 2: '²', 3: '³', 4: '⁴', 5: '⁵', 6: '⁶', 7: '⁷', 8: '⁸', 9: '⁹' };
+const sup = n => String(n).split('').map(c => SUP[c] || c).join('');
+function fmt(v, d){
+  if (d === undefined) d = 3;
+  if (v === 0) return '0';
+  const a = Math.abs(v);
+  if (a >= 1e7 || a < 1e-4){ const k = Math.floor(Math.log10(a)), m = v / Math.pow(10, k); return `${num(m, 2)} × 10${sup(k)}`; }
+  if (a >= 1000) return (v < 0 ? '−' : '') + Math.round(a).toLocaleString('en-US');
+  return num(v, d);
+}
+// Parse a number, a fraction, or the letter e (for the base)
+function parseNum(s){
+  s = String(s).trim().replace(/[−–]/g, '-').replace(/\s+/g, '').toLowerCase();
+  if (s === 'e') return E;
+  if (/^-?\d+(\.\d+)?$|^-?\.\d+$/.test(s)) return parseFloat(s);
+  const m = s.match(/^(-?\d+(?:\.\d+)?)\/(\d+(?:\.\d+)?)$/);
+  if (m && +m[2] !== 0) return +m[1] / +m[2];
+  return NaN;
+}
+const baseName = b => Math.abs(b - E) < 1e-9 ? 'e' : num(b, 3);
+const logName = b => Math.abs(b - E) < 1e-9 ? 'ln' : `log_${baseName(b)}`;
+const logHTML = b => Math.abs(b - E) < 1e-9 ? 'ln' : `log<sub>${baseName(b)}</sub>`;
+const logb = (b, y) => Math.log(y) / Math.log(b);
+function readAll(ids, errId, msg){
+  const out = ids.map(id => parseNum($(id).value));
+  if (ids.some(id => $(id).value.trim() === '') || out.some(isNaN)){ $(errId).textContent = msg || 'Fill in every box with a number.'; return null; }
+  $(errId).textContent = ''; return out;
+}
+function selectOnFocus(ids){ ids.forEach(id => $(id).addEventListener('focus', e => e.target.select())); }
+function buttons(boxId, list, onPick){
+  list.forEach((p, i) => { const b = document.createElement('button'); b.className = 'preset'; b.textContent = p.n; b.onclick = () => onPick(i); $(boxId).appendChild(b); });
+  return i => [...$(boxId).children].forEach((b, j) => b.classList.toggle('on', j === i));
+}
+const line = (g, x1, y1, x2, y2, style) => mk('line', { x1, y1, x2, y2, style }, g);
+const svgCss = document.createElement('style');
+svgCss.textContent = `
+  .tl{fill:var(--muted);font:500 11px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:3px}
+  .lab{font:700 15px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:5px}
+  .labS{font:600 12.5px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+  .cap{fill:var(--muted);font:500 12px var(--sans)}
+  .bt{fill:var(--ink);font:600 13px var(--sans)}
+  .pl{fill:var(--ink);font:700 13px var(--sans);paint-order:stroke;stroke:var(--bg);stroke-width:5px;letter-spacing:.06em;text-transform:uppercase}
+`;
+document.head.appendChild(svgCss);
+
+/* =====================================================================
+   2. EXPONENTIAL AND LOGARITHM, MIRRORED
+   ===================================================================== */
+const LP = [
+  { n: 'log₂ 8', b: 2, x: 3, d: '2 × 2 × 2 = 8: three factors of 2, so log₂ 8 = 3. The point (3, 8) on 2ˣ mirrors to (8, 3) on log₂ x.' },
+  { n: 'log₂ 10', b: 2, y: 10, d: 'Between 2³ = 8 and 2⁴ = 16: three doublings and a bit more. log₂ 10 ≈ 3.32.' },
+  { n: 'log₂ (1/4)', b: 2, x: -2, d: 'Below 1 means dividing: 1 ÷ 2 ÷ 2 = 1/4, so log₂ (1/4) = −2.' },
+  { n: 'log₁₀ 1000', b: 10, x: 3, d: 'Three factors of 10: log₁₀ counts the zeros. The point is far off the chart, but the counter on the right shows it.' },
+  { n: 'log₁₀ 0.01', b: 10, x: -2, d: 'Dividing by 10 twice: log₁₀ 0.01 = −2.' },
+  { n: 'ln 5', b: E, y: 5, d: 'Base e ≈ 2.718: ln 5 ≈ 1.609, since e^1.609 ≈ 5. The tangent at 0 has slope exactly 1.' },
+  { n: 'log_b 1 = 0', b: 3, x: 0, d: 'Every exponential passes through (0, 1), so every log passes through (1, 0): zero multiplications give 1.' },
+  { n: 'Base ½', b: .5, x: 3, d: 'With a base below 1, each step shrinks: (½)³ = 1/8. The curve falls instead of rising, and so does its mirror image.' },
+];
+const lg = { b: 2, x: 3, drag: null };
+const markL = buttons('lPresets', LP, i => { const p = LP[i]; lg.b = p.b; lg.x = p.x !== undefined ? p.x : logb(p.b, p.y); fillL(); markL(i); $('lDesc').textContent = p.d; drawL(); });
+function fillL(src){ if (src !== 'b') $('lB').value = baseName(lg.b); if (src !== 'x') $('lX').value = num(lg.x, 3); if (src !== 'y') $('lY').value = fmt(Math.pow(lg.b, lg.x), 4).replace(/,/g, ''); }
+const LB = { x0: -3, x1: 9, y0: -3, y1: 9 }, LU = 34, LOX = 120, LOY = 350;   // 34 px per unit; the origin's screen position
+const LX = x => LOX + x * LU, LY = y => LOY - y * LU;
+function drawL(){
+  const b = lg.b, x = lg.x, y = Math.pow(b, x);
+  const svg = $('lSvg'); svg.innerHTML = ''; const g = mk('g', {}, svg);
+  for (let k = LB.x0; k <= LB.x1 + 4; k++){ line(g, LX(k), 0, LX(k), 460, 'stroke:var(--line);stroke-width:1'); }
+  for (let k = LB.y0; k <= LB.y1 + 2; k++){ line(g, 0, LY(k), 560, LY(k), 'stroke:var(--line);stroke-width:1'); }
+  line(g, 0, LY(0), 560, LY(0), 'stroke:var(--ink);stroke-width:1.5;opacity:.7'); line(g, LX(0), 0, LX(0), 460, 'stroke:var(--ink);stroke-width:1.5;opacity:.7');
+  for (let k = -3; k <= 12; k++) if (k && LX(k) < 550) txt(g, LX(k), LY(0) + 15, k < 0 ? '−' + (-k) : String(k), 'tl', { 'text-anchor': 'middle' });
+  for (let k = -3; k <= 10; k++) if (k && LY(k) > 8) txt(g, LX(0) - 6, LY(k) + 4, k < 0 ? '−' + (-k) : String(k), 'tl', { 'text-anchor': 'end' });
+  line(g, LX(-3.5), LY(-3.5), LX(13), LY(13), 'stroke:var(--muted);stroke-width:1.4;stroke-dasharray:6 5');
+  txt(g, LX(9.8), LY(10) + 4, 'y = x', 'labS', { 'text-anchor': 'start', style: 'fill:var(--muted)' });
+  // the two curves
+  const path = (f, a0, a1, col, w) => { let d = '', pen = false; for (let k = 0; k <= 400; k++){ const t = a0 + (a1 - a0) * k / 400, p = f(t); const ok = isFinite(p[0]) && isFinite(p[1]) && p[1] > -4 && p[1] < 14 && p[0] > -4 && p[0] < 15; if (ok){ d += (pen ? ' L' : ' M') + LX(p[0]).toFixed(1) + ',' + LY(p[1]).toFixed(1); pen = true; } else pen = false; } mk('path', { d, style: `fill:none;stroke:${col};stroke-width:${w}` }, g); };
+  path(t => [t, Math.pow(b, t)], -4, 14, 'var(--ex)', 3);
+  path(t => [Math.pow(b, t), t], -4, 14, 'var(--lg)', 3);
+  // tangent to b^x at (0, 1): slope ln b
+  const s = Math.log(b); line(g, LX(-3), LY(1 - 3 * s), LX(4), LY(1 + 4 * s), 'stroke:var(--ex);stroke-width:1.4;stroke-dasharray:2 4;opacity:.9');
+  txt(g, LX(1.2), LY(1 + 1.2 * s) + (s > 0 ? -10 : 18), `slope ln ${baseName(b)} = ${num(s, 2)}`, 'labS', { 'text-anchor': 'start', style: 'fill:var(--ex)' });
+  // the point and its mirror
+  const onP = y < 9.5 && y > -3, onQ = y < 13;
+  if (onP){
+    line(g, LX(x), LY(0), LX(x), LY(y), 'stroke:var(--lg);stroke-width:2;stroke-dasharray:4 3');
+    mk('circle', { cx: LX(x), cy: LY(y), r: 8, style: 'fill:var(--pt);stroke:var(--paper);stroke-width:2' }, g);
+    txt(g, LX(x) + (x > 6 ? -12 : 12), LY(y) - 8, `(${num(x, 2)}, ${fmt(y, 2)})`, 'labS', { 'text-anchor': x > 6 ? 'end' : 'start', style: 'fill:var(--ex)' });
+  } else txt(g, 548, 46, `(${num(x, 2)}, ${fmt(y, 2)}) is off the chart ↑`, 'labS', { 'text-anchor': 'end', style: 'fill:var(--ex)' });   // top right, clear of the axis labels
+  if (onQ){
+    mk('circle', { cx: LX(y), cy: LY(x), r: 8, style: 'fill:var(--paper);stroke:var(--pt);stroke-width:3' }, g);
+    txt(g, LX(y) + 10, LY(x) + 20, `(${fmt(y, 2)}, ${num(x, 2)})`, 'labS', { 'text-anchor': 'start', style: 'fill:var(--lg)' });
+    if (onP) line(g, LX(x), LY(y), LX(y), LY(x), 'stroke:var(--pt);stroke-width:1.2;stroke-dasharray:2 3;opacity:.8');
+  } else txt(g, 540, LY(Math.max(-2.5, Math.min(8.5, x))), `→ (${fmt(y, 2)}, ${num(x, 2)})`, 'labS', { 'text-anchor': 'end', style: 'fill:var(--lg)' });
+  drawCounter(b, x, y);
+  const ex = Math.abs(x - Math.round(x)) < 1e-9;
+  $('lEqs').innerHTML =
+    `<span class="lbl">Exponential form</span><span class="kex">${baseName(b)}<sup>${num(x, 3)}</sup> = ${fmt(y, 4)}</span><br>` +
+    `<span class="lbl">Logarithmic form</span><span class="klg">${logHTML(b)} ${fmt(y, 4)} = ${num(x, 3)}</span><br>` +
+    `<span class="lbl">Change of base</span>ln ${fmt(y, 4)} / ln ${baseName(b)} = ${num(Math.log(y), 4)} / ${num(Math.log(b), 4)} = ${num(x, 3)}` +
+    (ex ? '' : `<br><span class="lbl">Between</span>${baseName(b)}<sup>${Math.floor(x)}</sup> = ${fmt(Math.pow(b, Math.floor(x)), 3)} and ${baseName(b)}<sup>${Math.floor(x) + 1}</sup> = ${fmt(Math.pow(b, Math.floor(x) + 1), 3)}`);
+}
+// The right panel: start at 1 and multiply (or divide) by b, once per step
+function drawCounter(b, x, y){
+  const svg = $('cSvg'); svg.innerHTML = ''; const g = mk('g', {}, svg);
+  txt(g, 14, 22, 'how many times?', 'pl');
+  const n = Math.abs(x), whole = Math.floor(n + 1e-9), frac = n - whole, div = x < 0, shown = Math.min(whole, 7);
+  const op = (div ? '÷ ' : '× ') + baseName(b);
+  let v = 1, yy = 60;
+  const box = (val, col) => { mk('rect', { x: 140, y: yy - 20, width: 160, height: 32, rx: 8, style: `fill:${col};opacity:.14;stroke:${col};stroke-width:1.5` }, g); txt(g, 220, yy + 2, fmt(val, 4), 'lab', { 'text-anchor': 'middle', style: `fill:${col}` }); };
+  const arrowDown = (lab, col, part) => { line(g, 220, yy + 14, 220, yy + 34, `stroke:${col};stroke-width:2${part ? ';stroke-dasharray:4 3' : ''}`); mk('polygon', { points: `214,${yy + 30} 226,${yy + 30} 220,${yy + 38}`, style: `fill:${col}` }, g); txt(g, 236, yy + 30, lab, 'labS', { 'text-anchor': 'start', style: `fill:${col}` }); yy += 52; };
+  box(1, 'var(--ink)');
+  for (let k = 1; k <= shown; k++){ arrowDown(`${op}   (step ${k})`, 'var(--ex)'); v = div ? v / b : v * b; box(v, 'var(--ex)'); }
+  if (whole > shown){ txt(g, 220, yy + 26, `… ${whole - shown} more full steps …`, 'cap', { 'text-anchor': 'middle' }); yy += 46; v = Math.pow(b, div ? -whole : whole); box(v, 'var(--ex)'); }
+  if (frac > 1e-9){ const f = Math.pow(b, frac); arrowDown(`${div ? '÷' : '×'} ${num(f, 3)}  (= ${baseName(b)}^${num(frac, 2)}, part of a step)`, 'var(--lg)', true); box(y, 'var(--lg)'); }
+  txt(g, 220, Math.min(448, yy + 20), x === 0 ? 'zero steps: still 1' : `${num(n, 3)} step${Math.abs(n - 1) < 1e-9 ? '' : 's'} of ${op} → ${logName(b)} ${fmt(y, 3)} = ${num(x, 3)}`, 'bt', { 'text-anchor': 'middle' });
+}
+function readLB(){ const b = parseNum($('lB').value); if ($('lB').value.trim() === '' || isNaN(b)){ $('lErr').textContent = 'Type a base (a number, or e).'; return null; } if (b <= 0 || Math.abs(b - 1) < 1e-9 || b > 20){ $('lErr').textContent = 'The base must be positive, not 1, and (here) at most 20.'; return null; } return b; }
+$('lB').addEventListener('input', () => { const b = readLB(); if (b === null) return; $('lErr').textContent = ''; lg.b = b; markL(-1); $('lDesc').textContent = ''; fillL('b'); drawL(); });
+$('lX').addEventListener('input', () => { const v = parseNum($('lX').value); if ($('lX').value.trim() === '' || isNaN(v)){ $('lErr').textContent = 'Type an exponent.'; return; } if (Math.abs(v) > 12){ $('lErr').textContent = 'Keep the exponent between −12 and 12.'; return; } $('lErr').textContent = ''; lg.x = v; markL(-1); $('lDesc').textContent = ''; fillL('x'); drawL(); });
+$('lY').addEventListener('input', () => { const v = parseNum($('lY').value); if ($('lY').value.trim() === '' || isNaN(v)){ $('lErr').textContent = 'Type a value.'; return; } if (v <= 0){ $('lErr').textContent = `No exponent makes ${baseName(lg.b)}ˣ zero or negative, so the log of ${num(v)} doesn’t exist.`; return; } const x = logb(lg.b, v); if (Math.abs(x) > 12){ $('lErr').textContent = 'That value needs an exponent beyond ±12: try a smaller one.'; return; } $('lErr').textContent = ''; lg.x = x; markL(-1); $('lDesc').textContent = ''; fillL('y'); drawL(); });
+selectOnFocus(['lB', 'lX', 'lY']);
+// Drag: grab near either curve; moving sets the exponent (on b^x, from the horizontal position; on the log curve, from the vertical)
+function lPt(ev){ const svg = $('lSvg'), pt = svg.createSVGPoint(); pt.x = ev.clientX; pt.y = ev.clientY; const p = pt.matrixTransform(svg.getScreenCTM().inverse()); return [(p.x - LOX) / LU, (LOY - p.y) / LU]; }
+$('lSvg').addEventListener('pointerdown', ev => { const q = lPt(ev), y = Math.pow(lg.b, lg.x); lg.drag = Math.hypot(q[0] - y, q[1] - lg.x) < Math.hypot(q[0] - lg.x, q[1] - y) ? 'log' : 'exp'; $('lSvg').setPointerCapture(ev.pointerId); dragL(q); });
+$('lSvg').addEventListener('pointermove', ev => { if (lg.drag) dragL(lPt(ev)); });
+$('lSvg').addEventListener('pointerup', () => { lg.drag = null; });
+function dragL(q){ let x = lg.drag === 'exp' ? q[0] : q[1]; x = Math.max(-3, Math.min(9, Math.round(x * 20) / 20)); if (Math.abs(x - Math.round(x)) < .08) x = Math.round(x); lg.x = x; markL(-1); $('lDesc').textContent = ''; $('lErr').textContent = ''; fillL(); drawL(); }
+
+/* =====================================================================
+   3. THE LOG RULER (multiplying = adding lengths)
+   ===================================================================== */
+const RM = [{ n: 'Multiply' }, { n: 'Divide' }];
+let rmode = 0;
+const markR = buttons('rModes', RM, i => { rmode = i; markR(i); drawR(); });
+$('rM').value = 4; $('rN').value = 25;
+const RX = v => 50 + Math.log10(v) / 3 * 900;               // 1 → 50 px, 1000 → 950 px
+function drawR(){
+  const r = readAll(['rM', 'rN'], 'rErr'); if (!r) return;
+  const [M, N] = r;
+  if (M <= 0 || N <= 0){ $('rErr').textContent = 'A log ruler only has positive numbers (there is no log of 0 or a negative).'; return; }
+  const out = rmode ? M / N : M * N;
+  if (M < 1 || M > 1000 || N < 1 || N > 1000 || out < 1 || out > 1000){ $('rErr').textContent = `Keep M, N and the ${rmode ? 'quotient' : 'product'} between 1 and 1000 so they fit on this ruler.`; return; }
+  const svg = $('rSvg'); svg.innerHTML = ''; const g = mk('g', {}, svg), Y = 150;
+  line(g, 40, Y, 960, Y, 'stroke:var(--ink);stroke-width:1.8');
+  for (let d = 0; d < 3; d++) for (let k = 1; k <= 9; k++){ const v = k * Math.pow(10, d), big = k === 1; line(g, RX(v), Y - (big ? 14 : 8), RX(v), Y + (big ? 14 : 8), `stroke:var(--ink);stroke-width:${big ? 2 : 1}`); if (big || k === 2 || k === 5) txt(g, RX(v), Y + 30, fmt(v), big ? 'labS' : 'tl', { 'text-anchor': 'middle', style: big ? 'fill:var(--ink)' : '' }); }
+  line(g, RX(1000), Y - 14, RX(1000), Y + 14, 'stroke:var(--ink);stroke-width:2'); txt(g, RX(1000), Y + 30, '1000', 'labS', { 'text-anchor': 'middle', style: 'fill:var(--ink)' });
+  txt(g, 50, Y + 52, 'distance from 1 = log₁₀ of the number', 'cap', { 'text-anchor': 'start' });
+  const bar = (a, b2, y, col, lab) => { mk('rect', { x: Math.min(RX(a), RX(b2)), y: y - 9, width: Math.abs(RX(b2) - RX(a)), height: 18, rx: 4, style: `fill:${col};opacity:.75` }, g); txt(g, (RX(a) + RX(b2)) / 2, y - 14, lab, 'labS', { 'text-anchor': 'middle', style: `fill:${col}` }); };
+  bar(1, M, 90, 'var(--ex)', `log M = ${num(Math.log10(M), 3)}`);
+  if (rmode === 0) bar(M, out, 90, 'var(--lg)', `+ log N = ${num(Math.log10(N), 3)}`);
+  else bar(out, M, 50, 'var(--lg)', `− log N = ${num(Math.log10(N), 3)}`);
+  mk('circle', { cx: RX(out), cy: Y, r: 8, style: 'fill:var(--pt);stroke:var(--paper);stroke-width:2' }, g);
+  txt(g, RX(out), Y - 22, `${rmode ? 'M/N' : 'MN'} = ${fmt(out, 4)}`, 'lab', { 'text-anchor': 'middle', style: 'fill:var(--pt)' });
+  $('rEqs').innerHTML = rmode === 0
+    ? `<span class="lbl">Product rule</span>log ${fmt(M)} + log ${fmt(N)} = ${num(Math.log10(M), 4)} + ${num(Math.log10(N), 4)} = ${num(Math.log10(out), 4)} = log ${fmt(out, 4)}<br><span class="lbl">So</span>${fmt(M)} × ${fmt(N)} = <b>${fmt(out, 4)}</b>: adding the lengths multiplied the numbers.`
+    : `<span class="lbl">Quotient rule</span>log ${fmt(M)} − log ${fmt(N)} = ${num(Math.log10(M), 4)} − ${num(Math.log10(N), 4)} = ${num(Math.log10(out), 4)} = log ${fmt(out, 4)}<br><span class="lbl">So</span>${fmt(M)} ÷ ${fmt(N)} = <b>${fmt(out, 4)}</b>: subtracting the lengths divided the numbers.`;
+}
+['rM', 'rN'].forEach(id => $(id).addEventListener('input', drawR)); selectOnFocus(['rM', 'rN']);
+
+/* =====================================================================
+   4. DOUBLING AND HALF-LIFE (solving for the exponent)
+   ===================================================================== */
+const GM = [{ n: 'Bacteria' }, { n: 'Half-life (carbon-14)' }];
+const GF = [
+  [['g1', 'Start (cells)', 100, 'fe'], ['g2', 'Doubles every (min)', 20, ''], ['g3', 'Target (cells)', 10000, 'fl']],
+  [['g1', 'Half-life (years)', 5730, ''], ['g2', 'Carbon-14 left (%)', 30, 'fl']],
+];
+let gmode = 0;
+const markG = buttons('gModes', GM, i => { gmode = i; markG(i); buildG(); });
+function buildG(){
+  $('gIn').innerHTML = GF[gmode].map(([id, l, v, c]) => `<label class="field ${c} sm"><span>${l}</span><input id="${id}" type="text" inputmode="decimal" autocomplete="off" value="${v}"></label>`).join('');
+  GF[gmode].forEach(([id]) => $(id).addEventListener('input', drawG)); selectOnFocus(GF[gmode].map(f => f[0]));
+  drawG();
+}
+function drawG(){
+  const r = readAll(GF[gmode].map(f => f[0]), 'gErr'); if (!r) return;
+  let f, t, T, unit, A0, target, steps;
+  if (gmode === 0){
+    const [N0, d, N] = r;
+    if (N0 <= 0 || d <= 0 || N <= 0){ $('gErr').textContent = 'All three must be positive.'; return; }
+    if (N <= N0){ $('gErr').textContent = 'The target must be bigger than the start for a growing colony.'; return; }
+    if (N / N0 > 1e9){ $('gErr').textContent = 'Keep the target within a billion times the start.'; return; }
+    t = d * Math.log2(N / N0); f = s => N0 * Math.pow(2, s / d); unit = 'min'; A0 = N0; target = N;
+    steps = `<span class="lbl">The equation</span>${fmt(N0)} · 2<sup>t/${num(d)}</sup> = ${fmt(N)}<br>` +
+      `<span class="lbl">Divide</span>2<sup>t/${num(d)}</sup> = ${fmt(N)} / ${fmt(N0)} = ${fmt(N / N0, 3)}<br>` +
+      `<span class="lbl">Take log₂</span>t / ${num(d)} = log₂ ${fmt(N / N0, 3)} = ln ${fmt(N / N0, 3)} / ln 2 = ${num(Math.log2(N / N0), 3)} doublings<br>` +
+      `<span class="lbl">Answer</span>t = ${num(d)} × ${num(Math.log2(N / N0), 3)} = <b>${num(t, 1)} minutes</b> (about ${num(t / 60, 1)} hours)`;
+  } else {
+    const [h, pct] = r;
+    if (h <= 0){ $('gErr').textContent = 'The half-life must be positive.'; return; }
+    if (pct <= 0 || pct >= 100){ $('gErr').textContent = 'Use a percentage strictly between 0 and 100.'; return; }
+    const frac = pct / 100; t = h * Math.log2(1 / frac); f = s => 100 * Math.pow(.5, s / h); unit = 'years'; A0 = 100; target = pct;
+    steps = `<span class="lbl">The equation</span>(½)<sup>t/${fmt(h)}</sup> = ${num(frac, 4)}<br>` +
+      `<span class="lbl">Take logs</span>(t / ${fmt(h)}) · ln ½ = ln ${num(frac, 4)} &nbsp;(power rule)<br>` +
+      `<span class="lbl">Solve</span>t = ${fmt(h)} × ln ${num(frac, 4)} / ln ½ = ${fmt(h)} × ${num(Math.log2(1 / frac), 3)} half-lives<br>` +
+      `<span class="lbl">Answer</span>the sample is about <b>${fmt(Math.round(t))} years</b> old`;
+  }
+  const svg = $('gSvg'); svg.innerHTML = ''; const g = mk('g', {}, svg);
+  T = t * 1.25; const L = 80, R = 960, Tp = 30, B = 250, ymax = gmode ? 100 : target * 1.1;
+  const X = s => L + s / T * (R - L), Y = v => B - v / ymax * (B - Tp);
+  line(g, L, B, R, B, 'stroke:var(--ink);stroke-width:1.5'); line(g, L, Tp, L, B, 'stroke:var(--ink);stroke-width:1.5');
+  for (let k = 0; k <= 5; k++){ const s = T * k / 5; txt(g, X(s), B + 18, fmt(Math.round(s)), 'tl', { 'text-anchor': 'middle' }); }
+  txt(g, (L + R) / 2, B + 40, `time (${unit})`, 'cap', { 'text-anchor': 'middle' });
+  [0, .5, 1].forEach(k => txt(g, L - 8, Y(ymax * k) + 4, fmt(ymax * k, 0), 'tl', { 'text-anchor': 'end' }));
+  // doubling / halving marks
+  const per = gmode ? r[0] : r[1];
+  for (let s = per; s < T; s += per) line(g, X(s), B, X(s), Y(f(s)), 'stroke:var(--line2);stroke-width:1;stroke-dasharray:3 4');
+  let d = ''; for (let k = 0; k <= 300; k++){ const s = T * k / 300; d += (k ? ' L' : 'M') + X(s).toFixed(1) + ',' + Y(Math.min(f(s), ymax * 1.05)).toFixed(1); }
+  mk('path', { d, style: 'fill:none;stroke:var(--ex);stroke-width:3' }, g);
+  line(g, L, Y(target), R, Y(target), 'stroke:var(--lg);stroke-width:1.5;stroke-dasharray:6 5');
+  txt(g, R - 4, Y(target) - 8, gmode ? `${num(target)}% left` : `target ${fmt(target)}`, 'labS', { 'text-anchor': 'end', style: 'fill:var(--lg)' });
+  line(g, X(t), B, X(t), Y(target), 'stroke:var(--pt);stroke-width:2');
+  mk('circle', { cx: X(t), cy: Y(target), r: 7, style: 'fill:var(--pt);stroke:var(--paper);stroke-width:2' }, g);
+  txt(g, X(t) + 10, B - 10, `t ≈ ${fmt(gmode ? Math.round(t) : t, 1)} ${unit}`, 'lab', { 'text-anchor': 'start', style: 'fill:var(--pt)' });
+  txt(g, L + 8, Tp + 4, gmode ? 'percent of carbon-14 left' : 'number of cells', 'cap', { 'text-anchor': 'start' });
+  $('gEqs').innerHTML = steps;
+}
+
+/* =====================================================================
+   5. THREE LOG SCALES
+   ===================================================================== */
+const SC = [
+  { n: 'Sound (decibels)', unit: 'dB', lo: 0, hi: 150, step: 10, per: 10, what: 'sound intensity', items: [['threshold of hearing', 0], ['whisper', 30], ['normal conversation', 60], ['busy street traffic', 85], ['rock concert', 110], ['jet engine up close', 140]],
+    say: (a, b, r) => `${b[0]} is ${num(b[1] - a[1])} dB louder than ${a[0]}. Every 10 dB multiplies the intensity by 10, so that’s 10<sup>${num((b[1] - a[1]) / 10, 1)}</sup> ≈ <b>${fmt(r, 3)} times</b> the intensity. (Your ears hear each +10 dB as “about twice as loud”: hearing itself is roughly logarithmic.)` },
+  { n: 'Earthquakes (magnitude)', unit: '', lo: 1, hi: 10, step: 1, per: 1, what: 'shaking', items: [['barely felt', 2.5], ['light (dishes rattle)', 4], ['moderate', 5], ['strong', 6], ['major', 7], ['great', 8], ['largest ever recorded', 9.5]],
+    say: (a, b, r) => `A magnitude ${num(b[1])} quake is ${num(b[1] - a[1], 1)} steps above magnitude ${num(a[1])}. Each step multiplies the ground’s shaking (wave size) by 10, so <b>${fmt(r, 3)} times</b> the shaking, and releases about ${fmt(Math.pow(10, 1.5 * (b[1] - a[1])), 3)} times the energy (×32 per step).` },
+  { n: 'Acidity (pH)', unit: 'pH', lo: 0, hi: 14, step: 1, per: 1, inv: true, what: 'acidity', items: [['battery acid', 0.8], ['lemon juice', 2], ['coffee', 5], ['pure water', 7], ['baking soda in water', 9], ['household bleach', 12.5]],
+    say: (a, b, r) => `pH counts the other way: lower is more acidic. ${a[0]} (pH ${num(a[1])}) vs ${b[0]} (pH ${num(b[1])}): ${num(Math.abs(b[1] - a[1]), 1)} steps apart, and each step is ×10 in hydrogen-ion concentration, so the more acidic one has <b>${fmt(r, 3)} times</b> as much.` },
+];
+let si = 0;
+const markS = buttons('sModes', SC, i => { si = i; markS(i); fillSel(); drawS(); });
+function fillSel(){
+  const it = SC[si].items, opts = it.map((t, k) => `<option value="${k}">${t[0]} (${SC[si].unit === 'dB' ? t[1] + ' dB' : (SC[si].unit === 'pH' ? 'pH ' : 'M ') + t[1]})</option>`).join('');
+  $('sA').innerHTML = opts; $('sB').innerHTML = opts; $('sA').value = si === 2 ? 1 : 2; $('sB').value = si === 2 ? 3 : 4;
+}
+function drawS(){
+  const S = SC[si], a = S.items[+$('sA').value], b = S.items[+$('sB').value];
+  const svg = $('sSvg'); svg.innerHTML = ''; const g = mk('g', {}, svg), L = 50, R = 950, Y = 120, X = v => L + (v - S.lo) / (S.hi - S.lo) * (R - L);
+  line(g, L, Y, R, Y, 'stroke:var(--ink);stroke-width:1.8');
+  for (let v = S.lo; v <= S.hi + 1e-9; v += S.step){ line(g, X(v), Y - 6, X(v), Y + 6, 'stroke:var(--ink)'); txt(g, X(v), Y + 22, num(v), 'tl', { 'text-anchor': 'middle' }); }
+  S.items.forEach((t, k) => { const sel = t === a || t === b; mk('circle', { cx: X(t[1]), cy: Y, r: sel ? 8 : 5, style: `fill:${sel ? 'var(--pt)' : 'var(--muted)'};stroke:var(--paper);stroke-width:2` }, g); const edge = X(t[1]) < 130 ? 'start' : X(t[1]) > 870 ? 'end' : 'middle';   // keep end labels inside the box
+    txt(g, X(t[1]) + (edge === 'start' ? -6 : edge === 'end' ? 6 : 0), Y + (k % 2 ? 46 : -16), t[0], 'labS', { 'text-anchor': edge, style: `fill:${sel ? 'var(--pt)' : 'var(--muted)'}` }); });
+  const lo = Math.min(a[1], b[1]), hi = Math.max(a[1], b[1]), diff = hi - lo, r = Math.pow(10, diff / S.per);
+  if (diff > 0){ mk('path', { d: `M${X(lo)},${Y - 30} Q${(X(lo) + X(hi)) / 2},${Y - 80} ${X(hi)},${Y - 30}`, style: 'fill:none;stroke:var(--lg);stroke-width:2.2' }, g); txt(g, (X(lo) + X(hi)) / 2, Y - 64, `×10 per ${S.per === 10 ? '10 dB' : 'step'}: ×${fmt(r, 3)}`, 'labS', { 'text-anchor': 'middle', style: 'fill:var(--lg)' }); }
+  if (!diff){ $('sOut').innerHTML = 'Pick two different things to compare.'; return; }
+  const [lowItem, highItem] = a[1] <= b[1] ? [a, b] : [b, a];
+  $('sOut').innerHTML = S.say(lowItem, highItem, r);
+}
+['sA', 'sB'].forEach(id => $(id).addEventListener('change', drawS));
+
+/* =====================================================================
+   6. QUIZ
+   ===================================================================== */
+const rnd = arr => arr[Math.floor(Math.random() * arr.length)];
+const randInt = (lo, hi) => lo + Math.floor(Math.random() * (hi - lo + 1));
+const qz = { counted: false, done: false, right: 0, total: 0 };
+const L2 = b => `log<sub>${b}</sub>`;
+function newQuestion(){
+  Object.assign(qz, { counted: false, done: false });
+  $('qErr').textContent = ''; $('qFb').className = 'feedback'; $('qFb').innerHTML = ''; $('q1').value = '';
+  qz.type = rnd(['eval', 'eval', 'rule', 'rule', 'solve', 'solve']);
+  if (qz.type === 'eval'){
+    const pick = rnd(['int', 'int', 'neg', 'half', 'zero']); let b, arg, ans;
+    if (pick === 'int'){ b = rnd([2, 3, 5, 10]); const k = randInt(1, b === 10 ? 5 : b === 5 ? 4 : b === 3 ? 5 : 7); arg = fmt(Math.pow(b, k)); ans = k; }
+    else if (pick === 'neg'){ b = rnd([2, 3, 10]); const k = randInt(1, 3); arg = b === 10 ? String(Math.pow(10, -k)) : `1/${Math.pow(b, k)}`; ans = -k; }
+    else if (pick === 'half'){ [b, arg, ans] = rnd([[4, '2', .5], [9, '3', .5], [8, '2', 1 / 3], [25, '5', .5], [100, '10', .5], [27, '3', 1 / 3]]); }
+    else { b = rnd([2, 7, 10]); arg = '1'; ans = 0; }
+    Object.assign(qz, { b, arg, ans });
+    $('qTitle').textContent = 'Evaluate the logarithm';
+    $('qText').innerHTML = `How many factors of ${b} make ${arg}? Exact answers only (a fraction like 1/2 is fine).`;
+    $('qExpr').innerHTML = `${L2(b)} ${arg} = ?`; $('qL').textContent = 'answer';
+  } else if (qz.type === 'rule'){
+    const kind = rnd(['sum', 'diff', 'pow', 'eval']); const b = rnd([2, 3, 5, 10]);
+    if (kind === 'sum'){ const M = randInt(2, 9), N = randInt(2, 9); Object.assign(qz, { kind, b, ans: M * N, alt: M + N }); $('qExpr').innerHTML = `${L2(b)} ${M} + ${L2(b)} ${N} = ${L2(b)} □`; }
+    else if (kind === 'diff'){ const N = randInt(2, 8), k = randInt(2, 9), M = N * k; Object.assign(qz, { kind, b, ans: k, alt: M - N }); $('qExpr').innerHTML = `${L2(b)} ${M} − ${L2(b)} ${N} = ${L2(b)} □`; }
+    else if (kind === 'pow'){ const p = randInt(2, 3), M = randInt(2, 5); Object.assign(qz, { kind, b, ans: Math.pow(M, p), alt: p * M }); $('qExpr').innerHTML = `${p} · ${L2(b)} ${M} = ${L2(b)} □`; }
+    else { const [bb, s, ans] = rnd([[6, '4 + log<sub>6</sub> 9', 2], [10, '4 + log<sub>10</sub> 25', 2], [2, '40 − log<sub>2</sub> 5', 3], [3, '54 − log<sub>3</sub> 2', 3], [4, '2 + log<sub>4</sub> 8', 2], [5, '50 − log<sub>5</sub> 2', 2]]); Object.assign(qz, { kind, b: bb, ans, alt: null }); $('qExpr').innerHTML = `${L2(bb)} ${s} = □`; }
+    $('qTitle').textContent = 'Use the log rules';
+    $('qText').innerHTML = qz.kind === 'eval' ? 'Combine into one logarithm first, then evaluate.' : 'Fill in the box to make the equation true for every base.';
+    $('qL').textContent = '□';
+  } else {
+    const kind = rnd(['expo', 'coef', 'logeq', 'double']);
+    if (kind === 'expo'){ let b, c; do { b = rnd([2, 3, 5, 1.5]); c = randInt(5, 90); } while (Math.abs(logb(b, c) - Math.round(logb(b, c))) < .02); Object.assign(qz, { kind, b, c, ans: logb(b, c) }); $('qExpr').innerHTML = `${num(b)}<sup>x</sup> = ${c}`; $('qText').innerHTML = 'Solve for x (to 2 decimal places).'; }
+    else if (kind === 'coef'){ const a = randInt(2, 6), b = rnd([2, 3, 10]); let c; do { c = a * randInt(3, 40); } while (Math.abs(logb(b, c / a) - Math.round(logb(b, c / a))) < .02); Object.assign(qz, { kind, a, b, c, ans: logb(b, c / a) }); $('qExpr').innerHTML = `${a} · ${b}<sup>x</sup> = ${c}`; $('qText').innerHTML = 'Solve for x (to 2 decimal places).'; }
+    else if (kind === 'logeq'){ const b = rnd([2, 3, 5, 10]), k = randInt(2, b === 10 ? 4 : 4); Object.assign(qz, { kind, b, k, ans: Math.pow(b, k) }); $('qExpr').innerHTML = `${L2(b)} x = ${k}`; $('qText').innerHTML = 'Solve for x.'; }
+    else { const d = rnd([15, 20, 30, 45, 60]); let m; do { m = randInt(3, 60); } while (Math.abs(Math.log2(m) - Math.round(Math.log2(m))) < .02); Object.assign(qz, { kind, d, m, ans: d * Math.log2(m) }); $('qExpr').textContent = ''; $('qText').innerHTML = `A culture of bacteria doubles every <b>${d} minutes</b>. How many minutes until it is <b>${m} times</b> its starting size? (to 1 decimal place)`; }
+    $('qTitle').textContent = 'Solve for x'; $('qL').textContent = qz.kind === 'double' ? 'minutes' : 'x';
+  }
+}
+function countQ(ok){ if (qz.counted) return; qz.counted = true; qz.total++; if (ok) qz.right++; $('score').textContent = `Score: ${qz.right} / ${qz.total}`; }
+const near = (x, t, tol) => Math.abs(x - t) <= tol;
+function checkQ(){
+  const raw = $('q1').value.trim(), v = parseNum(raw);
+  if (raw === '' || isNaN(v)){ $('qErr').textContent = 'Type a number (fractions like 1/2 are fine).'; return; }
+  $('qErr').textContent = ''; let ok, msg;
+  if (qz.type === 'eval'){
+    const { b, arg, ans } = qz; ok = near(v, ans, 2e-3);   // fractions typed as decimals (0.333) count
+    if (ok) msg = `<b>Right: ${num(ans, 3)}.</b> ${b}<sup>${num(ans, 3)}</sup> = ${arg}.`;
+    else if (near(v, -ans, 1e-6) && ans) msg = '<b>Check the sign.</b> A number below 1 needs a negative exponent (dividing); above 1, positive.';
+    else if (near(v, parseNum(arg) / b, 1e-6)) msg = `<b>That’s ${arg} ÷ ${b}.</b> A log counts how many factors of ${b} multiply to ${arg}, it doesn’t divide once.`;
+    else if (ans && near(v, 1 / ans, 1e-6)) msg = '<b>Upside down.</b> Ask which power of the base gives the number: a root is a fractional power, like 4<sup>1/2</sup> = 2.';
+    else if (ans === 0) msg = '<b>Any base to the power 0 is 1</b>, so the log of 1 is always 0.';
+    else msg = `<b>Not quite.</b> Count: multiply ${b} by itself until you reach ${arg} (or divide, if it’s below 1).`;
+  } else if (qz.type === 'rule'){
+    const { kind, ans, alt } = qz; ok = near(v, ans, 1e-6);
+    if (ok) msg = `<b>Right: ${num(ans)}.</b>` + (kind === 'eval' ? ' Combining gives the log of a power of the base.' : '');
+    else if (alt !== null && near(v, alt, 1e-6)) msg = kind === 'sum' ? '<b>Adding logs multiplies the inside numbers</b>, it doesn’t add them: log M + log N = log(MN).' : kind === 'diff' ? '<b>Subtracting logs divides</b>: log M − log N = log(M/N).' : '<b>The power rule moves the number in front up into an exponent</b>: p log M = log(M<sup>p</sup>), not log(pM).';
+    else msg = kind === 'eval' ? '<b>Not quite.</b> Use the product or quotient rule to make one log, then ask which power of the base you get.' : '<b>Not quite.</b> Product rule: logs add when the numbers multiply. Quotient: subtract when they divide. Power: the coefficient becomes an exponent.';
+  } else {
+    const { kind, ans } = qz, tol = kind === 'logeq' ? 1e-6 : kind === 'double' ? .06 : .006;
+    ok = near(v, ans, tol);
+    if (ok) msg = `<b>Right: ${num(ans, kind === 'double' ? 1 : 2)}.</b>`;
+    else if (kind === 'expo' && near(v, qz.c / qz.b, .006)) msg = `<b>You divided ${qz.c} by ${num(qz.b)}.</b> x is an exponent: x = log<sub>${num(qz.b)}</sub> ${qz.c} = ln ${qz.c} / ln ${num(qz.b)}.`;
+    else if (kind === 'expo' && near(v, Math.log(qz.c), .006)) msg = `<b>That’s ln ${qz.c} alone.</b> Divide by ln ${num(qz.b)} (change of base).`;
+    else if (kind === 'expo' && near(v, Math.log(qz.c) - Math.log(qz.b), .006)) msg = '<b>You subtracted the logs.</b> The change-of-base formula divides: ln c / ln b.';
+    else if (kind === 'coef' && near(v, logb(qz.b, qz.c), .006)) msg = `<b>Divide by ${qz.a} first.</b> ${qz.a} multiplies the whole power, so isolate it: ${qz.b}<sup>x</sup> = ${qz.c}/${qz.a}.`;
+    else if (kind === 'coef' && near(v, logb(qz.a * qz.b, qz.c), .006)) msg = `<b>${qz.a} · ${qz.b}<sup>x</sup> is not (${qz.a * qz.b})<sup>x</sup>.</b> The exponent only applies to the ${qz.b}: divide by ${qz.a} first.`;
+    else if (kind === 'logeq' && (near(v, qz.b * qz.k, 1e-6) || near(v, Math.pow(qz.k, qz.b), 1e-6))) msg = `<b>Rewrite in exponential form:</b> log<sub>${qz.b}</sub> x = ${qz.k} means x = ${qz.b}<sup>${qz.k}</sup>.`;
+    else if (kind === 'double' && near(v, qz.d * qz.m / 2, .06)) msg = '<b>Growth isn’t linear.</b> Count doublings: 2<sup>t/d</sup> = m, so t = d · log₂ m.';
+    else if (kind === 'double' && near(v, Math.log2(qz.m), .06)) msg = `<b>That’s the number of doublings.</b> Multiply by ${qz.d} minutes per doubling.`;
+    else msg = kind === 'logeq' ? '<b>Not quite.</b> log<sub>b</sub> x = k means x = b<sup>k</sup>.' : kind === 'double' ? '<b>Not quite.</b> Solve 2<sup>t/d</sup> = m: t = d · log₂ m = d · ln m / ln 2.' : '<b>Not quite.</b> Isolate the power, then take logs: x = ln(right side) / ln(base).';
+  }
+  countQ(ok); if (ok) qz.done = true;
+  $('qFb').className = 'feedback ' + (ok ? 'ok' : 'bad'); $('qFb').innerHTML = msg;
+}
+function showQ(){
+  countQ(false); qz.done = true; $('qErr').textContent = '';
+  const fb = $('qFb'); fb.className = 'feedback info';
+  if (qz.type === 'eval') fb.innerHTML = `<b>${num(qz.ans, 3)}</b>${Math.abs(qz.ans - 1 / 3) < 1e-9 ? ' (= 1/3)' : ''}: ${qz.b}<sup>${num(qz.ans, 3)}</sup> = ${qz.arg}.`;
+  else if (qz.type === 'rule') fb.innerHTML = `<b>${num(qz.ans)}</b>.`;
+  else if (qz.kind === 'expo') fb.innerHTML = `<b>x ≈ ${num(qz.ans, 2)}</b> = ln ${qz.c} / ln ${num(qz.b)}.`;
+  else if (qz.kind === 'coef') fb.innerHTML = `<b>x ≈ ${num(qz.ans, 2)}</b>: ${qz.b}<sup>x</sup> = ${qz.c}/${qz.a} = ${num(qz.c / qz.a, 3)}, so x = ln ${num(qz.c / qz.a, 3)} / ln ${qz.b}.`;
+  else if (qz.kind === 'logeq') fb.innerHTML = `<b>x = ${qz.ans}</b> = ${qz.b}<sup>${qz.k}</sup>.`;
+  else fb.innerHTML = `<b>${num(qz.ans, 1)} minutes</b> = ${qz.d} × log₂ ${qz.m} = ${qz.d} × ${num(Math.log2(qz.m), 3)}.`;
+}
+$('qCheck').onclick = checkQ; $('qShow').onclick = showQ; $('qNew').onclick = newQuestion;
+$('q1').addEventListener('input', () => { $('qErr').textContent = ''; }); $('q1').addEventListener('keydown', e => { if (e.key === 'Enter') checkQ(); });
+selectOnFocus(['q1']);
+
+/* =====================================================================
+   7. START
+   ===================================================================== */
+$('lPresets').children[0].click();
+markR(0); drawR();
+markG(0); buildG();
+markS(0); fillSel(); drawS();
+newQuestion();
+</script>
+<script src="../shared/toc.js"></script>
+<script src="../shared/nav.js"></script>
+</body>
+</html>

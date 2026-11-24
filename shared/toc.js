@@ -29,7 +29,7 @@ window.MM_TOC = [
     { id: '3.B.11', title: 'Rational Expressions and Functions' },
     { id: '3.B.12', title: 'Transforming Graphs' },
     { id: '3.B.13', title: 'Inverse Functions' },
-    { id: '3.B.14', title: 'Logarithms (Log Explorer)', ext: true, url: 'https://claude.ai/artifact/GkbAXj1R4V1LharhQ9WgZP' },
+    { id: '3.B.14', title: 'Logarithms', url: 'https://claude.ai/artifact/2z9S6MW54Wv2QaJoxx7HLw', built: true },
     { id: '3.B.15', title: 'Complex Numbers and Polynomial Roots' },
   ]},
   { ch: 5, title: 'Trigonometry', pages: [
