@@ -1,0 +1,753 @@
+<style>
+/* ===================== Page-specific styles (5.B.3) ===================== */
+/* corner A and side a = blue, B and b = green, C and c = orange; the height h = purple */
+:root{ --ca:#2F6FDB; --cb:#1D9E75; --cc:#D85A30; --ch:#7F77DD; --soft:#AFA9EC; --pos:#1D9E75; --neg:#D8443A; --fire:#D8443A; }
+@media (prefers-color-scheme:dark){ :root{ --ca:#6EA2F5; --cb:#5DCAA5; --cc:#F0997B; --ch:#AFA9EC; --soft:#6F67C9; --pos:#5DCAA5; --neg:#F07B72; --fire:#F07B72; } }
+.ka{color:var(--ca);font-weight:700}.kb{color:var(--cb);font-weight:700}.kc{color:var(--cc);font-weight:700}.kh{color:var(--ch);font-weight:700}
+.field.fa input{border-color:var(--ca)}.field.fb input{border-color:var(--cb)}.field.fc input{border-color:var(--cc)}.field.fh input{border-color:var(--ch)}.field.sm input{width:80px}
+.eqs{font:14.5px/1.9 var(--mono);margin:10px 0 6px;padding:10px 16px;border:1px solid var(--line);border-radius:12px;background:var(--bg)}
+.eqs .lbl{display:inline-block;min-width:150px;font:600 12px var(--sans);letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+table.lists{border-collapse:collapse;margin:10px 0 14px;font:15px var(--sans)}
+table.lists th,table.lists td{border:1px solid var(--line);padding:7px 14px;text-align:left;vertical-align:top}
+table.lists th{background:var(--paper);font-weight:600}
+pre.code{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:12px 16px;overflow-x:auto;font:13.5px/1.6 var(--mono);margin:10px 0 16px}
+.choice{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 0}.choice button{min-width:170px}
+.qtext{font:17px/1.55 var(--serif);margin:4px 0 10px}
+.split{display:grid;grid-template-columns:58% 42%;gap:0;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--paper)}
+.split svg{display:block;width:100%;height:auto;border:none;border-radius:0}
+.split svg + svg{border-left:1px solid var(--line)}
+</style>
+
+<!-- ===================== Top bar ===================== -->
+<div class="topbar"><div class="topbar-in">
+  <span class="brand">Math<b>Mastery</b></span>
+  <span class="crumbs">Chapter 5 · Trigonometry › Basics</span>
+  <span class="pid">5.B.3</span>
+</div></div>
+
+<!-- ===================== Hero ===================== -->
+<header class="prose hero">
+  <div class="kicker">Chapter 5 · Trigonometry</div>
+  <h1>Laws of Sines and Cosines</h1>
+  <p class="dek">SOH-CAH-TOA needs a right angle. Two laws handle every other triangle, so three measurements are enough to find everything else: across a lake, between two ships, or out to a distant fire.</p>
+  <div class="tiers" aria-label="Tier">
+    <span class="tier on">Basics <small>you are here</small></span>
+    <span class="tier">Undergraduate</span>
+    <span class="tier">Masters</span>
+  </div>
+  <div class="goals">
+    <h3>On this page</h3>
+    <ul>
+      <li>Use the <b>law of sines</b>, <i>a</i>/sin <i>A</i> = <i>b</i>/sin <i>B</i> = <i>c</i>/sin <i>C</i>, and see why it works by dropping a <b>height</b>.</li>
+      <li>Use the <b>law of cosines</b>, <i>c</i>² = <i>a</i>² + <i>b</i>² − 2<i>ab</i> cos <i>C</i>: Pythagoras plus a correction for angles that aren’t 90°.</li>
+      <li>Decide <b>which law</b> fits what you know (SSS, SAS, ASA, AAS, SSA), and spot the <b>ambiguous case</b>, where two different triangles fit the same facts.</li>
+      <li>Apply them to navigation, <b>triangulation</b>, and the area of a triangle, ½<i>ab</i> sin <i>C</i>.</li>
+    </ul>
+  </div>
+</header>
+
+<main>
+<!-- ===================== §1 ===================== -->
+<section class="prose">
+  <h2><span class="n">1</span>Any triangle, labeled the same way</h2>
+  <p>Name the corners <b class="ka">A</b>, <b class="kb">B</b>, <b class="kc">C</b>, and use the same letter, lowercase, for the side across from each corner: side <b class="ka">a</b> is opposite corner <b class="ka">A</b>, and so on. (We also use <i>A</i> for the angle at corner A.) The angles always add to 180°, and the longest side is always across from the biggest angle.</p>
+  <p>Drag the corners below. The two laws are checked live with the numbers of whatever triangle you make.</p>
+</section>
+<section class="wide">
+  <div class="card" id="main">
+    <div class="card-h"><span class="tag">Explore</span><h3>Any triangle</h3>
+      <span class="sub">Drag any corner, or pick a shape. The dashed purple line is the height <i>h</i> from C down to the line through A and B.</span></div>
+    <div class="row" id="mPresets"></div>
+    <div class="desc" id="mDesc"></div>
+    <svg class="nl" id="mSvg" viewBox="0 0 1000 430" role="img" aria-label="A triangle with draggable corners" style="margin-top:10px;cursor:grab;touch-action:none"></svg>
+    <div class="eqs" id="mEqs"></div>
+    <div class="readout" id="mOut"></div>
+  </div>
+</section>
+
+<!-- ===================== §2 ===================== -->
+<section class="prose">
+  <h2><span class="n">2</span>Why the law of sines works</h2>
+  <p>Drop the height <b class="kh">h</b> from C straight down to the line through A and B. It splits the triangle into two right triangles, and each one gives <b class="kh">h</b> with SOH-CAH-TOA (5.B.2):</p>
+  <p style="text-align:center;font:600 17px var(--mono)">in the left one: <span class="kh">h</span> = <span class="kb">b</span> sin <span class="ka">A</span> &nbsp;&nbsp; in the right one: <span class="kh">h</span> = <span class="ka">a</span> sin <span class="kb">B</span></p>
+  <p>Both equal <b class="kh">h</b>, so <span class="kb">b</span> sin <span class="ka">A</span> = <span class="ka">a</span> sin <span class="kb">B</span>. Divide both sides by sin <span class="ka">A</span> sin <span class="kb">B</span> and you get <span class="ka">a</span>/sin <span class="ka">A</span> = <span class="kb">b</span>/sin <span class="kb">B</span>. Dropping the height from a different corner brings in <span class="kc">c</span>/sin <span class="kc">C</span> the same way. In words: <b>each side is proportional to the sine of the angle across from it</b>.</p>
+  <p>If an angle is obtuse, the height lands outside the triangle (try the “Obtuse at A” shape). The argument still works, because sin(180° − θ) = sin θ (5.B.2): the outside angle and the inside angle have the same sine.</p>
+</section>
+
+<!-- ===================== §3 ===================== -->
+<section class="prose">
+  <h2><span class="n">3</span>The law of cosines: Pythagoras, corrected</h2>
+  <p>When <b class="kc">C</b> is a right angle, <span class="kc">c</span>² = <span class="ka">a</span>² + <span class="kb">b</span>². Close the angle and the far ends of <span class="ka">a</span> and <span class="kb">b</span> come together, so <span class="kc">c</span> gets shorter. Open it past 90° and <span class="kc">c</span> gets longer. The law of cosines says exactly how much:</p>
+  <p style="text-align:center;font:600 19px var(--mono)"><span class="kc">c</span>² = <span class="ka">a</span>² + <span class="kb">b</span>² − 2<span class="ka">a</span><span class="kb">b</span> cos <span class="kc">C</span></p>
+  <p>The correction −2<i>ab</i> cos <i>C</i> is negative for angles under 90° (cos is positive), zero at 90° (Pythagoras), and positive for angles over 90°. Like the law of sines, it comes from dropping a height and using Pythagoras on the two right triangles. Watch the correction change as the hinge opens:</p>
+</section>
+<section class="wide">
+  <div class="card" id="hinge">
+    <div class="card-h"><span class="tag">Explore</span><h3>Open the hinge</h3>
+      <span class="sub">Sides <i>a</i> and <i>b</i> are fixed; the angle <i>C</i> between them opens like a hinge. Left: the triangle. Right: Pythagoras’ guess <i>a</i>² + <i>b</i>², the correction, and the true <i>c</i>².</span></div>
+    <div class="row" id="hPresets"></div>
+    <div class="inputs">
+      <label class="field fa sm"><span>Side <i>a</i></span><input id="hA" type="text" inputmode="decimal" autocomplete="off"></label>
+      <label class="field fb sm"><span>Side <i>b</i></span><input id="hB" type="text" inputmode="decimal" autocomplete="off"></label>
+      <label class="field fc sm"><span>Angle <i>C</i> (°)</span><input id="hC" type="text" inputmode="decimal" autocomplete="off"></label>
+      <div class="row" style="margin:0"><button class="primary" id="hPlay">Open from 0° to 180°</button></div>
+    </div>
+    <div class="err" id="hErr"></div>
+    <div class="split" style="margin-top:12px">
+      <svg id="hSvg" viewBox="0 0 580 330" role="img" aria-label="Hinged triangle"></svg>
+      <svg id="hBar" viewBox="0 0 420 330" role="img" aria-label="Pythagoras and the correction"></svg>
+    </div>
+    <div class="readout" id="hOut"></div>
+  </div>
+</section>
+
+<!-- ===================== §4 ===================== -->
+<section class="prose">
+  <h2><span class="n">4</span>Which law, when?</h2>
+  <p>Three facts about a triangle (with at least one side) usually pin it down. Shorthand: S for a side you know, A for an angle you know, in the order they come around the triangle.</p>
+  <table class="lists">
+    <tr><th>You know</th><th>Example</th><th>Use</th></tr>
+    <tr><td><b>SSS</b>: all three sides</td><td><i>a</i>, <i>b</i>, <i>c</i></td><td><b>Cosines</b>, solved for an angle: cos <i>C</i> = (<i>a</i>² + <i>b</i>² − <i>c</i>²) / (2<i>ab</i>)</td></tr>
+    <tr><td><b>SAS</b>: two sides and the angle between them</td><td><i>a</i>, <i>C</i>, <i>b</i></td><td><b>Cosines</b> for the third side, then either law for the rest</td></tr>
+    <tr><td><b>ASA</b> or <b>AAS</b>: two angles and a side</td><td><i>A</i>, <i>B</i>, <i>a</i></td><td>Third angle = 180° − the other two, then <b>sines</b></td></tr>
+    <tr><td><b>SSA</b>: two sides and an angle <i>not</i> between them</td><td><i>a</i>, <i>b</i>, <i>A</i></td><td><b>Sines</b>, but watch out: there may be two triangles, one, or none (next section)</td></tr>
+  </table>
+  <p>The rule of thumb: the law of sines needs a <b>matched pair</b>, a side together with the angle across from it. If you don’t have a matched pair, start with the law of cosines.</p>
+</section>
+
+<!-- ===================== §5 ===================== -->
+<section class="prose">
+  <h2><span class="n">5</span>The ambiguous case</h2>
+  <p>Know angle <i>A</i>, the side <i>b</i> next to it, and the side <i>a</i> across from it, and try to build the triangle: side <i>a</i> hangs from corner C like a swinging gate, and corner B must land where the gate meets the ground. Depending on <i>a</i>’s length, it may miss the ground, touch it once, or cross it twice. Two crossings mean two different triangles fit the same three facts, so the law of sines gives two possible angles <i>B</i> (an angle and its partner, 180° minus it, have the same sine).</p>
+</section>
+<section class="wide">
+  <div class="card" id="amb">
+    <div class="card-h"><span class="tag">Explore</span><h3>The swinging side</h3>
+      <span class="sub">The circle shows every place side <i>a</i> can reach from C. Where it meets the ground line from A, it makes a triangle.</span></div>
+    <div class="row" id="aPresets"></div>
+    <div class="inputs">
+      <label class="field fa sm"><span>Angle <i>A</i> (°)</span><input id="aA" type="text" inputmode="decimal" autocomplete="off"></label>
+      <label class="field fb sm"><span>Side <i>b</i></span><input id="aB" type="text" inputmode="decimal" autocomplete="off"></label>
+      <label class="field fa sm"><span>Side <i>a</i></span><input id="aa" type="text" inputmode="decimal" autocomplete="off"></label>
+    </div>
+    <div class="err" id="aErr"></div>
+    <svg class="nl" id="aSvg" viewBox="0 0 1000 340" role="img" aria-label="Ambiguous case" style="margin-top:10px"></svg>
+    <div class="readout" id="aOut"></div>
+  </div>
+</section>
+
+<!-- ===================== §6 ===================== -->
+<section class="prose">
+  <h2><span class="n">6</span>Navigation, triangulation and area</h2>
+  <p><b>Two legs of a trip.</b> A boat sails 8 km east, turns 50° to the left and sails 5 km more. How far is it from where it started? The turn makes an inside angle of 180° − 50° = 130° at the corner, which is SAS: a job for the law of cosines.</p>
+</section>
+<section class="wide">
+  <div class="card" id="nav">
+    <div class="card-h"><span class="tag">Explore</span><h3>Two legs of a trip</h3>
+      <span class="sub">Set the two legs and the turn between them (positive = left).</span></div>
+    <div class="inputs">
+      <label class="field fa sm"><span>First leg (km)</span><input id="nD1" type="text" inputmode="decimal" autocomplete="off"></label>
+      <label class="field fh sm"><span>Turn (°)</span><input id="nT" type="text" inputmode="decimal" autocomplete="off"></label>
+      <label class="field fb sm"><span>Second leg (km)</span><input id="nD2" type="text" inputmode="decimal" autocomplete="off"></label>
+    </div>
+    <div class="err" id="nErr"></div>
+    <svg class="nl" id="nSvg" viewBox="0 0 1000 340" role="img" aria-label="Two legs of a trip" style="margin-top:10px"></svg>
+    <div class="readout" id="nOut"></div>
+  </div>
+</section>
+<section class="prose">
+  <p><b>Triangulation.</b> Two fire lookouts stand a known distance apart. Each one measures the angle between the line to the other tower and the line to the smoke. That’s ASA, so the law of sines finds how far the fire is from each tower, without anyone going near it. Surveyors mapped whole countries this way, one triangle at a time.</p>
+</section>
+<section class="wide">
+  <div class="card" id="tri">
+    <div class="card-h"><span class="tag">Explore</span><h3>Two lookouts and a fire</h3>
+      <span class="sub">Set the distance between the towers and the angle each one measures to the smoke.</span></div>
+    <div class="inputs">
+      <label class="field fc sm"><span>Towers apart (km)</span><input id="tD" type="text" inputmode="decimal" autocomplete="off"></label>
+      <label class="field fa sm"><span>Angle at West (°)</span><input id="tAl" type="text" inputmode="decimal" autocomplete="off"></label>
+      <label class="field fb sm"><span>Angle at East (°)</span><input id="tBe" type="text" inputmode="decimal" autocomplete="off"></label>
+    </div>
+    <div class="err" id="tErr"></div>
+    <svg class="nl" id="tSvg" viewBox="0 0 1000 340" role="img" aria-label="Triangulating a fire" style="margin-top:10px"></svg>
+    <div class="readout" id="tOut"></div>
+  </div>
+</section>
+<section class="prose">
+  <p><b>Area.</b> Half base times height works for any triangle, and the height is <i>b</i> sin <i>C</i> if the base is <i>a</i>. So the <b>area of a triangle</b> from two sides and the angle between them is ½<i>ab</i> sin <i>C</i>, with no height to measure. It’s how a surveyor finds the area of a triangular plot of land from its two fences and the corner angle.</p>
+</section>
+<section class="wide">
+  <div class="card" id="area">
+    <div class="card-h"><span class="tag">Explore</span><h3>A triangular plot</h3>
+      <span class="sub">Two fences meet at a corner. Set their lengths (m) and the corner angle; the third side closes the plot.</span></div>
+    <div class="row" id="arPresets"></div>
+    <div class="inputs">
+      <label class="field fa sm"><span>Fence <i>a</i> (m)</span><input id="rA" type="text" inputmode="decimal" autocomplete="off"></label>
+      <label class="field fb sm"><span>Fence <i>b</i> (m)</span><input id="rB" type="text" inputmode="decimal" autocomplete="off"></label>
+      <label class="field fc sm"><span>Corner <i>C</i> (°)</span><input id="rC" type="text" inputmode="decimal" autocomplete="off"></label>
+    </div>
+    <div class="err" id="rErr"></div>
+    <svg class="nl" id="rSvg" viewBox="0 0 1000 300" role="img" aria-label="Triangular plot" style="margin-top:10px"></svg>
+    <div class="readout" id="rOut"></div>
+  </div>
+</section>
+
+<!-- ===================== §7 ===================== -->
+<section class="prose">
+  <h2><span class="n">7</span>Now, in symbols</h2>
+  <div class="math">\[ \frac{a}{\sin A} = \frac{b}{\sin B} = \frac{c}{\sin C} \]<div class="cap">The law of sines: each side over the sine of the angle across from it.</div></div>
+  <div class="math">\[ c^2 = a^2 + b^2 - 2ab\cos C, \qquad \cos C = \frac{a^2 + b^2 - c^2}{2ab} \]<div class="cap">The law of cosines, and the same law solved for an angle (SSS). Swap letters for the other sides and angles.</div></div>
+  <div class="math">\[ A + B + C = 180^\circ, \qquad \text{Area} = \tfrac12\,ab\sin C \]<div class="cap">The angle sum, and the area from two sides and the angle between them.</div></div>
+  <p>Solving a triangle from its three sides takes a few lines of code (angles in degrees at the end):</p>
+  <pre class="code"><code>import math                                              # Python's built-in math tools
+a, b, c = 7, 5, 9                                        # the three sides (SSS)
+C = math.degrees(math.acos((a*a + b*b - c*c) / (2*a*b))) # law of cosines solved for angle C
+A = math.degrees(math.asin(a * math.sin(math.radians(C)) / c))   # law of sines: a / sin A = c / sin C (C is the largest angle, so A is acute)
+B = 180 - A - C                                          # the angles add to 180°
+area = 0.5 * a * b * math.sin(math.radians(C))           # area = ½ ab sin C
+print(round(A, 1), round(B, 1), round(C, 1), round(area, 2))   # 50.7 33.6 95.7 17.41</code></pre>
+</section>
+
+<!-- ===================== §8 ===================== -->
+<section class="prose">
+  <h2><span class="n">8</span>Where this goes</h2>
+  <ul class="goes">
+    <li><b>Next (5.B.4):</b> waves and periodic functions, where sine and cosine describe things that repeat.</li>
+    <li><b>Later in this book:</b> the law of cosines in vector form is the dot product (7.B.3): |<b>u</b> − <b>v</b>|² = |<b>u</b>|² + |<b>v</b>|² − 2 <b>u</b>·<b>v</b>. Triangle areas become the determinant (7.B.6): ½|<i>ad</i> − <i>bc</i>|. And on a sphere, the same ideas become spherical trigonometry for routes across the Earth.</li>
+    <li><b>In the world:</b> surveying and map-making, ship and aircraft navigation, locating a phone or a lightning strike from several receivers, robot arms working out joint angles, and astronomy measuring distances to nearby stars from two points of Earth’s orbit.</li>
+  </ul>
+</section>
+
+<!-- ===================== §9 ===================== -->
+<section class="prose">
+  <h2><span class="n">9</span>Words to know</h2>
+  <div class="vocab">
+    <div class="term"><b>Law of sines</b><i>a</i>/sin <i>A</i> = <i>b</i>/sin <i>B</i> = <i>c</i>/sin <i>C</i>: each side is proportional to the sine of the angle across from it.</div>
+    <div class="term"><b>Law of cosines</b><i>c</i>² = <i>a</i>² + <i>b</i>² − 2<i>ab</i> cos <i>C</i>: Pythagoras with a correction for angles other than 90°.</div>
+    <div class="term"><b>Opposite side</b>The side across from an angle. Side <i>a</i> is opposite angle <i>A</i>.</div>
+    <div class="term"><b>Height (altitude)</b>The perpendicular from a corner to the line through the opposite side. It can land outside the triangle.</div>
+    <div class="term"><b>Acute, obtuse</b>An acute angle is under 90°; an obtuse angle is between 90° and 180°.</div>
+    <div class="term"><b>SSS, SAS, ASA, AAS, SSA</b>Shorthand for what you know about a triangle: sides (S) and angles (A), in order around it.</div>
+    <div class="term"><b>Ambiguous case</b>SSA: two sides and a non-included angle can fit two different triangles, one, or none.</div>
+    <div class="term"><b>Triangulation</b>Finding a far-off point’s position from angles measured at two known points.</div>
+    <div class="term"><b>Area of a triangle</b>½<i>ab</i> sin <i>C</i>, from two sides and the angle between them.</div>
+  </div>
+</section>
+
+<!-- ===================== Quiz ===================== -->
+<section class="prose"><h2><span class="n">10</span>Check yourself</h2>
+  <p>Four kinds of questions: find a side with the law of cosines, find a side or an angle with the law of sines, find an angle from three sides, and choose which law to use. Round to 2 decimal places (angles to 1).</p>
+</section>
+<section class="wide">
+  <div class="card" id="quiz">
+    <div class="card-h"><span class="tag">Quiz</span><h3 id="qTitle"></h3><span class="score" id="score">Score: 0 / 0</span></div>
+    <div class="qtext" id="qText"></div>
+    <svg class="nl" id="qSvg" viewBox="0 0 1000 300" role="img" aria-label="Quiz triangle"></svg>
+    <div class="choice" id="qChoice"></div>
+    <div class="inputs" id="qIn">
+      <label class="field fh"><span id="qL"></span><input id="q1" type="text" inputmode="decimal" autocomplete="off"></label>
+      <div class="row" style="margin:0"><button class="primary" id="qCheck">Check</button></div>
+    </div>
+    <div class="row" style="margin:10px 0 0"><button id="qShow">Show answer</button><button id="qNew">New question</button></div>
+    <div class="err" id="qErr"></div>
+    <div class="feedback" id="qFb" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ===================== Pager (filled in by the shared navigation) ===================== -->
+<nav class="wide">
+  <div class="pager"></div>
+  <div class="meta">5.B.3 · Prerequisites: 5.B.2 (sine, cosine, tangent), 1.B.9 (Pythagoras) · Leads to: 5.B.4 (waves), 7.B.3 (dot product), 7.B.6 (determinant)</div>
+</nav>
+</main>
+
+<script>
+/* =====================================================================
+   1. HELPERS
+   ===================================================================== */
+const NS = 'http://www.w3.org/2000/svg';
+const $ = id => document.getElementById(id);
+const PI = Math.PI, DEG = 180 / PI, RAD = PI / 180;
+function mk(tag, attrs, parent){                           // create an SVG element with attributes
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function txt(parent, x, y, s, cls, extra){                 // create an SVG text element
+  extra = Object.assign({}, extra || {});
+  // a CSS class's text-anchor beats the attribute, so move a requested anchor into the style
+  if (extra['text-anchor']){ extra.style = (extra.style ? extra.style + ';' : '') + 'text-anchor:' + extra['text-anchor']; delete extra['text-anchor']; }
+  const t = mk('text', Object.assign({ x, y, class: cls || '' }, extra), parent);
+  t.textContent = s;
+  return t;
+}
+function num(x, d){ if (d === undefined) d = 2; const r = Math.round(x * Math.pow(10, d)) / Math.pow(10, d); return r === 0 ? '0' : (r < 0 ? '−' : '') + String(Math.abs(r)); }
+const pn = (x, d) => x < 0 ? `(${num(x, d)})` : num(x, d);
+// Parse typed input: integers, decimals, a leading minus, fractions a/b, and roots like √2
+function parseNum(s){
+  s = String(s).trim().replace(/[−–]/g, '-').replace(/\s+/g, '').replace(/°$/, '');
+  if (/^-?\d+(\.\d+)?$|^-?\.\d+$/.test(s)) return parseFloat(s);
+  let m = s.match(/^(-?\d+(?:\.\d+)?)\/(\d+(?:\.\d+)?)$/);
+  if (m && +m[2] !== 0) return +m[1] / +m[2];
+  m = s.match(/^(-?)(\d*\.?\d*)\*?(?:√|sqrt)\(?(\d+(?:\.\d+)?)\)?$/);
+  if (m){ const c = m[2] === '' ? 1 : parseFloat(m[2]); if (!isNaN(c)) return (m[1] ? -1 : 1) * c * Math.sqrt(+m[3]); }
+  return NaN;
+}
+const ease = t => t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+function readAll(ids, errId, msg){
+  const out = ids.map(id => parseNum($(id).value));
+  if (ids.some(id => $(id).value.trim() === '') || out.some(isNaN)){ $(errId).textContent = msg || 'Fill in every box with a number.'; return null; }
+  $(errId).textContent = ''; return out;
+}
+function selectOnFocus(ids){ ids.forEach(id => $(id).addEventListener('focus', e => e.target.select())); }
+function buttons(boxId, list, onPick){
+  list.forEach((p, i) => { const b = document.createElement('button'); b.className = 'preset'; b.textContent = p.n; b.onclick = () => onPick(i); $(boxId).appendChild(b); });
+  return i => [...$(boxId).children].forEach((b, j) => b.classList.toggle('on', j === i));
+}
+const line = (g, x1, y1, x2, y2, style) => mk('line', { x1, y1, x2, y2, style }, g);
+const sinD = d => Math.sin(d * RAD), cosD = d => Math.cos(d * RAD);
+const dist = (p, q) => Math.hypot(p[0] - q[0], p[1] - q[1]);
+// The angle at corner P of the triangle P-Q-R, in degrees
+function angAt(P, Q, R){ const u = [Q[0] - P[0], Q[1] - P[1]], v = [R[0] - P[0], R[1] - P[1]]; return Math.acos(Math.max(-1, Math.min(1, (u[0] * v[0] + u[1] * v[1]) / (Math.hypot(...u) * Math.hypot(...v))))) * DEG; }
+// An arc at screen point (cx, cy) between the directions to two other screen points, with a label inside the angle
+function cornerArc(g, P, Q, R, r, col, label){
+  let a0 = Math.atan2(-(Q[1] - P[1]), Q[0] - P[0]), a1 = Math.atan2(-(R[1] - P[1]), R[0] - P[0]);
+  let d = a1 - a0; while (d > PI) d -= 2 * PI; while (d < -PI) d += 2 * PI;
+  let p = ''; for (let k = 0; k <= 30; k++){ const a = a0 + d * k / 30; p += (k ? ' L' : 'M') + (P[0] + r * Math.cos(a)).toFixed(1) + ',' + (P[1] - r * Math.sin(a)).toFixed(1); }
+  mk('path', { d: p, style: `fill:none;stroke:${col};stroke-width:2` }, g);
+  if (label){ const am = a0 + d / 2, rr = r + 22; txt(g, P[0] + rr * Math.cos(am), P[1] - rr * Math.sin(am) + 5, label, 'labS', { 'text-anchor': 'middle', style: `fill:${col}` }); }
+}
+// A label beside the middle of segment PQ, on the side away from point O (the triangle's middle)
+function sideLab(g, P, Q, O, s, col, off){
+  const mx = (P[0] + Q[0]) / 2, my = (P[1] + Q[1]) / 2, L = dist(P, Q) || 1; let nx = -(Q[1] - P[1]) / L, ny = (Q[0] - P[0]) / L;
+  if ((O[0] - mx) * nx + (O[1] - my) * ny > 0){ nx = -nx; ny = -ny; }
+  const o = off || 16;
+  txt(g, mx + nx * o, my + ny * o + 5, s, 'lab', { 'text-anchor': Math.abs(nx) < .35 ? 'middle' : nx > 0 ? 'start' : 'end', style: `fill:${col}` });
+}
+const svgCss = document.createElement('style');
+svgCss.textContent = `
+  .grid{stroke:var(--line);stroke-width:1} .axis{stroke:var(--ink);stroke-width:1.5;opacity:.7}
+  .tl{fill:var(--muted);font:500 11px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:3px}
+  .lab{font:700 15px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:5px}
+  .labS{font:600 12.5px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+  .cap{fill:var(--muted);font:500 12px var(--sans)}
+  .bt{fill:var(--ink);font:600 13px var(--sans)}
+`;
+document.head.appendChild(svgCss);
+// Draw a whole labeled triangle in screen coordinates. pts = {A, B, C} as [x, y] on screen; labels for sides and angles (or '' to hide)
+function drawTri(g, S, lab){
+  const O = [(S.A[0] + S.B[0] + S.C[0]) / 3, (S.A[1] + S.B[1] + S.C[1]) / 3];
+  mk('polygon', { points: [S.A, S.B, S.C].map(p => p.join(',')).join(' '), style: 'fill:var(--soft);opacity:.22' }, g);
+  line(g, ...S.B, ...S.C, 'stroke:var(--ca);stroke-width:4;stroke-linecap:round');
+  line(g, ...S.A, ...S.C, 'stroke:var(--cb);stroke-width:4;stroke-linecap:round');
+  line(g, ...S.A, ...S.B, 'stroke:var(--cc);stroke-width:4;stroke-linecap:round');
+  if (lab.a) sideLab(g, S.B, S.C, O, lab.a, 'var(--ca)'); if (lab.b) sideLab(g, S.A, S.C, O, lab.b, 'var(--cb)'); if (lab.c) sideLab(g, S.A, S.B, O, lab.c, 'var(--cc)');
+  [['A', 'var(--ca)', S.B, S.C], ['B', 'var(--cb)', S.A, S.C], ['C', 'var(--cc)', S.A, S.B]].forEach(([k, col, Q, R]) => {
+    const P = S[k]; cornerArc(g, P, Q, R, 24, col, lab[k + 'ang'] || '');
+    const dx = P[0] - O[0], dy = P[1] - O[1], L = Math.hypot(dx, dy) || 1;
+    txt(g, P[0] + dx / L * 20, P[1] + dy / L * 20 + 6, k, 'lab', { 'text-anchor': 'middle', style: `fill:${col}` });
+  });
+}
+// Screen positions for a triangle with sides a, b, c, fitted into a box (A at the bottom left, B on the same level)
+function fitTri(a, b, c, box){
+  const Ad = Math.acos(Math.max(-1, Math.min(1, (b * b + c * c - a * a) / (2 * b * c))));
+  const pts = [[0, 0], [c, 0], [b * Math.cos(Ad), b * Math.sin(Ad)]];
+  const xs = pts.map(p => p[0]), ys = pts.map(p => p[1]), x0 = Math.min(...xs), x1 = Math.max(...xs), y1 = Math.max(...ys);
+  const u = Math.min((box.w) / (x1 - x0), box.h / (y1 || 1)), ox = box.x + (box.w - (x1 - x0) * u) / 2 - x0 * u, oy = box.y + box.h;
+  const S = p => [ox + p[0] * u, oy - p[1] * u];
+  return { A: S(pts[0]), B: S(pts[1]), C: S(pts[2]) };
+}
+
+/* =====================================================================
+   2. ANY TRIANGLE (drag the corners)
+   ===================================================================== */
+const MP = [
+  { n: 'Acute', P: { A: [1.5, 1], B: [9.5, 1], C: [6, 5.4] }, d: 'All three angles under 90°: the height from C lands inside, between A and B.' },
+  { n: 'Right angle at C', P: { A: [1.5, 1], B: [9.5, 1], C: [3.5, 4.46] }, d: 'C = 90°: cos C = 0, so the law of cosines becomes plain Pythagoras, c² = a² + b².' },
+  { n: 'Obtuse at C', P: { A: [1.5, 1], B: [11, 1], C: [5, 2.4] }, d: 'C is over 90°: cos C is negative, so c² is bigger than a² + b².' },
+  { n: 'Obtuse at A', P: { A: [4, 1], B: [11, 1], C: [1.5, 4.6] }, d: 'A is over 90°: the height from C lands outside, to the left of A. The law of sines still holds because sin(180° − A) = sin A.' },
+  { n: 'Isosceles', P: { A: [2, 1], B: [10, 1], C: [6, 5.5] }, d: 'a = b, so A = B: equal sides face equal angles.' },
+  { n: 'Equilateral', P: { A: [3.5, .8], B: [8.5, .8], C: [6, 5.13] }, d: 'All sides equal, all angles 60°.' },
+  { n: 'Very flat', P: { A: [1, 1], B: [12, 1], C: [6, 1.6] }, d: 'C is nearly 180°, so A and B are tiny and c is almost a + b.' },
+];
+const mt = { P: JSON.parse(JSON.stringify(MP[0].P)), drag: null };
+const MU = 66, MX0 = 40, MY0 = 410;                          // 66 px per unit; the plane's origin on screen
+const MS = p => [MX0 + p[0] * MU, MY0 - p[1] * MU];
+const markM = buttons('mPresets', MP, i => { mt.P = JSON.parse(JSON.stringify(MP[i].P)); markM(i); $('mDesc').textContent = MP[i].d; drawM(); });
+function drawM(){
+  const { A, B, C } = mt.P, a = dist(B, C), b = dist(A, C), c = dist(A, B);
+  const angA = angAt(A, B, C), angB = angAt(B, A, C), angC = 180 - angA - angB;
+  const svg = $('mSvg'); svg.innerHTML = ''; const g = mk('g', {}, svg);
+  for (let x = 0; x <= 14; x++) line(g, MX0 + x * MU, 0, MX0 + x * MU, 430, 'stroke:var(--line);stroke-width:1;opacity:.6');
+  for (let y = 0; y <= 6; y++) line(g, 0, MY0 - y * MU, 1000, MY0 - y * MU, 'stroke:var(--line);stroke-width:1;opacity:.6');
+  // the height from C to the line AB (extended if the foot falls outside)
+  const ux = (B[0] - A[0]) / c, uy = (B[1] - A[1]) / c, t = (C[0] - A[0]) * ux + (C[1] - A[1]) * uy, F = [A[0] + t * ux, A[1] + t * uy];
+  if (t < 0 || t > c) line(g, ...MS(t < 0 ? F : A), ...MS(t < 0 ? A : F).map((v, i) => v), 'stroke:var(--cc);stroke-width:1.5;stroke-dasharray:6 5;opacity:.7');
+  const S = { A: MS(A), B: MS(B), C: MS(C) };
+  drawTri(g, S, { a: `a = ${num(a)}`, b: `b = ${num(b)}`, c: `c = ${num(c)}`, Aang: `${num(angA, 1)}°`, Bang: `${num(angB, 1)}°`, Cang: `${num(angC, 1)}°` });
+  const h = Math.hypot(C[0] - F[0], C[1] - F[1]);
+  if (h > .15){
+    line(g, ...MS(C), ...MS(F), 'stroke:var(--ch);stroke-width:2.2;stroke-dasharray:7 5');
+    const s = 10, d = t > c / 2 ? -1 : 1, Fs = MS(F); mk('polyline', { points: `${Fs[0] + d * s},${Fs[1]} ${Fs[0] + d * s},${Fs[1] - s} ${Fs[0]},${Fs[1] - s}`, style: 'fill:none;stroke:var(--ch);stroke-width:1.3' }, g);
+    const Hm = MS([(C[0] + F[0]) / 2, (C[1] + F[1]) / 2]), lft = t < 0;   // foot outside on the left: label to the left, away from side b
+    txt(g, Hm[0] + (lft ? -8 : 8), Hm[1], `h = ${num(h)}`, 'labS', { 'text-anchor': lft ? 'end' : 'start', style: 'fill:var(--ch)' });
+  }
+  [S.A, S.B, S.C].forEach((p, i) => mk('circle', { cx: p[0], cy: p[1], r: 9, style: `fill:${['var(--ca)', 'var(--cb)', 'var(--cc)'][i]};opacity:.35` }, g));
+  const rs = [a / sinD(angA), b / sinD(angB), c / sinD(angC)], pyth = a * a + b * b, corr = -2 * a * b * cosD(angC);
+  $('mEqs').innerHTML =
+    `<span class="lbl">Law of sines</span><span class="ka">a</span>/sin <span class="ka">A</span> = ${num(a)}/${num(sinD(angA), 3)} = ${num(rs[0])} &nbsp; <span class="kb">b</span>/sin <span class="kb">B</span> = ${num(b)}/${num(sinD(angB), 3)} = ${num(rs[1])} &nbsp; <span class="kc">c</span>/sin <span class="kc">C</span> = ${num(c)}/${num(sinD(angC), 3)} = ${num(rs[2])}<br>` +
+    `<span class="lbl">The height</span><span class="kh">h</span> = <span class="kb">b</span> sin <span class="ka">A</span> = ${num(b * sinD(angA))} = <span class="ka">a</span> sin <span class="kb">B</span> = ${num(a * sinD(angB))}<br>` +
+    `<span class="lbl">Law of cosines</span><span class="kc">c</span>² = ${num(c * c)} &nbsp; <span class="ka">a</span>² + <span class="kb">b</span>² − 2<span class="ka">a</span><span class="kb">b</span> cos <span class="kc">C</span> = ${num(pyth)} ${corr < 0 ? '−' : '+'} ${num(Math.abs(corr))} = ${num(pyth + corr)}<br>` +
+    `<span class="lbl">Angle sum</span>${num(angA, 1)}° + ${num(angB, 1)}° + ${num(angC, 1)}° = 180°`;
+  $('mOut').innerHTML = Math.abs(angC - 90) < .5 ? '<b>C is a right angle</b>, so the correction term is 0 and the law of cosines is just Pythagoras.'
+    : angC < 90 ? `<b>C is acute</b> (${num(angC, 1)}°): cos C &gt; 0, so the correction ${num(corr)} makes c² smaller than Pythagoras’ ${num(pyth)}.`
+    : `<b>C is obtuse</b> (${num(angC, 1)}°): cos C &lt; 0, so the correction +${num(corr)} makes c² bigger than Pythagoras’ ${num(pyth)}.`;
+}
+function mPt(ev){ const svg = $('mSvg'), pt = svg.createSVGPoint(); pt.x = ev.clientX; pt.y = ev.clientY; const p = pt.matrixTransform(svg.getScreenCTM().inverse()); return [(p.x - MX0) / MU, (MY0 - p.y) / MU]; }
+$('mSvg').addEventListener('pointerdown', ev => {
+  const q = mPt(ev), k = ['A', 'B', 'C'].sort((u, v) => dist(q, mt.P[u]) - dist(q, mt.P[v]))[0];
+  if (dist(q, mt.P[k]) > 1) return;
+  mt.drag = k; $('mSvg').setPointerCapture(ev.pointerId);
+});
+$('mSvg').addEventListener('pointermove', ev => {
+  if (!mt.drag) return;
+  const q = mPt(ev), p = [Math.max(.3, Math.min(14, Math.round(q[0] * 4) / 4)), Math.max(.3, Math.min(6, Math.round(q[1] * 4) / 4))];
+  const others = ['A', 'B', 'C'].filter(k => k !== mt.drag).map(k => mt.P[k]);
+  const area = Math.abs((others[0][0] - p[0]) * (others[1][1] - p[1]) - (others[1][0] - p[0]) * (others[0][1] - p[1]));
+  if (area < .4) return;                                      // don't let the triangle go completely flat
+  mt.P[mt.drag] = p; markM(-1); $('mDesc').textContent = 'Your own triangle.'; drawM();
+});
+$('mSvg').addEventListener('pointerup', () => { mt.drag = null; });
+
+/* =====================================================================
+   3. OPEN THE HINGE (law of cosines = Pythagoras + correction)
+   ===================================================================== */
+const HP = [{ n: 'C = 30°', C: 30 }, { n: 'C = 60°', C: 60 }, { n: 'C = 90°', C: 90 }, { n: 'C = 120°', C: 120 }, { n: 'C = 170°', C: 170 }];
+$('hA').value = 5; $('hB').value = 3; $('hC').value = 60;
+const hg = { raf: 0, playing: false };
+const markH = buttons('hPresets', HP, i => { stopH(); $('hC').value = HP[i].C; markH(i); drawH(); });
+function drawH(){
+  const r = readAll(['hA', 'hB', 'hC'], 'hErr'); if (!r) return;
+  const [a, b, C] = r;
+  if (a <= 0 || b <= 0 || a > 10 || b > 10){ $('hErr').textContent = 'Use sides from 0 to 10.'; return; }
+  if (C < 0 || C > 180){ $('hErr').textContent = 'The angle must be from 0° to 180°.'; return; }
+  const c2 = a * a + b * b - 2 * a * b * cosD(C), c = Math.sqrt(Math.max(0, c2));
+  // the triangle: C at the left, side a along the ground, side b swinging up
+  const svg = $('hSvg'); svg.innerHTML = ''; const g = mk('g', {}, svg);
+  const u = Math.min(480 / (a + b), 250 / b), Cx = 50 + b * u, Cy = 290, X = x => Cx + x * u, Y = y => Cy - y * u;
+  const Bp = [X(a), Y(0)], Ap = [X(b * cosD(C)), Y(b * sinD(C))], Cp = [Cx, Cy];
+  mk('polygon', { points: [Ap, Bp, Cp].map(p => p.join(',')).join(' '), style: 'fill:var(--soft);opacity:.25' }, g);
+  line(g, ...Cp, ...Bp, 'stroke:var(--ca);stroke-width:5;stroke-linecap:round');
+  line(g, ...Cp, ...Ap, 'stroke:var(--cb);stroke-width:5;stroke-linecap:round');
+  line(g, ...Ap, ...Bp, 'stroke:var(--cc);stroke-width:3;stroke-dasharray:8 5');
+  if (C > 1) cornerArc(g, Cp, Bp, Ap, 30, 'var(--cc)', `C = ${num(C, 1)}°`);
+  const O = [(Ap[0] + Bp[0] + Cp[0]) / 3, (Ap[1] + Bp[1] + Cp[1]) / 3 - (C < 5 ? 30 : 0)];
+  sideLab(g, Cp, Bp, [O[0], O[1] - 40], `a = ${num(a)}`, 'var(--ca)', 18);
+  sideLab(g, Cp, Ap, O, `b = ${num(b)}`, 'var(--cb)');
+  sideLab(g, Ap, Bp, Cp, `c = ${num(c)}`, 'var(--cc)');
+  mk('circle', { cx: Cp[0], cy: Cp[1], r: 5, style: 'fill:var(--ink)' }, g);
+  // the bars: Pythagoras' guess, the correction, and c²
+  const bs = $('hBar'); bs.innerHTML = ''; const h = mk('g', {}, bs), max = (a + b) * (a + b), L = 120, R = 400, W = v => v / max * (R - L), corr = -2 * a * b * cosD(C);
+  const bar = (y, x0, w, col, lab, val) => { mk('rect', { x: Math.min(x0, x0 + w), y, width: Math.abs(w), height: 34, rx: 4, style: `fill:${col};opacity:.75` }, h); txt(h, L - 10, y + 22, lab, 'bt', { 'text-anchor': 'end' }); txt(h, Math.max(x0, x0 + w) + 6, y + 22, val, 'labS', { 'text-anchor': 'start', style: 'fill:var(--ink)' }); };
+  mk('rect', { x: L, y: 50, width: W(a * a), height: 34, style: 'fill:var(--ca);opacity:.75' }, h);
+  mk('rect', { x: L + W(a * a), y: 50, width: W(b * b), height: 34, style: 'fill:var(--cb);opacity:.75' }, h);
+  txt(h, L - 10, 72, 'a² + b²', 'bt', { 'text-anchor': 'end' }); txt(h, L + W(a * a + b * b) + 6, 72, num(a * a + b * b), 'labS', { 'text-anchor': 'start', style: 'fill:var(--ink)' });
+  bar(130, L + W(a * a + b * b), W(corr), corr < 0 ? 'var(--pos)' : 'var(--neg)', 'correction', `${corr < 0 ? '−' : '+'}${num(Math.abs(corr))}`);
+  bar(210, L, W(c * c), 'var(--cc)', 'c²', num(c * c));
+  line(h, L + W(a * a + b * b), 40, L + W(a * a + b * b), 260, 'stroke:var(--ink);stroke-width:1.2;stroke-dasharray:4 4;opacity:.6');
+  txt(h, L + W(a * a + b * b), 34, 'Pythagoras', 'cap', { 'text-anchor': 'middle' });
+  txt(h, 210, 300, '−2ab cos C: shrinks c² below 90°, grows it above', 'cap', { 'text-anchor': 'middle' });
+  $('hOut').innerHTML = `<span class="kc">c</span>² = ${num(a)}² + ${num(b)}² − 2·${num(a)}·${num(b)}·cos ${num(C, 1)}° = ${num(a * a + b * b)} ${corr < 0 ? '−' : '+'} ${num(Math.abs(corr))} = ${num(c * c)}, so <b class="kc">c = ${num(c)}</b>. ` +
+    (Math.abs(C - 90) < 1e-9 ? 'At exactly 90° the correction vanishes: this is Pythagoras.' : C < 90 ? 'Under 90°, cos C is positive and the correction subtracts.' : 'Over 90°, cos C is negative and the correction adds.') +
+    ` Extremes: at 0° the hinge is shut and c = |a − b| = ${num(Math.abs(a - b))}; at 180° it’s flat open and c = a + b = ${num(a + b)}.`;
+}
+function stopH(){ cancelAnimationFrame(hg.raf); hg.playing = false; $('hPlay').textContent = 'Open from 0° to 180°'; }
+$('hPlay').onclick = () => {
+  if (hg.playing){ stopH(); return; }
+  hg.playing = true; $('hPlay').textContent = 'Stop'; markH(-1); const t0 = performance.now();
+  const step = now => { if (!hg.playing) return; const f = Math.min(1, (now - t0) / 7000); $('hC').value = num(180 * f, 0); drawH(); if (f < 1) hg.raf = requestAnimationFrame(step); else stopH(); };
+  hg.raf = requestAnimationFrame(step);
+};
+['hA', 'hB', 'hC'].forEach(id => $(id).addEventListener('input', () => { stopH(); markH(-1); drawH(); })); selectOnFocus(['hA', 'hB', 'hC']);
+
+/* =====================================================================
+   4. THE SWINGING SIDE (ambiguous case, SSA)
+   ===================================================================== */
+const AP = [{ n: 'Two triangles', A: 35, b: 8, a: 5.5 }, { n: 'Exactly one (right angle)', A: 35, b: 8, a: 4.59 }, { n: 'None', A: 35, b: 8, a: 3.5 }, { n: 'One (a ≥ b)', A: 35, b: 8, a: 9 }, { n: 'Obtuse A', A: 115, b: 5, a: 7 }];
+const markA = buttons('aPresets', AP, i => { $('aA').value = AP[i].A; $('aB').value = AP[i].b; $('aa').value = AP[i].a; markA(i); drawA(); });
+function drawA(){
+  const r = readAll(['aA', 'aB', 'aa'], 'aErr'); if (!r) return;
+  const [A, b, a] = r;
+  if (A <= 0 || A >= 180){ $('aErr').textContent = 'Angle A must be between 0° and 180°.'; return; }
+  if (b <= 0 || a <= 0 || b > 12 || a > 12){ $('aErr').textContent = 'Use sides from 0 to 12.'; return; }
+  const h = b * sinD(A), Cx = b * cosD(A), disc = a * a - h * h;
+  const touch = Math.abs(a - h) < .006;                       // a equals the height (to the rounding of typed values): it just touches
+  const roots = touch ? [Cx] : disc < 0 ? [] : [Cx - Math.sqrt(disc), Cx + Math.sqrt(disc)];
+  const sols = roots.filter(x => x > 1e-6);
+  const svg = $('aSvg'); svg.innerHTML = ''; const g = mk('g', {}, svg);
+  const xmax = Math.max(Cx + a, b, ...sols, 2) + .5, xmin = Math.min(0, Cx - a) - .3, u = Math.min(920 / (xmax - xmin), 270 / (h + a * .15 + .3)), X = x => 40 + (x - xmin) * u, Y = y => 305 - y * u;
+  line(g, X(xmin), Y(0), 990, Y(0), 'stroke:var(--ink);stroke-width:1.5;opacity:.6');
+  line(g, X(0), Y(0), 990, Y(0), 'stroke:var(--cc);stroke-width:2;opacity:.5');
+  mk('circle', { cx: X(Cx), cy: Y(h), r: a * u, style: 'fill:none;stroke:var(--ca);stroke-width:1.6;stroke-dasharray:6 5;opacity:.75' }, g);
+  line(g, X(Cx), Y(h), X(Cx), Y(0), 'stroke:var(--ch);stroke-width:1.8;stroke-dasharray:5 4');
+  txt(g, X(Cx) + 8, Y(h / 2), `h = b sin A = ${num(h)}`, 'labS', { 'text-anchor': 'start', style: 'fill:var(--ch)' });
+  const cols = ['var(--ca)', 'var(--cb)'];
+  sols.forEach((x, k) => {
+    mk('polygon', { points: `${X(0)},${Y(0)} ${X(x)},${Y(0)} ${X(Cx)},${Y(h)}`, style: `fill:${k ? 'var(--cb)' : 'var(--soft)'};opacity:${sols.length > 1 ? .14 : .25}` }, g);
+    line(g, X(Cx), Y(h), X(x), Y(0), `stroke:var(--ca);stroke-width:4`);
+    mk('circle', { cx: X(x), cy: Y(0), r: 7, style: `fill:${cols[k]}` }, g);
+    txt(g, X(x), Y(0) + 24, sols.length > 1 ? `B${k + 1}` : 'B', 'lab', { 'text-anchor': 'middle', style: `fill:${cols[k]}` });
+  });
+  line(g, X(0), Y(0), X(Cx), Y(h), 'stroke:var(--cb);stroke-width:5;stroke-linecap:round');
+  txt(g, X(0) - 6, Y(0) + 22, 'A', 'lab', { 'text-anchor': 'middle', style: 'fill:var(--ca)' }); txt(g, X(Cx), Y(h) - 12, 'C', 'lab', { 'text-anchor': 'middle', style: 'fill:var(--cc)' });
+  cornerArc(g, [X(0), Y(0)], [X(5), Y(0)], [X(Cx), Y(h)], 30, 'var(--ca)', `${num(A, 1)}°`);
+  txt(g, X(Cx / 2) - 10, Y(h / 2) - 4, `b = ${num(b)}`, 'labS', { 'text-anchor': 'end', style: 'fill:var(--cb)' });
+  txt(g, X(Cx) + a * u * .72, Y(h) - a * u * .72, `a = ${num(a)}`, 'labS', { 'text-anchor': 'start', style: 'fill:var(--ca)' });
+  const sB = b * sinD(A) / a;
+  let msg;
+  if (!sols.length) msg = `<b>No triangle.</b> Side a = ${num(a)} is shorter than the height h = ${num(h)}, so the swinging side never reaches the ground. The law of sines agrees: sin B = b sin A / a = ${num(sB, 3)}, which is more than 1 and impossible.`;
+  else if (sols.length === 1){
+    const x = sols[0], angB = angAt([x, 0], [0, 0], [Cx, h]);
+    msg = touch && Cx > 0 ? `<b>Exactly one triangle</b>, with a right angle at B: a equals the height h = ${num(h)}. sin B = ${num(sB, 3)} ≈ 1, so B = 90°.`
+      : `<b>One triangle.</b> ${a >= b ? `Since a ≥ b, the other crossing falls behind A, so it doesn’t count.` : ''} sin B = b sin A / a = ${num(sB, 3)}, B = ${num(angB, 1)}°, C = ${num(180 - A - angB, 1)}°, c = ${num(x)}.`;
+  } else {
+    const B1 = angAt([sols[0], 0], [0, 0], [Cx, h]), B2 = angAt([sols[1], 0], [0, 0], [Cx, h]);
+    msg = `<b>Two triangles fit.</b> h = ${num(h)} &lt; a = ${num(a)} &lt; b = ${num(b)}, so the swinging side crosses the ground twice. sin B = b sin A / a = ${num(sB, 3)} gives <b>B = ${num(B2, 1)}°</b> or its partner <b>B = 180° − ${num(B2, 1)}° = ${num(B1, 1)}°</b>. Both are real: C = ${num(180 - A - B2, 1)}° or ${num(180 - A - B1, 1)}°.`;
+  }
+  $('aOut').innerHTML = msg;
+}
+['aA', 'aB', 'aa'].forEach(id => $(id).addEventListener('input', () => { markA(-1); drawA(); })); selectOnFocus(['aA', 'aB', 'aa']);
+
+/* =====================================================================
+   5. TWO LEGS OF A TRIP (law of cosines, then sines)
+   ===================================================================== */
+$('nD1').value = 8; $('nT').value = 50; $('nD2').value = 5;
+function drawN(){
+  const r = readAll(['nD1', 'nT', 'nD2'], 'nErr'); if (!r) return;
+  const [d1, t, d2] = r;
+  if (d1 <= 0 || d2 <= 0 || d1 > 50 || d2 > 50){ $('nErr').textContent = 'Use legs from 0 to 50 km.'; return; }
+  if (t <= -180 || t >= 180){ $('nErr').textContent = 'Use a turn between −180° and 180°.'; return; }
+  const P = [d1, 0], E = [d1 + d2 * cosD(t), d2 * sinD(t)], inside = 180 - Math.abs(t), D = Math.sqrt(d1 * d1 + d2 * d2 - 2 * d1 * d2 * cosD(inside));
+  const angS = D > 1e-9 ? Math.asin(Math.min(1, d2 * sinD(inside) / D)) * DEG : 0, angSs = E[0] >= 0 ? angS : 180 - angS;
+  const svg = $('nSvg'); svg.innerHTML = ''; const g = mk('g', {}, svg);
+  const xs = [0, d1, E[0]], ys = [0, E[1]], x0 = Math.min(...xs), x1 = Math.max(...xs), y0 = Math.min(...ys), y1 = Math.max(...ys);
+  const u = Math.min(800 / (x1 - x0 || 1), 240 / (y1 - y0 || 1)), ox = 100 - x0 * u + (800 - (x1 - x0) * u) / 2, oy = 290 + y0 * u - (240 - (y1 - y0) * u) / 2;
+  const S = p => [ox + p[0] * u, oy - p[1] * u], Ss = S([0, 0]), Ps = S(P), Es = S(E);
+  const arrowL = (p, q, col, w, dash) => { line(g, ...p, ...q, `stroke:${col};stroke-width:${w};${dash ? 'stroke-dasharray:' + dash : ''}`); const L = dist(p, q), ux = (q[0] - p[0]) / L, uy = (q[1] - p[1]) / L; mk('polygon', { points: `${q[0]},${q[1]} ${q[0] - ux * 14 - uy * 6},${q[1] - uy * 14 + ux * 6} ${q[0] - ux * 14 + uy * 6},${q[1] - uy * 14 - ux * 6}`, style: `fill:${col}` }, g); };
+  line(g, Ps[0], Ps[1], Ps[0] + 70, Ps[1], 'stroke:var(--muted);stroke-width:1.4;stroke-dasharray:4 4');
+  arrowL(Ss, Ps, 'var(--ca)', 4); arrowL(Ps, Es, 'var(--cb)', 4); arrowL(Ss, Es, 'var(--cc)', 2.5, '8 5');
+  const O = [(Ss[0] + Ps[0] + Es[0]) / 3, (Ss[1] + Ps[1] + Es[1]) / 3];
+  sideLab(g, Ss, Ps, O, `${num(d1)} km`, 'var(--ca)'); sideLab(g, Ps, Es, O, `${num(d2)} km`, 'var(--cb)'); sideLab(g, Ss, Es, Ps, `${num(D)} km`, 'var(--cc)');
+  if (Math.abs(t) > 2) cornerArc(g, Ps, [Ps[0] + 60, Ps[1]], Es, 40, 'var(--ch)', `turn ${num(t, 0)}°`);
+  if (Math.abs(t) < 178) cornerArc(g, Ps, Ss, Es, 24, 'var(--ink)', `${num(inside, 0)}°`);
+  txt(g, Ss[0] - 10, Ss[1] + 4, 'start', 'bt', { 'text-anchor': 'end' }); txt(g, Es[0] + 10, Es[1] - 8, 'end', 'bt', { 'text-anchor': 'start' });
+  $('nOut').innerHTML = `The inside angle at the turn is 180° − ${num(Math.abs(t), 0)}° = ${num(inside, 0)}° (SAS), so by the law of cosines the distance back is √(${num(d1)}² + ${num(d2)}² − 2·${num(d1)}·${num(d2)}·cos ${num(inside, 0)}°) = <b>${num(D)} km</b>, shorter than the ${num(d1 + d2)} km sailed. ` +
+    (D > 1e-9 ? `The law of sines then gives the angle at the start: sin S = ${num(d2)}·sin ${num(inside, 0)}° / ${num(D)}, so the end point is ${num(angSs, 1)}° ${t >= 0 ? 'left' : 'right'} of the first heading.` : '');
+}
+['nD1', 'nT', 'nD2'].forEach(id => $(id).addEventListener('input', drawN)); selectOnFocus(['nD1', 'nT', 'nD2']);
+
+/* =====================================================================
+   6. TWO LOOKOUTS AND A FIRE (law of sines)
+   ===================================================================== */
+$('tD').value = 12; $('tAl').value = 52; $('tBe').value = 38;
+function drawTr(){
+  const r = readAll(['tD', 'tAl', 'tBe'], 'tErr'); if (!r) return;
+  const [D, al, be] = r;
+  if (D <= 0 || D > 100){ $('tErr').textContent = 'Use a distance from 0 to 100 km.'; return; }
+  if (al <= 0 || be <= 0 || al + be >= 180){ $('tErr').textContent = 'Both angles must be positive and add to less than 180°, or the two sight lines never meet.'; return; }
+  const ga = 180 - al - be, LF = D * sinD(be) / sinD(ga), RF = D * sinD(al) / sinD(ga), F = [LF * cosD(al), LF * sinD(al)];
+  const svg = $('tSvg'); svg.innerHTML = ''; const g = mk('g', {}, svg);
+  const xs = [0, D, F[0]], x0 = Math.min(...xs), x1 = Math.max(...xs), u = Math.min(820 / (x1 - x0), 250 / F[1]), ox = 90 - x0 * u + (820 - (x1 - x0) * u) / 2, oy = 290;
+  const S = p => [ox + p[0] * u, oy - p[1] * u], Ls = S([0, 0]), Rs = S([D, 0]), Fs = S(F);
+  mk('rect', { x: 0, y: oy, width: 1000, height: 50, style: 'fill:var(--line);opacity:.4' }, g);
+  line(g, ...Ls, ...Rs, 'stroke:var(--cc);stroke-width:4');
+  line(g, ...Ls, ...Fs, 'stroke:var(--cb);stroke-width:2.5;stroke-dasharray:8 5'); line(g, ...Rs, ...Fs, 'stroke:var(--ca);stroke-width:2.5;stroke-dasharray:8 5');
+  [Ls, Rs].forEach(p => { mk('rect', { x: p[0] - 6, y: p[1] - 34, width: 12, height: 34, style: 'fill:var(--muted)' }, g); mk('rect', { x: p[0] - 12, y: p[1] - 44, width: 24, height: 12, rx: 2, style: 'fill:var(--ink)' }, g); });
+  // the fire: a few flame shapes
+  mk('path', { d: `M${Fs[0] - 14},${Fs[1] + 8} Q${Fs[0] - 12},${Fs[1] - 14} ${Fs[0]},${Fs[1] - 24} Q${Fs[0] + 14},${Fs[1] - 10} ${Fs[0] + 14},${Fs[1] + 8} Z`, style: 'fill:var(--fire);opacity:.9' }, g);
+  mk('path', { d: `M${Fs[0] - 6},${Fs[1] + 8} Q${Fs[0] - 4},${Fs[1] - 4} ${Fs[0] + 1},${Fs[1] - 12} Q${Fs[0] + 7},${Fs[1] - 2} ${Fs[0] + 6},${Fs[1] + 8} Z`, style: 'fill:#F5C518' }, g);
+  cornerArc(g, Ls, Rs, Fs, 46, 'var(--cb)', `${num(al, 1)}°`); cornerArc(g, Rs, Ls, Fs, 46, 'var(--ca)', `${num(be, 1)}°`); cornerArc(g, Fs, Ls, Rs, 30, 'var(--ink)', `${num(ga, 1)}°`);
+  txt(g, (Ls[0] + Rs[0]) / 2, oy + 24, `${num(D)} km`, 'lab', { 'text-anchor': 'middle', style: 'fill:var(--cc)' });
+  const O = [(Ls[0] + Rs[0] + Fs[0]) / 3, (Ls[1] + Rs[1] + Fs[1]) / 3];
+  sideLab(g, Ls, Fs, O, `${num(LF)} km`, 'var(--cb)', 20); sideLab(g, Rs, Fs, O, `${num(RF)} km`, 'var(--ca)', 20);
+  txt(g, Ls[0], oy + 24, 'West', 'bt', { 'text-anchor': 'middle' }); txt(g, Rs[0], oy + 24, 'East', 'bt', { 'text-anchor': 'middle' });
+  $('tOut').innerHTML = `The angle at the fire is 180° − ${num(al, 1)}° − ${num(be, 1)}° = ${num(ga, 1)}°, across from the ${num(D)} km baseline: a matched pair. Law of sines: distance from West = ${num(D)}·sin ${num(be, 1)}° / sin ${num(ga, 1)}° = <b>${num(LF)} km</b>, from East = ${num(D)}·sin ${num(al, 1)}° / sin ${num(ga, 1)}° = <b>${num(RF)} km</b>. The fire is ${num(F[1])} km from the line between the towers.` +
+    (ga < 10 ? ' With a very small angle at the fire, a tiny error in either measured angle moves the fire a lot: towers far apart give better fixes.' : '');
+}
+['tD', 'tAl', 'tBe'].forEach(id => $(id).addEventListener('input', drawTr)); selectOnFocus(['tD', 'tAl', 'tBe']);
+
+/* =====================================================================
+   7. A TRIANGULAR PLOT (area = ½ ab sin C)
+   ===================================================================== */
+const RP = [{ n: 'C = 30°', C: 30 }, { n: 'C = 90° (most area)', C: 90 }, { n: 'C = 150°', C: 150 }];
+$('rA').value = 40; $('rB').value = 25; $('rC').value = 30;
+const markR = buttons('arPresets', RP, i => { $('rC').value = RP[i].C; markR(i); drawR(); });
+function drawR(){
+  const r = readAll(['rA', 'rB', 'rC'], 'rErr'); if (!r) return;
+  const [a, b, C] = r;
+  if (a <= 0 || b <= 0 || a > 500 || b > 500){ $('rErr').textContent = 'Use fence lengths from 0 to 500 m.'; return; }
+  if (C <= 0 || C >= 180){ $('rErr').textContent = 'The corner angle must be between 0° and 180°.'; return; }
+  const area = .5 * a * b * sinD(C), h = b * sinD(C), c = Math.sqrt(a * a + b * b - 2 * a * b * cosD(C));
+  const svg = $('rSvg'); svg.innerHTML = ''; const g = mk('g', {}, svg);
+  const xs = [0, a, b * cosD(C)], x0 = Math.min(...xs), x1 = Math.max(...xs), u = Math.min(760 / (x1 - x0), 220 / Math.max(h, 1e-9)), ox = 120 - x0 * u + (760 - (x1 - x0) * u) / 2, oy = 265;
+  const S = p => [ox + p[0] * u, oy - p[1] * u], Cs = S([0, 0]), Bs = S([a, 0]), As = S([b * cosD(C), h]);
+  mk('polygon', { points: [Cs, Bs, As].map(p => p.join(',')).join(' '), style: 'fill:#4BAE6A;opacity:.25' }, g);
+  line(g, ...Cs, ...Bs, 'stroke:var(--ca);stroke-width:4'); line(g, ...Cs, ...As, 'stroke:var(--cb);stroke-width:4'); line(g, ...As, ...Bs, 'stroke:var(--cc);stroke-width:2;stroke-dasharray:6 5');
+  const F = S([b * cosD(C), 0]);
+  if (b * cosD(C) < 0 || b * cosD(C) > a) line(g, ...F, ...(b * cosD(C) < 0 ? Cs : Bs), 'stroke:var(--ca);stroke-width:1.4;stroke-dasharray:4 4;opacity:.7');
+  line(g, ...As, ...F, 'stroke:var(--ch);stroke-width:2;stroke-dasharray:5 4');
+  txt(g, F[0] + 8, (As[1] + F[1]) / 2, `h = b sin C = ${num(h, 1)}`, 'labS', { 'text-anchor': 'start', style: 'fill:var(--ch)' });
+  cornerArc(g, Cs, Bs, As, 30, 'var(--cc)', `C = ${num(C, 1)}°`);
+  const O = [(Cs[0] + Bs[0] + As[0]) / 3, (Cs[1] + Bs[1] + As[1]) / 3];
+  sideLab(g, Cs, Bs, [O[0], O[1] - 60], `a = ${num(a)} m`, 'var(--ca)', 18); sideLab(g, Cs, As, O, `b = ${num(b)} m`, 'var(--cb)');
+  txt(g, O[0], O[1] + 5, `${num(area, 1)} m²`, 'lab', { 'text-anchor': 'middle', style: 'fill:var(--ink)' });
+  const partner = 180 - C;
+  $('rOut').innerHTML = `Area = ½ · ${num(a)} · ${num(b)} · sin ${num(C, 1)}° = <b>${num(area, 1)} m²</b> (the same as ½ × base ${num(a)} × height ${num(h, 1)}). The third side would need ${num(c, 1)} m of fence. ` +
+    (Math.abs(C - 90) < 1e-9 ? 'A right-angle corner gives the most area for these two fences, since sin 90° = 1.' : `A corner of ${num(partner, 1)}° gives exactly the same area, because sin ${num(partner, 1)}° = sin ${num(C, 1)}°, but a different third side.`);
+}
+['rA', 'rB', 'rC'].forEach(id => $(id).addEventListener('input', () => { markR(-1); drawR(); })); selectOnFocus(['rA', 'rB', 'rC']);
+
+/* =====================================================================
+   8. QUIZ
+   ===================================================================== */
+const rnd = arr => arr[Math.floor(Math.random() * arr.length)];
+const randInt = (lo, hi) => lo + Math.floor(Math.random() * (hi - lo + 1));
+const qz = { counted: false, done: false, right: 0, total: 0 };
+const WH = [
+  { k: 'SSS', t: 'all three sides: a = 7, b = 5, c = 9. You want angle C.', law: 1 },
+  { k: 'SAS', t: 'two sides and the angle between them: a = 6, b = 4, C = 70°. You want side c.', law: 1 },
+  { k: 'ASA', t: 'two angles and the side between them: A = 40°, B = 65°, c = 10. You want side a.', law: 0 },
+  { k: 'AAS', t: 'two angles and a side across from one of them: A = 35°, B = 80°, a = 6. You want side b.', law: 0 },
+  { k: 'SSA', t: 'two sides and an angle across from one of them: a = 8, b = 6, A = 50°. You want angle B.', law: 0 },
+  { k: 'SAS', t: 'two fences of 30 m and 45 m meeting at a 110° corner. You want the third side.', law: 1 },
+  { k: 'SSS', t: 'a triangle with sides 4, 6 and 8. You want its largest angle.', law: 1 },
+  { k: 'ASA', t: 'two lookouts 12 km apart see a fire at 52° and 38° from the baseline. You want the distance to the fire.', law: 0 },
+];
+function setMode(kind, labels){
+  $('qChoice').style.display = kind === 'choice' ? '' : 'none'; $('qIn').style.display = kind === 'choice' ? 'none' : '';
+  if (kind === 'choice'){ $('qChoice').innerHTML = ''; labels.forEach((l, i) => { const b = document.createElement('button'); b.textContent = l; b.onclick = () => answerChoice(i); $('qChoice').appendChild(b); }); }
+  else $('qL').innerHTML = labels;
+}
+function showTri(a, b, c, lab){
+  const svg = $('qSvg'); svg.innerHTML = ''; svg.style.display = ''; const g = mk('g', {}, svg);
+  drawTri(g, fitTri(a, b, c, { x: 300, y: 40, w: 400, h: 200 }), lab);
+}
+// A random valid triangle with nice-ish numbers: two sides and the angle between them
+function randTri(){
+  let a, b, C, c, A, B;
+  do { a = randInt(4, 15); b = randInt(4, 15); C = randInt(25, 140); c = Math.sqrt(a * a + b * b - 2 * a * b * cosD(C)); A = Math.acos((b * b + c * c - a * a) / (2 * b * c)) * DEG; B = 180 - A - C; } while (A < 12 || B < 12);
+  return { a, b, c, A, B, C };
+}
+function newQuestion(){
+  Object.assign(qz, { counted: false, done: false });
+  $('qErr').textContent = ''; $('qFb').className = 'feedback'; $('qFb').innerHTML = ''; $('q1').value = '';
+  qz.type = rnd(['cside', 'sine', 'sine', 'cang', 'which']);
+  const T = randTri(); qz.T = T;
+  if (qz.type === 'cside'){
+    qz.ans = T.c;
+    showTri(T.a, T.b, T.c, { a: `a = ${T.a}`, b: `b = ${T.b}`, c: 'c = ?', Cang: `${T.C}°` });
+    $('qTitle').textContent = 'Find a side (law of cosines)';
+    $('qText').innerHTML = `a = ${T.a}, b = ${T.b} and the angle between them is C = ${T.C}°. Find side <b>c</b>.`; setMode('field', 'c');
+  } else if (qz.type === 'sine'){
+    const A = randInt(25, 80), B = randInt(25, 150 - A), a = randInt(5, 15), C = 180 - A - B, b = a * sinD(B) / sinD(A), c = a * sinD(C) / sinD(A);
+    if (Math.random() < .6){
+      Object.assign(qz, { sub: 'side', A, B, a, b, ans: b });
+      showTri(a, b, c, { a: `a = ${a}`, b: 'b = ?', c: '', Aang: `${A}°`, Bang: `${B}°` });
+      $('qText').innerHTML = `A = ${A}°, B = ${B}° and a = ${a}. Find side <b>b</b>.`; setMode('field', 'b');
+    } else {
+      // SSA with a ≥ b, so there is exactly one answer and B is acute
+      const big = Math.max(a, Math.round(b)), small = Math.min(a, Math.round(b)), AA = Math.max(A, B), Bn = Math.asin(small * sinD(AA) / big) * DEG;
+      if (AA >= 90 || !isFinite(Bn)){ return newQuestion(); }
+      Object.assign(qz, { sub: 'angle', A: AA, a: big, b: small, ans: Bn });
+      const Cn = 180 - AA - Bn, cn = big * sinD(Cn) / sinD(AA);
+      showTri(big, small, cn, { a: `a = ${big}`, b: `b = ${small}`, c: '', Aang: `${AA}°`, Bang: 'B = ?' });
+      $('qText').innerHTML = `A = ${AA}°, a = ${big} and b = ${small}. Find angle <b>B</b> in degrees. (Since a is longer than b, there is only one triangle.)`; setMode('field', 'B (°)');
+    }
+    $('qTitle').textContent = 'Find a side or angle (law of sines)';
+  } else if (qz.type === 'cang'){
+    const a = T.a, b = T.b, c = Math.round(T.c * 10) / 10, Cn = Math.acos((a * a + b * b - c * c) / (2 * a * b)) * DEG;
+    Object.assign(qz, { sa: a, sb: b, sc: c, ans: Cn });
+    showTri(a, b, c, { a: `a = ${a}`, b: `b = ${b}`, c: `c = ${num(c, 1)}`, Cang: 'C = ?' });
+    $('qTitle').textContent = 'Find an angle from three sides';
+    $('qText').innerHTML = `The sides are a = ${a}, b = ${b}, c = ${num(c, 1)}. Find angle <b>C</b> (across from c) in degrees.`; setMode('field', 'C (°)');
+  } else {
+    const w = rnd(WH); qz.w = w; $('qSvg').style.display = 'none';
+    $('qTitle').textContent = 'Which law?';
+    $('qText').innerHTML = `You know ${w.t} Which law should you start with?`;
+    setMode('choice', ['Law of sines', 'Law of cosines']);
+  }
+}
+function countQ(ok){ if (qz.counted) return; qz.counted = true; qz.total++; if (ok) qz.right++; $('score').textContent = `Score: ${qz.right} / ${qz.total}`; }
+const near = (x, t, tol) => Math.abs(x - t) <= tol;
+function checkQ(){
+  const raw = $('q1').value.trim(), x = parseNum(raw);
+  if (raw === '' || isNaN(x)){ $('qErr').textContent = 'Type a number.'; return; }
+  $('qErr').textContent = ''; let ok, msg;
+  if (qz.type === 'cside'){
+    const { a, b, C, c } = qz.T, tol = Math.max(.02, c * .004); ok = near(x, c, tol);
+    if (ok) msg = `<b>Right: ${num(c)}.</b> c² = ${a}² + ${b}² − 2·${a}·${b}·cos ${C}° = ${num(c * c)}.`;
+    else if (near(x, Math.sqrt(a * a + b * b), tol)) msg = `<b>That’s plain Pythagoras.</b> C is ${C}°, not 90°, so subtract 2ab cos C.`;
+    else if (near(x, Math.sqrt(a * a + b * b + 2 * a * b * cosD(C)), tol)) msg = '<b>Check the sign.</b> It’s minus 2ab cos C.';
+    else if (near(x, c * c, Math.max(.05, c * c * .004))) msg = '<b>That’s c².</b> Take the square root.';
+    else if (near(x, Math.sqrt(Math.max(0, a * a + b * b - 2 * a * b * Math.cos(C))), tol)) msg = '<b>Your calculator is in radian mode.</b> Switch to degrees.';
+    else if (near(x, Math.sqrt(Math.abs((a * a + b * b - 2 * a * b) * cosD(C))), tol) || near(x, Math.sqrt(Math.abs(a * a + b * b - 2 * a * b) ) * 1, tol)) msg = '<b>Watch the order of operations.</b> Compute 2·a·b·cos C first, then subtract it from a² + b².';
+    else msg = `<b>Not quite.</b> c² = ${a}² + ${b}² − 2·${a}·${b}·cos ${C}°; then take the square root.`;
+  } else if (qz.type === 'sine'){
+    if (qz.sub === 'side'){
+      const { A, B, a, b } = qz, tol = Math.max(.02, b * .004); ok = near(x, b, tol);
+      if (ok) msg = `<b>Right: ${num(b)}.</b> b = a · sin B / sin A = ${a} · ${num(sinD(B), 4)} / ${num(sinD(A), 4)}.`;
+      else if (near(x, a * sinD(A) / sinD(B), tol)) msg = '<b>Upside down.</b> b / sin B = a / sin A, so b = a · sin B / sin A.';
+      else if (near(x, a * Math.sin(B) / Math.sin(A), tol)) msg = '<b>Your calculator is in radian mode.</b> Switch to degrees.';
+      else msg = `<b>Not quite.</b> Use b / sin B = a / sin A: b = ${a} · sin ${B}° / sin ${A}°.`;
+    } else {
+      const { A, a, b, ans } = qz; ok = near(x, ans, .25);
+      const s = b * sinD(A) / a;
+      if (ok) msg = `<b>Right: ${num(ans, 1)}°.</b> sin B = b sin A / a = ${b} · sin ${A}° / ${a} = ${num(s, 4)}, so B = sin⁻¹(${num(s, 4)}).`;
+      else if (near(x, 180 - ans, .25)) msg = `<b>That’s the partner angle.</b> sin(180° − B) = sin B, but here a is longer than b, so B must be smaller than A: B = ${num(ans, 1)}° is the only option.`;
+      else if (near(x, s, .01)) msg = '<b>That’s sin B.</b> Now use sin⁻¹ to get the angle.';
+      else if (near(x, ans * RAD, .01)) msg = '<b>That’s in radians.</b> Switch your calculator to degrees.';
+      else msg = `<b>Not quite.</b> sin B / b = sin A / a, so sin B = b · sin A / a = ${b} · sin ${A}° / ${a}.`;
+    }
+  } else {
+    const { sa: a, sb: b, sc: c, ans } = qz, cc = (a * a + b * b - c * c) / (2 * a * b); ok = near(x, ans, .25);
+    if (ok) msg = `<b>Right: ${num(ans, 1)}°.</b> cos C = (${a}² + ${b}² − ${num(c, 1)}²) / (2·${a}·${b}) = ${num(cc, 4)}.`;
+    else if (near(x, cc, .01)) msg = '<b>That’s cos C.</b> Now use cos⁻¹ to get the angle.';
+    else if (near(x, ans * RAD, .01)) msg = '<b>That’s in radians.</b> Switch your calculator to degrees.';
+    else if (near(x, Math.acos(Math.max(-1, Math.min(1, (a * a + c * c - b * b) / (2 * a * c)))) * DEG, .25) || near(x, Math.acos(Math.max(-1, Math.min(1, (b * b + c * c - a * a) / (2 * b * c)))) * DEG, .25)) msg = '<b>That’s a different angle of the triangle.</b> C is across from c, so c² goes on the subtracted side: cos C = (a² + b² − c²) / (2ab).';
+    else msg = `<b>Not quite.</b> cos C = (a² + b² − c²) / (2ab), then C = cos⁻¹ of that.`;
+  }
+  countQ(ok); if (ok) qz.done = true;
+  $('qFb').className = 'feedback ' + (ok ? 'ok' : 'bad'); $('qFb').innerHTML = msg;
+}
+function answerChoice(i){
+  if (qz.done) return; qz.done = true;
+  const w = qz.w, ok = i === w.law; countQ(ok);
+  $('qFb').className = 'feedback ' + (ok ? 'ok' : 'bad');
+  $('qFb').innerHTML = `<b>${ok ? 'Right' : 'Not this time'}: the law of ${w.law ? 'cosines' : 'sines'}.</b> This is ${w.k}. ` +
+    (w.law ? 'There is no matched pair (a side with the angle across from it), so start with the law of cosines.' : w.k === 'SSA' ? 'You have a matched pair (a with A), so the law of sines works, but SSA can be ambiguous: check whether a second triangle fits.' : 'Find the third angle (180° minus the other two) and you have a matched pair, so the law of sines works.');
+}
+function showQ(){
+  countQ(false); qz.done = true; $('qErr').textContent = '';
+  const fb = $('qFb'); fb.className = 'feedback info';
+  if (qz.type === 'which') fb.innerHTML = `<b>The law of ${qz.w.law ? 'cosines' : 'sines'}</b> (${qz.w.k}).`;
+  else if (qz.type === 'cside') fb.innerHTML = `<b>${num(qz.ans)}</b> = √(${qz.T.a}² + ${qz.T.b}² − 2·${qz.T.a}·${qz.T.b}·cos ${qz.T.C}°).`;
+  else if (qz.type === 'sine') fb.innerHTML = qz.sub === 'side' ? `<b>${num(qz.ans)}</b> = ${qz.a} · sin ${qz.B}° / sin ${qz.A}°.` : `<b>${num(qz.ans, 1)}°</b> = sin⁻¹(${qz.b} · sin ${qz.A}° / ${qz.a}).`;
+  else fb.innerHTML = `<b>${num(qz.ans, 1)}°</b> = cos⁻¹((${qz.sa}² + ${qz.sb}² − ${num(qz.sc, 1)}²) / (2·${qz.sa}·${qz.sb})).`;
+}
+$('qCheck').onclick = checkQ; $('qShow').onclick = showQ; $('qNew').onclick = newQuestion;
+$('q1').addEventListener('input', () => { $('qErr').textContent = ''; }); $('q1').addEventListener('keydown', e => { if (e.key === 'Enter') checkQ(); });
+selectOnFocus(['q1']);
+
+/* =====================================================================
+   9. START
+   ===================================================================== */
+markM(0); $('mDesc').textContent = MP[0].d; drawM();
+markH(1); drawH();
+$('aPresets').children[0].click();
+drawN();
+drawTr();
+markR(0); drawR();
+newQuestion();
+</script>
+</body>
+</html>

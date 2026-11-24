@@ -25,7 +25,7 @@ window.MM_TOC = [
   { ch: 5, title: 'Trigonometry', pages: [
     { id: '5.B.1', title: 'Angles and Radians', built: true, url: 'https://claude.ai/artifact/FBpVrV9tcTSwwi2UQ4LXH3' },
     { id: '5.B.2', title: 'Sine, Cosine and Tangent', url: 'https://claude.ai/artifact/8zqXNKZvwDx9v9B6iP2Nff', built: true },
-    { id: '5.B.3', title: 'Laws of Sines and Cosines (Trig Explorer, Any triangle tab)', ext: true, url: 'https://claude.ai/artifact/4xY54b5XpeoyG9FocJ9ZFZ' },
+    { id: '5.B.3', title: 'Laws of Sines and Cosines', url: 'https://claude.ai/artifact/4XKZtQCi8BzMeDLysvJqh5', built: true },
     { id: '5.B.4', title: 'Waves and Periodic Functions', built: true, url: 'https://claude.ai/artifact/Ge7zmxuBizyzBUH5Ub8pz2' },
   ]},
   { ch: 7, title: 'Linear Algebra', pages: [
