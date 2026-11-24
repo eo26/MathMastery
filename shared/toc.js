@@ -34,7 +34,7 @@ window.MM_TOC = [
     { id: '7.B.3', title: 'The Dot Product', url: 'https://claude.ai/artifact/753Sm147dog88gwo9sKhaV', built: true },
     { id: '7.B.4', title: 'A Matrix Is a Move', url: 'https://claude.ai/artifact/ELcqpcxsc7H6S6b6VHPA47', built: true },
     { id: '7.B.5', title: 'Matrix Multiplication: One Move After Another', url: 'https://claude.ai/artifact/QW7X2CWcpVQAa1QPBKbsVp', built: true },
-    { id: '7.B.6', title: 'The Determinant' },
+    { id: '7.B.6', title: 'The Determinant', url: 'https://claude.ai/artifact/NBUqz8sJc6mH9YiYrCEzwQ', built: true },
     { id: '7.B.7', title: 'Inverse Matrices' },
     { id: '7.B.8', title: 'Systems of Equations as Matrices' },
     { id: '7.B.9', title: 'Solving Systems by Row Reduction' },

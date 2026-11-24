@@ -1,0 +1,822 @@
+<style>
+/* ===================== Page-specific styles (7.B.6) ===================== */
+/* î = green, ĵ = orange, F and moved grid = purple; positive area = blue, negative (flipped) area = red */
+:root{ --ci:#1D9E75; --cj:#D85A30; --cp:#7F77DD; --cs:#AFA9EC; --cr:#2F6FDB; --pos:#2F6FDB; --neg:#D8443A; --ca:#2F6FDB; --cb:#C2417D; --pc1:#E9A800; --pc2:#1D9E75; --pc3:#C2417D; }
+@media (prefers-color-scheme:dark){ :root{ --ci:#5DCAA5; --cj:#F0997B; --cp:#AFA9EC; --cs:#6F67C9; --cr:#6EA2F5; --pos:#6EA2F5; --neg:#F07B72; --ca:#6EA2F5; --cb:#EE7FB0; --pc1:#FFD44D; --pc2:#5DCAA5; --pc3:#EE7FB0; } }
+.ki{color:var(--ci);font-weight:700}.kj{color:var(--cj);font-weight:700}.kp{color:var(--cp);font-weight:700}.kr{color:var(--cr);font-weight:700}
+.kpos{color:var(--pos);font-weight:700}.kneg{color:var(--neg);font-weight:700}.ka{color:var(--ca);font-weight:700}.kb{color:var(--cb);font-weight:700}
+.field.fp input{border-color:var(--cp)}.field.sm input{width:70px}
+.inputs .grp{display:flex;gap:10px;align-items:flex-end;padding-right:12px;border-right:1px dashed var(--line);margin-right:4px}
+.inputs .grp:last-of-type{border-right:none}
+.matw{display:flex;flex-direction:column;gap:4px}
+.mhead{display:grid;grid-template-columns:repeat(2,70px);gap:6px;padding:0 12px;font:600 11px var(--sans);letter-spacing:.05em;text-transform:uppercase;text-align:center}
+.mlab{font:600 11px var(--sans);letter-spacing:.05em;text-transform:uppercase;padding-left:12px}
+.mat{display:grid;grid-template-columns:repeat(2,70px);gap:6px;padding:6px 10px;border-left:2.5px solid var(--ink);border-right:2.5px solid var(--ink);border-radius:7px}
+.mat input{width:100%;font:500 17px/1 var(--mono);padding:8px 2px;text-align:center;border-radius:9px;border:2px solid var(--line2);background:var(--bg);color:var(--ink)}
+.mat input:focus{outline:none;box-shadow:0 0 0 2px var(--accent)}
+.mat input.ci{border-color:var(--ci)}.mat input.cj{border-color:var(--cj)}
+.mat.mA input{border-color:var(--ca)}.mat.mB input{border-color:var(--cb)}
+.mshow{display:inline-grid;grid-template-columns:auto auto;gap:2px 14px;padding:3px 9px;border-left:2px solid currentColor;border-right:2px solid currentColor;border-radius:5px;font:600 15px var(--mono);vertical-align:middle;margin:0 3px}
+.mshow .c1{color:var(--ci);text-align:center}.mshow .c2{color:var(--cj);text-align:center}
+.mshow.plain span,.mshow.a span,.mshow.b span{color:inherit;text-align:center}.mshow.a{color:var(--ca)}.mshow.b{color:var(--cb)}
+.split{display:grid;gap:0;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--paper)}
+.split.s2{grid-template-columns:1fr 1fr}.split.s3{grid-template-columns:repeat(3,1fr)}
+.split svg{display:block;width:100%;height:auto;border:none;border-radius:0}
+.split > * + *{border-left:1px solid var(--line)}
+.eqs{font:14.5px/1.9 var(--mono);margin:10px 0 6px;padding:10px 16px;border:1px solid var(--line);border-radius:12px;background:var(--bg)}
+.eqs .lbl{display:inline-block;min-width:130px;font:600 12px var(--sans);letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+pre.code{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:12px 16px;overflow-x:auto;font:13.5px/1.6 var(--mono);margin:10px 0 16px}
+.choice{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 0}.choice button{min-width:170px}
+.qtext{font:17px/1.55 var(--serif);margin:4px 0 10px}
+</style>
+
+<!-- ===================== Top bar ===================== -->
+<div class="topbar"><div class="topbar-in">
+  <span class="brand">Math<b>Mastery</b></span>
+  <span class="crumbs">Chapter 7 · Linear Algebra › Basics</span>
+  <span class="pid">7.B.6</span>
+</div></div>
+
+<!-- ===================== Hero ===================== -->
+<header class="prose hero">
+  <div class="kicker">Chapter 7 · Linear Algebra</div>
+  <h1>The Determinant</h1>
+  <p class="dek">One number tells you how much a move scales area, whether it flips the plane over, and whether it squashes everything flat.</p>
+  <div class="tiers" aria-label="Tier">
+    <span class="tier on">Basics <small>you are here</small></span>
+    <span class="tier">Undergraduate</span>
+    <span class="tier">Masters</span>
+  </div>
+  <div class="goals">
+    <h3>On this page</h3>
+    <ul>
+      <li>See the <b>determinant</b> as the <b>area scale factor</b> of a move: every area gets multiplied by the same number.</li>
+      <li>Compute it as det = <i>ad</i> − <i>bc</i>, and see a picture of why that formula works.</li>
+      <li>Read its sign: negative means the move <b>flips</b> the plane (changes its <b>orientation</b>); zero means it <b>collapses</b> the plane flat.</li>
+      <li>Use the product rule: chaining two moves multiplies their determinants, det(<i>BA</i>) = det(<i>B</i>) · det(<i>A</i>).</li>
+    </ul>
+  </div>
+</header>
+
+<main>
+<!-- ===================== §1 ===================== -->
+<section class="prose">
+  <h2><span class="n">1</span>One number for every area</h2>
+  <p>In 7.B.4 you watched a matrix move the 1-by-1 square built on <b class="ki">î</b> and <b class="kj">ĵ</b> into a <b>parallelogram</b> built on where they land. Every other square of the grid becomes an identical copy of that parallelogram. So if the parallelogram has area 5, every square of area 1 becomes area 5, every shape made of squares grows 5 times, and so does any shape at all (a circle can be filled with tinier and tinier squares).</p>
+  <p>That one number, the factor by which the move multiplies every area, is the <b>determinant</b> of the matrix, written det <i>A</i>. It gets a sign, too: positive when the move keeps the plane’s <b>orientation</b> (the turn from <b class="ki">î</b> to <b class="kj">ĵ</b> stays counterclockwise), negative when the move <b>flips</b> the plane over like a mirror. The parallelogram’s area with this sign attached is its <b>signed area</b>.</p>
+</section>
+
+<section class="wide">
+  <div class="card" id="main">
+    <div class="card-h"><span class="tag">Explore</span><h3>The area meter</h3>
+      <span class="sub">Pick a move, type the matrix, or drag the tips of <b class="ki">î</b> and <b class="kj">ĵ</b> in the After panel. The meter shows the determinant. “Swing ĵ” turns ĵ all the way around so you can watch the sign change.</span></div>
+    <div class="row" id="dPresets"></div>
+    <div class="desc" id="dDesc"></div>
+    <div class="inputs">
+      <div class="grp"><div class="matw">
+        <div class="mhead"><span class="ki">î lands at</span><span class="kj">ĵ lands at</span></div>
+        <div class="mat">
+          <input id="da" class="ci" type="text" inputmode="decimal" autocomplete="off" aria-label="a"><input id="db" class="cj" type="text" inputmode="decimal" autocomplete="off" aria-label="b">
+          <input id="dc" class="ci" type="text" inputmode="decimal" autocomplete="off" aria-label="c"><input id="dd" class="cj" type="text" inputmode="decimal" autocomplete="off" aria-label="d">
+        </div></div></div>
+      <div class="row" style="margin:0"><button class="primary" id="dPlay">Play</button><button id="dSwing">Swing ĵ</button></div>
+    </div>
+    <div class="err" id="dErr"></div>
+    <div class="split s2">
+      <svg id="dB" viewBox="0 0 500 420" role="img" aria-label="Before"></svg>
+      <svg id="dA" viewBox="0 0 500 420" role="img" aria-label="After" style="cursor:grab;touch-action:none"></svg>
+    </div>
+    <svg class="nl" id="dM" viewBox="0 0 1000 110" role="img" aria-label="Determinant meter" style="margin-top:10px"></svg>
+    <div class="eqs" id="dEqs"></div>
+    <div class="readout" id="dOut"></div>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--pos);height:10px;width:12px;opacity:.5"></i>positive area (orientation kept)</span>
+      <span><i class="sw" style="background:var(--neg);height:10px;width:12px;opacity:.5"></i>negative area (flipped)</span>
+      <span><i class="sw" style="background:var(--cp)"></i>the F and the circle, and what they become</span>
+      <span><svg width="26" height="12" viewBox="0 0 26 12" aria-hidden="true"><path d="M3 10 Q13 -2 23 10" fill="none" stroke="var(--ink)" stroke-width="1.6"/></svg>the turn from î to ĵ</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §2 ===================== -->
+<section class="prose">
+  <h2><span class="n">2</span>Why the formula is <i>ad</i> − <i>bc</i></h2>
+  <p>For the matrix with top row <i>a</i>, <i>b</i> and bottom row <i>c</i>, <i>d</i>, <b class="ki">î</b> lands at [<i>a</i>, <i>c</i>] and <b class="kj">ĵ</b> at [<i>b</i>, <i>d</i>]. Draw the parallelogram on those two arrows and put it in a box. The box is easy: (<i>a</i> + <i>b</i>) wide and (<i>c</i> + <i>d</i>) tall. Around the parallelogram are six leftover pieces, which come in matching pairs. Take them away and watch what’s left of the arithmetic:</p>
+</section>
+<section class="wide">
+  <div class="card" id="proof">
+    <div class="card-h"><span class="tag">Explore</span><h3>Box minus the corners</h3>
+      <span class="sub">Type whole numbers from 0 to 4 (this picture needs ĵ counterclockwise from î, so <i>ad</i> &gt; <i>bc</i>), then step through.</span></div>
+    <div class="inputs">
+      <div class="grp"><div class="matw">
+        <div class="mhead"><span class="ki">î lands at</span><span class="kj">ĵ lands at</span></div>
+        <div class="mat">
+          <input id="pa" class="ci" type="text" inputmode="decimal" autocomplete="off" aria-label="a"><input id="pb" class="cj" type="text" inputmode="decimal" autocomplete="off" aria-label="b">
+          <input id="pc" class="ci" type="text" inputmode="decimal" autocomplete="off" aria-label="c"><input id="pd" class="cj" type="text" inputmode="decimal" autocomplete="off" aria-label="d">
+        </div></div></div>
+      <div class="row" style="margin:0" id="pSteps"></div>
+    </div>
+    <div class="err" id="pErr"></div>
+    <svg class="nl" id="pSvg" viewBox="0 0 1000 360" role="img" aria-label="Parallelogram in a box"></svg>
+    <div class="eqs" id="pEqs"></div>
+  </div>
+</section>
+<section class="prose">
+  <p>In symbols: (<i>a</i> + <i>b</i>)(<i>c</i> + <i>d</i>) − <i>ac</i> − <i>bd</i> − 2<i>bc</i> = <i>ac</i> + <i>ad</i> + <i>bc</i> + <i>bd</i> − <i>ac</i> − <i>bd</i> − 2<i>bc</i> = <i>ad</i> − <i>bc</i>. When <b class="kj">ĵ</b> ends up clockwise from <b class="ki">î</b>, the same arithmetic comes out negative: that’s the flip.</p>
+</section>
+
+<!-- ===================== §3 ===================== -->
+<section class="prose">
+  <h2><span class="n">3</span>Negative means flipped</h2>
+  <p>Hold your left hand palm-down: the turn from your thumb to your index finger goes one way. A mirror image of that hand turns the other way, and no amount of turning will make the two match. Moves of the plane are the same. Check the small curved arrow at the origin of the After panel: it turns from <b class="ki">î</b> to <b class="kj">ĵ</b>. When it turns counterclockwise (like the original), the move kept the orientation and det &gt; 0. When it turns clockwise, the plane was flipped, the F reads backwards, and det &lt; 0.</p>
+  <p>Press “Swing ĵ” in the area meter. As <b class="kj">ĵ</b> sweeps around, the determinant rises and falls like a sine wave. It can only change sign by passing through <b>0</b>, at the instants when <b class="kj">ĵ</b> lies on <b class="ki">î</b>’s line. A plane can’t be flipped smoothly without being squashed flat for an instant on the way.</p>
+</section>
+
+<!-- ===================== §4 ===================== -->
+<section class="prose">
+  <h2><span class="n">4</span>Zero means flattened</h2>
+  <p>det = 0 exactly when <b class="ki">î</b> and <b class="kj">ĵ</b> land on the same line (or at the origin). Then the parallelogram has no area, and the whole plane is squashed onto a line or a point. Try the “Collapse” preset: the columns [2, 2] and [1, 1] point the same way, and <i>ad</i> − <i>bc</i> = 2·1 − 1·2 = 0.</p>
+  <p>A collapse can’t be undone. Many different points land on the same spot (in that preset, everything along each line of slope −2 lands on one point), so there’s no way to know where a landed point came from. That’s why a matrix with det = 0, called <b>singular</b>, has no inverse (7.B.7), and why systems of equations with det = 0 have either no solution or infinitely many (7.B.8).</p>
+</section>
+
+<!-- ===================== §5 ===================== -->
+<section class="prose">
+  <h2><span class="n">5</span>Chained moves multiply</h2>
+  <p>If <b class="ka">A</b> multiplies areas by 2 and then <b class="kb">B</b> multiplies them by 3, together they multiply areas by 6. Two flips make no flip, just as (−1)·(−1) = 1. That’s the <b>product rule</b>: det(<span class="kb">B</span><span class="ka">A</span>) = det(<span class="kb">B</span>) · det(<span class="ka">A</span>). It explains a lot at once: det(<i>I</i>) = 1, det(<i>A</i><sup><i>n</i></sup>) = (det <i>A</i>)<sup><i>n</i></sup>, and once any step in a chain flattens the plane, the whole chain has det = 0.</p>
+</section>
+<section class="wide">
+  <div class="card" id="chain">
+    <div class="card-h"><span class="tag">Explore</span><h3>Two moves, two factors</h3>
+      <span class="sub">The 1×1 square after <b class="ka">A</b>, then after <b class="ka">A</b> and <b class="kb">B</b>. Watch the areas multiply.</span></div>
+    <div class="row" id="cPresets"></div>
+    <div class="inputs">
+      <div class="grp"><div class="matw"><span class="mlab ka">A · first move</span>
+        <div class="mat mA"><input id="ca0" type="text" inputmode="decimal" autocomplete="off"><input id="ca1" type="text" inputmode="decimal" autocomplete="off"><input id="ca2" type="text" inputmode="decimal" autocomplete="off"><input id="ca3" type="text" inputmode="decimal" autocomplete="off"></div></div></div>
+      <div class="grp"><div class="matw"><span class="mlab kb">B · second move</span>
+        <div class="mat mB"><input id="cb0" type="text" inputmode="decimal" autocomplete="off"><input id="cb1" type="text" inputmode="decimal" autocomplete="off"><input id="cb2" type="text" inputmode="decimal" autocomplete="off"><input id="cb3" type="text" inputmode="decimal" autocomplete="off"></div></div></div>
+    </div>
+    <div class="err" id="cErr"></div>
+    <div class="split s3" style="margin-top:12px">
+      <svg id="c1" viewBox="0 0 340 320" role="img" aria-label="Start"></svg>
+      <svg id="c2" viewBox="0 0 340 320" role="img" aria-label="After A"></svg>
+      <svg id="c3" viewBox="0 0 340 320" role="img" aria-label="After A, then B"></svg>
+    </div>
+    <div class="eqs" id="cEqs"></div>
+  </div>
+</section>
+<section class="prose">
+  <p>In 3D (7.B.10) the determinant of a 3×3 matrix plays the same role for <i>volume</i>: the 1×1×1 cube becomes a slanted box, and its signed volume is the determinant.</p>
+</section>
+
+<!-- ===================== §6 ===================== -->
+<section class="prose">
+  <h2><span class="n">6</span>Resizing pictures and printing designs</h2>
+  <p>When you resize a photo, the screen area it covers changes by the determinant of the resize. Zoom by 2 in both directions and the matrix is 2<i>I</i>, with det = 2·2 = 4: the photo covers four times the screen, not twice. Stretch it ×2 sideways only and it covers twice the area, with every pixel turned into a wide rectangle.</p>
+</section>
+<section class="wide">
+  <div class="card" id="photo">
+    <div class="card-h"><span class="tag">Explore</span><h3>Resize a pixel picture</h3>
+      <span class="sub">Set the width and height factors. Each little square is one pixel of the original 8×6 picture; count how much screen the resized picture covers.</span></div>
+    <div class="row" id="phPresets"></div>
+    <div class="inputs">
+      <label class="field fp sm"><span>Width ×</span><input id="phW" type="text" inputmode="decimal" autocomplete="off"></label>
+      <label class="field fp sm"><span>Height ×</span><input id="phH" type="text" inputmode="decimal" autocomplete="off"></label>
+    </div>
+    <div class="err" id="phErr"></div>
+    <svg class="nl" id="phSvg" viewBox="0 0 1000 330" role="img" aria-label="Pixel picture before and after resizing" style="margin-top:10px"></svg>
+    <div class="readout" id="phOut"></div>
+  </div>
+</section>
+<section class="prose">
+  <p>Printing a logo at a slant (a shear) is different: the logo leans, but it covers exactly the same amount of fabric, because a shear has det = 1. Only stretching changes how much fabric the print needs.</p>
+</section>
+<section class="wide">
+  <div class="card" id="fabric">
+    <div class="card-h"><span class="tag">Explore</span><h3>A slanted print on fabric</h3>
+      <span class="sub">A 3 cm × 2 cm logo, printed at a slant and stretched along its width. The grid is 1 cm squares of fabric.</span></div>
+    <div class="inputs">
+      <label class="field fp sm"><span>Slant (°)</span><input id="fK" type="text" inputmode="decimal" autocomplete="off"></label>
+      <label class="field fp sm"><span>Width ×</span><input id="fS" type="text" inputmode="decimal" autocomplete="off"></label>
+    </div>
+    <div class="err" id="fErr"></div>
+    <svg class="nl" id="fSvg" viewBox="0 0 1000 300" role="img" aria-label="Logo printed on fabric" style="margin-top:10px"></svg>
+    <div class="readout" id="fOut"></div>
+  </div>
+</section>
+
+<!-- ===================== §7 ===================== -->
+<section class="prose">
+  <h2><span class="n">7</span>Now, in symbols</h2>
+  <div class="math">\[ \det\begin{bmatrix} a & b \\ c & d \end{bmatrix} = ad - bc \]<div class="cap">Top-left times bottom-right, minus top-right times bottom-left.</div></div>
+  <div class="math">\[ \text{area after the move} = |\det A| \times \text{area before} \]<div class="cap">The sign says whether the move flips the plane: det &gt; 0 keeps orientation, det &lt; 0 flips it, det = 0 flattens it.</div></div>
+  <div class="math">\[ \det(BA) = \det B \cdot \det A, \qquad \det I = 1, \qquad \det(A^n) = (\det A)^n \]<div class="cap">The product rule: area factors multiply when moves are chained.</div></div>
+  <div class="math">\[ \det A = 0 \iff \text{the columns of } A \text{ lie on one line} \iff A \text{ cannot be undone} \]<div class="cap">A singular matrix squashes the plane, so it has no inverse (7.B.7).</div></div>
+  <p>By hand, a 2×2 determinant takes seconds; bigger ones get long fast (a 3×3 has six products, a 10×10 has over three million). A computer finds them with row reduction (7.B.9):</p>
+  <pre class="code"><code>import numpy as np                                    # NumPy: arrays of numbers
+A = np.array([[2, 1], [1, 3]])                        # a move of the plane
+print(round(np.linalg.det(A), 6))                     # 5.0: every area grows 5 times
+B = np.array([[1, 2, 0], [0, 1, 3], [2, 0, 1]])       # a move of 3D space
+print(round(np.linalg.det(B), 6))                     # 13.0: every volume grows 13 times
+C = np.array([[0, 1, 0], [1, 0, 0], [0, 0, 1]])       # swap x and y: a mirror in 3D
+print(round(np.linalg.det(C @ B), 6))                 # -13.0 = det(C) * det(B) = (-1) * 13</code></pre>
+</section>
+
+<!-- ===================== §8 ===================== -->
+<section class="prose">
+  <h2><span class="n">8</span>Where this goes</h2>
+  <ul class="goes">
+    <li><b>Next (7.B.7):</b> undoing a move. A matrix can be undone exactly when det ≠ 0, and the undo move has det = 1 / det <i>A</i>.</li>
+    <li><b>Later in this book:</b> deciding whether a system of equations has exactly one solution (7.B.8), volumes in 3D (7.B.10), finding eigenvalues by solving det(<i>A</i> − λ<i>I</i>) = 0 (Undergraduate tier), and the change-of-variables rule for areas in calculus, where a determinant tells how a curved map stretches area.</li>
+    <li><b>In the world:</b> graphics engines use the sign to tell which side of a triangle faces the camera, mapmakers measure how much a map projection distorts areas, and physics uses determinants to find volumes and the direction of rotations.</li>
+  </ul>
+</section>
+
+<!-- ===================== §9 ===================== -->
+<section class="prose">
+  <h2><span class="n">9</span>Words to know</h2>
+  <div class="vocab">
+    <div class="term"><b>Determinant</b>det <i>A</i> = <i>ad</i> − <i>bc</i>: the signed factor by which the move multiplies every area.</div>
+    <div class="term"><b>Area scale factor</b>|det <i>A</i>|: how many times bigger (or smaller) every area becomes.</div>
+    <div class="term"><b>Parallelogram</b>A four-sided shape with opposite sides parallel. The 1×1 square always lands on one.</div>
+    <div class="term"><b>Signed area</b>Area with a sign: positive if the turn from î to ĵ is counterclockwise, negative if clockwise.</div>
+    <div class="term"><b>Orientation</b>Which way the turn from î to ĵ goes. A move with det &gt; 0 keeps it; det &lt; 0 reverses it.</div>
+    <div class="term"><b>Flip</b>A move that reverses orientation, like a mirror. Its determinant is negative.</div>
+    <div class="term"><b>Collapse (singular matrix)</b>det = 0: the plane is squashed onto a line or a point, and the move can’t be undone.</div>
+    <div class="term"><b>Product rule</b>det(<i>BA</i>) = det(<i>B</i>) · det(<i>A</i>): chained moves multiply their area factors.</div>
+  </div>
+</section>
+
+<!-- ===================== Quiz ===================== -->
+<section class="prose"><h2><span class="n">10</span>Check yourself</h2>
+  <p>Four kinds of questions: compute <i>ad</i> − <i>bc</i>, find a missing entry, decide flip / squash / neither, and read the determinant from a picture.</p>
+</section>
+<section class="wide">
+  <div class="card" id="quiz">
+    <div class="card-h"><span class="tag">Quiz</span><h3 id="qTitle"></h3><span class="score" id="score">Score: 0 / 0</span></div>
+    <div class="qtext" id="qText"></div>
+    <svg class="nl" id="qSvg" viewBox="0 0 1000 380" role="img" aria-label="Quiz picture"></svg>
+    <div class="choice" id="qChoice"></div>
+    <div class="inputs" id="qIn">
+      <label class="field fp"><span id="qL"></span><input id="q1" type="text" inputmode="decimal" autocomplete="off"></label>
+      <div class="row" style="margin:0"><button class="primary" id="qCheck">Check</button></div>
+    </div>
+    <div class="row" style="margin:10px 0 0"><button id="qShow">Show answer</button><button id="qReplay">Replay move</button><button id="qNew">New question</button></div>
+    <div class="err" id="qErr"></div>
+    <div class="feedback" id="qFb" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ===================== Pager (filled in by the shared navigation) ===================== -->
+<nav class="wide">
+  <div class="pager"></div>
+  <div class="meta">7.B.6 · Prerequisites: 7.B.4 (a matrix is a move), 7.B.5 (matrix multiplication) · Leads to: 7.B.7 (inverse matrices), 7.B.8 (systems of equations), 7.B.10 (3D)</div>
+</nav>
+</main>
+
+<script>
+/* =====================================================================
+   1. HELPERS
+   ===================================================================== */
+const NS = 'http://www.w3.org/2000/svg';
+const $ = id => document.getElementById(id);
+function mk(tag, attrs, parent){                           // create an SVG element with attributes
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function txt(parent, x, y, s, cls, extra){                 // create an SVG text element
+  extra = Object.assign({}, extra || {});
+  // a CSS class's text-anchor beats the attribute, so move a requested anchor into the style
+  if (extra['text-anchor']){ extra.style = (extra.style ? extra.style + ';' : '') + 'text-anchor:' + extra['text-anchor']; delete extra['text-anchor']; }
+  const t = mk('text', Object.assign({ x, y, class: cls || '' }, extra), parent);
+  t.textContent = s;
+  return t;
+}
+function num(x, d){ if (d === undefined) d = 2; const r = Math.round(x * Math.pow(10, d)) / Math.pow(10, d); return r === 0 ? '0' : (r < 0 ? '−' : '') + String(Math.abs(r)); }
+const pn = x => x < 0 || num(x).startsWith('−') ? `(${num(x)})` : num(x);   // a number, in parentheses when negative
+// Parse typed input: integers, decimals, a leading minus, fractions a/b, and roots like √2 or sqrt(3)
+function parseNum(s){
+  s = String(s).trim().replace(/[−–]/g, '-').replace(/\s+/g, '').replace(/°$/, '');
+  if (/^-?\d+(\.\d+)?$|^-?\.\d+$/.test(s)) return parseFloat(s);
+  let m = s.match(/^(-?\d+)\/(\d+)$/);
+  if (m && +m[2] !== 0) return +m[1] / +m[2];
+  m = s.match(/^(-?)(\d*\.?\d*)\*?(?:√|sqrt)\(?(\d+(?:\.\d+)?)\)?$/);
+  if (m){ const c = m[2] === '' ? 1 : parseFloat(m[2]); if (!isNaN(c)) return (m[1] ? -1 : 1) * c * Math.sqrt(+m[3]); }
+  return NaN;
+}
+const ease = t => t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+const C = { i: 'var(--ci)', j: 'var(--cj)', p: 'var(--cp)', s: 'var(--cs)', r: 'var(--cr)' };
+const DEG = 180 / Math.PI;
+function readAll(ids, errId, msg){
+  const out = ids.map(id => parseNum($(id).value));
+  if (ids.some(id => $(id).value.trim() === '') || out.some(isNaN)){ $(errId).textContent = msg || 'Fill in every box with a number.'; return null; }
+  $(errId).textContent = ''; return out;
+}
+// A matrix is stored as [a, b, c, d] = top row a b, bottom row c d. Column 1 = [a, c] (where î lands), column 2 = [b, d].
+const ap = (M, p) => [M[0] * p[0] + M[1] * p[1], M[2] * p[0] + M[3] * p[1]];   // where the point p lands
+const det = M => M[0] * M[3] - M[1] * M[2];
+const blend = (M, e) => [1 + e * (M[0] - 1), e * M[1], e * M[2], 1 + e * (M[3] - 1)];   // from "no move" (e = 0) to M (e = 1)
+const vstr = p => `[${p.map(x => num(x)).join(', ')}]`;
+const pstr = p => `(${p.map(x => num(x)).join(', ')})`;
+// A printed matrix with colored columns
+const mshow = M => `<span class="mshow"><span class="c1">${num(M[0])}</span><span class="c2">${num(M[1])}</span><span class="c1">${num(M[2])}</span><span class="c2">${num(M[3])}</span></span>`;
+function selectOnFocus(ids){ ids.forEach(id => $(id).addEventListener('focus', e => e.target.select())); }
+
+const svgCss = document.createElement('style');
+svgCss.textContent = `
+  .grid{stroke:var(--line);stroke-width:1} .axis{stroke:var(--ink);stroke-width:1.6;opacity:.7}
+  .ref{stroke:var(--muted);stroke-width:1;stroke-dasharray:3 4;opacity:.6} .refaxis{stroke:var(--muted);stroke-width:1.5;stroke-dasharray:6 4}
+  .tl{fill:var(--muted);font:500 11px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:3px}
+  .lab{font:700 15px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:5px}
+  .labS{font:600 12.5px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+  .cap{fill:var(--muted);font:500 12px var(--sans)}
+  .pl{fill:var(--ink);font:700 13px var(--sans);paint-order:stroke;stroke:var(--bg);stroke-width:5px;letter-spacing:.06em;text-transform:uppercase}
+  .bt{fill:var(--ink);font:600 13px var(--sans)}
+  .bn{fill:var(--ink);font:700 14px var(--mono)}
+`;
+document.head.appendChild(svgCss);
+
+/* =====================================================================
+   2. THE PLANE (grid, axes, arrows, labels)
+   ===================================================================== */
+// Draw a fixed grid that fits the box. o.dashed = the dashed fixed ruler for an After panel; o.noLabels hides tick labels.
+function plane(svg, W, H, box, maxU, o){
+  o = o || {};
+  svg.innerHTML = ''; const g = mk('g', {}, svg);
+  const pad = 1;
+  const u = Math.min(maxU || 44, (W - 40) / (box.x1 - box.x0 + 2 * pad), (H - 30) / (box.y1 - box.y0 + 2 * pad));
+  const cx = W / 2 - u * (box.x0 + box.x1) / 2, cy = H / 2 + u * (box.y0 + box.y1) / 2;   // pixel position of the origin
+  const X = x => cx + x * u, Y = y => cy - y * u;
+  const xa = Math.ceil((0 - cx) / u), xb = Math.floor((W - cx) / u), ya = Math.ceil((cy - H) / u), yb = Math.floor(cy / u);
+  const gc = o.dashed ? 'ref' : 'grid', ac = o.dashed ? 'refaxis' : 'axis';
+  for (let k = xa; k <= xb; k++) if (k) mk('line', { x1: X(k), y1: 0, x2: X(k), y2: H, class: gc }, g);
+  for (let k = ya; k <= yb; k++) if (k) mk('line', { x1: 0, y1: Y(k), x2: W, y2: Y(k), class: gc }, g);
+  mk('line', { x1: 0, y1: Y(0), x2: W, y2: Y(0), class: ac }, g);
+  mk('line', { x1: X(0), y1: 0, x2: X(0), y2: H, class: ac }, g);
+  const P = { g, X, Y, u, W, H, inv: (px, py) => [(px - cx) / u, (cy - py) / u] };
+  P.ticks = () => {                                          // tick labels, drawn last so they sit on top
+    if (o.noLabels) return;
+    const step = u >= 30 ? 1 : u >= 15 ? 2 : 5;
+    for (let k = xa; k <= xb; k++) if (k && k % step === 0 && X(k) > 12 && X(k) < W - 12) txt(g, X(k), Y(0) + 15, k < 0 ? '−' + (-k) : String(k), 'tl', { 'text-anchor': 'middle' });
+    for (let k = ya; k <= yb; k++) if (k && k % step === 0 && Y(k) > 10 && Y(k) < H - 6) txt(g, X(0) - 6, Y(k) + 4, k < 0 ? '−' + (-k) : String(k), 'tl', { 'text-anchor': 'end' });
+  };
+  return P;
+}
+function boxOf(pts){ const xs = pts.map(p => p[0]).concat(0), ys = pts.map(p => p[1]).concat(0); return { x0: Math.min(...xs), x1: Math.max(...xs), y0: Math.min(...ys), y1: Math.max(...ys) }; }
+function arrow(P, p, q, col, o){
+  o = o || {};
+  const x1 = P.X(p[0]), y1 = P.Y(p[1]), x2 = P.X(q[0]), y2 = P.Y(q[1]), L = Math.hypot(x2 - x1, y2 - y1), w = o.w || 3, op = o.op === undefined ? 1 : o.op;
+  const st = `stroke:${col};stroke-width:${w};opacity:${op}${o.dash ? ';stroke-dasharray:' + o.dash : ''}`;
+  if (L < 2){ mk('circle', { cx: x1, cy: y1, r: 5, style: `fill:${col};opacity:${op}` }, P.g); return; }
+  const ux = (x2 - x1) / L, uy = (y2 - y1) / L, h = Math.min(11 + w, L * 0.45);
+  mk('line', { x1, y1, x2: x2 - ux * h * 0.8, y2: y2 - uy * h * 0.8, style: st + ';stroke-linecap:round' }, P.g);
+  mk('polygon', { points: `${x2},${y2} ${x2 - ux * h - uy * h * .45},${y2 - uy * h + ux * h * .45} ${x2 - ux * h + uy * h * .45},${y2 - uy * h - ux * h * .45}`, style: `fill:${col};opacity:${op}` }, P.g);
+}
+// A label just past an arrow's tip (in the arrow's direction), so it never sits on the arrow itself
+function tipLabel(P, q, str, col, cls, push){
+  const L = Math.hypot(q[0], q[1]), d = push || 17;
+  const dx = L > 1e-6 ? q[0] / L : 0.7, dy = L > 1e-6 ? q[1] / L : 0.7;
+  const x = P.X(q[0]) + dx * d, y = P.Y(q[1]) - dy * d;
+  txt(P.g, x, y + 5, str, cls || 'lab', { 'text-anchor': Math.abs(dx) < .35 ? 'middle' : dx > 0 ? 'start' : 'end', style: `fill:${col}` });
+}
+// A label beside the middle of an arrow from the origin, on the side away from the other arrow (pref breaks ties when they're parallel)
+function armLabel(P, q, other, str, col, pref){
+  const sx = P.X(q[0]) - P.X(0), sy = P.Y(q[1]) - P.Y(0), L = Math.hypot(sx, sy);
+  if (L < 4){ txt(P.g, P.X(0) + 12 * (pref || 1), P.Y(0) + 20, str, 'lab', { 'text-anchor': 'middle', style: `fill:${col}` }); return; }
+  let nx = -sy / L, ny = sx / L;                               // a screen-space perpendicular
+  const ox = P.X(other[0]) - P.X(0), oy = P.Y(other[1]) - P.Y(0), side = nx * ox + ny * oy;
+  if (Math.abs(side) < 1e-6 * (Math.hypot(ox, oy) + 1)){ if ((pref || 1) < 0){ nx = -nx; ny = -ny; } }
+  else if (side > 0){ nx = -nx; ny = -ny; }
+  txt(P.g, P.X(0) + sx * .5 + nx * 15, P.Y(0) + sy * .5 + ny * 15 + 5, str, 'lab', { 'text-anchor': 'middle', style: `fill:${col}` });
+}
+// The moved grid: the images of the lines x = k and y = k under M (purple; the image of each axis darker)
+function movedGrid(P, M, R){
+  R = R || 16; const g = mk('g', {}, P.g);
+  for (let k = -R; k <= R; k++){
+    const st = k ? 'stroke:var(--cs);stroke-width:1.1;opacity:.85' : 'stroke:var(--cp);stroke-width:2;opacity:.75';
+    [[[k, -R], [k, R]], [[-R, k], [R, k]]].forEach(([p, q]) => { const a = ap(M, p), b = ap(M, q); mk('line', { x1: P.X(a[0]), y1: P.Y(a[1]), x2: P.X(b[0]), y2: P.Y(b[1]), style: st }, g); });
+  }
+}
+function poly(P, pts, M, style){ return mk('polygon', { points: pts.map(p => { const q = M ? ap(M, p) : p; return P.X(q[0]).toFixed(1) + ',' + P.Y(q[1]).toFixed(1); }).join(' '), style }, P.g); }
+// The F marker (asymmetric, so flips and turns can't hide) and the unit square
+const FP = [[.3, .3], [.7, .3], [.7, 1.1], [1.3, 1.1], [1.3, 1.5], [.7, 1.5], [.7, 1.9], [1.7, 1.9], [1.7, 2.3], [.3, 2.3]];
+const US = [[0, 0], [1, 0], [1, 1], [0, 1]];
+function drawSquareAndF(P, M){
+  poly(P, US, M, 'fill:var(--cs);opacity:.45;stroke:var(--cp);stroke-width:1.2');
+  poly(P, FP, M, 'fill:var(--cp);opacity:.85;stroke:var(--cp);stroke-width:1.5;stroke-linejoin:round');
+}
+const origin = P => mk('circle', { cx: P.X(0), cy: P.Y(0), r: 4.5, style: 'fill:var(--ink)' }, P.g);
+
+// Name the move a matrix makes (used by the explorer's readout and by the quiz)
+function classify(M){
+  const [a, b, c, d] = M, D = det(M), z = x => Math.abs(x) < 0.015;
+  if (z(a) && z(b) && z(c) && z(d)) return { k: 'zero', t: 'Every point lands on the origin: the zero matrix squashes the whole plane to a single point.' };
+  if (z(D)) return { k: 'collapse', t: '<b>Collapse.</b> î and ĵ land on the same line, so the whole plane is squashed flat onto that line. Area becomes 0.' };
+  if (z(a - 1) && z(b) && z(c) && z(d - 1)) return { k: 'identity', t: '<b>The identity.</b> î and ĵ stay home, so nothing moves. It’s the matrix version of ×1.' };
+  const orth = z(a * a + c * c - 1) && z(b * b + d * d - 1) && z(a * b + c * d);
+  if (orth && D > 0){ const ang = Math.atan2(c, a) * DEG; return { k: 'rotation', t: `<b>Rotation by ${num(Math.abs(ang), 0)}° ${ang >= 0 ? 'counterclockwise' : 'clockwise'}.</b> Both arrows turn together, keeping length 1 and staying at right angles. Shapes keep their size and aren’t mirrored.` }; }
+  if (orth && D < 0){ let ang = Math.atan2(c, a) * DEG / 2; if (ang < 0) ang += 180; const where = Math.abs(ang - 90) < .5 ? 'the vertical axis' : Math.abs(ang) < .5 || Math.abs(ang - 180) < .5 ? 'the horizontal axis' : `the dashed line at ${num(ang, 0)}°`;
+    return { k: 'reflection', line: ang, t: `<b>Reflection</b> across ${where}: a mirror flip. The F comes out backwards.` }; }
+  if (z(b) && z(c)){
+    if (a > 0 && d > 0) return { k: 'stretch', t: z(a - d) ? `<b>Resize ×${num(a)}.</b> î and ĵ stay on their axes and both get ${num(a)} times as long, so shapes keep their proportions.` : `<b>Stretch:</b> ×${num(a)} left–right and ×${num(d)} up–down. î and ĵ stay on their axes and only change length.` };
+    return { k: 'stretch', t: `<b>A stretch with a flip:</b> î and ĵ stay on their axes, but ${a < 0 ? 'î' : 'ĵ'} now points the other way, so the plane is also mirrored.` };
+  }
+  if (z(a - 1) && z(d - 1) && z(c)) return { k: 'shear', t: `<b>Horizontal shear.</b> î stays put and ĵ tips over to [${num(b)}, 1]. Each point slides sideways by ${num(b)} × its height.` };
+  if (z(a - 1) && z(d - 1) && z(b)) return { k: 'shear', t: `<b>Vertical shear.</b> ĵ stays put and î tips up to [1, ${num(c)}]. Each point slides up by ${num(c)} × its distance to the right.` };
+  return { k: 'general', t: `<b>A general move:</b> it stretches, turns and slants at once${D < 0 ? ', and flips the plane over (the F is mirrored)' : ''}. It’s still linear: lines stay straight, parallel and evenly spaced.` };
+}
+
+/* =====================================================================
+   3. PAGE TOOLS
+   ===================================================================== */
+C.a = 'var(--ca)'; C.b = 'var(--cb)';
+const mul = (B, A) => [B[0] * A[0] + B[1] * A[2], B[0] * A[1] + B[1] * A[3], B[2] * A[0] + B[3] * A[2], B[2] * A[1] + B[3] * A[3]];   // B·A: do A, then B
+const ID = [1, 0, 0, 1];
+const rot = deg => { const t = deg / DEG; return [Math.cos(t), -Math.sin(t), Math.sin(t), Math.cos(t)]; };
+const ms = (M, cls, d) => `<span class="mshow ${cls || 'plain'}">${M.map(v => `<span>${num(v, d)}</span>`).join('')}</span>`;
+const sgnCol = D => Math.abs(D) < 1e-9 ? 'var(--muted)' : D > 0 ? 'var(--pos)' : 'var(--neg)';
+const FD = FP.map(([x, y]) => [x + 1.4, y]);              // the F, moved off the unit square so the square's label stays readable
+const CIRC = Array.from({ length: 48 }, (_, k) => [-2.3 + .8 * Math.cos(k * Math.PI / 24), 1.9 + .8 * Math.sin(k * Math.PI / 24)]);   // a circle of radius 0.8
+// The parallelogram on the moved î and ĵ, shaded by the sign of its area, with the area written in the middle
+function para(P, M, label){
+  const D = det(M), col = sgnCol(D);
+  poly(P, US, M, `fill:${col};opacity:.32;stroke:${col};stroke-width:2`);
+  if (label){ const c = ap(M, [.5, .5]); txt(P.g, P.X(c[0]), P.Y(c[1]) + 5, label, 'labS', { 'text-anchor': 'middle', style: `fill:${col}` }); }
+}
+// The small curved arrow from î to ĵ at the origin: counterclockwise = orientation kept, clockwise = flipped
+function turnArc(P, M, r){
+  const i2 = [M[0], M[2]], j2 = [M[1], M[3]], D = det(M);
+  if (Math.hypot(...i2) < .05 || Math.hypot(...j2) < .05 || Math.abs(D) < 1e-6) return;
+  const a0 = Math.atan2(i2[1], i2[0]); let d = Math.atan2(j2[1], j2[0]) - a0;
+  while (d > Math.PI) d -= 2 * Math.PI; while (d < -Math.PI) d += 2 * Math.PI;   // the short way round: its direction is the sign of det
+  const col = sgnCol(D), n = 30; let path = '';
+  for (let k = 0; k <= n; k++){ const a = a0 + d * k / n * .9; path += (k ? ' L' : 'M') + (P.X(0) + r * Math.cos(a)).toFixed(1) + ',' + (P.Y(0) - r * Math.sin(a)).toFixed(1); }
+  mk('path', { d: path, style: `fill:none;stroke:${col};stroke-width:2.2` }, P.g);
+  const ae = a0 + d * .9, tx = -Math.sin(ae) * Math.sign(d), ty = Math.cos(ae) * Math.sign(d), ex = P.X(0) + r * Math.cos(ae), ey = P.Y(0) - r * Math.sin(ae);
+  mk('polygon', { points: `${ex + tx * 8},${ey - ty * 8} ${ex - ty * 5},${ey - tx * 5} ${ex + ty * 5},${ey + tx * 5}`, style: `fill:${col}` }, P.g);
+}
+
+/* =====================================================================
+   4. THE AREA METER (Before / After + meter)
+   ===================================================================== */
+const DP = [
+  { n: 'Do nothing', A: [1, 0, 0, 1], d: 'The identity: the 1×1 square stays a 1×1 square. det = 1.' },
+  { n: 'Stretch', A: [2, 0, 0, 1.5], d: '×2 sideways and ×1.5 up: the square becomes a 2-by-1.5 rectangle, so every area is multiplied by 3.' },
+  { n: 'Shear', A: [1, 1.5, 0, 1], d: 'The square leans over but keeps its base and its height, so its area doesn’t change: det = 1.' },
+  { n: 'Rotate', A: rot(40), d: 'A turn never changes area: det = cos²40° + sin²40° = 1.' },
+  { n: 'Mirror', A: [-1, 0, 0, 1], d: 'Same area, but the F is backwards and the turn from î to ĵ is now clockwise: det = −1.' },
+  { n: 'General', A: [2, 1, 1, 3], d: 'det = 2·3 − 1·1 = 5: every shape, the circle included, becomes 5 times bigger.' },
+  { n: 'Almost flat', A: [2, 1, 1.6, 1], d: 'ĵ lies almost on î’s line, so the parallelogram is thin: det = 2·1 − 1·1.6 = 0.4.' },
+  { n: 'Collapse', A: [2, 1, 2, 1], d: 'î lands at [2, 2] and ĵ at [1, 1], on the same line: the square is flattened and det = 0.' },
+];
+const dm = { A: [2, 1, 1, 3], t: 1, e: 1, raf: 0, playing: false, swing: null, drag: null };
+const DIDS = ['da', 'db', 'dc', 'dd'];
+DP.forEach((p, i) => { const b = document.createElement('button'); b.className = 'preset'; b.textContent = p.n; b.onclick = () => { stopAll(); dm.A = p.A.slice(); fillD(); markD(); playD(true); }; $('dPresets').appendChild(b); });
+function markD(){ const i = DP.findIndex(p => p.A.every((v, k) => Math.abs(v - dm.A[k]) < 1e-9)); [...$('dPresets').children].forEach((b, j) => b.classList.toggle('on', j === i)); $('dDesc').textContent = i < 0 ? 'Your own matrix.' : DP[i].d; }
+function fillD(d){ DIDS.forEach((id, k) => { $(id).value = num(dm.A[k], d === undefined ? 2 : d); }); }
+function readD(){
+  const r = readAll(DIDS, 'dErr'); if (!r) return false;
+  if (r.some(x => Math.abs(x) > 4)){ $('dErr').textContent = 'Keep every entry between −4 and 4, so the moved arrows stay in view.'; return false; }
+  dm.A = r; return true;
+}
+const DBOX = { x0: -4.3, x1: 4.3, y0: -3.2, y1: 4 };
+function drawD(){
+  const A = dm.A, M = blend(A, dm.e), D = det(M);
+  // Before
+  const B = plane($('dB'), 500, 420, DBOX, 44);
+  para(B, ID, 'area 1'); poly(B, FD, null, 'fill:var(--cp);opacity:.8'); poly(B, CIRC, null, 'fill:var(--cs);opacity:.6;stroke:var(--cp);stroke-width:1.5'); B.ticks();
+  turnArc(B, ID, 15);
+  arrow(B, [0, 0], [1, 0], C.i, { w: 4 }); arrow(B, [0, 0], [0, 1], C.j, { w: 4 }); armLabel(B, [1, 0], [0, 1], 'î', C.i, 1); armLabel(B, [0, 1], [1, 0], 'ĵ', C.j, -1);
+  origin(B); txt(B.g, 14, 24, 'Before', 'pl');
+  // After
+  const Q = plane($('dA'), 500, 420, DBOX, 44, { dashed: true });
+  movedGrid(Q, M);
+  para(Q, M, `area ${num(D, 2)}`);
+  poly(Q, FD, M, 'fill:var(--cp);opacity:.8'); poly(Q, CIRC, M, 'fill:var(--cs);opacity:.6;stroke:var(--cp);stroke-width:1.5'); Q.ticks();
+  turnArc(Q, M, 15);
+  const i2 = [M[0], M[2]], j2 = [M[1], M[3]];
+  arrow(Q, [0, 0], i2, C.i, { w: 4 }); arrow(Q, [0, 0], j2, C.j, { w: 4 }); armLabel(Q, i2, j2, 'î', C.i, 1); armLabel(Q, j2, i2, 'ĵ', C.j, -1);
+  if (dm.e > .999 && !dm.swing) [i2, j2].forEach((q, k) => mk('circle', { cx: Q.X(q[0]), cy: Q.Y(q[1]), r: 10, style: `fill:${k ? C.j : C.i};opacity:.25` }, Q.g));
+  origin(Q); txt(Q.g, 14, 24, dm.e > .999 ? 'After' : 'Moving…', 'pl');
+  dm.Q = Q;
+  drawMeter(D); writeD(M);
+}
+// The meter: a number line from −6 to 6 with a bar from 0 to det
+function drawMeter(D){
+  const svg = $('dM'); svg.innerHTML = ''; const g = mk('g', {}, svg);
+  const L = 60, R = 940, X = v => L + (v + 6) / 12 * (R - L), y = 52;
+  mk('rect', { x: L, y: y - 16, width: X(0) - L, height: 32, rx: 4, style: 'fill:var(--neg);opacity:.08' }, g);
+  mk('rect', { x: X(0), y: y - 16, width: R - X(0), height: 32, rx: 4, style: 'fill:var(--pos);opacity:.08' }, g);
+  txt(g, (L + X(0)) / 2, 14, '← flipped (det < 0)', 'cap', { 'text-anchor': 'middle', style: 'fill:var(--neg)' });
+  txt(g, (X(0) + R) / 2, 14, 'orientation kept (det > 0) →', 'cap', { 'text-anchor': 'middle', style: 'fill:var(--pos)' });
+  for (let v = -6; v <= 6; v++){ mk('line', { x1: X(v), y1: y + 16, x2: X(v), y2: y + 22, style: 'stroke:var(--muted)' }, g); txt(g, X(v), y + 36, v < 0 ? '−' + (-v) : String(v), 'tl', { 'text-anchor': 'middle' }); }
+  mk('line', { x1: X(0), y1: y - 20, x2: X(0), y2: y + 20, style: 'stroke:var(--ink);stroke-width:2' }, g);
+  const v = Math.max(-6, Math.min(6, D)), col = sgnCol(D);
+  mk('rect', { x: Math.min(X(0), X(v)), y: y - 9, width: Math.abs(X(v) - X(0)), height: 18, rx: 3, style: `fill:${col};opacity:.75` }, g);
+  mk('circle', { cx: X(v), cy: y, r: 9, style: `fill:${col};stroke:var(--paper);stroke-width:2` }, g);
+  const over = Math.abs(D) > 6 ? (D > 0 ? ' →' : ' ←') : '';
+  txt(g, Math.max(L + 50, Math.min(R - 50, X(v))), y - 20, `det = ${num(D, 2)}${over}`, 'labS', { 'text-anchor': 'middle', style: `fill:${col}` });   // kept inside the meter
+  if (Math.abs(D) < 1e-9) txt(g, X(0), y + 54, 'flat', 'labS', { 'text-anchor': 'middle', style: 'fill:var(--ink)' });
+}
+function writeD(M){
+  const [a, b, c, d] = dm.swing ? M : dm.A, D = a * d - b * c, circ = Math.PI * .64;
+  $('dEqs').innerHTML =
+    `<span class="lbl">Determinant</span><i>ad</i> − <i>bc</i> = ${num(a)}·${pn(d)} − ${pn(b)}·${pn(c)} = <b style="color:${sgnCol(D)}">${num(D)}</b><br>` +
+    `<span class="lbl">The square</span>area 1 → area |${num(D)}| = ${num(Math.abs(D))}${Math.abs(D) < 1e-9 ? ' (flattened)' : D < 0 ? ', flipped over' : ''}<br>` +
+    `<span class="lbl">The circle</span>area π·0.8² ≈ ${num(circ)} → ${num(circ)} × ${num(Math.abs(D))} ≈ ${num(circ * Math.abs(D))}${Math.abs(D) > 1e-9 && Math.abs(Math.abs(D) - 1) > 1e-9 ? ' (it becomes an ellipse, but the area scales just the same)' : ''}<br>` +
+    `<span class="lbl">Orientation</span>${Math.abs(D) < 1e-9 ? 'no turn at all: î and ĵ lie on one line' : D > 0 ? 'î → ĵ still turns counterclockwise: kept' : 'î → ĵ now turns clockwise: flipped'}`;
+  $('dOut').innerHTML = Math.abs(D) < 1e-9 ? '<b>det = 0: the plane is squashed flat.</b> Every shape loses all its area, and the move can’t be undone.'
+    : D > 0 ? `<b>Every area is multiplied by ${num(D)}</b>${D < 1 ? ' (it shrinks)' : ''}, and the plane is not flipped: the F still reads normally.`
+    : `<b>Every area is multiplied by ${num(-D)}, and the plane is flipped</b>: the F reads backwards, so det carries a minus sign.`;
+}
+function playD(restart){
+  if (dm.playing && !restart){ stopAll(); return; }
+  if (!readD()) return;
+  if (restart || dm.t >= 1) dm.t = 0;
+  dm.playing = true; $('dPlay').textContent = 'Pause'; let last = performance.now(); cancelAnimationFrame(dm.raf);
+  const step = now => { dm.t = Math.min(1, dm.t + (now - last) / 2200); last = now; dm.e = ease(dm.t); drawD(); if (dm.t < 1 && dm.playing) dm.raf = requestAnimationFrame(step); else stopAll(); };
+  dm.raf = requestAnimationFrame(step);
+}
+function stopAll(){
+  cancelAnimationFrame(dm.raf); dm.playing = false; $('dPlay').textContent = 'Play';
+  if (dm.swing){ dm.swing = null; $('dSwing').textContent = 'Swing ĵ'; fillD(); markD(); drawD(); }
+}
+// Swing ĵ once around the origin (same length): the determinant traces a sine wave through + , 0, −, 0
+$('dSwing').onclick = () => {
+  if (dm.swing){ stopAll(); return; }
+  stopAll(); if (!readD()) return;
+  if (Math.hypot(dm.A[1], dm.A[3]) < 1e-9){ $('dErr').textContent = 'ĵ is at the origin, so there’s nothing to swing. Give it a length first.'; return; }
+  dm.swing = { j0: [dm.A[1], dm.A[3]], t: 0 }; dm.e = 1; $('dSwing').textContent = 'Stop'; let last = performance.now();
+  const step = now => {
+    if (!dm.swing) return;
+    dm.swing.t = Math.min(1, dm.swing.t + (now - last) / 7000); last = now;
+    const a = 2 * Math.PI * dm.swing.t, [x, y] = dm.swing.j0;
+    dm.A[1] = x * Math.cos(a) - y * Math.sin(a); dm.A[3] = x * Math.sin(a) + y * Math.cos(a);
+    fillD(); drawD();
+    if (dm.swing.t < 1) dm.raf = requestAnimationFrame(step); else { dm.A[1] = x; dm.A[3] = y; stopAll(); }
+  };
+  dm.raf = requestAnimationFrame(step);
+};
+$('dPlay').onclick = () => playD(false);
+DIDS.forEach(id => $(id).addEventListener('input', () => { stopAll(); if (readD()){ dm.t = 1; dm.e = 1; markD(); drawD(); } }));
+selectOnFocus(DIDS);
+// Drag the tips of î and ĵ in the After panel (snap to halves)
+function svgPt(svg, P, ev){ const pt = svg.createSVGPoint(); pt.x = ev.clientX; pt.y = ev.clientY; const q = pt.matrixTransform(svg.getScreenCTM().inverse()); return P.inv(q.x, q.y); }
+const snap = (v, lo, hi) => Math.max(lo, Math.min(hi, Math.round(v * 2) / 2));
+$('dA').addEventListener('pointerdown', ev => {
+  stopAll(); dm.t = 1; dm.e = 1; drawD();
+  const q = svgPt($('dA'), dm.Q, ev), di = Math.hypot(q[0] - dm.A[0], q[1] - dm.A[2]), dj = Math.hypot(q[0] - dm.A[1], q[1] - dm.A[3]);
+  if (Math.min(di, dj) > 1.3) return;
+  dm.drag = di <= dj ? 'i' : 'j'; $('dA').setPointerCapture(ev.pointerId);
+});
+$('dA').addEventListener('pointermove', ev => {
+  if (!dm.drag) return;
+  const q = svgPt($('dA'), dm.Q, ev), x = snap(q[0], -4, 4), y = snap(q[1], -3, 4);
+  if (dm.drag === 'i'){ dm.A[0] = x; dm.A[2] = y; } else { dm.A[1] = x; dm.A[3] = y; }
+  fillD(); markD(); $('dErr').textContent = ''; drawD();
+});
+$('dA').addEventListener('pointerup', () => { dm.drag = null; });
+
+/* =====================================================================
+   5. BOX MINUS THE CORNERS (why ad − bc)
+   ===================================================================== */
+const PIDS = ['pa', 'pb', 'pc', 'pd'];
+[3, 1, 1, 2].forEach((v, k) => { $(PIDS[k]).value = v; });
+const pf = { step: 4 };
+['1. The box', '2. Two a·c triangles', '3. Two b·d triangles', '4. Two b·c rectangles'].forEach((t, i) => { const b = document.createElement('button'); b.className = 'preset'; b.textContent = t; b.onclick = () => { pf.step = i + 1; drawProof(); }; $('pSteps').appendChild(b); });
+function drawProof(){
+  [...$('pSteps').children].forEach((b, j) => b.classList.toggle('on', j === pf.step - 1));
+  const r = readAll(PIDS, 'pErr'); if (!r) return;
+  const [a, b, c, d] = r;
+  if (r.some(v => !Number.isInteger(v) || v < 0 || v > 4)){ $('pErr').textContent = 'Use whole numbers from 0 to 4.'; return; }
+  if (a * d - b * c <= 0){ $('pErr').textContent = 'This picture needs ĵ counterclockwise from î: make ad bigger than bc (for example a = 3, b = 1, c = 1, d = 2).'; return; }
+  const W = a + b, H = c + d, P = plane($('pSvg'), 1000, 360, { x0: -.3, x1: W + .3, y0: -.3, y1: H + .3 }, 62, { dashed: true });
+  const show = s => pf.step >= s;
+  // the box
+  mk('rect', { x: P.X(0), y: P.Y(H), width: P.X(W) - P.X(0), height: P.Y(0) - P.Y(H), style: 'fill:none;stroke:var(--ink);stroke-width:2.5' }, P.g);
+  const piece = (pts, col, lab, s) => {
+    const p = poly(P, pts, null, `fill:${col};opacity:${show(s) ? .45 : .08};stroke:${col};stroke-width:1.5;stroke-dasharray:${show(s) ? '0' : '4 4'}`);
+    if (show(s) && lab){ const cx = pts.reduce((t, q) => t + q[0], 0) / pts.length, cy = pts.reduce((t, q) => t + q[1], 0) / pts.length; txt(P.g, P.X(cx), P.Y(cy) + 5, lab, 'labS', { 'text-anchor': 'middle', style: 'fill:var(--ink)' }); }
+  };
+  if (a && c){ piece([[0, 0], [a, 0], [a, c]], 'var(--pc1)', `${a * c / 2}`, 2); piece([[b, d], [b, H], [W, H]], 'var(--pc1)', `${a * c / 2}`, 2); }
+  if (b && d){ piece([[a, c], [W, c], [W, H]], 'var(--pc2)', `${b * d / 2}`, 3); piece([[0, 0], [0, d], [b, d]], 'var(--pc2)', `${b * d / 2}`, 3); }
+  if (b && c){ piece([[a, 0], [W, 0], [W, c], [a, c]], 'var(--pc3)', `${b * c}`, 4); piece([[0, d], [b, d], [b, H], [0, H]], 'var(--pc3)', `${b * c}`, 4); }
+  // the parallelogram on top
+  const D = a * d - b * c;
+  poly(P, [[0, 0], [a, c], [W, H], [b, d]], null, `fill:var(--pos);opacity:${pf.step >= 4 ? .4 : .18};stroke:var(--pos);stroke-width:2.5`);
+  if (pf.step >= 4) txt(P.g, P.X(W / 2), P.Y(H / 2) + 6, `area ${D}`, 'lab', { 'text-anchor': 'middle', style: 'fill:var(--pos)' });
+  P.ticks();
+  arrow(P, [0, 0], [a, c], C.i, { w: 4 }); arrow(P, [0, 0], [b, d], C.j, { w: 4 }); armLabel(P, [a, c], [b, d], 'î', C.i, 1); armLabel(P, [b, d], [a, c], 'ĵ', C.j, -1);
+  txt(P.g, P.X(W / 2), P.Y(H) - 10, `a + b = ${W}`, 'labS', { 'text-anchor': 'middle', style: 'fill:var(--ink)' });
+  txt(P.g, P.X(W) + 10, P.Y(H / 2) + 4, `c + d = ${H}`, 'labS', { 'text-anchor': 'start', style: 'fill:var(--ink)' });
+  origin(P);
+  const parts = [`box (${a} + ${b})(${c} + ${d}) = ${W * H}`];
+  if (show(2)) parts.push(`− 2 × ${a}·${c}/2 = − ${a * c}`);
+  if (show(3)) parts.push(`− 2 × ${b}·${d}/2 = − ${b * d}`);
+  if (show(4)) parts.push(`− 2 × ${b}·${c} = − ${2 * b * c}`);
+  let left = W * H - (show(2) ? a * c : 0) - (show(3) ? b * d : 0) - (show(4) ? 2 * b * c : 0);
+  $('pEqs').innerHTML = `<span class="lbl">Area left</span>${parts.join(' &nbsp; ')} &nbsp;→ <b>${left}</b>` +
+    (pf.step >= 4 ? `<br><span class="lbl">Same as</span><i>ad</i> − <i>bc</i> = ${a}·${d} − ${b}·${c} = <b class="kpos">${D}</b>` : `<br><span class="lbl">Next</span>press step ${pf.step + 1} to remove the next pair of pieces`);
+}
+PIDS.forEach(id => $(id).addEventListener('input', drawProof)); selectOnFocus(PIDS);
+
+/* =====================================================================
+   6. TWO MOVES, TWO FACTORS (product rule)
+   ===================================================================== */
+const CP = [
+  { n: 'Stretch, then stretch', A: [2, 0, 0, 1], B: [1, 0, 0, 3] },
+  { n: 'Shear, then stretch', A: [1, 1, 0, 1], B: [2, 0, 0, 1.5] },
+  { n: 'Mirror, then mirror', A: [-1, 0, 0, 1], B: [1, 0, 0, -1] },
+  { n: 'General, then mirror', A: [2, 1, 1, 3], B: [0, 1, 1, 0] },
+  { n: 'Flatten, then anything', A: [1, 2, 0.5, 1], B: [2, -1, 1, 1] },
+];
+const CIDS = ['ca0', 'ca1', 'ca2', 'ca3', 'cb0', 'cb1', 'cb2', 'cb3'];
+CP.forEach((p, i) => { const b = document.createElement('button'); b.className = 'preset'; b.textContent = p.n; b.onclick = () => { p.A.concat(p.B).forEach((v, k) => { $(CIDS[k]).value = num(v); }); drawChain(); }; $('cPresets').appendChild(b); });
+function cpanel(id, M, title){
+  const P = plane($(id), 340, 320, { x0: -3, x1: 3.2, y0: -2.6, y1: 3.2 }, 44, { dashed: !!M });
+  const T = M || ID; if (M) movedGrid(P, M);
+  para(P, T, `area ${num(det(T))}`); P.ticks(); turnArc(P, T, 18);
+  const i2 = [T[0], T[2]], j2 = [T[1], T[3]];
+  arrow(P, [0, 0], i2, C.i, { w: 3.5 }); arrow(P, [0, 0], j2, C.j, { w: 3.5 }); armLabel(P, i2, j2, 'î', C.i, 1); armLabel(P, j2, i2, 'ĵ', C.j, -1);
+  origin(P); txt(P.g, 12, 22, title, 'pl');
+}
+function drawChain(){
+  [...$('cPresets').children].forEach(b => b.classList.remove('on'));
+  const r = readAll(CIDS, 'cErr'); if (!r) return;
+  if (r.some(x => Math.abs(x) > 3)){ $('cErr').textContent = 'Keep every entry between −3 and 3.'; return; }
+  const A = r.slice(0, 4), B = r.slice(4), BA = mul(B, A), dA = det(A), dB = det(B), dBA = det(BA);
+  const i = CP.findIndex(p => p.A.concat(p.B).every((v, k) => Math.abs(v - r[k]) < 1e-9)); if (i >= 0) $('cPresets').children[i].classList.add('on');
+  cpanel('c1', null, 'Start'); cpanel('c2', A, 'After A'); cpanel('c3', BA, 'After A, then B');
+  $('cEqs').innerHTML =
+    `<span class="lbl">Each move</span>det <span class="ka">A</span> = ${num(A[0])}·${pn(A[3])} − ${pn(A[1])}·${pn(A[2])} = <b>${num(dA)}</b> &nbsp; det <span class="kb">B</span> = ${num(B[0])}·${pn(B[3])} − ${pn(B[1])}·${pn(B[2])} = <b>${num(dB)}</b><br>` +
+    `<span class="lbl">Together</span><span class="kb">B</span><span class="ka">A</span> = ${ms(BA)}, det = <b>${num(dBA)}</b> = ${num(dB)} × ${pn(dA)} &nbsp; ${Math.abs(dBA) < 1e-9 ? '(one flat step makes the whole chain flat)' : dA < 0 && dB < 0 ? '(two flips cancel: no flip)' : ''}`;
+}
+CIDS.forEach(id => $(id).addEventListener('input', drawChain)); selectOnFocus(CIDS);
+
+/* =====================================================================
+   7. RESIZE A PIXEL PICTURE (zoom and stretch)
+   ===================================================================== */
+const PIX = ['byybbbbb', 'byybbnbb', 'bbbbnnnb', 'bbbbrwrb', 'ggggrrrg', 'gggggggg'];
+const PCOL = { b: '#8EC5F0', y: '#F5C518', n: '#8A5A3B', r: '#D8443A', w: '#F3EEE2', g: '#4BAE6A' };
+const PHP = [{ n: 'Zoom ×2', w: 2, h: 2 }, { n: 'Zoom ×½', w: .5, h: .5 }, { n: 'Stretch wide ×2', w: 2, h: 1 }, { n: 'Half height', w: 1, h: .5 }, { n: 'Wide and flat', w: 2, h: .5 }];
+$('phW').value = 2; $('phH').value = 1;
+PHP.forEach(p => { const b = document.createElement('button'); b.className = 'preset'; b.textContent = p.n; b.onclick = () => { $('phW').value = num(p.w); $('phH').value = num(p.h); drawPhoto(); }; $('phPresets').appendChild(b); });
+function drawPhoto(){
+  const r = readAll(['phW', 'phH'], 'phErr'); if (!r) return;
+  const [w, h] = r;
+  [...$('phPresets').children].forEach((b, j) => b.classList.toggle('on', Math.abs(PHP[j].w - w) < 1e-9 && Math.abs(PHP[j].h - h) < 1e-9));
+  if (w <= 0 || h <= 0 || w > 3 || h > 3){ $('phErr').textContent = 'Use factors between 0 and 3.'; return; }
+  const svg = $('phSvg'); svg.innerHTML = ''; const g = mk('g', {}, svg), s = 16;
+  const pic = (x0, y0, cw, ch) => PIX.forEach((row, i) => [...row].forEach((k, j) => mk('rect', { x: x0 + j * cw, y: y0 + i * ch, width: cw, height: ch, style: `fill:${PCOL[k]};stroke:rgba(0,0,0,.18);stroke-width:.6` }, g)));
+  pic(40, 40, s, s); txt(g, 40, 28, 'Original: 8 × 6 = 48 pixels', 'bt');
+  txt(g, 40, 40 + 6 * s + 24, 'each pixel: 1 × 1', 'cap');
+  const x1 = 330; pic(x1, 40, s * w, s * h);
+  txt(g, x1, 28, `Resized: ${num(8 * w)} × ${num(6 * h)} = ${num(48 * w * h)} pixel-squares of screen`, 'bt');
+  txt(g, x1, 40 + 6 * s * h + 24, `each pixel becomes ${num(w)} × ${num(h)} = ${num(w * h)}`, 'cap');
+  $('phOut').innerHTML = `The resize is the matrix ${ms([w, 0, 0, h])}, with det = ${num(w)} × ${num(h)} = <b>${num(w * h)}</b>. ${Math.abs(w * h - 1) < 1e-9 ? 'The picture covers the same screen area' : `The picture now covers ${num(w * h)} times the screen area`}: 48 → ${num(48 * w * h)}.` +
+    (Math.abs(w - h) < 1e-9 && Math.abs(w - 1) > 1e-9 ? ` Zooming by ${num(w)} multiplies area by ${num(w)}² = ${num(w * w)}, not by ${num(w)}.` : '') +
+    (Math.abs(w * h - 1) < 1e-9 && Math.abs(w - 1) > 1e-9 ? ' The shape changed, but the area didn’t.' : '');
+}
+['phW', 'phH'].forEach(id => $(id).addEventListener('input', drawPhoto)); selectOnFocus(['phW', 'phH']);
+
+/* =====================================================================
+   8. A SLANTED PRINT ON FABRIC (shears keep area)
+   ===================================================================== */
+$('fK').value = 25; $('fS').value = 1;
+const STAR = Array.from({ length: 10 }, (_, k) => { const r = k % 2 ? .38 : .85, t = Math.PI / 2 + k * Math.PI / 5; return [1.5 + r * Math.cos(t), 1 + r * Math.sin(t)]; });
+function drawFabric(){
+  const r = readAll(['fK', 'fS'], 'fErr'); if (!r) return;
+  const [k, s] = r;
+  if (Math.abs(k) > 60){ $('fErr').textContent = 'Keep the slant between −60° and 60°.'; return; }
+  if (s <= 0 || s > 2){ $('fErr').textContent = 'Keep the width factor between 0 and 2.'; return; }
+  const M = [s, Math.tan(k / DEG), 0, 1], D = det(M);
+  const svg = $('fSvg'); svg.innerHTML = ''; const g = mk('g', {}, svg), u = 52, Y0 = 245;
+  for (let x = 20; x <= 980; x += u) mk('line', { x1: x, y1: 20, x2: x, y2: 280, class: 'grid' }, g);
+  for (let y = Y0; y >= 20; y -= u) mk('line', { x1: 20, y1: y, x2: 980, y2: y, class: 'grid' }, g);
+  const draw = (ox, T, label) => {
+    const pt = p => { const q = ap(T, p); return (ox + q[0] * u).toFixed(1) + ',' + (Y0 - q[1] * u).toFixed(1); };
+    mk('polygon', { points: [[0, 0], [3, 0], [3, 2], [0, 2]].map(pt).join(' '), style: 'fill:var(--cs);opacity:.55;stroke:var(--cp);stroke-width:2' }, g);
+    mk('polygon', { points: STAR.map(pt).join(' '), style: 'fill:var(--cp);opacity:.9' }, g);
+    txt(g, ox, Y0 + 26, label, 'bt');
+  };
+  draw(20 + u, ID, 'Logo: 3 cm × 2 cm = 6 cm²');
+  draw(20 + 6 * u, M, `Printed: ${num(6 * D)} cm²`);
+  $('fOut').innerHTML = `The print is the matrix ${ms(M)}: a slant of ${num(k, 0)}° (ĵ tips to [${num(M[1])}, 1]) and ×${num(s)} along the width. det = ${num(s)}·1 − ${pn(M[1])}·0 = <b>${num(D)}</b>, so the print needs 6 × ${num(D)} = <b>${num(6 * D)} cm²</b> of fabric.` +
+    (Math.abs(s - 1) < 1e-9 ? ' The slant alone changes nothing: each row of the logo just slides sideways, keeping its length.' : ' Only the stretch changed the fabric needed; the slant did not.');
+}
+['fK', 'fS'].forEach(id => $(id).addEventListener('input', drawFabric)); selectOnFocus(['fK', 'fS']);
+
+/* =====================================================================
+   9. QUIZ
+   ===================================================================== */
+const rnd = arr => arr[Math.floor(Math.random() * arr.length)];
+const randInt = (lo, hi) => lo + Math.floor(Math.random() * (hi - lo + 1));
+const nz = a => { let x; do { x = randInt(-a, a); } while (x === 0); return x; };
+const qz = { counted: false, done: false, right: 0, total: 0, t: 1, raf: 0 };
+const READ = [[2, 0, 0, 1], [1, 0, 0, 3], [2, 0, 0, 2], [1, 1, 0, 1], [1, 0, 2, 1], [-1, 0, 0, 1], [0, 1, 1, 0], [0, -1, 1, 0], [2, 1, 0, 1], [1, 2, 0, 2], [-2, 0, 0, 1], [1, 2, 1, 2], [2, 0, 1, 0], [1, 0, 0, -2], [3, 1, 0, 1]];
+const NAMES = ['Flipped (det < 0)', 'Squashed flat (det = 0)', 'Neither (det > 0)'];
+function setMode(kind, labels){
+  $('qChoice').style.display = kind === 'choice' ? '' : 'none'; $('qIn').style.display = kind === 'choice' ? 'none' : '';
+  if (kind === 'choice'){ $('qChoice').innerHTML = ''; labels.forEach((l, i) => { const b = document.createElement('button'); b.textContent = l; b.onclick = () => answerChoice(i); $('qChoice').appendChild(b); }); }
+  else $('qL').innerHTML = labels;
+}
+function newQuestion(){
+  Object.assign(qz, { counted: false, done: false });
+  $('qErr').textContent = ''; $('qFb').className = 'feedback'; $('qFb').innerHTML = ''; $('q1').value = ''; cancelAnimationFrame(qz.raf);
+  qz.type = rnd(['comp', 'comp', 'miss', 'class', 'read']);
+  $('qReplay').disabled = qz.type !== 'read'; $('qSvg').style.display = qz.type === 'read' ? '' : 'none';
+  if (qz.type === 'comp'){
+    let A; do { A = [0, 0, 0, 0].map(() => randInt(-5, 5)); } while (A.filter(v => v).length < 3);
+    Object.assign(qz, { A, ans: det(A) });
+    $('qTitle').textContent = 'Compute the determinant';
+    $('qText').innerHTML = `Find det ${mshow(A)}.`; setMode('field', 'det');
+  } else if (qz.type === 'miss'){
+    let a, c, d, T, x; do { a = nz(4); c = nz(4); d = randInt(-4, 4); T = rnd([0, 0, randInt(-6, 6)]); x = (a * d - T) / c; } while (!Number.isInteger(x) || Math.abs(x) > 9);
+    Object.assign(qz, { a, c, d, T, ans: x });
+    $('qTitle').textContent = 'Find the missing entry';
+    $('qText').innerHTML = `What must <i>x</i> be so that det <span class="mshow"><span class="c1">${num(a)}</span><span class="c2"><i>x</i></span><span class="c1">${num(c)}</span><span class="c2">${num(d)}</span></span> = <b>${num(T)}</b>?` + (T === 0 ? ' (That is, so the matrix squashes the plane flat.)' : '');
+    setMode('field', '<i>x</i>');
+  } else if (qz.type === 'class'){
+    const kind = rnd([0, 1, 2]); let A;
+    do { A = [0, 0, 0, 0].map(() => randInt(-4, 4)); if (kind === 1){ const k = rnd([1, 2, -1, -2, 3]); const col = [nz(3), randInt(-3, 3)]; A = rnd([true, false]) ? [col[0], col[0] * k, col[1], col[1] * k] : [col[0] * k, col[0], col[1] * k, col[1]]; } }
+    while ((kind === 0 && det(A) >= 0) || (kind === 2 && det(A) <= 0) || (kind === 1 && (det(A) !== 0 || A.every(v => v === 0))));
+    Object.assign(qz, { A, kind });
+    $('qTitle').textContent = 'Flip, squash, or neither?';
+    $('qText').innerHTML = `What does the move ${mshow(A)} do to the plane?`;
+    setMode('choice', NAMES);
+  } else {
+    const A = rnd(READ); Object.assign(qz, { A, ans: det(A) });
+    $('qTitle').textContent = 'Read it from the picture';
+    $('qText').innerHTML = 'Watch the move. Using the shaded square and the F (is it backwards?), what is the determinant? Include the sign.';
+    setMode('field', 'det'); replayQ();
+  }
+}
+function drawQ(){
+  const M = blend(qz.A, qz.e === undefined ? 1 : qz.e);
+  const P = plane($('qSvg'), 1000, 380, { x0: -4.6, x1: 4.6, y0: -3.3, y1: 3.4 }, 44, { dashed: true });
+  movedGrid(P, M); poly(P, US, M, 'fill:var(--cs);opacity:.6;stroke:var(--cp);stroke-width:2');
+  poly(P, FD, M, 'fill:var(--cp);opacity:.85'); P.ticks();
+  const i2 = [M[0], M[2]], j2 = [M[1], M[3]];
+  arrow(P, [0, 0], i2, C.i, { w: 4 }); arrow(P, [0, 0], j2, C.j, { w: 4 }); armLabel(P, i2, j2, 'î', C.i, 1); armLabel(P, j2, i2, 'ĵ', C.j, -1);
+  if (qz.done) turnArc(P, M, 24);
+  origin(P);
+}
+function replayQ(){
+  cancelAnimationFrame(qz.raf); const t0 = performance.now();
+  const step = now => { const t = Math.min(1, (now - t0) / 2200); qz.e = ease(t); drawQ(); if (t < 1) qz.raf = requestAnimationFrame(step); };
+  qz.raf = requestAnimationFrame(step);
+}
+function countQ(ok){ if (qz.counted) return; qz.counted = true; qz.total++; if (ok) qz.right++; $('score').textContent = `Score: ${qz.right} / ${qz.total}`; }
+function checkQ(){
+  const raw = $('q1').value.trim(), x = parseNum(raw);
+  if (raw === '' || isNaN(x)){ $('qErr').textContent = 'Type a number.'; return; }
+  $('qErr').textContent = ''; let ok, msg;
+  if (qz.type === 'comp' || qz.type === 'read'){
+    const [a, b, c, d] = qz.A, D = qz.ans; ok = Math.abs(x - D) < 1e-9;
+    const work = `${num(a)}·${pn(d)} − ${pn(b)}·${pn(c)} = ${num(D)}`;
+    if (ok) msg = `<b>Right: ${num(D)}.</b> <i>ad</i> − <i>bc</i> = ${work}.` + (qz.type === 'read' ? (D < 0 ? ' The F came out backwards, hence the minus sign.' : D === 0 ? ' Everything was squashed onto a line.' : '') : '');
+    else if (Math.abs(x + D) < 1e-9 && D !== 0) msg = qz.type === 'read' ? `<b>Right size, wrong sign.</b> ${D < 0 ? 'Look at the F: it’s mirrored, so the determinant is negative.' : 'The F isn’t mirrored (it’s only turned or stretched), so the determinant is positive.'}` : '<b>Check the order:</b> it’s top-left × bottom-right <i>minus</i> top-right × bottom-left, not the other way round.';
+    else if (Math.abs(x - (a * d + b * c)) < 1e-9) msg = '<b>You added the two products.</b> Subtract: <i>ad</i> − <i>bc</i>.';
+    else if (Math.abs(x - (a * c - b * d)) < 1e-9 || Math.abs(x - (a * b - c * d)) < 1e-9) msg = '<b>Wrong pairs.</b> Multiply along the diagonals: top-left with bottom-right, top-right with bottom-left.';
+    else if (qz.type === 'read' && Math.abs(Math.abs(x) - Math.abs(D)) > 1e-9) msg = '<b>Not quite.</b> Count how many grid squares of the dashed grid the shaded parallelogram covers (or use <i>ad</i> − <i>bc</i> with the arrow tips). Press Replay move to watch again.';
+    else msg = `<b>Not quite.</b> Work it out: <i>ad</i> − <i>bc</i> = ${num(a)}·${pn(d)} − ${pn(b)}·${pn(c)}. Watch the signs.`;
+  } else {
+    const { a, c, d, T, ans } = qz; ok = Math.abs(x - ans) < 1e-9;
+    const got = a * d - x * c;
+    if (ok) msg = `<b>Right: x = ${num(ans)}.</b> ${num(a)}·${pn(d)} − ${pn(ans)}·${pn(c)} = ${num(T)}.`;
+    else msg = `<b>Not quite.</b> With x = ${num(x)}, det = ${num(a)}·${pn(d)} − ${pn(x)}·${pn(c)} = ${num(got)}, not ${num(T)}. Set ${num(a * d)} − ${pn(c)}·<i>x</i> = ${num(T)} and solve.` + (Math.abs(x + ans) < 1e-9 && ans !== 0 ? ' (Check the sign.)' : '');
+  }
+  countQ(ok); if (ok){ qz.done = true; if (qz.type === 'read') drawQ(); }
+  $('qFb').className = 'feedback ' + (ok ? 'ok' : 'bad'); $('qFb').innerHTML = msg;
+}
+function answerChoice(i){
+  if (qz.done) return; qz.done = true;
+  const D = det(qz.A), ok = i === qz.kind; countQ(ok);
+  const [a, b, c, d] = qz.A;
+  $('qFb').className = 'feedback ' + (ok ? 'ok' : 'bad');
+  $('qFb').innerHTML = `<b>${ok ? 'Right' : 'Not this time'}: ${NAMES[qz.kind].toLowerCase()}.</b> det = ${num(a)}·${pn(d)} − ${pn(b)}·${pn(c)} = ${num(D)}.` + (qz.kind === 1 ? ` The columns ${vstr([a, c])} and ${vstr([b, d])} lie on one line.` : '');
+}
+function showQ(){
+  countQ(false); qz.done = true; $('qErr').textContent = '';
+  const fb = $('qFb'); fb.className = 'feedback info';
+  if (qz.type === 'miss') fb.innerHTML = `<b>x = ${num(qz.ans)}</b>: ${num(qz.a)}·${pn(qz.d)} − ${pn(qz.ans)}·${pn(qz.c)} = ${num(qz.T)}.`;
+  else if (qz.type === 'class') fb.innerHTML = `<b>${NAMES[qz.kind]}</b>: det = ${num(det(qz.A))}.`;
+  else { const [a, b, c, d] = qz.A; fb.innerHTML = `<b>${num(qz.ans)}</b> = ${num(a)}·${pn(d)} − ${pn(b)}·${pn(c)}.`; if (qz.type === 'read') drawQ(); }
+}
+$('qCheck').onclick = checkQ; $('qShow').onclick = showQ; $('qNew').onclick = newQuestion; $('qReplay').onclick = replayQ;
+$('q1').addEventListener('input', () => { $('qErr').textContent = ''; }); $('q1').addEventListener('keydown', e => { if (e.key === 'Enter') checkQ(); });
+selectOnFocus(['q1']);
+
+/* =====================================================================
+   10. START
+   ===================================================================== */
+fillD(); markD(); drawD();
+drawProof();
+$('cPresets').children[0].click();
+drawPhoto();
+drawFabric();
+newQuestion();
+</script>
+</body>
+</html>
