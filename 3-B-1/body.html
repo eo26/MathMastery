@@ -1,0 +1,599 @@
+<style>
+/* ===================== Page-specific styles (3.B.1) ===================== */
+/* x-tiles = purple, unit tiles = orange, negative tiles = red; expression 1 = blue, expression 2 = green */
+:root{ --cx:#7F77DD; --c1:#E08A2E; --neg:#D8443A; --e1:#2F6FDB; --e2:#1D9E75; --yes:#1D9E75; --no:#D8443A; }
+@media (prefers-color-scheme:dark){ :root{ --cx:#AFA9EC; --c1:#F2B266; --neg:#F07B72; --e1:#6EA2F5; --e2:#5DCAA5; --yes:#5DCAA5; --no:#F07B72; } }
+.kx{color:var(--cx);font-weight:700}.k1{color:var(--c1);font-weight:700}.kn{color:var(--neg);font-weight:700}.ke1{color:var(--e1);font-weight:700}.ke2{color:var(--e2);font-weight:700}
+.field.fx input{border-color:var(--cx)}.field.f1 input{border-color:var(--c1)}.field.sm input{width:80px}
+.expr{font:600 24px var(--mono);margin:8px 0 2px;letter-spacing:.02em}
+.expr small{font:600 12px var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-right:10px}
+.eqs{font:15px/1.9 var(--mono);margin:10px 0 6px;padding:10px 16px;border:1px solid var(--line);border-radius:12px;background:var(--bg)}
+.eqs .lbl{display:inline-block;min-width:200px;font:600 12px var(--sans);letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+table.lists{border-collapse:collapse;margin:10px 0 14px;font:15px var(--sans)}
+table.lists th,table.lists td{border:1px solid var(--line);padding:6px 14px;text-align:center}
+table.lists th{background:var(--paper);font-weight:600}
+table.lists td.m{font-family:var(--mono)}
+table.lists td.bad{background:var(--bad-bg);color:var(--bad);font-weight:700}
+table.lists td.good{background:var(--ok-bg);color:var(--ok)}
+.steps{margin:10px 0;padding:0;list-style:none;counter-reset:s}
+.steps li{counter-increment:s;display:flex;gap:12px;align-items:baseline;padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);margin-bottom:8px;font:16px var(--sans)}
+.steps li::before{content:counter(s);font:700 13px var(--sans);color:var(--paper);background:var(--cx);border-radius:50%;min-width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center}
+.steps .w{color:var(--muted);font-style:italic}.steps .s{font:700 17px var(--mono);margin-left:auto}
+.verdict{margin-top:10px;padding:10px 14px;border-radius:10px;font-weight:600}
+.verdict.y{background:var(--ok-bg);color:var(--ok)}.verdict.n{background:var(--bad-bg);color:var(--bad)}
+.choice{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 0}.choice button{min-width:140px;font-family:var(--mono);font-size:16px}
+.qtext{font:17px/1.55 var(--serif);margin:4px 0 10px}
+.qexpr{font:600 22px var(--mono);margin:6px 0 10px}
+pre.code{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:12px 16px;overflow-x:auto;font:13.5px/1.6 var(--mono);margin:10px 0 16px}
+</style>
+
+<!-- ===================== Top bar ===================== -->
+<div class="topbar"><div class="topbar-in">
+  <span class="brand">Math<b>Mastery</b></span>
+  <span class="crumbs">Chapter 3 · Algebra › Basics</span>
+  <span class="pid">3.B.1</span>
+</div></div>
+
+<!-- ===================== Hero ===================== -->
+<header class="prose hero">
+  <div class="kicker">Chapter 3 · Algebra</div>
+  <h1>Variables and Expressions</h1>
+  <p class="dek">A letter can stand for a number you don’t know yet, or for an amount that changes. Algebra is the art of calculating with those letters as if they were numbers.</p>
+  <div class="tiers" aria-label="Tier">
+    <span class="tier on">Basics <small>you are here</small></span>
+    <span class="tier">Undergraduate</span>
+    <span class="tier">Masters</span>
+  </div>
+  <div class="goals">
+    <h3>On this page</h3>
+    <ul>
+      <li>Use a <b>variable</b> both as an <b>unknown</b> (a mystery number) and as a <b>changing amount</b>.</li>
+      <li>Build an <b>expression</b> from <b>terms</b>, and <b>evaluate</b> it by substituting a number, following the <b>order of operations</b>.</li>
+      <li><b>Simplify</b> by combining <b>like terms</b> (3<i>x</i> + 2<i>x</i> = 5<i>x</i>, but 3<i>x</i> + 2 stays as it is).</li>
+      <li>Expand brackets with the <b>distributive property</b>, decide when two expressions are <b>equivalent</b>, and turn words into expressions.</li>
+    </ul>
+  </div>
+</header>
+
+<main>
+<!-- ===================== §1 ===================== -->
+<section class="prose">
+  <h2><span class="n">1</span>A letter for a number</h2>
+  <p>“I’m thinking of a number. Double it and add 3, and you get 11.” The number is a mystery for now, so give it a name: call it <i>x</i>. A letter that stands for a number is a <b>variable</b>. Here it’s an <b>unknown</b>: one particular number we’re trying to find (it’s 4; solving for it is 3.B.2).</p>
+  <p>A variable can also stand for an amount that <b>changes</b>. A box holds 6 eggs, so <i>n</i> boxes hold 6<i>n</i> eggs: 6 when <i>n</i> = 1, 30 when <i>n</i> = 5. Here <i>n</i> isn’t secret, it just varies, and 6<i>n</i> describes every case at once.</p>
+  <p>A recipe of numbers, variables and operations, like 2<i>x</i> + 3 or 6<i>n</i>, is an <b>expression</b>. The pieces joined by + and − are its <b>terms</b>: 2<i>x</i> + 3 has the terms 2<i>x</i> and 3. The number multiplying a variable is its <b>coefficient</b> (2 in 2<i>x</i>), and a term with no variable is a <b>constant</b> (3). Writing 2<i>x</i> means 2 × <i>x</i>; algebra leaves out the × sign so it isn’t confused with the letter x.</p>
+</section>
+
+<!-- ===================== §2 main explorer ===================== -->
+<section class="prose">
+  <h2><span class="n">2</span>Expressions you can hold</h2>
+  <p>Picture <i>x</i> as a bar of unknown length and 1 as a small square. An expression is then a pile of bars and squares: 2<i>x</i> + 3 is two bars and three squares. A red tile counts negative, and a bar next to a red bar makes a <b>zero pair</b> (+<i>x</i> and −<i>x</i> cancel). Give <i>x</i> a value and every bar becomes a hop of that length on the number line below.</p>
+</section>
+<section class="wide">
+  <div class="card" id="main">
+    <div class="card-h"><span class="tag">Explore</span><h3>Algebra tiles</h3>
+      <span class="sub">Add tiles, pick a value for <i>x</i>, then press Simplify to group like terms and cancel zero pairs. The number line shows the value: one hop per tile.</span></div>
+    <div class="row" id="mPresets"></div>
+    <div class="desc" id="mDesc"></div>
+    <div class="inputs">
+      <div class="row" style="margin:0"><button id="addX">+ x</button><button id="subX">− x</button><button id="add1">+ 1</button><button id="sub1">− 1</button></div>
+      <label class="field fx sm"><span>Value of <i>x</i></span><input id="mX" type="text" inputmode="decimal" autocomplete="off"></label>
+      <div class="row" style="margin:0"><button class="primary" id="mSimp">Simplify</button><button id="mClear">Clear</button></div>
+    </div>
+    <div class="err" id="mErr"></div>
+    <div class="expr" id="mExpr"></div>
+    <svg class="nl" id="mSvg" viewBox="0 0 1000 220" role="img" aria-label="Algebra tiles" style="margin-top:8px"></svg>
+    <svg class="nl" id="vSvg" viewBox="0 0 1000 170" role="img" aria-label="The value as hops on a number line" style="margin-top:10px"></svg>
+    <div class="eqs" id="mEqs"></div>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--cx);height:12px;width:8px"></i>+x (a bar of length x)</span>
+      <span><i class="sw" style="background:var(--c1);height:10px;width:10px"></i>+1</span>
+      <span><i class="sw" style="background:var(--neg);height:10px;width:10px;opacity:.6"></i>negative tiles (−x, −1)</span>
+      <span><b style="color:var(--muted)">✕</b> faded: a zero pair that cancelled</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §3 ===================== -->
+<section class="prose">
+  <h2><span class="n">3</span>Evaluating, and the order of operations</h2>
+  <p>To <b>evaluate</b> an expression, <b>substitute</b> a number for the variable and work it out. With <i>x</i> = 4, 2<i>x</i> + 3 = 2·4 + 3 = 11. To make sure everyone gets the same answer, mathematicians agreed on an <b>order of operations</b>:</p>
+  <table class="lists">
+    <tr><th>Order</th><th>What</th><th>Example</th></tr>
+    <tr><td>1</td><td>Brackets (parentheses) first</td><td class="m">(2 + 3)·4 = 5·4 = 20</td></tr>
+    <tr><td>2</td><td>Powers (exponents)</td><td class="m">2·3² = 2·9 = 18, not 6² = 36</td></tr>
+    <tr><td>3</td><td>Multiply and divide, left to right</td><td class="m">12 ÷ 3·2 = 4·2 = 8</td></tr>
+    <tr><td>4</td><td>Add and subtract, left to right</td><td class="m">2 + 3·4 = 2 + 12 = 14, not 5·4 = 20</td></tr>
+  </table>
+  <p>The last row is the classic trap. In 2 + 3<i>x</i>, the 3 is glued to the <i>x</i> by multiplication, so it happens first. That’s why 2 + 3<i>x</i> is <i>not</i> 5<i>x</i>: try it below.</p>
+</section>
+<section class="wide">
+  <div class="card" id="eqv">
+    <div class="card-h"><span class="tag">Explore</span><h3>Same or different?</h3>
+      <span class="sub">Pick a pair of expressions. The table evaluates both for several values of <i>x</i>. Two expressions are <b>equivalent</b> only if they agree for <i>every</i> value.</span></div>
+    <div class="row" id="ePairs"></div>
+    <div class="expr" id="eShow"></div>
+    <div id="eTab"></div>
+    <div id="eOut"></div>
+  </div>
+</section>
+
+<!-- ===================== §4 ===================== -->
+<section class="prose">
+  <h2><span class="n">4</span>Like terms</h2>
+  <p>Terms with exactly the same variable part are <b>like terms</b>: 3<i>x</i> and 2<i>x</i> are like terms, and 3 bars plus 2 bars is 5 bars, so 3<i>x</i> + 2<i>x</i> = 5<i>x</i>. But 3<i>x</i> and 2 are not like terms: 3 bars and 2 squares can’t become 5 of anything, so 3<i>x</i> + 2 is already as simple as it gets. <b>Simplifying</b> means combining all the like terms: 2<i>x</i> + 3 + <i>x</i> − 1 = 3<i>x</i> + 2. Use the “Like terms” preset in the tiles to watch it happen.</p>
+</section>
+
+<!-- ===================== §5 ===================== -->
+<section class="prose">
+  <h2><span class="n">5</span>The distributive property</h2>
+  <p>3(<i>x</i> + 2) means three copies of (<i>x</i> + 2): three bars and six squares, so 3(<i>x</i> + 2) = 3<i>x</i> + 6. The multiplier outside the brackets multiplies <i>everything</i> inside. As an area: a rectangle 3 tall and (<i>x</i> + 2) wide splits into a 3-by-<i>x</i> piece and a 3-by-2 piece. This is the <b>distributive property</b>, <i>a</i>(<i>b</i> + <i>c</i>) = <i>ab</i> + <i>ac</i>, and using it to remove brackets is called <b>expanding</b>.</p>
+</section>
+<section class="wide">
+  <div class="card" id="dist">
+    <div class="card-h"><span class="tag">Explore</span><h3>The area model</h3>
+      <span class="sub">Set the multiplier <i>a</i>, the number <i>b</i> inside the brackets, and a value for <i>x</i> to size the picture. Toggle the common mistake to see which part it leaves out.</span></div>
+    <div class="inputs">
+      <label class="field sm"><span>Multiplier <i>a</i></span><input id="dA" type="text" inputmode="decimal" autocomplete="off"></label>
+      <label class="field f1 sm"><span>Number <i>b</i></span><input id="dB" type="text" inputmode="decimal" autocomplete="off"></label>
+      <label class="field fx sm"><span>Value of <i>x</i></span><input id="dX" type="text" inputmode="decimal" autocomplete="off"></label>
+      <div class="row" style="margin:0"><button id="dMist">Show the common mistake</button></div>
+    </div>
+    <div class="err" id="dErr"></div>
+    <svg class="nl" id="dSvg" viewBox="0 0 1000 300" role="img" aria-label="Area model of the distributive property" style="margin-top:10px"></svg>
+    <div class="eqs" id="dEqs"></div>
+  </div>
+</section>
+
+<!-- ===================== §6 ===================== -->
+<section class="prose">
+  <h2><span class="n">6</span>From words to symbols</h2>
+  <p>Word problems describe expressions in English. Translate one chunk at a time, and check with a small number. Watch the order in phrases like “3 less than <i>n</i>”: you start with <i>n</i> and take 3 away, so it’s <i>n</i> − 3, not 3 − <i>n</i>.</p>
+</section>
+<section class="wide">
+  <div class="card" id="words">
+    <div class="card-h"><span class="tag">Explore</span><h3>Words to symbols</h3>
+      <span class="sub">Pick a phrase to see it translated piece by piece. Then test the expression with a number of your own.</span></div>
+    <div class="row" id="wList"></div>
+    <ol class="steps" id="wSteps"></ol>
+    <div class="inputs"><label class="field fx sm"><span>Try <i>n</i> =</span><input id="wN" type="text" inputmode="decimal" autocomplete="off"></label></div>
+    <div class="err" id="wErr"></div>
+    <div class="readout" id="wOut"></div>
+  </div>
+</section>
+
+<!-- ===================== §7 ===================== -->
+<section class="prose">
+  <h2><span class="n">7</span>Now, in symbols</h2>
+  <div class="math">\[ a(b + c) = ab + ac, \qquad a(b - c) = ab - ac \]<div class="cap">The distributive property: the multiplier reaches every term inside the brackets.</div></div>
+  <div class="math">\[ ax + bx = (a + b)x, \qquad -(x - c) = -x + c \]<div class="cap">Combining like terms is the distributive property read backwards; a minus sign in front of brackets flips every sign inside.</div></div>
+  <div class="math">\[ a + b = b + a, \quad ab = ba, \quad (a + b) + c = a + (b + c), \quad (ab)c = a(bc) \]<div class="cap">Order and grouping don’t matter for adding or for multiplying (but they do for subtracting and dividing).</div></div>
+  <p>Computer algebra systems do this symbol-pushing automatically. In Python, the SymPy library expands and simplifies just like the tiles:</p>
+  <pre class="code"><code>from sympy import symbols, expand, simplify   # SymPy: algebra with symbols, not just numbers
+x = symbols('x')                               # declare x as a symbol (a variable)
+e = 2*x + 3 + x - 1                            # an expression with like terms
+print(simplify(e))                             # 3*x + 2      (like terms combined)
+print(expand(3*(x + 2)))                       # 3*x + 6      (distributive property)
+print(e.subs(x, 4))                            # 14           (evaluate at x = 4)
+print(simplify((2 + 3*x) - 5*x))               # 2 - 2*x: not zero, so 2 + 3x and 5x are different</code></pre>
+</section>
+
+<!-- ===================== §8 ===================== -->
+<section class="prose">
+  <h2><span class="n">8</span>Where this goes</h2>
+  <ul class="goes">
+    <li><b>Next (3.B.2):</b> solving equations: finding the value of the unknown that makes two expressions equal, by keeping a balance level.</li>
+    <li><b>Later in this book:</b> functions (3.B.4), where an expression becomes a rule turning inputs into outputs; polynomials and factoring (3.B.8), the distributive property run backwards; and in linear algebra (7.B.2), linear combinations like 2<b>u</b> + 3<b>v</b> are expressions whose variables are vectors.</li>
+    <li><b>In the world:</b> spreadsheet formulas (=2*A1+3), recipes scaled for any number of guests, phone and data plans, physics formulas like distance = speed × time, and every line of code that computes something from inputs.</li>
+  </ul>
+</section>
+
+<!-- ===================== §9 ===================== -->
+<section class="prose">
+  <h2><span class="n">9</span>Words to know</h2>
+  <div class="vocab">
+    <div class="term"><b>Variable</b>A letter that stands for a number: an unknown to find, or an amount that changes.</div>
+    <div class="term"><b>Unknown</b>A variable standing for one particular number we don’t know yet.</div>
+    <div class="term"><b>Expression</b>Numbers, variables and operations combined, like 2<i>x</i> + 3. It has a value, but no equals sign.</div>
+    <div class="term"><b>Term</b>A piece of an expression separated by + or −: 2<i>x</i> and 3 in 2<i>x</i> + 3.</div>
+    <div class="term"><b>Coefficient</b>The number multiplying a variable: 2 in 2<i>x</i>. In <i>x</i> it is 1; in −<i>x</i> it is −1.</div>
+    <div class="term"><b>Constant</b>A term with no variable, like 3.</div>
+    <div class="term"><b>Evaluate (substitute)</b>Replace the variable with a number and work out the value.</div>
+    <div class="term"><b>Order of operations</b>Brackets, then powers, then multiply/divide, then add/subtract (left to right within each level).</div>
+    <div class="term"><b>Like terms</b>Terms with the same variable part, like 3<i>x</i> and −<i>x</i>. Only like terms combine.</div>
+    <div class="term"><b>Simplify</b>Rewrite an expression in its shortest equivalent form by combining like terms.</div>
+    <div class="term"><b>Zero pair</b>A positive and a negative of the same tile (<i>x</i> and −<i>x</i>, or 1 and −1): together they make 0.</div>
+    <div class="term"><b>Distributive property</b><i>a</i>(<i>b</i> + <i>c</i>) = <i>ab</i> + <i>ac</i>. Using it to remove brackets is <b>expanding</b>.</div>
+    <div class="term"><b>Equivalent expressions</b>Expressions that have the same value for every value of the variable, like 3(<i>x</i> + 2) and 3<i>x</i> + 6.</div>
+  </div>
+</section>
+
+<!-- ===================== Quiz ===================== -->
+<section class="prose"><h2><span class="n">10</span>Check yourself</h2>
+  <p>Four kinds of questions: evaluate an expression, simplify one, translate words into an expression, and decide whether two expressions are equivalent.</p>
+</section>
+<section class="wide">
+  <div class="card" id="quiz">
+    <div class="card-h"><span class="tag">Quiz</span><h3 id="qTitle"></h3><span class="score" id="score">Score: 0 / 0</span></div>
+    <div class="qtext" id="qText"></div>
+    <div class="qexpr" id="qExpr"></div>
+    <div class="choice" id="qChoice"></div>
+    <div class="inputs" id="qIn">
+      <label class="field fx sm" id="qF1"><span id="qL1"></span><input id="q1" type="text" inputmode="decimal" autocomplete="off"></label>
+      <label class="field f1 sm" id="qF2"><span id="qL2"></span><input id="q2" type="text" inputmode="decimal" autocomplete="off"></label>
+      <div class="row" style="margin:0"><button class="primary" id="qCheck">Check</button></div>
+    </div>
+    <div class="row" style="margin:10px 0 0"><button id="qShow">Show answer</button><button id="qNew">New question</button></div>
+    <div class="err" id="qErr"></div>
+    <div class="feedback" id="qFb" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ===================== Pager (filled in by the shared navigation) ===================== -->
+<nav class="wide">
+  <div class="pager"></div>
+  <div class="meta">3.B.1 · Prerequisites: 1.B.1 (number line), 1.B.2 (multiplication), 1.B.3 (fractions) · Leads to: 3.B.2 (solving equations), 3.B.4 (functions), 3.B.8 (polynomials)</div>
+</nav>
+</main>
+
+<script>
+/* =====================================================================
+   1. HELPERS
+   ===================================================================== */
+const NS = 'http://www.w3.org/2000/svg';
+const $ = id => document.getElementById(id);
+function mk(tag, attrs, parent){                           // create an SVG element with attributes
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function txt(parent, x, y, s, cls, extra){                 // create an SVG text element
+  extra = Object.assign({}, extra || {});
+  // a CSS class's text-anchor beats the attribute, so move a requested anchor into the style
+  if (extra['text-anchor']){ extra.style = (extra.style ? extra.style + ';' : '') + 'text-anchor:' + extra['text-anchor']; delete extra['text-anchor']; }
+  const t = mk('text', Object.assign({ x, y, class: cls || '' }, extra), parent);
+  t.textContent = s;
+  return t;
+}
+function num(x, d){ if (d === undefined) d = 2; const r = Math.round(x * Math.pow(10, d)) / Math.pow(10, d); return r === 0 ? '0' : (r < 0 ? '−' : '') + String(Math.abs(r)); }
+const pn = x => x < 0 ? `(${num(x)})` : num(x);              // a number, in parentheses when negative
+function parseNum(s){
+  s = String(s).trim().replace(/[−–]/g, '-').replace(/\s+/g, '');
+  if (/^-?\d+(\.\d+)?$|^-?\.\d+$/.test(s)) return parseFloat(s);
+  const m = s.match(/^(-?\d+)\/(\d+)$/);
+  if (m && +m[2] !== 0) return +m[1] / +m[2];
+  return NaN;
+}
+function readAll(ids, errId, msg){
+  const out = ids.map(id => parseNum($(id).value));
+  if (ids.some(id => $(id).value.trim() === '') || out.some(isNaN)){ $(errId).textContent = msg || 'Fill in every box with a number.'; return null; }
+  $(errId).textContent = ''; return out;
+}
+function selectOnFocus(ids){ ids.forEach(id => $(id).addEventListener('focus', e => e.target.select())); }
+function buttons(boxId, list, onPick, cls){
+  list.forEach((p, i) => { const b = document.createElement('button'); b.className = cls || 'preset'; b.textContent = p.n; b.onclick = () => onPick(i); $(boxId).appendChild(b); });
+  return i => [...$(boxId).children].forEach((b, j) => b.classList.toggle('on', j === i));
+}
+// Write ax + b in tidy form: 3x + 2, x − 1, −x, 4, 0
+function lin(a, b, v){
+  v = v || 'x'; const parts = [];
+  if (a) parts.push((a === 1 ? '' : a === -1 ? '−' : num(a)) + v);
+  if (b || !a) parts.push(parts.length ? (b < 0 ? '− ' + num(-b) : '+ ' + num(b)) : num(b));
+  return parts.join(' ');
+}
+const svgCss = document.createElement('style');
+svgCss.textContent = `
+  .tl{fill:var(--muted);font:500 11px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:3px}
+  .lab{font:700 15px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:5px}
+  .labS{font:600 12.5px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+  .cap{fill:var(--muted);font:500 12px var(--sans)}
+  .bt{fill:var(--ink);font:600 13px var(--sans)}
+`;
+document.head.appendChild(svgCss);
+
+/* =====================================================================
+   2. ALGEBRA TILES (tiles + number-line hops)
+   ===================================================================== */
+// A tile is { k: 'x' or '1', s: +1 or −1 }. The list keeps the order the tiles were added.
+const T = (code) => code.split(' ').map(c => ({ k: c.replace(/[+-]/, ''), s: c[0] === '-' ? -1 : 1 }));
+const MP = [
+  { n: '2x + 3', t: '+x +x +1 +1 +1', d: 'Two bars and three squares. With x = 4 that’s 4 + 4 + 1 + 1 + 1 = 11.' },
+  { n: 'Like terms', t: '+x +x +1 +1 +1 +x -1', d: '2x + 3 + x − 1: press Simplify to gather the bars, gather the squares, and cancel one zero pair.' },
+  { n: 'Zero pairs', t: '+x -x +1 -1 +x', d: 'x − x + 1 − 1 + x: two zero pairs cancel and only x is left.' },
+  { n: '−2x + 5', t: '-x -x +1 +1 +1 +1 +1', d: 'Negative bars hop left. When x is big, −2x + 5 is negative; when x is small, positive.' },
+  { n: '3(x + 2)', t: '+x +1 +1 +x +1 +1 +x +1 +1', d: 'Three copies of (x + 2): simplify to 3x + 6. That’s the distributive property (section 5).' },
+  { n: '2 + 3x', t: '+1 +1 +x +x +x', d: 'Two squares and three bars: not five bars! Only when x = 1 is 2 + 3x equal to 5x.' },
+];
+const mt = { tiles: T(MP[0].t), simp: false, x: 4 };
+const markM = buttons('mPresets', MP, i => { mt.tiles = T(MP[i].t); mt.simp = false; markM(i); $('mDesc').textContent = MP[i].d; drawM(); });
+function counts(tiles){ const c = { px: 0, nx: 0, p1: 0, n1: 0 }; tiles.forEach(t => { c[(t.s > 0 ? 'p' : 'n') + t.k]++; }); return c; }
+function rawExpr(tiles){
+  if (!tiles.length) return '0';
+  return tiles.map((t, i) => (i ? (t.s > 0 ? ' + ' : ' − ') : (t.s > 0 ? '' : '−')) + t.k).join('');
+}
+function drawM(){
+  const c = counts(mt.tiles), X = c.px - c.nx, K = c.p1 - c.n1, x = mt.x;
+  $('mExpr').innerHTML = `<small>${mt.simp ? 'simplified' : 'as built'}</small>${mt.simp ? lin(X, K) : rawExpr(mt.tiles)}${mt.simp ? '' : `<small style="margin-left:18px">simplifies to</small><span style="color:var(--muted)">${lin(X, K)}</span>`}`;
+  // ---- the tile mat
+  const svg = $('mSvg'); svg.innerHTML = ''; const g = mk('g', {}, svg), BASE = 190, XW = 26, XH = 110, U = 26;
+  let px = 30;
+  const tile = (t, faded, cross) => {
+    const w = XW, h = t.k === 'x' ? XH : U, y = BASE - h;
+    const pos = t.s > 0, col = t.k === 'x' ? 'var(--cx)' : 'var(--c1)';
+    mk('rect', { x: px, y, width: w, height: h, rx: 4, style: pos ? `fill:${col};opacity:${faded ? .22 : .85}` : `fill:var(--neg);opacity:${faded ? .12 : .3};stroke:var(--neg);stroke-width:2;stroke-dasharray:5 3` }, g);
+    txt(g, px + w / 2, y + h / 2 + 5, (pos ? '' : '−') + t.k, 'labS', { 'text-anchor': 'middle', style: `fill:${pos ? 'var(--paper)' : 'var(--neg)'};stroke:none;opacity:${faded ? .5 : 1}` });
+    if (cross) txt(g, px + w / 2, y - 6, '✕', 'lab', { 'text-anchor': 'middle', style: `fill:${cross}` });
+    px += w + 6;
+  };
+  if (!mt.tiles.length) txt(g, 500, 110, 'No tiles yet: use the + x, − x, + 1, − 1 buttons.', 'cap', { 'text-anchor': 'middle' });
+  if (!mt.simp) mt.tiles.forEach(t => tile(t));
+  else {
+    // remaining bars, then remaining squares, then the cancelled zero pairs, faded with an ✕ in the colour of what cancelled them
+    const group = (n, t, label) => { if (!n) return; const x0 = px; for (let k = 0; k < n; k++) tile(t); txt(g, (x0 + px - 6) / 2, 28, label, 'lab', { 'text-anchor': 'middle', style: `fill:${t.s > 0 ? (t.k === 'x' ? 'var(--cx)' : 'var(--c1)') : 'var(--neg)'}` }); px += 26; };
+    group(Math.abs(X), { k: 'x', s: Math.sign(X) }, lin(X, 0));
+    group(Math.abs(K), { k: '1', s: Math.sign(K) }, num(K));
+    const zx = Math.min(c.px, c.nx), z1 = Math.min(c.p1, c.n1);
+    if (zx + z1){
+      const x0 = px; px += 14;
+      for (let k = 0; k < zx; k++){ tile({ k: 'x', s: 1 }, true, 'var(--neg)'); tile({ k: 'x', s: -1 }, true, 'var(--cx)'); px += 6; }
+      for (let k = 0; k < z1; k++){ tile({ k: '1', s: 1 }, true, 'var(--neg)'); tile({ k: '1', s: -1 }, true, 'var(--c1)'); px += 6; }
+      mk('line', { x1: x0, y1: 40, x2: x0, y2: BASE + 6, style: 'stroke:var(--line2);stroke-width:1.5;stroke-dasharray:4 4' }, g);
+      txt(g, (x0 + px) / 2, 28, `${zx + z1} zero pair${zx + z1 > 1 ? 's' : ''} = 0`, 'labS', { 'text-anchor': 'middle', style: 'fill:var(--muted)' });
+    }
+  }
+  mk('line', { x1: 20, y1: BASE + 1, x2: 980, y2: BASE + 1, style: 'stroke:var(--line2);stroke-width:1.5' }, g);
+  // ---- the value: one hop per tile (in the simplified order once simplified; cancelled pairs left out)
+  const seq = mt.simp ? Array(Math.abs(X)).fill({ k: 'x', s: Math.sign(X) }).concat(Array(Math.abs(K)).fill({ k: '1', s: Math.sign(K) })) : mt.tiles;
+  const stops = [0]; seq.forEach(t => stops.push(stops[stops.length - 1] + t.s * (t.k === 'x' ? x : 1)));
+  const lo = Math.min(...stops, 0), hi = Math.max(...stops, 1), span = hi - lo || 1;
+  const vs = $('vSvg'); vs.innerHTML = ''; const h = mk('g', {}, vs), L = 50, R = 950, LY = 120, P = v => L + (v - lo) / span * (R - L);
+  mk('line', { x1: L - 20, y1: LY, x2: R + 20, y2: LY, style: 'stroke:var(--ink);stroke-width:1.6' }, h);
+  const step = span <= 20 ? 1 : span <= 50 ? 5 : 10;
+  for (let v = Math.ceil(lo / step) * step; v <= hi + 1e-9; v += step){ mk('line', { x1: P(v), y1: LY - 5, x2: P(v), y2: LY + 5, style: 'stroke:var(--ink)' }, h); txt(h, P(v), LY + 20, num(v), 'tl', { 'text-anchor': 'middle' }); }
+  seq.forEach((t, i) => {
+    const a = P(stops[i]), b = P(stops[i + 1]), up = Math.min(46, Math.abs(b - a) * .5 + 8), col = t.s < 0 ? 'var(--neg)' : t.k === 'x' ? 'var(--cx)' : 'var(--c1)';
+    if (Math.abs(b - a) < 1) return;
+    mk('path', { d: `M${a},${LY} Q${(a + b) / 2},${LY - 2 * up} ${b},${LY}`, style: `fill:none;stroke:${col};stroke-width:2.2` }, h);
+    const dir = Math.sign(b - a);                               // arrowhead pointing down into the line, in the direction of travel
+    mk('polygon', { points: `${b},${LY} ${b - 10 * dir},${LY - 8} ${b - 3 * dir},${LY - 12}`, style: `fill:${col}` }, h);
+    if (t.k === 'x' && Math.abs(b - a) > 26) txt(h, (a + b) / 2, LY - up - 4, (t.s < 0 ? '−' : '+') + 'x', 'labS', { 'text-anchor': 'middle', style: `fill:${col}` });
+  });
+  mk('circle', { cx: P(0), cy: LY, r: 5, style: 'fill:var(--ink)' }, h); txt(h, P(0), LY + 38, 'start', 'cap', { 'text-anchor': 'middle' });
+  const end = stops[stops.length - 1];
+  mk('circle', { cx: P(end), cy: LY, r: 8, style: 'fill:var(--e1);stroke:var(--paper);stroke-width:2' }, h);
+  txt(h, P(end), LY + 40, `= ${num(end)}`, 'lab', { 'text-anchor': 'middle', style: 'fill:var(--e1)' });   // below the line, clear of the hops
+  txt(h, 20, 20, `x = ${num(x)}: each bar is a hop of ${num(Math.abs(x))}, each square a hop of 1`, 'cap', { 'text-anchor': 'start' });
+  // ---- the arithmetic, in the order of operations
+  const val = X * x + K;
+  $('mEqs').innerHTML = `<span class="lbl">Substitute x = ${num(x)}</span>${lin(X, K)} = ${X ? `${X === 1 ? '' : X === -1 ? '−' : num(X) + '·'}${pn(x)}` : ''}${X && K ? (K < 0 ? ' − ' + num(-K) : ' + ' + num(K)) : !X ? num(K) : ''}${X && K ? ` = ${num(X * x)}${K < 0 ? ' − ' + num(-K) : ' + ' + num(K)}` : ''} = <b>${num(val)}</b><br>` +
+    `<span class="lbl">Order of operations</span>${X && K ? (X === 1 || X === -1 ? 'nothing to multiply (' + (X === 1 ? 'x' : '−x') + '), just add the constant' : 'multiply first (' + num(X) + '·x), then add the constant') : X ? (Math.abs(X) === 1 ? 'no arithmetic needed: the value is ' + (X > 0 ? 'x itself' : 'the opposite of x') : 'just the multiplication') : 'no x at all: the value never changes'}`;
+}
+function addTile(k, s){ if (mt.tiles.length >= 18){ $('mErr').textContent = 'That’s plenty of tiles: simplify or clear first.'; return; } $('mErr').textContent = ''; mt.tiles.push({ k, s }); mt.simp = false; markM(-1); $('mDesc').textContent = 'Your own expression.'; drawM(); }
+$('addX').onclick = () => addTile('x', 1); $('subX').onclick = () => addTile('x', -1); $('add1').onclick = () => addTile('1', 1); $('sub1').onclick = () => addTile('1', -1);
+$('mSimp').onclick = () => { mt.simp = !mt.simp; $('mSimp').textContent = mt.simp ? 'Show as built' : 'Simplify'; drawM(); };
+$('mClear').onclick = () => { mt.tiles = []; mt.simp = false; $('mSimp').textContent = 'Simplify'; markM(-1); $('mDesc').textContent = ''; drawM(); };
+$('mX').value = 4;
+$('mX').addEventListener('input', () => { const v = parseNum($('mX').value); if ($('mX').value.trim() === '' || isNaN(v)){ $('mErr').textContent = 'Type a number for x.'; return; } if (Math.abs(v) > 10){ $('mErr').textContent = 'Keep x between −10 and 10.'; return; } $('mErr').textContent = ''; mt.x = v; drawM(); });
+selectOnFocus(['mX']);
+[...$('mPresets').children].forEach(b => b.addEventListener('click', () => { $('mSimp').textContent = 'Simplify'; }));
+
+/* =====================================================================
+   3. SAME OR DIFFERENT? (equivalent expressions)
+   ===================================================================== */
+// Each pair: [display 1, value 1, display 2, value 2, equivalent?, explanation]
+const EQ = [
+  ['2 + 3x', x => 2 + 3 * x, '5x', x => 5 * x, false, '3x means 3 × x, which happens before the + 2. Adding 2 and 3 first breaks the order of operations.'],
+  ['3(x + 2)', x => 3 * (x + 2), '3x + 6', x => 3 * x + 6, true, 'The 3 multiplies both the x and the 2: the distributive property.'],
+  ['3(x + 2)', x => 3 * (x + 2), '3x + 2', x => 3 * x + 2, false, 'The 3 must multiply the 2 as well: 3(x + 2) = 3x + 6.'],
+  ['x + x', x => x + x, '2x', x => 2 * x, true, 'Two bars are 2 bars: like terms combine.'],
+  ['x · x', x => x * x, '2x', x => 2 * x, false, 'x · x is x², “x squared”: x times itself, not x twice added.'],
+  ['2x + 3 + x − 1', x => 3 * x + 2, '3x + 2', x => 3 * x + 2, true, 'Combine the x terms (2x + x = 3x) and the numbers (3 − 1 = 2).'],
+  ['4 − (x + 1)', x => 4 - (x + 1), '3 − x', x => 3 - x, true, 'The minus sign in front of the brackets takes away both the x and the 1: 4 − x − 1 = 3 − x.'],
+  ['4 − (x + 1)', x => 4 - (x + 1), '5 − x', x => 5 - x, false, 'A common slip: the minus must flip the + 1 too, so it’s 4 − x − 1 = 3 − x.'],
+  ['2(x − 3)', x => 2 * (x - 3), '2x − 3', x => 2 * x - 3, false, 'The 2 multiplies the 3 too: 2(x − 3) = 2x − 6.'],
+];
+const ev = { i: 0 };
+const markE = buttons('ePairs', EQ.map(p => ({ n: `${p[0]}  vs  ${p[2]}` })), i => { ev.i = i; markE(i); drawE(); });
+function drawE(){
+  const [d1, f1, d2, f2, same, why] = EQ[ev.i], xs = [-2, -1, 0, 1, 2, 3, 4];
+  $('eShow').innerHTML = `<span class="ke1">${d1}</span> <span style="color:var(--muted)">vs</span> <span class="ke2">${d2}</span>`;
+  const cells = (f, other) => xs.map(x => { const v = f(x), ok = Math.abs(v - other(x)) < 1e-9; return `<td class="m ${ok ? 'good' : 'bad'}">${num(v)}</td>`; }).join('');
+  $('eTab').innerHTML = `<table class="lists"><tr><th><i>x</i></th>${xs.map(x => `<th>${num(x)}</th>`).join('')}</tr><tr><td class="ke1">${d1}</td>${cells(f1, f2)}</tr><tr><td class="ke2">${d2}</td>${cells(f2, f1)}</tr></table>`;
+  const firstBad = xs.find(x => Math.abs(f1(x) - f2(x)) > 1e-9);
+  $('eOut').innerHTML = `<div class="verdict ${same ? 'y' : 'n'}">${same ? 'Equivalent: they agree for every x.' : `Not equivalent: at x = ${num(firstBad)} one gives ${num(f1(firstBad))} and the other ${num(f2(firstBad))}.`}</div><div class="readout">${why}${same ? ' (Agreeing in a table isn’t proof by itself, since a table can only check a few values. The algebra is what proves it for every x.)' : ' One value that disagrees is enough to prove two expressions are different.'}</div>`;
+}
+
+/* =====================================================================
+   4. THE AREA MODEL (distributive property)
+   ===================================================================== */
+$('dA').value = 3; $('dB').value = 2; $('dX').value = 4;
+let dMist = false;
+$('dMist').onclick = () => { dMist = !dMist; $('dMist').textContent = dMist ? 'Hide the common mistake' : 'Show the common mistake'; drawD(); };
+function drawD(){
+  const r = readAll(['dA', 'dB', 'dX'], 'dErr'); if (!r) return;
+  const [a, b, x] = r;
+  if (!Number.isInteger(a) || a < 1 || a > 6){ $('dErr').textContent = 'Use a whole-number multiplier from 1 to 6.'; return; }
+  if (!Number.isInteger(b) || b < 1 || b > 8){ $('dErr').textContent = 'Use a whole number b from 1 to 8.'; return; }
+  if (x <= 0 || x > 10){ $('dErr').textContent = 'Use a positive x up to 10 (it sets the bar’s length).'; return; }
+  const svg = $('dSvg'); svg.innerHTML = ''; const g = mk('g', {}, svg), u = Math.min(760 / (x + b), 210 / a), X0 = 120, Y0 = 55;
+  // a rows of (x + b): an x-bar and b unit squares in each row
+  for (let r2 = 0; r2 < a; r2++){
+    const y = Y0 + r2 * u;
+    mk('rect', { x: X0, y, width: x * u, height: u, style: 'fill:var(--cx);opacity:.7;stroke:var(--paper);stroke-width:2' }, g);
+    for (let k = 0; k < b; k++){
+      const miss = dMist && r2 > 0;
+      mk('rect', { x: X0 + x * u + k * u, y, width: u, height: u, style: miss ? 'fill:var(--neg);opacity:.15;stroke:var(--neg);stroke-width:1.5;stroke-dasharray:5 3' : 'fill:var(--c1);opacity:.8;stroke:var(--paper);stroke-width:2' }, g);
+    }
+  }
+  // dimension labels
+  txt(g, X0 + x * u / 2, Y0 - 12, `x (= ${num(x)})`, 'lab', { 'text-anchor': 'middle', style: 'fill:var(--cx)' });
+  txt(g, X0 + x * u + b * u / 2, Y0 - 12, `${num(b)}`, 'lab', { 'text-anchor': 'middle', style: 'fill:var(--c1)' });
+  txt(g, X0 - 14, Y0 + a * u / 2 + 5, `${num(a)}`, 'lab', { 'text-anchor': 'end', style: 'fill:var(--ink)' });
+  txt(g, X0 + x * u / 2, Y0 + a * u + 24, `${num(a)}·x = ${num(a * x)}`, 'labS', { 'text-anchor': 'middle', style: 'fill:var(--cx)' });
+  txt(g, X0 + x * u + b * u / 2, Y0 + a * u + 24, `${num(a)}·${num(b)} = ${num(a * b)}`, 'labS', { 'text-anchor': 'middle', style: 'fill:var(--c1)' });
+  if (dMist && a > 1) txt(g, X0 + x * u + b * u + 14, Y0 + (a + 1) * u / 2 + 5, `left out: ${num((a - 1) * b)}`, 'labS', { 'text-anchor': 'start', style: 'fill:var(--neg)' });
+  const right = a * (x + b), mist = a * x + b;
+  $('dEqs').innerHTML =
+    `<span class="lbl">Brackets first</span>${num(a)}(x + ${num(b)}) = ${num(a)}·(${num(x)} + ${num(b)}) = ${num(a)}·${num(x + b)} = <b>${num(right)}</b><br>` +
+    `<span class="lbl">Expanded</span>${num(a)}x + ${num(a * b)} = ${num(a * x)} + ${num(a * b)} = <b>${num(right)}</b> ✓ same, for any x<br>` +
+    `<span class="lbl">The mistake</span><span class="kn">${num(a)}x + ${num(b)}</span> = ${num(mist)}${a > 1 ? ` ✕: it multiplies only the x, leaving out ${num(a - 1)}·${num(b)} = ${num((a - 1) * b)}` : ' (with a = 1 there’s nothing to leave out)'}`;
+}
+['dA', 'dB', 'dX'].forEach(id => $(id).addEventListener('input', drawD)); selectOnFocus(['dA', 'dB', 'dX']);
+
+/* =====================================================================
+   5. WORDS TO SYMBOLS
+   ===================================================================== */
+const WD = [
+  { n: 'five more than twice a number', e: '2n + 5', f: n => 2 * n + 5, st: [['a number', 'n'], ['twice a number', '2n'], ['five more than that', '2n + 5']], trap: 'Not 5n + 2: “twice” goes with the number, “five more” is added on.' },
+  { n: 'three less than a number', e: 'n − 3', f: n => n - 3, st: [['a number', 'n'], ['three less than it: start with n, take 3 away', 'n − 3']], trap: '“Less than” flips the order you read it in: it’s n − 3, not 3 − n.' },
+  { n: 'twice the sum of a number and 4', e: '2(n + 4)', f: n => 2 * (n + 4), st: [['the sum of a number and 4', 'n + 4'], ['twice that whole sum (brackets keep it together)', '2(n + 4)']], trap: 'Without brackets, 2n + 4 doubles only the n.' },
+  { n: 'the product of 6 and a number, decreased by 1', e: '6n − 1', f: n => 6 * n - 1, st: [['the product of 6 and a number', '6n'], ['decreased by 1', '6n − 1']], trap: 'The comma tells you the product is finished first; 6(n − 1) would be “6 times one less than a number.”' },
+  { n: 'a number divided by 3, plus 2', e: 'n/3 + 2', f: n => n / 3 + 2, st: [['a number divided by 3', 'n/3'], ['plus 2', 'n/3 + 2']], trap: '(n + 2)/3 would divide the 2 as well.' },
+  { n: 'n bags of 8 apples, plus 3 loose apples', e: '8n + 3', f: n => 8 * n + 3, st: [['one bag', '8'], ['n bags', '8n'], ['plus 3 loose apples', '8n + 3']], trap: '3n + 8 would mean bags of 3 plus 8 loose apples.' },
+];
+const wd = { i: 0 };
+const markW = buttons('wList', WD, i => { wd.i = i; markW(i); drawW(); });
+$('wN').value = 3;
+function drawW(){
+  const w = WD[wd.i];
+  $('wSteps').innerHTML = w.st.map(([p, s]) => `<li><span class="w">“${p}”</span><span class="s">${s}</span></li>`).join('');
+  const v = parseNum($('wN').value);
+  if ($('wN').value.trim() === '' || isNaN(v)){ $('wErr').textContent = 'Type a number to test with.'; $('wOut').innerHTML = `<b>Trap:</b> ${w.trap}`; return; }
+  $('wErr').textContent = '';
+  $('wOut').innerHTML = `<b>Check with n = ${num(v)}:</b> ${w.e.replace(/n/g, `·${pn(v)}`).replace(/^·/, '').replace(/(\d)·/g, '$1·').replace(/\(·/g, '(')} = <b>${num(w.f(v))}</b>. Read the words with ${num(v)} in mind and see that it fits. <br><b>Trap:</b> ${w.trap}`;
+}
+$('wN').addEventListener('input', drawW); selectOnFocus(['wN']);
+
+/* =====================================================================
+   6. QUIZ
+   ===================================================================== */
+const rnd = arr => arr[Math.floor(Math.random() * arr.length)];
+const randInt = (lo, hi) => lo + Math.floor(Math.random() * (hi - lo + 1));
+const nz = (lo, hi) => { let v; do { v = randInt(lo, hi); } while (!v); return v; };
+const qz = { counted: false, done: false, right: 0, total: 0 };
+const sgnTerm = v => v < 0 ? ` − ${num(-v)}` : ` + ${num(v)}`;
+function setMode(kind, l1, l2, choices){
+  $('qChoice').style.display = kind === 'choice' ? '' : 'none'; $('qIn').style.display = kind === 'choice' ? 'none' : '';
+  $('qF2').style.display = l2 ? '' : 'none';
+  if (kind === 'choice'){ $('qChoice').innerHTML = ''; choices.forEach((l, i) => { const b = document.createElement('button'); b.textContent = l; b.onclick = () => answerChoice(i); $('qChoice').appendChild(b); }); }
+  else { $('qL1').innerHTML = l1; if (l2) $('qL2').innerHTML = l2; }
+}
+function newQuestion(){
+  Object.assign(qz, { counted: false, done: false });
+  $('qErr').textContent = ''; $('qFb').className = 'feedback'; $('qFb').innerHTML = ''; $('q1').value = ''; $('q2').value = ''; $('qExpr').textContent = '';
+  qz.type = rnd(['eval', 'eval', 'simp', 'simp', 'words', 'equiv']);
+  if (qz.type === 'eval'){
+    const kind = rnd(['ax+b', 'a(x+b)', 'b+ax', 'x2+b']), b = nz(-9, 9), x = nz(-5, 6);
+    let a; do { a = nz(-5, 6); } while (Math.abs(a) < 2);       // a coefficient of ±1 can't show the add-before-multiply mistake
+    let show, val, alt = [];
+    if (kind === 'ax+b'){ show = `${lin(a, 0)}${sgnTerm(b)}`; val = a * x + b; alt = [[(a + b) * x, 'add']]; }
+    else if (kind === 'a(x+b)'){ show = `${num(a)}(x${sgnTerm(b)})`; val = a * (x + b); alt = [[a * x + b, 'dist']]; }
+    else if (kind === 'b+ax'){ show = `${num(b)}${a < 0 ? ' − ' + (a === -1 ? '' : num(-a)) : ' + ' + (a === 1 ? '' : num(a))}x`; val = b + a * x; alt = [[(b + a) * x, 'add']]; }
+    else { const xn = -Math.abs(x) || -2; show = `x²${sgnTerm(b)}`; val = xn * xn + b; alt = [[-(xn * xn) + b, 'negsq'], [2 * xn + b, 'two']]; Object.assign(qz, { x: xn }); }
+    Object.assign(qz, { kind, show, ans: val, alt, x: qz.x !== undefined && kind === 'x2+b' ? qz.x : x });
+    $('qTitle').textContent = 'Evaluate the expression';
+    $('qText').innerHTML = `Find the value when <b>x = ${num(qz.x)}</b>.`; $('qExpr').textContent = show;
+    setMode('field', 'value');
+  } else if (qz.type === 'simp'){
+    const kind = rnd(['like', 'dist', 'distminus', 'subbrack']), a = nz(-4, 6), b = nz(-8, 8), c = nz(-5, 5), d = nz(-8, 8);
+    let show, A, B, alt = [];
+    if (kind === 'like'){ show = `${lin(a, 0)}${sgnTerm(b)}${c < 0 ? ' − ' + (c === -1 ? '' : num(-c)) : ' + ' + (c === 1 ? '' : num(c))}x${sgnTerm(d)}`; A = a + c; B = b + d; alt = [[a + c + b + d, null, 'all']]; }
+    else if (kind === 'dist'){ const m = nz(2, 5); show = `${num(m)}(x${sgnTerm(b)})${sgnTerm(d)}`; A = m; B = m * b + d; alt = [[m, b + d, 'dist']]; }
+    else if (kind === 'distminus'){ const m = nz(2, 5); show = `${num(m)}(x${sgnTerm(b)}) − ${Math.abs(c) === 1 ? '' : num(Math.abs(c))}x`; A = m - Math.abs(c); B = m * b; alt = [[m - Math.abs(c), b, 'dist']]; }
+    else { show = `${lin(a, 0)}${sgnTerm(b)} − (${Math.abs(c) === 1 ? '' : num(Math.abs(c))}x${sgnTerm(d)})`; A = a - Math.abs(c); B = b - d; alt = [[a - Math.abs(c), b + d, 'minus']]; }
+    Object.assign(qz, { kind, show, A, B, alt });
+    $('qTitle').textContent = 'Simplify';
+    $('qText').innerHTML = 'Simplify to the form <b>□x + □</b>: type the coefficient of x and the constant (use negative numbers where needed, and 0 if a part disappears).';
+    $('qExpr').textContent = show;
+    setMode('field', 'coefficient of x', 'constant');
+  } else if (qz.type === 'words'){
+    const W = [
+      ['five more than twice a number n', '2n + 5', ['5n + 2', '2(n + 5)', '2n − 5']],
+      ['three less than a number n', 'n − 3', ['3 − n', '3n', 'n + 3']],
+      ['twice the sum of a number n and 4', '2(n + 4)', ['2n + 4', 'n + 8', '(n + 4)/2']],
+      ['the product of 6 and a number n, decreased by 1', '6n − 1', ['6(n − 1)', '1 − 6n', '6 + n − 1']],
+      ['a number n divided by 3, plus 2', 'n/3 + 2', ['(n + 2)/3', '3n + 2', '3/n + 2']],
+      ['half of a number n', 'n/2', ['2n', 'n − 2', '2/n']],
+      ['seven fewer than four times a number n', '4n − 7', ['7 − 4n', '4(n − 7)', '7n − 4']],
+      ['n bags of 8 apples, plus 3 loose apples', '8n + 3', ['3n + 8', '8(n + 3)', '11n']],
+      ['the square of a number n, plus 1', 'n² + 1', ['2n + 1', '(n + 1)²', 'n² − 1']],
+    ];
+    const w = rnd(W), opts = [w[1]].concat(w[2]).sort(() => Math.random() - .5);
+    Object.assign(qz, { w, opts, ansI: opts.indexOf(w[1]) });
+    $('qTitle').textContent = 'Words to an expression';
+    $('qText').innerHTML = `Which expression means “<b>${w[0]}</b>”?`;
+    setMode('choice', null, null, opts);
+  } else {
+    const p = rnd(EQ); Object.assign(qz, { p });
+    $('qTitle').textContent = 'Equivalent or not?';
+    $('qText').innerHTML = 'Are these two expressions equal for <b>every</b> value of x?';
+    $('qExpr').innerHTML = `<span class="ke1">${p[0]}</span> &nbsp;and&nbsp; <span class="ke2">${p[2]}</span>`;
+    setMode('choice', null, null, ['Yes, equivalent', 'No, different']);
+  }
+}
+function countQ(ok){ if (qz.counted) return; qz.counted = true; qz.total++; if (ok) qz.right++; $('score').textContent = `Score: ${qz.right} / ${qz.total}`; }
+function checkQ(){
+  let ok, msg;
+  if (qz.type === 'eval'){
+    const r = readAll(['q1'], 'qErr', 'Type a number.'); if (!r) return;
+    const v = r[0]; ok = Math.abs(v - qz.ans) < 1e-9;
+    const hit = qz.alt.find(([w]) => Math.abs(v - w) < 1e-9);
+    if (ok) msg = `<b>Right: ${num(qz.ans)}.</b>`;
+    else if (hit && hit[1] === 'add') msg = '<b>You added before multiplying.</b> Multiplication comes first: work out the x term, then add the constant.';
+    else if (hit && hit[1] === 'dist') msg = '<b>The number outside the brackets multiplies everything inside.</b> Do the brackets first (or distribute to both terms).';
+    else if (hit && hit[1] === 'negsq') msg = `<b>Careful with the negative.</b> x² means (${num(qz.x)})·(${num(qz.x)}) = ${num(qz.x * qz.x)}: a negative times a negative is positive.`;
+    else if (hit && hit[1] === 'two') msg = '<b>x² is x times x, not 2 times x.</b>';
+    else if (Math.abs(v + qz.ans) < 1e-9) msg = '<b>Check the signs.</b>';
+    else msg = '<b>Not quite.</b> Substitute carefully, with brackets around negative numbers, then follow the order of operations.';
+  } else {
+    const r = readAll(['q1', 'q2'], 'qErr', 'Fill in both boxes (use 0 if a part disappears).'); if (!r) return;
+    const [A, B] = r; ok = Math.abs(A - qz.A) < 1e-9 && Math.abs(B - qz.B) < 1e-9;
+    const hit = qz.alt.find(([a, b]) => b === null ? Math.abs(A + B - a) < 1e-9 && !(Math.abs(A - qz.A) < 1e-9) : Math.abs(A - a) < 1e-9 && Math.abs(B - b) < 1e-9);
+    if (ok) msg = `<b>Right: ${lin(qz.A, qz.B)}.</b>`;
+    else if (hit && hit[2] === 'dist') msg = '<b>Distribute to every term in the brackets.</b> The number outside multiplies the constant inside too.';
+    else if (hit && hit[2] === 'minus') msg = '<b>The minus sign in front of the brackets flips every sign inside</b>, the constant included.';
+    else if (hit && hit[2] === 'all') msg = '<b>Only like terms combine.</b> Add the x terms together and the plain numbers together, separately.';
+    else if (Math.abs(A - qz.A) < 1e-9) msg = '<b>Your x coefficient is right.</b> Recheck the constant: combine all the plain numbers (and anything the brackets produce).';
+    else if (Math.abs(B - qz.B) < 1e-9) msg = '<b>Your constant is right.</b> Recheck the coefficient of x: add up every x term, with its sign.';
+    else msg = '<b>Not quite.</b> Expand any brackets first, then gather the x terms and the numbers.';
+  }
+  countQ(ok); if (ok) qz.done = true;
+  $('qFb').className = 'feedback ' + (ok ? 'ok' : 'bad'); $('qFb').innerHTML = msg;
+}
+function answerChoice(i){
+  if (qz.done) return; qz.done = true;
+  let ok, msg;
+  if (qz.type === 'words'){
+    const w = qz.w, pick = qz.opts[i]; ok = i === qz.ansI;
+    msg = ok ? `<b>Right: ${w[1]}.</b>` : `<b>Not this time: it’s ${w[1]}.</b> You chose ${pick}. Test with n = 2: the words give one value, and only ${w[1]} matches it.`;
+  } else {
+    const p = qz.p, pickYes = i === 0; ok = pickYes === p[4];
+    const xs = [-2, -1, 0, 1, 2, 3, 4], bad = xs.find(x => Math.abs(p[1](x) - p[3](x)) > 1e-9);
+    msg = `<b>${ok ? 'Right' : 'Not this time'}: ${p[4] ? 'equivalent' : 'different'}.</b> ${p[5]}` + (p[4] ? '' : ` For example, at x = ${num(bad)}: ${num(p[1](bad))} vs ${num(p[3](bad))}.`);
+  }
+  countQ(ok); $('qFb').className = 'feedback ' + (ok ? 'ok' : 'bad'); $('qFb').innerHTML = msg;
+}
+function showQ(){
+  countQ(false); qz.done = true; $('qErr').textContent = '';
+  const fb = $('qFb'); fb.className = 'feedback info';
+  if (qz.type === 'eval') fb.innerHTML = `<b>${num(qz.ans)}</b>: substitute x = ${pn(qz.x)}, multiply (or square) first, then add.`;
+  else if (qz.type === 'simp') fb.innerHTML = `<b>${lin(qz.A, qz.B)}</b>: coefficient ${num(qz.A)}, constant ${num(qz.B)}.`;
+  else if (qz.type === 'words') fb.innerHTML = `<b>${qz.w[1]}</b>.`;
+  else fb.innerHTML = `<b>${qz.p[4] ? 'Equivalent' : 'Different'}</b>: ${qz.p[5]}`;
+}
+$('qCheck').onclick = checkQ; $('qShow').onclick = showQ; $('qNew').onclick = newQuestion;
+['q1', 'q2'].forEach(id => { $(id).addEventListener('input', () => { $('qErr').textContent = ''; }); $(id).addEventListener('keydown', e => { if (e.key === 'Enter') checkQ(); }); });
+selectOnFocus(['q1', 'q2']);
+
+/* =====================================================================
+   7. START
+   ===================================================================== */
+markM(0); $('mDesc').textContent = MP[0].d; drawM();
+markE(0); drawE();
+drawD();
+markW(0); drawW();
+newQuestion();
+</script>
+</body>
+</html>
