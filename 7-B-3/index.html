@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>7.B.3 The Dot Product · MathMastery</title>
+<!-- Fonts: a book serif for prose, a clean sans for UI, a mono for numbers -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<!-- MathJax renders the few formulas on the page (SVG output needs no external stylesheet) -->
+<script>
+  window.MathJax = { tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] }, svg: { fontCache: 'global' } };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<style>
+/* ===================== Theme ===================== */
+:root{
+  --bg:#f7f5ef; --paper:#ffffff; --ink:#1f1e1d; --muted:#6b6a66; --line:#e4e0d5; --line2:#c9c5b8;
+  --accent:#534AB7; --accent-bg:#EEEDFE;
+  --pos:#1D9E75; --neg:#D85A30; --pt:#7F77DD; --pt-soft:#AFA9EC; --pt-dark:#534AB7;
+  --pos-new:#9FE1CB; --neg-new:#F0997B; --ok:#3B6D11; --ok-bg:#EAF3DE; --bad:#A32D2D; --bad-bg:#FCEBEB; --note-bg:#FAF3E3; --note-line:#E7C98A;
+  --serif:"Source Serif 4", Georgia, "Times New Roman", serif;
+  --sans:"IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#191817; --paper:#232220; --ink:#ecebe6; --muted:#a3a29c; --line:#383733; --line2:#55534e;
+    --accent:#AFA9EC; --accent-bg:#2c2852; --pt-dark:#CECBF6; --pt-soft:#6f68b8; --pos-new:#5DCAA5; --neg-new:#F5C4B3;
+    --ok:#C0DD97; --ok-bg:#24400d; --bad:#F7C1C1; --bad-bg:#5a1c1c; --note-bg:#2b261b; --note-line:#6b5626;
+  }
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.7 var(--serif);-webkit-font-smoothing:antialiased}
+
+/* ===================== Layout ===================== */
+.topbar{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1000px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:14px;font:500 13px/1 var(--sans);color:var(--muted)}
+.brand{color:var(--ink);font-weight:600;letter-spacing:.02em}
+.brand b{color:var(--accent)}
+.crumbs{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pid{font-family:var(--mono);color:var(--accent);background:var(--accent-bg);padding:4px 8px;border-radius:6px}
+.prose{max-width:720px;margin:0 auto;padding:0 20px}
+.wide{max-width:1000px;margin:0 auto;padding:0 20px}
+
+/* ===================== Hero ===================== */
+.hero{padding:48px 0 12px}
+.kicker{font:600 13px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1{font:700 46px/1.1 var(--serif);margin:12px 0 14px;letter-spacing:-.01em}
+.dek{font-size:21px;color:var(--muted);margin:0 0 22px;font-style:italic}
+.tiers{display:flex;gap:6px;flex-wrap:wrap;font:500 13px/1 var(--sans);margin-bottom:8px}
+.tier{padding:7px 12px;border-radius:999px;border:1px solid var(--line2);color:var(--muted)}
+.tier.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.tier small{opacity:.7;margin-left:4px}
+
+/* ===================== Text elements ===================== */
+h2{font:700 28px/1.25 var(--serif);margin:56px 0 10px;display:flex;gap:12px;align-items:baseline}
+h2 .n{font:600 14px/1 var(--mono);color:var(--accent);min-width:28px}
+p{margin:0 0 16px}
+em.key{font-style:normal;background:linear-gradient(transparent 62%,var(--accent-bg) 62%);padding:0 2px}
+.goals{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:18px 22px;margin:22px 0 0;font:15.5px/1.6 var(--sans)}
+.goals h3{font:600 12px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
+.goals ul{margin:0;padding-left:20px}
+.note{background:var(--note-bg);border-left:4px solid var(--note-line);border-radius:0 10px 10px 0;padding:14px 18px;margin:20px 0;font:15.5px/1.6 var(--sans)}
+.note b{font-weight:600}
+.notice{list-style:none;padding:0;margin:8px 0 18px;counter-reset:n}
+.notice li{position:relative;padding:12px 0 12px 46px;border-top:1px solid var(--line)}
+.notice li:last-child{border-bottom:1px solid var(--line)}
+.notice li::before{counter-increment:n;content:counter(n);position:absolute;left:4px;top:13px;width:26px;height:26px;border-radius:50%;background:var(--accent-bg);color:var(--accent);font:600 13px/26px var(--mono);text-align:center}
+.goes{list-style:none;padding:0;margin:8px 0 18px}
+.goes li{padding:12px 0;border-top:1px solid var(--line)}
+.goes li:last-child{border-bottom:1px solid var(--line)}
+.math{overflow-x:auto;margin:12px 0 18px;padding:14px 18px;background:var(--paper);border:1px solid var(--line);border-radius:12px}
+.math .cap{font:14px/1.5 var(--sans);color:var(--muted);margin-top:4px}
+.mono{font-family:var(--mono);font-size:.92em;white-space:nowrap}
+.pos{color:var(--pos);font-weight:600}.neg{color:var(--neg);font-weight:600}.pt{color:var(--pt-dark);font-weight:600}
+
+/* ===================== Vocabulary ===================== */
+.vocab{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin:14px 0 8px}
+.term{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font:14.5px/1.5 var(--sans)}
+.term b{display:block;font:600 15px/1.3 var(--serif);margin-bottom:4px}
+
+/* ===================== Interactive cards ===================== */
+.card{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:18px 20px 20px;margin:26px 0;box-shadow:0 1px 0 var(--line),0 12px 32px -22px rgba(0,0,0,.25);font-family:var(--sans)}
+.card-h{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.card-h .tag{font:600 11px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--accent);background:var(--accent-bg);padding:5px 8px;border-radius:6px}
+.card-h h3{font:600 18px/1.3 var(--sans);margin:0}
+.card-h .sub{color:var(--muted);font-size:14.5px;flex-basis:100%}
+.panel-label{font:600 11px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:12px 0 4px;display:flex;justify-content:space-between}
+.panel-label span:last-child{letter-spacing:0;text-transform:none;font-weight:500}
+svg.nl{display:block;width:100%;height:auto;border:1px solid var(--line);border-radius:12px;background:var(--bg);touch-action:manipulation}
+svg.clickable{cursor:pointer}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:12px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0}
+button{font:500 14px/1 var(--sans);padding:9px 14px;border-radius:9px;border:1px solid var(--line2);background:var(--paper);color:var(--ink);cursor:pointer;transition:background .15s,border-color .15s}
+button:hover{border-color:var(--ink)}
+button.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+button.preset.on{background:var(--accent-bg);border-color:var(--accent);color:var(--accent)}
+button:disabled{opacity:.45;cursor:default}
+.desc{min-height:24px;color:var(--muted);font-size:14.5px;margin:2px 0 6px}
+.inputs{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;margin:12px 0 4px}
+.field{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.field input{width:92px;font:500 18px/1 var(--mono);padding:9px 10px;border-radius:9px;border:2px solid var(--line2);background:var(--bg);color:var(--ink);text-align:center}
+.field input:focus{outline:none;border-color:var(--accent)}
+.field i,.eq i,.sym{font:italic 600 1.15em var(--serif);text-transform:none;letter-spacing:0;color:var(--pt-dark)}
+.field.start input{border-color:var(--pt-soft)}
+.field.slide input{border-color:var(--pt)}
+.eq{font:500 20px/1 var(--mono);padding:10px 14px;background:var(--bg);border-radius:10px;border:1px solid var(--line)}
+.err{color:var(--bad);font-size:14px;min-height:20px;margin:2px 0}
+.readout{margin-top:12px;padding:12px 14px;background:var(--bg);border-radius:10px;border:1px solid var(--line);font-size:15px;line-height:1.55;min-height:48px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:12px;font-size:13px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{display:inline-block;width:14px;height:14px;border-radius:50%}
+.sw.pos{background:var(--pos)}.sw.neg{border:2.4px solid var(--neg)}
+.sw.x{position:relative;background:var(--pos);opacity:.45}.sw.x::after{content:'✕';position:absolute;inset:-1px 0 0 0;color:var(--neg);font:700 13px/1 var(--sans);text-align:center}
+.sw.posnew{background:var(--pos-new);border:1.5px solid var(--pos)}.sw.negnew{border:2.4px solid var(--neg-new)}.sw.pt{background:var(--pt)}
+.sw.mv{width:22px;height:4px;border-radius:2px;background:var(--pt-soft)}
+.sw.rl{width:22px;height:0;border-top:2px dashed var(--ink);border-radius:0;opacity:.7}
+.feedback{margin-top:10px;padding:12px 14px;border-radius:10px;font-size:15px;line-height:1.55;display:none}
+.feedback.ok{display:block;background:var(--ok-bg);color:var(--ok)}
+.feedback.bad{display:block;background:var(--bad-bg);color:var(--bad)}
+.feedback.info{display:block;background:var(--accent-bg);color:var(--accent)}
+.score{margin-left:auto;font:600 14px/1 var(--mono);color:var(--muted)}
+
+/* ===================== Footer nav ===================== */
+.pager{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:56px 0 18px;font-family:var(--sans)}
+.pager a,.pager div{display:block;padding:16px 18px;border:1px solid var(--line);border-radius:14px;background:var(--paper);color:var(--ink);text-decoration:none}
+.pager small{display:block;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.pager .next{text-align:right}
+.pager .soon{opacity:.6}
+.meta{font:13px/1.6 var(--sans);color:var(--muted);text-align:center;padding:10px 0 50px}
+
+@media (max-width:720px){
+  body{font-size:17px}
+  h1{font-size:34px}
+  .dek{font-size:18px}
+  h2{font-size:24px}
+  .card{padding:14px 12px 16px;border-radius:14px}
+  .crumbs{display:none}
+  svg.nl{min-width:640px}
+}
+</style>
+<meta name="mm-site" content="1">
+<link rel="stylesheet" href="../shared/nav.css">
+</head>
+<body>
+<style>
+/* ===================== Page-specific styles (7.B.3) ===================== */
+/* u = purple, v = amber, positive shadow / useful part = green, negative = red, results = blue */
+:root{ --cu:#7F77DD; --cv:#C98A0B; --pos:#1D9E75; --neg:#D8443A; --cr:#2F6FDB; --sun:#E9A800; }
+@media (prefers-color-scheme:dark){ :root{ --cu:#AFA9EC; --cv:#F0C24B; --pos:#5DCAA5; --neg:#F07B72; --cr:#6EA2F5; --sun:#FFD44D; } }
+.ku{color:var(--cu);font-weight:700}.kv{color:var(--cv);font-weight:700}.kp{color:var(--pos);font-weight:700}.kn{color:var(--neg);font-weight:700}.kr{color:var(--cr);font-weight:700}
+.field.fu input{border-color:var(--cu)}.field.fv input{border-color:var(--cv)}.field.fr input{border-color:var(--cr)}
+.inputs .grp{display:flex;gap:8px;align-items:flex-end;padding-right:10px;border-right:1px dashed var(--line);margin-right:4px}
+.inputs .grp:last-of-type{border-right:none}
+.field.sm input{width:70px}.field.xs input{width:52px;padding-left:4px;padding-right:4px}
+.split{display:grid;grid-template-columns:60% 40%;gap:0;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--paper)}
+.split svg{display:block;width:100%;height:auto;border:none;border-radius:0}
+.split svg + svg{border-left:1px solid var(--line)}
+.eqs{font:15px/1.9 var(--mono);margin:10px 0 6px;padding:10px 16px;border:1px solid var(--line);border-radius:12px;background:var(--bg)}
+.eqs .lbl{display:inline-block;min-width:190px;font:600 12px var(--sans);letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+table.lists{border-collapse:collapse;margin:10px 0 14px;font:15px var(--sans)}
+table.lists th,table.lists td{border:1px solid var(--line);padding:6px 14px;text-align:center}
+table.lists th{background:var(--paper);font-weight:600}
+table.lists td.m{font-family:var(--mono)}
+pre.code{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:12px 16px;overflow-x:auto;font:13.5px/1.6 var(--mono);margin:10px 0 16px}
+.choice{display:flex;gap:8px;flex-wrap:wrap;margin:0}.choice button{min-width:150px}
+.qtext{font:17px/1.55 var(--serif);margin:4px 0 10px}
+.ratings{display:grid;grid-template-columns:120px repeat(5, 64px);gap:6px 8px;align-items:end;margin:6px 0}
+.ratings .h{font:600 12px var(--sans);color:var(--muted);text-align:center}
+.ratings .who{font:700 14px var(--sans);align-self:center}
+.ratings input{width:60px;text-align:center;font:600 16px var(--mono);padding:6px 2px;border-radius:8px;border:1.5px solid var(--line2);background:var(--bg);color:var(--ink)}
+.ratings input.a{border-color:var(--cu)}.ratings input.b{border-color:var(--cv)}
+</style>
+
+<!-- ===================== Top bar ===================== -->
+<div class="topbar"><div class="topbar-in">
+  <span class="brand">Math<b>Mastery</b></span>
+  <span class="crumbs">Chapter 7 · Linear Algebra › Basics</span>
+  <span class="pid">7.B.3</span>
+</div></div>
+
+<!-- ===================== Hero ===================== -->
+<header class="prose hero">
+  <div class="kicker">Chapter 7 · Linear Algebra</div>
+  <h1>The Dot Product</h1>
+  <p class="dek">Multiply two lists entry by entry and add up: you get one number. That number secretly measures how much two arrows point the same way, and it powers everything from shopping totals to solar panels to recommendation engines.</p>
+  <div class="tiers" aria-label="Tier">
+    <span class="tier on">Basics <small>you are here</small></span>
+    <span class="tier">Undergraduate</span>
+    <span class="tier">Masters</span>
+  </div>
+  <div class="goals">
+    <h3>On this page</h3>
+    <ul>
+      <li>Compute the <b>dot product</b> <b class="ku">u</b> · <b class="kv">v</b> = <i>u</i>₁<i>v</i>₁ + <i>u</i>₂<i>v</i>₂ (+ … for longer lists).</li>
+      <li>See it as a <b>shadow</b>: the length of <b class="ku">u</b> times how far <b class="kv">v</b>’s <b>projection</b> reaches along <b class="ku">u</b>.</li>
+      <li>Read the <b>sign</b>: positive means roughly the same way, zero means <b>perpendicular</b>, negative means roughly opposite.</li>
+      <li>Use it to find the <b>angle</b> between vectors, a vector’s length (<b>v</b> · <b>v</b> = ‖<b>v</b>‖²), the <b>work</b> done by a push, and how similar two lists are.</li>
+    </ul>
+  </div>
+</header>
+
+<main>
+<!-- ===================== §1 A product of lists ===================== -->
+<section class="prose">
+  <h2><span class="n">1</span>A product that gives one number</h2>
+  <p>At the store you buy 4 apples at $2, 6 eggs at $1 and 1 loaf of bread at $3. Your total is a <b>dot product</b> of two lists: multiply matching entries, then add.</p>
+  <table class="lists">
+    <tr><th></th><th>apples</th><th>eggs</th><th>bread</th><th></th></tr>
+    <tr><td>price ($)</td><td class="m">2</td><td class="m">1</td><td class="m">3</td><td></td></tr>
+    <tr><td>quantity</td><td class="m">4</td><td class="m">6</td><td class="m">1</td><td></td></tr>
+    <tr><td>price × quantity</td><td class="m">8</td><td class="m">6</td><td class="m">3</td><td><b>total 17</b></td></tr>
+  </table>
+  <p>[2, 1, 3] · [4, 6, 1] = 2·4 + 1·6 + 3·1 = 17. Notice the answer is not a list but a single number: a <b>scalar</b>. That’s why it’s also called the <i>scalar product</i>. For two arrows in the plane it’s the same recipe: <b class="ku">u</b> · <b class="kv">v</b> = <i>u</i>₁<i>v</i>₁ + <i>u</i>₂<i>v</i>₂.</p>
+  <p>The surprise is what that number <i>means</i> when the lists are arrows. It measures how much the two arrows point the same way.</p>
+</section>
+
+<!-- ===================== §2 Shadow ===================== -->
+<section class="prose">
+  <h2><span class="n">2</span>The dot product is a shadow</h2>
+  <p>Shine a light straight down onto the line through <b class="ku">u</b>. The arrow <b class="kv">v</b> casts a <b>shadow</b> on that line: its <b>projection</b>. The dot product is</p>
+  <p style="text-align:center"><b class="ku">u</b> · <b class="kv">v</b> = (length of <b class="ku">u</b>) × (signed length of <b class="kv">v</b>’s shadow on <b class="ku">u</b>)</p>
+  <p>If the shadow falls <span class="kp">forward</span> along <b class="ku">u</b>, the dot product is positive. If <b class="kv">v</b> stands straight up from <b class="ku">u</b> (they’re <b>perpendicular</b>), there’s no shadow at all and the dot product is <b>0</b>. If the shadow falls <span class="kn">backward</span>, it’s negative. Drag the tips below, and press “Spin v” to watch the dot product rise and fall as <b class="kv">v</b> turns: the graph traces a cosine wave, just like the waves in 5.B.4.</p>
+</section>
+
+<section class="wide">
+  <div class="card" id="main">
+    <div class="card-h"><span class="tag">Explore</span><h3>Shadow and angle, linked</h3>
+      <span class="sub">Drag either arrow’s tip (or type the components). Left: <b class="kv">v</b>’s shadow on <b class="ku">u</b>’s line. Right: <b class="ku">u</b> · <b class="kv">v</b> against the angle from <b class="ku">u</b> to <b class="kv">v</b>.</span></div>
+    <div class="row" id="mPresets"></div>
+    <div class="desc" id="mDesc"></div>
+    <div class="inputs">
+      <div class="grp"><label class="field fu sm"><span><b>u</b>: first</span><input id="u1" type="text" inputmode="decimal" autocomplete="off"></label>
+        <label class="field fu sm"><span><b>u</b>: second</span><input id="u2" type="text" inputmode="decimal" autocomplete="off"></label></div>
+      <div class="grp"><label class="field fv sm"><span><b>v</b>: first</span><input id="v1" type="text" inputmode="decimal" autocomplete="off"></label>
+        <label class="field fv sm"><span><b>v</b>: second</span><input id="v2" type="text" inputmode="decimal" autocomplete="off"></label></div>
+      <div class="row" style="margin:0"><button class="primary" id="mSpin">Spin v</button></div>
+    </div>
+    <div class="err" id="mErr"></div>
+    <div class="split">
+      <svg id="mSvg" viewBox="0 0 600 440" role="img" aria-label="Vectors and the shadow" style="cursor:grab;touch-action:none"></svg>
+      <svg id="gSvg" viewBox="0 0 400 440" role="img" aria-label="Dot product against angle"></svg>
+    </div>
+    <div class="eqs" id="mEqs"></div>
+    <div class="readout" id="mOut"></div>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--cu)"></i><b>u</b></span>
+      <span><i class="sw" style="background:var(--cv)"></i><b>v</b></span>
+      <span><i class="sw" style="background:var(--pos)"></i>shadow forward (positive)</span>
+      <span><i class="sw" style="background:var(--neg)"></i>shadow backward (negative)</span>
+      <span><svg width="26" height="12" viewBox="0 0 26 12" aria-hidden="true"><line x1="2" y1="6" x2="24" y2="6" stroke="var(--muted)" stroke-width="1.6" stroke-dasharray="4 3"/></svg>light ray from v’s tip, straight down to u’s line</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §3 Angle and length ===================== -->
+<section class="prose">
+  <h2><span class="n">3</span>Finding the angle, and the length</h2>
+  <p>The shadow of <b class="kv">v</b> has length ‖<b class="kv">v</b>‖ cos θ, where θ is the <b>angle between</b> the vectors (the cosine from 5.B.1: adjacent side over hypotenuse). So the shadow picture says</p>
+  <p style="text-align:center"><b class="ku">u</b> · <b class="kv">v</b> = ‖<b class="ku">u</b>‖ ‖<b class="kv">v</b>‖ cos θ &nbsp;&nbsp;⟹&nbsp;&nbsp; cos θ = <b class="ku">u</b> · <b class="kv">v</b> / (‖<b class="ku">u</b>‖ ‖<b class="kv">v</b>‖)</p>
+  <p>That turns the angle between two arrows into arithmetic. Example: <b class="ku">u</b> = [1, 0], <b class="kv">v</b> = [1, 1]. Then <b class="ku">u</b> · <b class="kv">v</b> = 1, ‖<b class="ku">u</b>‖ = 1, ‖<b class="kv">v</b>‖ = √2, so cos θ = 1/√2 ≈ 0.707 and θ = 45°. The sign of the dot product follows the sign of cos θ: positive for angles under 90°, zero at exactly 90°, negative beyond.</p>
+  <p>Dot a vector with <b>itself</b> and the angle is 0, so cos θ = 1 and <b class="kv">v</b> · <b class="kv">v</b> = ‖<b class="kv">v</b>‖². That’s the Pythagorean length from 7.B.1 in disguise: [3, 4] · [3, 4] = 9 + 16 = 25 = 5². (Try the “v · v” preset above.)</p>
+</section>
+
+<!-- ===================== §4 Sun and work ===================== -->
+<section class="prose">
+  <h2><span class="n">4</span>Only the part along the way counts</h2>
+  <p>A solar panel catches the most sunlight when it faces the sun head-on. Tilt it away and the same panel intercepts a narrower beam. The fraction it catches is cos θ, where θ is the angle between the sun’s direction and the panel’s <b>normal</b> (the arrow sticking straight out of its face): a dot product of two unit arrows.</p>
+</section>
+<section class="wide">
+  <div class="card" id="solar">
+    <div class="card-h"><span class="tag">Explore</span><h3>Sun on a solar panel</h3>
+      <span class="sub">Set the sun’s height above the horizon and the panel’s tilt. The yellow band is the sunlight the panel actually intercepts; its width is the panel’s length times cos θ.</span></div>
+    <div class="row" id="sPresets"></div>
+    <div class="desc" id="sDesc"></div>
+    <div class="inputs">
+      <label class="field fv"><span>Sun height (°)</span><input id="sE" type="text" inputmode="decimal" autocomplete="off"></label>
+      <label class="field fu"><span>Panel tilt (°)</span><input id="sT" type="text" inputmode="decimal" autocomplete="off"></label>
+    </div>
+    <div class="err" id="sErr"></div>
+    <svg class="nl" id="sSvg" viewBox="0 0 1000 380" role="img" aria-label="Solar panel and sunlight"></svg>
+    <div class="readout" id="sOut"></div>
+  </div>
+</section>
+
+<section class="prose">
+  <p>Physics uses the same idea for <b>work</b>, the energy a push puts into moving something. Push a cart with a force <b>F</b> while it rolls a distance <b>d</b> along the floor: the work is <b>W</b> = <b>F</b> · <b>d</b>. Only the part of your push along the floor moves the cart; the part pressing down into the floor does nothing useful.</p>
+</section>
+<section class="wide">
+  <div class="card" id="work">
+    <div class="card-h"><span class="tag">Explore</span><h3>Pushing a cart</h3>
+      <span class="sub">Set how hard you push (newtons), the angle of your push below the horizontal, and how far the cart rolls (meters). Angles over 90° push backwards against the motion.</span></div>
+    <div class="row" id="wPresets"></div>
+    <div class="inputs">
+      <label class="field fv"><span>Force ‖F‖ (N)</span><input id="wF" type="text" inputmode="decimal" autocomplete="off"></label>
+      <label class="field fu"><span>Angle α (°)</span><input id="wA" type="text" inputmode="decimal" autocomplete="off"></label>
+      <label class="field fr"><span>Distance ‖d‖ (m)</span><input id="wD" type="text" inputmode="decimal" autocomplete="off"></label>
+    </div>
+    <div class="err" id="wErr"></div>
+    <svg class="nl" id="wSvg" viewBox="0 0 1000 300" role="img" aria-label="Force on a cart"></svg>
+    <div class="readout" id="wOut"></div>
+  </div>
+</section>
+
+<!-- ===================== §5 Similarity ===================== -->
+<section class="prose">
+  <h2><span class="n">5</span>How alike are two lists?</h2>
+  <p>A streaming service asks people to rate movies from −2 (hated it) to +2 (loved it). Each person’s ratings form a vector. Where two people agree, the matching entries have the same sign and their product is positive; where they disagree, the product is negative. So the dot product adds up agreement minus disagreement.</p>
+  <p>One catch: someone who rates everything strongly gets bigger dot products just for being loud. Dividing by both lengths fixes that, and gives the cosine of the “angle” between the two taste vectors, called <b>cosine similarity</b>: 1 means identical taste, 0 means unrelated, −1 means opposite. It works in 5 dimensions just as well as in 2, even though no one can draw the arrows.</p>
+</section>
+<section class="wide">
+  <div class="card" id="sim">
+    <div class="card-h"><span class="tag">Explore</span><h3>Taste vectors</h3>
+      <span class="sub">Type ratings from −2 to 2 for two people, or pick a pair. The middle row multiplies matching ratings; the dot product adds them up.</span></div>
+    <div class="row" id="rPresets"></div>
+    <div class="ratings" id="rGrid"></div>
+    <div class="err" id="rErr"></div>
+    <svg class="nl" id="rSvg" viewBox="0 0 1000 300" role="img" aria-label="Rating products"></svg>
+    <div class="readout" id="rOut"></div>
+  </div>
+</section>
+
+<!-- ===================== §6 In symbols ===================== -->
+<section class="prose">
+  <h2><span class="n">6</span>Now, in symbols</h2>
+  <p>The two descriptions of the dot product, by components and by geometry:</p>
+  <div class="math">\[ \mathbf{u}\cdot\mathbf{v} = u_1 v_1 + u_2 v_2 + \cdots + u_n v_n = \lVert\mathbf{u}\rVert\,\lVert\mathbf{v}\rVert\cos\theta \]<div class="cap">Left: multiply matching entries and add. Right: lengths times the cosine of the angle between them.</div></div>
+  <div class="math">\[ \cos\theta = \frac{\mathbf{u}\cdot\mathbf{v}}{\lVert\mathbf{u}\rVert\,\lVert\mathbf{v}\rVert}, \qquad \mathbf{u}\cdot\mathbf{v} = 0 \iff \mathbf{u}\perp\mathbf{v}, \qquad \mathbf{v}\cdot\mathbf{v} = \lVert\mathbf{v}\rVert^2 \]<div class="cap">The angle formula, the perpendicular test, and the length formula.</div></div>
+  <div class="math">\[ \text{shadow of } \mathbf{v} \text{ on } \mathbf{u} = \frac{\mathbf{u}\cdot\mathbf{v}}{\lVert\mathbf{u}\rVert}, \qquad \operatorname{proj}_{\mathbf{u}}\mathbf{v} = \frac{\mathbf{u}\cdot\mathbf{v}}{\mathbf{u}\cdot\mathbf{u}}\,\mathbf{u} \]<div class="cap">The signed shadow length, and the shadow itself as a vector along <b>u</b>.</div></div>
+  <p>For long lists, a computer does the multiply-and-add. This is how similarity between millions of items is computed:</p>
+  <pre class="code"><code>import numpy as np                              # NumPy: arrays of numbers
+a = np.array([2, 1, -2, 0, 1])                  # person A's movie ratings
+b = np.array([2, 2, -1, -1, 1])                 # person B's ratings
+dot = a @ b                                     # dot product: multiply matching entries and add -> 9
+cos = dot / (np.linalg.norm(a) * np.linalg.norm(b))   # divide by both lengths: cosine similarity
+print(dot, round(cos, 3))                       # 9 0.818  (very similar taste)</code></pre>
+</section>
+
+<!-- ===================== §7 Where this goes ===================== -->
+<section class="prose">
+  <h2><span class="n">7</span>Where this goes</h2>
+  <ul class="goes">
+    <li><b>Next (7.B.4):</b> a matrix times a vector is a stack of dot products, one per row. Each output entry is “this row · the input.”</li>
+    <li><b>Later in this book:</b> projections become the heart of least-squares fitting (finding the best line through data, Chapter 10), perpendicular (orthogonal) vectors build convenient coordinate systems in the Undergraduate tier, and in calculus the rate of change in a direction is a dot product with the gradient.</li>
+    <li><b>In the world:</b> totals and weighted scores, lighting and shading in every 3D video game (brightness = light direction · surface normal), work and power in physics, and search engines and AI models comparing meanings by the cosine similarity of very long vectors.</li>
+  </ul>
+</section>
+
+<!-- ===================== §8 Vocabulary ===================== -->
+<section class="prose">
+  <h2><span class="n">8</span>Words to know</h2>
+  <div class="vocab">
+    <div class="term"><b>Dot product</b><b>u</b> · <b>v</b> = <i>u</i>₁<i>v</i>₁ + <i>u</i>₂<i>v</i>₂ + …: multiply matching entries and add. The result is a single number.</div>
+    <div class="term"><b>Scalar</b>A single number, as opposed to a vector. The dot product of two vectors is a scalar.</div>
+    <div class="term"><b>Projection (shadow)</b>The part of one vector lying along another: what’s left after dropping straight down onto the other’s line.</div>
+    <div class="term"><b>Angle between vectors</b>θ, from cos θ = <b>u</b> · <b>v</b> / (‖<b>u</b>‖ ‖<b>v</b>‖), between 0° and 180°.</div>
+    <div class="term"><b>Perpendicular (orthogonal)</b>At a right angle. Two nonzero vectors are perpendicular exactly when their dot product is 0.</div>
+    <div class="term"><b>Normal vector</b>An arrow sticking straight out of a surface, perpendicular to it.</div>
+    <div class="term"><b>Work</b>The energy a force puts into motion: <b>W</b> = <b>F</b> · <b>d</b>.</div>
+    <div class="term"><b>Cosine similarity</b><b>u</b> · <b>v</b> divided by both lengths: from −1 (opposite) through 0 (unrelated) to 1 (same direction).</div>
+  </div>
+</section>
+
+<!-- ===================== Quiz ===================== -->
+<section class="prose"><h2><span class="n">9</span>Check yourself</h2>
+  <p>Four kinds of questions: compute a dot product, read its sign, find the angle, and make two vectors perpendicular.</p>
+</section>
+<section class="wide">
+  <div class="card" id="quiz">
+    <div class="card-h"><span class="tag">Quiz</span><h3 id="qTitle"></h3><span class="score" id="score">Score: 0 / 0</span></div>
+    <div class="qtext" id="qText"></div>
+    <div class="choice" id="qChoice"></div>
+    <div class="inputs" id="qInputs">
+      <label class="field fr"><span id="qL1"></span><input id="q1" type="text" inputmode="decimal" autocomplete="off"></label>
+      <div class="row" style="margin:0"><button class="primary" id="qCheck">Check</button></div>
+    </div>
+    <div class="row" style="margin:8px 0 0"><button id="qShow">Show answer</button><button id="qNew">New question</button></div>
+    <div class="err" id="qErr"></div>
+    <div class="feedback" id="qFb" aria-live="polite"></div>
+    <svg class="nl" id="qSvg" viewBox="0 0 1000 320" role="img" aria-label="Quiz picture"></svg>
+  </div>
+</section>
+
+<!-- ===================== Pager (filled in by the shared navigation) ===================== -->
+<nav class="wide">
+  <div class="pager"></div>
+  <div class="meta">7.B.3 · Prerequisites: 7.B.1, 5.B.1 (cosine) · Leads to: 7.B.4 (matrices), least squares (Chapter 10), gradients (Chapter 8)</div>
+</nav>
+</main>
+
+<script>
+/* =====================================================================
+   1. HELPERS
+   ===================================================================== */
+const NS = 'http://www.w3.org/2000/svg';
+const $ = id => document.getElementById(id);
+function mk(tag, attrs, parent){                           // create an SVG element with attributes
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function txt(parent, x, y, s, cls, extra){                 // create an SVG text element
+  extra = Object.assign({}, extra || {});
+  // a CSS class's text-anchor beats the attribute, so move a requested anchor into the style
+  if (extra['text-anchor']){ extra.style = (extra.style ? extra.style + ';' : '') + 'text-anchor:' + extra['text-anchor']; delete extra['text-anchor']; }
+  const t = mk('text', Object.assign({ x, y, class: cls || '' }, extra), parent);
+  t.textContent = s;
+  return t;
+}
+function num(x, d){ if (d === undefined) d = 2; const r = Math.round(x * Math.pow(10, d)) / Math.pow(10, d); return r === 0 ? '0' : (r < 0 ? '−' : '') + String(Math.abs(r)); }
+const pn = x => x < 0 ? `(${num(x)})` : num(x);              // a number, in parentheses when negative
+// Parse typed input: integers, decimals, a leading minus, fractions a/b, and roots like √2 or sqrt(3)
+function parseNum(s){
+  s = String(s).trim().replace(/[−–]/g, '-').replace(/\s+/g, '').replace(/°$/, '');
+  if (/^-?\d+(\.\d+)?$|^-?\.\d+$/.test(s)) return parseFloat(s);
+  let m = s.match(/^(-?\d+)\/(\d+)$/);
+  if (m && +m[2] !== 0) return +m[1] / +m[2];
+  m = s.match(/^(-?)(\d*\.?\d*)\*?(?:√|sqrt)\(?(\d+(?:\.\d+)?)\)?$/);
+  if (m){ const c = m[2] === '' ? 1 : parseFloat(m[2]); if (!isNaN(c)) return (m[1] ? -1 : 1) * c * Math.sqrt(+m[3]); }
+  return NaN;
+}
+const ease = t => t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+const C = { u: 'var(--cu)', v: 'var(--cv)', pos: 'var(--pos)', neg: 'var(--neg)', r: 'var(--cr)', sun: 'var(--sun)' };
+const dot = (a, b) => a.reduce((s, x, i) => s + x * b[i], 0);
+const len = a => Math.sqrt(dot(a, a));
+const cross = (u, v) => u[0] * v[1] - u[1] * v[0];
+const sgn = x => x < 0 ? -1 : 1;
+const DEG = 180 / Math.PI;
+function readAll(ids, errId, msg){
+  const out = ids.map(id => parseNum($(id).value));
+  if (ids.some(id => $(id).value.trim() === '') || out.some(isNaN)){ $(errId).textContent = msg || 'Fill in every box with a number.'; return null; }
+  $(errId).textContent = ''; return out;
+}
+const vstr = p => `[${p.map(x => num(x)).join(', ')}]`;
+
+const svgCss = document.createElement('style');
+svgCss.textContent = `
+  .grid{stroke:var(--line);stroke-width:1} .axis{stroke:var(--ink);stroke-width:1.6;opacity:.7}
+  .tl{fill:var(--muted);font:500 11px var(--mono)}
+  .lab{font:700 15px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:5px}
+  .labS{font:600 12.5px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+  .cap{fill:var(--muted);font:500 12px var(--sans)}
+  .bt{fill:var(--ink);font:600 13px var(--sans)}
+  .bn{fill:var(--ink);font:600 12px var(--mono)}
+`;
+document.head.appendChild(svgCss);
+
+/* =====================================================================
+   2. THE PLANE (grid, axes, arrows, labels) — same helpers as 7.B.1–7.B.2
+   ===================================================================== */
+function plane(svg, W, H, box, maxU){
+  svg.innerHTML = ''; const g = mk('g', {}, svg);
+  const pad = 1;
+  const u = Math.min(maxU || 44, (W - 40) / (box.x1 - box.x0 + 2 * pad), (H - 30) / (box.y1 - box.y0 + 2 * pad));
+  const cx = W / 2 - u * (box.x0 + box.x1) / 2, cy = H / 2 + u * (box.y0 + box.y1) / 2;   // pixel position of the origin
+  const X = x => cx + x * u, Y = y => cy - y * u;
+  const xa = Math.ceil((0 - cx) / u), xb = Math.floor((W - cx) / u), ya = Math.ceil((cy - H) / u), yb = Math.floor(cy / u);
+  for (let k = xa; k <= xb; k++) mk('line', { x1: X(k), y1: 0, x2: X(k), y2: H, class: 'grid' }, g);
+  for (let k = ya; k <= yb; k++) mk('line', { x1: 0, y1: Y(k), x2: W, y2: Y(k), class: 'grid' }, g);
+  mk('line', { x1: 0, y1: Y(0), x2: W, y2: Y(0), class: 'axis' }, g);
+  mk('line', { x1: X(0), y1: 0, x2: X(0), y2: H, class: 'axis' }, g);
+  const step = u >= 30 ? 1 : u >= 15 ? 2 : 5;               // thin out tick labels when the grid is tight
+  for (let k = xa; k <= xb; k++) if (k && k % step === 0 && X(k) > 12 && X(k) < W - 12) txt(g, X(k), Y(0) + 15, k < 0 ? '−' + (-k) : String(k), 'tl', { 'text-anchor': 'middle' });
+  for (let k = ya; k <= yb; k++) if (k && k % step === 0 && Y(k) > 10 && Y(k) < H - 6) txt(g, X(0) - 6, Y(k) + 4, k < 0 ? '−' + (-k) : String(k), 'tl', { 'text-anchor': 'end' });
+  return { g, X, Y, u, W, H, inv: (px, py) => [(px - cx) / u, (cy - py) / u] };
+}
+function boxOf(pts){ const xs = pts.map(p => p[0]).concat(0), ys = pts.map(p => p[1]).concat(0); return { x0: Math.min(...xs), x1: Math.max(...xs), y0: Math.min(...ys), y1: Math.max(...ys) }; }
+function arrow(P, p, q, col, o){
+  o = o || {};
+  const x1 = P.X(p[0]), y1 = P.Y(p[1]), x2 = P.X(q[0]), y2 = P.Y(q[1]), L = Math.hypot(x2 - x1, y2 - y1), w = o.w || 3, op = o.op === undefined ? 1 : o.op;
+  const st = `stroke:${col};stroke-width:${w};opacity:${op}${o.dash ? ';stroke-dasharray:' + o.dash : ''}`;
+  if (L < 2){ mk('circle', { cx: x1, cy: y1, r: 5, style: `fill:${col};opacity:${op}` }, P.g); return; }
+  const ux = (x2 - x1) / L, uy = (y2 - y1) / L, h = Math.min(13 + w, L * 0.45);
+  mk('line', { x1, y1, x2: x2 - ux * h * 0.8, y2: y2 - uy * h * 0.8, style: st + ';stroke-linecap:round' }, P.g);
+  mk('polygon', { points: `${x2},${y2} ${x2 - ux * h - uy * h * .45},${y2 - uy * h + ux * h * .45} ${x2 - ux * h + uy * h * .45},${y2 - uy * h - ux * h * .45}`, style: `fill:${col};opacity:${op}` }, P.g);
+}
+function sideLabel(P, p, q, s, str, col, cls, t, off){
+  t = t === undefined ? .5 : t; const axisRule = !off; off = off || 18;
+  const x1 = P.X(p[0]), y1 = P.Y(p[1]), x2 = P.X(q[0]), y2 = P.Y(q[1]), L = Math.hypot(x2 - x1, y2 - y1) || 1;
+  let nx = (y2 - y1) / L * s, ny = -(x2 - x1) / L * s;       // screen-space normal (left of travel when s = +1)
+  if (axisRule && p[1] === 0 && q[1] === 0 && ny > 0){ nx = -nx; ny = -ny; }   // on the x-axis: label above (tick labels are below)
+  if (axisRule && p[0] === 0 && q[0] === 0 && nx < 0){ nx = -nx; ny = -ny; }   // on the y-axis: label right (tick labels are left)
+  txt(P.g, x1 + (x2 - x1) * t + nx * off, y1 + (y2 - y1) * t + ny * off + 5, str, cls || 'lab', { 'text-anchor': 'middle', style: `fill:${col}` });
+}
+// The arc of the angle from u to v at the origin (the short way round), with its degrees
+function angleArc(P, u, v, r, label){
+  const a0 = Math.atan2(u[1], u[0]); let d = Math.atan2(cross(u, v), dot(u, v));   // signed turn from u to v, −π..π
+  const n = 30; let path = '';
+  for (let k = 0; k <= n; k++){ const a = a0 + d * k / n; path += (k ? ' L' : 'M') + (P.X(0) + r * Math.cos(a)).toFixed(1) + ',' + (P.Y(0) - r * Math.sin(a)).toFixed(1); }
+  mk('path', { d: path, style: 'fill:none;stroke:var(--ink);stroke-width:1.6;opacity:.8' }, P.g);
+  if (label){ const am = a0 + d / 2; txt(P.g, P.X(0) + (r + 16) * Math.cos(am), P.Y(0) - (r + 16) * Math.sin(am) + 4, label, 'labS', { 'text-anchor': 'middle', style: 'fill:var(--ink)' }); }
+}
+// v's shadow on u's line: foot of the perpendicular from v's tip, the light ray, a right-angle mark, and the shadow segment
+function shadow(P, u, v, op){
+  const uu = dot(u, u); if (!uu) return null;
+  const k = dot(u, v) / uu, S = [k * u[0], k * u[1]], s = dot(u, v) / Math.sqrt(uu);
+  // the line through u (faint, both directions)
+  const far = 30; mk('line', { x1: P.X(-far * u[0]), y1: P.Y(-far * u[1]), x2: P.X(far * u[0]), y2: P.Y(far * u[1]), style: `stroke:${C.u};stroke-width:1.2;opacity:.35;stroke-dasharray:2 5` }, P.g);
+  mk('line', { x1: P.X(v[0]), y1: P.Y(v[1]), x2: P.X(S[0]), y2: P.Y(S[1]), style: 'stroke:var(--muted);stroke-width:1.6;stroke-dasharray:5 4' }, P.g);
+  const col = s >= 0 ? C.pos : C.neg;
+  mk('line', { x1: P.X(0), y1: P.Y(0), x2: P.X(S[0]), y2: P.Y(S[1]), style: `stroke:${col};stroke-width:9;opacity:${op === undefined ? .55 : op};stroke-linecap:butt` }, P.g);
+  // right-angle mark at the foot (when v isn't already on the line)
+  const dv = [v[0] - S[0], v[1] - S[1]], dl = len(dv);
+  if (dl > 0.2){ const e1 = u.map(x => x / Math.sqrt(uu) * 0.3), e2 = dv.map(x => x / dl * 0.3), back = s >= 0 ? -1 : 1;
+    const a = [S[0] + back * e1[0], S[1] + back * e1[1]], b = [a[0] + e2[0], a[1] + e2[1]], c = [S[0] + e2[0], S[1] + e2[1]];
+    mk('polyline', { points: `${P.X(a[0])},${P.Y(a[1])} ${P.X(b[0])},${P.Y(b[1])} ${P.X(c[0])},${P.Y(c[1])}`, style: 'fill:none;stroke:var(--muted);stroke-width:1.2' }, P.g); }
+  return { S, s };
+}
+
+/* =====================================================================
+   3. SHADOW AND ANGLE (main explorer, two linked panels)
+   ===================================================================== */
+const MP = [
+  { n: 'Roughly the same way', u: [4, 1], v: [2, 3], d: 'An acute angle: the shadow falls forward along u, so u · v is positive.' },
+  { n: 'Perpendicular', u: [3, 1], v: [-1, 3], d: 'A right angle: v casts no shadow on u’s line. u · v = 3·(−1) + 1·3 = 0.' },
+  { n: 'Roughly opposite', u: [4, 1], v: [-3, 1], d: 'An obtuse angle: the shadow falls backward, so u · v is negative.' },
+  { n: 'Exactly opposite', u: [2, 2], v: [-3, -3], d: 'θ = 180°: the most negative value possible for these lengths, −‖u‖‖v‖.' },
+  { n: 'Shadow past u', u: [2, 0], v: [4, 3], d: 'The shadow can be longer than u itself; the dot product still multiplies the two lengths.' },
+  { n: 'v · v', u: [3, 4], v: [3, 4], d: 'A vector with itself: θ = 0, cos θ = 1, so v · v = ‖v‖² = 25.' },
+];
+const mm = { u: [4, 1], v: [2, 3], drag: null, spin: null, raf: 0 };
+MP.forEach((p, i) => { const b = document.createElement('button'); b.className = 'preset'; b.textContent = p.n; b.onclick = () => { stopSpin(); mm.u = p.u.slice(); mm.v = p.v.slice(); fillM(); markM(i); drawM(); }; $('mPresets').appendChild(b); });
+function markM(i){ [...$('mPresets').children].forEach((b, j) => b.classList.toggle('on', j === i)); $('mDesc').textContent = i === null ? 'Custom vectors.' : MP[i].d; }
+function fillM(d){ ['u1', 'u2', 'v1', 'v2'].forEach((id, k) => { $(id).value = num([...mm.u, ...mm.v][k], d === undefined ? 2 : d); }); }
+const MBOX = { x0: -6.5, x1: 6.5, y0: -4.6, y1: 4.6 };
+function readM(){
+  const r = readAll(['u1', 'u2', 'v1', 'v2'], 'mErr'); if (!r) return false;
+  if (r.some(x => Math.abs(x) > 6)){ $('mErr').textContent = 'Keep every component between −6 and 6.'; return false; }
+  if (!r[0] && !r[1]){ $('mErr').textContent = 'u needs some length (it can’t be [0, 0]) so it has a line to cast a shadow on.'; return false; }
+  mm.u = [r[0], r[1]]; mm.v = [r[2], r[3]]; return true;
+}
+function drawM(){
+  const { u, v } = mm, P = plane($('mSvg'), 600, 440, MBOX, 40);
+  const sh = shadow(P, u, v), d = dot(u, v), lu = len(u), lv = len(v);
+  const th = lv ? Math.acos(Math.max(-1, Math.min(1, d / (lu * lv)))) * DEG : 0;
+  if (lv > 0.05) angleArc(P, u, v, 30, `θ ${num(th, 0)}°`);
+  arrow(P, [0, 0], u, C.u, { w: 4 }); arrow(P, [0, 0], v, C.v, { w: 4 });
+  const s = sgn(cross(u, v) || 1);
+  sideLabel(P, [0, 0], u, -s, 'u', C.u, 'lab', .78); sideLabel(P, [0, 0], v, s, 'v', C.v, 'lab', .78);
+  if (sh && Math.abs(sh.s) > 0.05) sideLabel(P, [0, 0], sh.S, -s, `shadow ${num(sh.s, 2)}`, sh.s >= 0 ? C.pos : C.neg, 'labS', .5, 30);
+  // tip handles for dragging
+  [u, v].forEach((p, i) => mk('circle', { cx: P.X(p[0]), cy: P.Y(p[1]), r: 9, style: `fill:${i ? C.v : C.u};opacity:.25` }, P.g));
+  mk('circle', { cx: P.X(0), cy: P.Y(0), r: 4.5, style: 'fill:var(--ink)' }, P.g);
+  mm.P = P;
+  drawG(); writeM(d, lu, lv, th, sh);
+}
+// The linked graph: u · v as v turns (same length), with the current angle marked
+function drawG(){
+  const svg = $('gSvg'); svg.innerHTML = ''; const g = mk('g', {}, svg);
+  const { u, v } = mm, M = len(u) * len(v) || 1, L = 54, R = 385, T = 56, B = 384, X = a => L + a / 360 * (R - L), Y = y => (T + B) / 2 - y / M * (B - T) / 2 * 0.92;
+  txt(g, 200, 24, 'u · v as v turns around', 'bt', { 'text-anchor': 'middle' });
+  mk('rect', { x: L, y: T, width: R - L, height: Y(0) - T, style: `fill:${C.pos};opacity:.07` }, g);
+  mk('rect', { x: L, y: Y(0), width: R - L, height: B - Y(0), style: `fill:${C.neg};opacity:.07` }, g);
+  mk('line', { x1: L, y1: Y(0), x2: R, y2: Y(0), class: 'axis' }, g);
+  mk('line', { x1: L, y1: T, x2: L, y2: B, class: 'axis' }, g);
+  [0, 90, 180, 270, 360].forEach(a => { mk('line', { x1: X(a), y1: T, x2: X(a), y2: B, class: 'grid' }, g); txt(g, X(a), B + 18, a + '°', 'tl', { 'text-anchor': 'middle' }); });
+  txt(g, L - 6, Y(M) + 4, num(M, 1), 'tl', { 'text-anchor': 'end' }); txt(g, L - 6, Y(-M) + 4, '−' + num(M, 1), 'tl', { 'text-anchor': 'end' }); txt(g, L - 6, Y(0) + 4, '0', 'tl', { 'text-anchor': 'end' });
+  txt(g, X(90), T - 6, '⟂', 'bt', { 'text-anchor': 'middle' }); txt(g, X(270), T - 6, '⟂', 'bt', { 'text-anchor': 'middle' });
+  let d = ''; for (let a = 0; a <= 360; a += 3) d += (a ? ' L' : 'M') + X(a).toFixed(1) + ',' + Y(M * Math.cos(a / DEG)).toFixed(1);
+  mk('path', { d, style: `fill:none;stroke:${C.r};stroke-width:2.4` }, g);
+  txt(g, (L + R) / 2, B + 40, 'angle from u to v, counterclockwise', 'cap', { 'text-anchor': 'middle' });
+  if (len(v) < 1e-9) return;
+  let a = Math.atan2(cross(u, v), dot(u, v)) * DEG; if (a < 0) a += 360;
+  const val = dot(u, v);
+  mk('line', { x1: X(a), y1: Y(0), x2: X(a), y2: Y(val), style: `stroke:${val >= 0 ? C.pos : C.neg};stroke-width:4;opacity:.7` }, g);
+  mk('circle', { cx: X(a), cy: Y(val), r: 7, style: `fill:${C.r};stroke:var(--paper);stroke-width:2` }, g);
+  txt(g, X(a) + (a > 300 ? -10 : 10), Y(val) + (val >= 0 ? -10 : 20), `u·v = ${num(val, 2)}`, 'labS', { 'text-anchor': a > 300 ? 'end' : 'start', style: `fill:${C.r}` });
+}
+function writeM(d, lu, lv, th, sh){
+  const { u, v } = mm, cth = lv ? d / (lu * lv) : 0;
+  $('mEqs').innerHTML =
+    `<span class="lbl">Entry by entry</span><b class="ku">u</b>·<b class="kv">v</b> = ${num(u[0])}·${pn(v[0])} + ${num(u[1])}·${pn(v[1])} = <b class="kr">${num(d, 2)}</b><br>` +
+    `<span class="lbl">Length × shadow</span>‖<b class="ku">u</b>‖ × shadow = ${num(lu, 3)} × <span style="color:${d >= 0 ? C.pos : C.neg}">${num(sh ? sh.s : 0, 3)}</span> = <b class="kr">${num(lu * (sh ? sh.s : 0), 2)}</b><br>` +
+    `<span class="lbl">Lengths × cos θ</span>‖<b class="ku">u</b>‖ ‖<b class="kv">v</b>‖ cos θ = ${num(lu, 3)} × ${num(lv, 3)} × cos ${num(th, 1)}° = <b class="kr">${num(lu * lv * Math.cos(th / DEG), 2)}</b>`;
+  let h;
+  if (!lv) h = '<b class="kv">v</b> is the zero vector, so it has no shadow and <b class="ku">u</b> · <b class="kv">v</b> = 0.';
+  else if (Math.abs(d) < 1e-9) h = `<b>u · v = 0: perpendicular.</b> The angle is exactly 90°, so <b class="kv">v</b> casts no shadow on <b class="ku">u</b>’s line.`;
+  else h = `<b>${d > 0 ? 'Positive' : 'Negative'}</b>: the angle is ${num(th, 1)}°, ${d > 0 ? 'less' : 'more'} than 90°, so <b class="kv">v</b> points ${d > 0 ? 'roughly the same way as' : 'roughly against'} <b class="ku">u</b> and its shadow falls ${d > 0 ? '<span class="kp">forward</span>' : '<span class="kn">backward</span>'}. Angle from the numbers: cos θ = ${num(d, 2)} / (${num(lu, 3)} × ${num(lv, 3)}) = ${num(cth, 3)}, so θ = ${num(th, 1)}°.`;
+  if (lv && Math.abs(u[0] - v[0]) < 1e-9 && Math.abs(u[1] - v[1]) < 1e-9) h += ` Same vector twice: <b class="kv">v</b> · <b class="kv">v</b> = ${num(d)} = ‖<b class="kv">v</b>‖² = ${num(lv, 3)}².`;
+  $('mOut').innerHTML = h;
+}
+// Spin v once around the origin, keeping its length, so the graph's marker traces the cosine curve
+function spin(){
+  if (mm.spin){ stopSpin(); return; }
+  if (!readM()) return;
+  if (len(mm.v) < 1e-9){ $('mErr').textContent = 'v is the zero vector, so there’s nothing to spin. Give it a length first.'; return; }
+  mm.spin = { v0: mm.v.slice(), t: 0 }; $('mSpin').textContent = 'Stop'; let last = performance.now();
+  const step = now => {
+    if (!mm.spin) return;
+    mm.spin.t = Math.min(1, mm.spin.t + (now - last) / 6000); last = now;
+    const a = 2 * Math.PI * mm.spin.t, [x, y] = mm.spin.v0;
+    mm.v = [x * Math.cos(a) - y * Math.sin(a), x * Math.sin(a) + y * Math.cos(a)];
+    if (mm.spin.t >= 1){ mm.v = mm.spin.v0.slice(); stopSpin(); }
+    fillM(mm.spin ? 1 : 2); drawM(); if (mm.spin) mm.raf = requestAnimationFrame(step);
+  };
+  mm.raf = requestAnimationFrame(step);
+}
+function stopSpin(){ if (mm.spin){ cancelAnimationFrame(mm.raf); mm.spin = null; } $('mSpin').textContent = 'Spin v'; }
+$('mSpin').onclick = spin;
+['u1', 'u2', 'v1', 'v2'].forEach(id => {
+  $(id).addEventListener('input', () => { stopSpin(); markM(null); if (readM()) drawM(); });
+  $(id).addEventListener('focus', e => e.target.select());
+});
+// Dragging: grab whichever tip is nearer the pointer, snap to halves
+function ptFromEvent(ev){ const svg = $('mSvg'), pt = svg.createSVGPoint(); pt.x = ev.clientX; pt.y = ev.clientY; const p = pt.matrixTransform(svg.getScreenCTM().inverse()); return mm.P.inv(p.x, p.y); }
+$('mSvg').addEventListener('pointerdown', ev => {
+  stopSpin(); const q = ptFromEvent(ev);
+  mm.drag = Math.hypot(q[0] - mm.u[0], q[1] - mm.u[1]) < Math.hypot(q[0] - mm.v[0], q[1] - mm.v[1]) ? 'u' : 'v';
+  $('mSvg').setPointerCapture(ev.pointerId); dragTo(q);
+});
+$('mSvg').addEventListener('pointermove', ev => { if (mm.drag) dragTo(ptFromEvent(ev)); });
+$('mSvg').addEventListener('pointerup', () => { mm.drag = null; });
+function dragTo(q){
+  const p = [Math.max(-6, Math.min(6, Math.round(q[0] * 2) / 2)), Math.max(-4.5, Math.min(4.5, Math.round(q[1] * 2) / 2))];
+  if (mm.drag === 'u' && !p[0] && !p[1]) return;           // u must keep some length
+  mm[mm.drag] = p; markM(null); fillM(); $('mErr').textContent = ''; drawM();
+}
+
+/* =====================================================================
+   4. SUN ON A SOLAR PANEL
+   ===================================================================== */
+const SPR = [
+  { n: 'Summer noon', e: 70, t: 20, d: 'High sun, gentle tilt: the normal points almost straight at the sun.' },
+  { n: 'Winter, flat panel', e: 20, t: 0, d: 'Low winter sun on a flat roof panel: the light arrives at a steep slant.' },
+  { n: 'Winter, tilted', e: 20, t: 70, d: 'Same low sun, panel tilted up to face it: far more light.' },
+  { n: 'Tilted too far', e: 60, t: 80, d: 'High sun, steep panel: the normal points down past the sun, so the light arrives at a slant again.' },
+];
+SPR.forEach((p, i) => { const b = document.createElement('button'); b.className = 'preset'; b.textContent = p.n; b.onclick = () => { $('sE').value = p.e; $('sT').value = p.t; [...$('sPresets').children].forEach((x, j) => x.classList.toggle('on', j === i)); $('sDesc').textContent = p.d; drawSolar(); }; $('sPresets').appendChild(b); });
+function drawSolar(){
+  const r = readAll(['sE', 'sT'], 'sErr'); if (!r) return;
+  if (r[0] < 0 || r[0] > 90 || r[1] < 0 || r[1] > 90){ $('sErr').textContent = 'Use a sun height from 0° to 90° and a tilt from 0° to 90°.'; return; }
+  const [e, t] = r, svg = $('sSvg'); svg.innerHTML = ''; const g = mk('g', {}, svg);
+  // Directions in screen-friendly math coords (y up). The sun is to the left; the panel faces left as it tilts.
+  const sDir = [-Math.cos(e / DEG), Math.sin(e / DEG)];    // unit vector pointing toward the sun
+  const n = [-Math.sin(t / DEG), Math.cos(t / DEG)];        // unit normal out of the panel's face
+  const along = [Math.cos(t / DEG), Math.sin(t / DEG)];     // unit vector along the panel (rising to the right)
+  const c = dot(sDir, n), th = Math.acos(Math.max(-1, Math.min(1, c))) * DEG;
+  const O = [560, 270], S = 115, PX = p => O[0] + p[0], PY = p => O[1] - p[1];
+  const half = 110, A = [-along[0] * half, -along[1] * half], Bp = [along[0] * half, along[1] * half];
+  mk('rect', { x: 0, y: 300, width: 1000, height: 80, style: 'fill:var(--line);opacity:.5' }, g);
+  mk('line', { x1: 0, y1: 300, x2: 1000, y2: 300, style: 'stroke:var(--ink);stroke-width:1.5;opacity:.6' }, g);
+  // the intercepted beam: from both ends of the panel, back toward the sun
+  if (c > 0){
+    const far = 900;
+    mk('polygon', { points: `${PX(A)},${PY(A)} ${PX(Bp)},${PY(Bp)} ${PX([Bp[0] + sDir[0] * far, Bp[1] + sDir[1] * far])},${PY([Bp[0] + sDir[0] * far, Bp[1] + sDir[1] * far])} ${PX([A[0] + sDir[0] * far, A[1] + sDir[1] * far])},${PY([A[0] + sDir[0] * far, A[1] + sDir[1] * far])}`, style: `fill:${C.sun};opacity:.28` }, g);
+  }
+  // evenly spaced sun rays (every 22 px across the beam direction); the ones that hit the panel are bold
+  const perp = [-sDir[1], sDir[0]];
+  for (let k = -24; k <= 24; k++){
+    const o = [perp[0] * k * 22, perp[1] * k * 22];
+    // where does this ray (through o, heading along −sDir) cross the panel's line? solve m·along + q·sDir = o for m (Cramer's rule)
+    const det2 = along[0] * sDir[1] - along[1] * sDir[0]; if (Math.abs(det2) < 1e-9) continue;
+    const m = (o[0] * sDir[1] - o[1] * sDir[0]) / det2;
+    const hits = c > 0 && Math.abs(m) <= half;
+    const end = hits ? [m * along[0], m * along[1]] : [o[0] - sDir[0] * 400, o[1] - sDir[1] * 400];
+    const st = [o[0] + sDir[0] * 900, o[1] + sDir[1] * 900];
+    if (!hits && PY(end) > 300){ const tt = (PY(st) - 300) / (PY(st) - PY(end)); end[0] = st[0] + (end[0] - st[0]) * tt; end[1] = st[1] + (end[1] - st[1]) * tt; }
+    mk('line', { x1: PX(st), y1: PY(st), x2: PX(end), y2: PY(end), style: `stroke:${C.sun};stroke-width:${hits ? 2 : 1};opacity:${hits ? .9 : .3}` }, g);
+  }
+  // the panel, its legs, its normal and the sun direction
+  mk('line', { x1: PX(A), y1: PY(A), x2: PX(Bp), y2: PY(Bp), style: 'stroke:var(--ink);stroke-width:9;stroke-linecap:round' }, g);
+  mk('line', { x1: PX(A), y1: PY(A), x2: PX(A), y2: 300, style: 'stroke:var(--muted);stroke-width:3' }, g);
+  mk('line', { x1: PX(Bp), y1: PY(Bp), x2: PX(Bp), y2: 300, style: 'stroke:var(--muted);stroke-width:3' }, g);
+  const ar = (from, vec, col, label, lx) => {
+    const x1 = PX(from), y1 = PY(from), x2 = PX([from[0] + vec[0] * S, from[1] + vec[1] * S]), y2 = PY([from[0] + vec[0] * S, from[1] + vec[1] * S]);
+    const L = Math.hypot(x2 - x1, y2 - y1), ux = (x2 - x1) / L, uy = (y2 - y1) / L, h = 15;
+    mk('line', { x1, y1, x2: x2 - ux * h * .8, y2: y2 - uy * h * .8, style: `stroke:${col};stroke-width:4` }, g);
+    mk('polygon', { points: `${x2},${y2} ${x2 - ux * h - uy * h * .45},${y2 - uy * h + ux * h * .45} ${x2 - ux * h + uy * h * .45},${y2 - uy * h - ux * h * .45}`, style: `fill:${col}` }, g);
+    txt(g, x2 + ux * 16 + (lx || 0), y2 + uy * 16 + 5, label, 'lab', { 'text-anchor': 'middle', style: `fill:${col}` });
+  };
+  ar([0, 0], n, C.u, 'n (normal)', th < 15 ? -75 : 0); ar([0, 0], sDir, C.v, 's (to sun)', th < 15 ? 75 : -10);   // nearly aligned: push the two labels apart
+  // the angle between them
+  const a0 = Math.atan2(n[1], n[0]), a1 = Math.atan2(sDir[1], sDir[0]); let arc = '';
+  for (let k = 0; k <= 20; k++){ const a = a0 + (a1 - a0) * k / 20; arc += (k ? ' L' : 'M') + (PX([0, 0]) + 46 * Math.cos(a)).toFixed(1) + ',' + (PY([0, 0]) - 46 * Math.sin(a)).toFixed(1); }
+  mk('path', { d: arc, style: 'fill:none;stroke:var(--ink);stroke-width:1.5' }, g);
+  const am = (a0 + a1) / 2; txt(g, PX([0, 0]) + 66 * Math.cos(am), PY([0, 0]) - 66 * Math.sin(am) + 4, `θ ${num(th, 0)}°`, 'labS', { 'text-anchor': 'middle', style: 'fill:var(--ink)' });
+  // a sun in the corner, and the readout panel
+  const sunX = 80, sunY = 60; mk('circle', { cx: sunX, cy: sunY, r: 22, style: `fill:${C.sun}` }, g);
+  txt(g, 970, 40, `s · n = cos θ = ${num(c, 3)}`, 'lab', { 'text-anchor': 'end', style: `fill:${C.r}` });
+  txt(g, 970, 66, `power ≈ ${num(Math.max(0, c) * 100, 0)}% of facing the sun head-on`, 'bt', { 'text-anchor': 'end' });
+  let h = `The sun direction <b class="kv">s</b> and the panel’s normal <b class="ku">n</b> are both unit arrows (length 1), so <b class="kv">s</b> · <b class="ku">n</b> = cos θ = <b class="kr">${num(c, 3)}</b> with θ = ${num(th, 1)}°. `;
+  h += c > 0.995 ? 'The panel faces the sun almost exactly: nearly full power.' : c > 0 ? `The panel intercepts a beam only ${num(c * 100, 0)}% as wide as it would facing the sun, so it collects about ${num(c * 100, 0)}% of the power. Tilting until the normal points at the sun (tilt = ${num(90 - e, 0)}° here) makes θ = 0.` : 'The sun is behind the panel’s face: no direct light at all.';
+  $('sOut').innerHTML = h;
+}
+['sE', 'sT'].forEach(id => { $(id).addEventListener('input', () => { [...$('sPresets').children].forEach(x => x.classList.remove('on')); $('sDesc').textContent = 'Custom angles.'; drawSolar(); }); $(id).addEventListener('focus', e => e.target.select()); });
+
+/* =====================================================================
+   5. PUSHING A CART (work = F · d)
+   ===================================================================== */
+[['Push level', 50, 0, 10], ['Handle at 30°', 50, 30, 10], ['Steep 60°', 50, 60, 10], ['Straight down', 50, 90, 10], ['Pull back (braking)', 50, 150, 10]].forEach(([n, F, a, d]) => {
+  const b = document.createElement('button'); b.className = 'preset'; b.textContent = n; b.onclick = () => { $('wF').value = F; $('wA').value = a; $('wD').value = d; drawWork(); }; $('wPresets').appendChild(b);
+});
+function drawWork(){
+  const r = readAll(['wF', 'wA', 'wD'], 'wErr'); if (!r) return;
+  const [F, a, D] = r;
+  if (F < 0 || F > 200 || D <= 0 || D > 50 || a < 0 || a > 180){ $('wErr').textContent = 'Use a force from 0 to 200 N, an angle from 0° to 180°, and a distance above 0 and up to 50 m.'; return; }
+  const svg = $('wSvg'); svg.innerHTML = ''; const g = mk('g', {}, svg);
+  const ground = 230, cx = 360, cw = 150, ch = 70, sc = Math.min(2.6, 280 / Math.max(F, 1));   // cart box and pixels per newton
+  mk('line', { x1: 0, y1: ground, x2: 1000, y2: ground, style: 'stroke:var(--ink);stroke-width:2' }, g);
+  for (let x = 0; x < 1000; x += 24) mk('line', { x1: x, y1: ground, x2: x - 10, y2: ground + 10, style: 'stroke:var(--muted);stroke-width:1' }, g);
+  mk('rect', { x: cx - cw / 2, y: ground - ch - 22, width: cw, height: ch, rx: 8, style: 'fill:var(--paper);stroke:var(--ink);stroke-width:2' }, g);
+  [cx - 45, cx + 45].forEach(x => mk('circle', { cx: x, cy: ground - 12, r: 12, style: 'fill:var(--ink)' }, g));
+  // displacement d along the floor
+  const ar = (x1, y1, x2, y2, col, w, dash) => { const L = Math.hypot(x2 - x1, y2 - y1); if (L < 3) return; const ux = (x2 - x1) / L, uy = (y2 - y1) / L, h = 14;
+    mk('line', { x1, y1, x2: x2 - ux * h * .8, y2: y2 - uy * h * .8, style: `stroke:${col};stroke-width:${w}${dash ? ';stroke-dasharray:' + dash : ''}` }, g);
+    mk('polygon', { points: `${x2},${y2} ${x2 - ux * h - uy * h * .45},${y2 - uy * h + ux * h * .45} ${x2 - ux * h + uy * h * .45},${y2 - uy * h - ux * h * .45}`, style: `fill:${col}` }, g); };
+  ar(cx + cw / 2 + 40, ground + 36, cx + cw / 2 + 40 + 260, ground + 36, C.r, 4);
+  txt(g, cx + cw / 2 + 170, ground + 62, `motion d: ${num(D)} m →`, 'lab', { 'text-anchor': 'middle', style: `fill:${C.r}` });
+  // the force: applied at the cart's top-left corner, pointing down-right at angle a below horizontal (backwards past 90°)
+  const fx = Math.cos(a / DEG) * F * sc, fy = Math.sin(a / DEG) * F * sc, P0 = [cx - cw / 2 - fx, ground - ch - 22 - fy];
+  const P1 = [cx - cw / 2, ground - ch - 22];
+  const Fa = [a <= 90 ? P0 : [cx + cw / 2 - fx, ground - ch - 22 - fy], a <= 90 ? P1 : [cx + cw / 2, ground - ch - 22]];
+  ar(Fa[0][0], Fa[0][1], Fa[1][0], Fa[1][1], C.v, 4.5);
+  txt(g, Fa[0][0] - 10, Fa[0][1] + 20, `F: ${num(F)} N`, 'lab', { 'text-anchor': 'end', style: `fill:${C.v}` });
+  // its two parts: along the floor (does work) and into the floor (doesn't)
+  const along = Math.cos(a / DEG) * F, down = Math.sin(a / DEG) * F;
+  ar(Fa[0][0], Fa[0][1], Fa[0][0] + along * sc, Fa[0][1], along >= 0 ? C.pos : C.neg, 3, '6 4');
+  ar(Fa[0][0] + along * sc, Fa[0][1], Fa[1][0], Fa[1][1], 'var(--muted)', 2.4, '6 4');
+  if (Math.abs(along) > 4) txt(g, Fa[0][0] + along * sc / 2, Fa[0][1] - 10, `along: ${num(along, 1)} N`, 'labS', { 'text-anchor': 'middle', style: `fill:${along >= 0 ? C.pos : C.neg}` });
+  if (down > 4) txt(g, Fa[0][0] + along * sc + 8, Fa[0][1] + down * sc / 2 + 4, `into floor: ${num(down, 1)} N`, 'labS', { 'text-anchor': 'start', style: 'fill:var(--muted)' });
+  const W = F * D * Math.cos(a / DEG);
+  txt(g, 980, 40, `W = F · d = ${num(F)} × ${num(D)} × cos ${num(a)}° = ${num(W, 1)} J`, 'lab', { 'text-anchor': 'end', style: `fill:${C.r}` });
+  let h = `Work <b>W</b> = <b>F</b> · <b>d</b> = ‖F‖ ‖d‖ cos α = ${num(F)} × ${num(D)} × ${pn(Math.round(Math.cos(a / DEG) * 1000) / 1000)} = <b class="kr">${num(W, 1)} joules</b>. `;
+  h += Math.abs(Math.cos(a / DEG)) < 1e-9 ? 'Pushing straight down does no work at all: the force is perpendicular to the motion, and the dot product is 0.' :
+    W > 0 ? (down < 0.05 ? 'The whole push points along the motion, so all of it does work: the most possible for this force.' : `Only the <span class="kp">along-the-floor part</span> (${num(along, 1)} N) moves the cart; the ${num(down, 1)} N pushing into the floor is wasted.`) :
+    `The force points partly backwards, so the work is <span class="kn">negative</span>: the push takes energy out of the cart (it acts as a brake).`;
+  $('wOut').innerHTML = h;
+}
+['wF', 'wA', 'wD'].forEach(id => { $(id).addEventListener('input', drawWork); $(id).addEventListener('focus', e => e.target.select()); });
+
+/* =====================================================================
+   6. TASTE VECTORS (cosine similarity in 5 dimensions)
+   ===================================================================== */
+const MOVIES = ['Space saga', 'Rom-com', 'Horror', 'Documentary', 'Cartoon'];
+const RP = [
+  { n: 'Similar taste', a: [2, 1, -2, 0, 1], b: [2, 2, -1, -1, 1] },
+  { n: 'Opposite taste', a: [2, -1, 2, -2, 1], b: [-2, 1, -1, 2, -1] },
+  { n: 'Unrelated', a: [2, 2, 0, 0, 0], b: [0, 0, 1, 2, 0] },
+  { n: 'Same taste, louder', a: [1, 1, -1, 0, 1], b: [2, 2, -2, 0, 2] },
+];
+// Build the rating grid: a header row, then a row of inputs per person
+(function(){ const G = $('rGrid'); G.innerHTML = '<div></div>' + MOVIES.map(m => `<div class="h">${m}</div>`).join('') +
+  '<div class="who" style="color:var(--cu)">Person A</div>' + MOVIES.map((_, i) => `<input class="a" id="ra${i}" type="text" inputmode="numeric" autocomplete="off">`).join('') +
+  '<div class="who" style="color:var(--cv)">Person B</div>' + MOVIES.map((_, i) => `<input class="b" id="rb${i}" type="text" inputmode="numeric" autocomplete="off">`).join(''); })();
+const RIDS = [0, 1, 2, 3, 4].map(i => 'ra' + i).concat([0, 1, 2, 3, 4].map(i => 'rb' + i));
+RP.forEach((p, i) => { const b = document.createElement('button'); b.className = 'preset'; b.textContent = p.n; b.onclick = () => { RIDS.forEach((id, k) => { $(id).value = num([...p.a, ...p.b][k]); }); [...$('rPresets').children].forEach((x, j) => x.classList.toggle('on', j === i)); drawSim(); }; $('rPresets').appendChild(b); });
+function drawSim(){
+  const r = readAll(RIDS, 'rErr', 'Fill in every rating with a number from −2 to 2.'); if (!r) return;
+  if (r.some(x => x < -2 || x > 2)){ $('rErr').textContent = 'Ratings go from −2 (hated it) to 2 (loved it).'; return; }
+  const a = r.slice(0, 5), b = r.slice(5), pr = a.map((x, i) => x * b[i]), d = dot(a, b), la = len(a), lb = len(b);
+  const svg = $('rSvg'); svg.innerHTML = ''; const g = mk('g', {}, svg);
+  const x0 = 150, cw = 120, mid = 172, sc = 24;               // columns per movie; product bars grow from the middle line
+  txt(g, 20, mid + 5, 'A × B', 'bt'); mk('line', { x1: x0 - 10, y1: mid, x2: x0 + 5 * cw - 10, y2: mid, class: 'axis' }, g);
+  pr.forEach((p, i) => {
+    const x = x0 + i * cw + 20, col = p >= 0 ? C.pos : C.neg;
+    txt(g, x + 40, 28, MOVIES[i], 'cap', { 'text-anchor': 'middle' });
+    txt(g, x + 40, 48, `${num(a[i])} × ${pn(b[i])}`, 'bn', { 'text-anchor': 'middle' });
+    if (p) mk('rect', { x, y: p > 0 ? mid - p * sc : mid, width: 80, height: Math.abs(p) * sc, rx: 4, style: `fill:${col};opacity:.8` }, g);
+    txt(g, x + 40, p >= 0 ? mid - p * sc - 8 : mid + Math.abs(p) * sc + 18, num(p), 'lab', { 'text-anchor': 'middle', style: `fill:${p ? col : 'var(--muted)'}` });
+  });
+  const cs = la && lb ? d / (la * lb) : 0;
+  txt(g, 980, 90, `A · B = ${num(d)}`, 'lab', { 'text-anchor': 'end', style: `fill:${C.r};font-size:20px` });
+  txt(g, 980, 124, `‖A‖ = ${num(la, 2)}, ‖B‖ = ${num(lb, 2)}`, 'bn', { 'text-anchor': 'end' });
+  txt(g, 980, 154, `similarity = ${num(cs, 3)}`, 'lab', { 'text-anchor': 'end', style: `fill:${C.r}` });
+  txt(g, 980, 180, la && lb ? `(an “angle” of ${num(Math.acos(Math.max(-1, Math.min(1, cs))) * DEG, 0)}°)` : '', 'cap', { 'text-anchor': 'end' });
+  // similarity meter from −1 to 1
+  const mx0 = 650, mx1 = 980, my = 240, MX = s => mx0 + (s + 1) / 2 * (mx1 - mx0);
+  mk('rect', { x: mx0, y: my - 6, width: mx1 - mx0, height: 12, rx: 6, style: 'fill:var(--line)' }, g);
+  mk('rect', { x: Math.min(MX(0), MX(cs)), y: my - 6, width: Math.abs(MX(cs) - MX(0)), height: 12, rx: 6, style: `fill:${cs >= 0 ? C.pos : C.neg}` }, g);
+  [-1, 0, 1].forEach(s => txt(g, MX(s), my + 26, s === -1 ? '−1 opposite' : s === 0 ? '0 unrelated' : '1 identical', 'cap', { 'text-anchor': s === -1 ? 'start' : s === 1 ? 'end' : 'middle' }));
+  let h = `Matching ratings multiplied: ${pr.map(num).join(', ')}. Add them: <b class="kr">A · B = ${num(d)}</b>. `;
+  if (!la || !lb) h += 'Someone rated everything 0, so there’s no taste direction to compare.';
+  else h += `Divide by both lengths: ${num(d)} / (${num(la, 2)} × ${num(lb, 2)}) = <b class="kr">${num(cs, 3)}</b>. ` +
+    (cs > 0.95 ? 'Essentially the same taste, even if one person rates more strongly (the lengths differ, the direction doesn’t).' : cs > 0.5 ? 'Similar taste: a good person to get recommendations from.' : cs > -0.2 && cs < 0.2 ? 'Unrelated taste: knowing one tells you almost nothing about the other.' : cs < -0.5 ? 'Opposite taste: whatever A loves, B tends to dislike.' : 'Mildly ' + (cs > 0 ? 'similar.' : 'opposite.'));
+  $('rOut').innerHTML = h;
+}
+RIDS.forEach(id => { $(id).addEventListener('input', () => { [...$('rPresets').children].forEach(x => x.classList.remove('on')); drawSim(); }); $(id).addEventListener('focus', e => e.target.select()); });
+
+/* =====================================================================
+   7. QUIZ
+   ===================================================================== */
+const rnd = arr => arr[Math.floor(Math.random() * arr.length)];
+const randInt = (lo, hi) => lo + Math.floor(Math.random() * (hi - lo + 1));
+const nz = a => { let x; do { x = randInt(-a, a); } while (x === 0); return x; };
+const qz = { counted: false, done: false, right: 0, total: 0 };
+const ANG = [ // [u, v, angle, how to write v's components]
+  [[1, 0], [1, 1], 45], [[2, 0], [0, 3], 90], [[1, 1], [0, 2], 45], [[3, 0], [-2, 2], 135], [[2, 1], [-1, 2], 90],
+  [[1, 2], [2, 4], 0], [[1, -1], [-2, 2], 180], [[0, 2], [3, 0], 90], [[2, 2], [3, 0], 45], [[-1, 0], [1, 1], 135],
+];
+function setMode(kind, labels){
+  $('qChoice').style.display = kind === 'choice' ? '' : 'none'; $('qInputs').style.display = kind === 'choice' ? 'none' : '';
+  if (kind === 'choice'){ $('qChoice').innerHTML = ''; labels.forEach((l, i) => { const b = document.createElement('button'); b.textContent = l; b.onclick = () => answerChoice(i); $('qChoice').appendChild(b); }); }
+  else $('qL1').textContent = labels;
+}
+function newQuestion(){
+  Object.assign(qz, { counted: false, done: false });
+  $('qErr').textContent = ''; $('qFb').className = 'feedback'; $('qFb').innerHTML = ''; $('q1').value = ''; $('qSvg').style.display = 'none';
+  qz.type = rnd(['comp', 'comp', 'sign', 'angle', 'perp']);
+  if (qz.type === 'comp'){
+    const n = rnd([2, 3]); qz.u = Array.from({ length: n }, () => randInt(-4, 5)); qz.v = Array.from({ length: n }, () => randInt(-4, 5));
+    qz.ans = dot(qz.u, qz.v);
+    $('qTitle').textContent = 'Compute the dot product';
+    $('qText').innerHTML = `<b class="ku">u</b> = ${vstr(qz.u)}, <b class="kv">v</b> = ${vstr(qz.v)}. Find <b class="kr">u · v</b>.`;
+    setMode('field', 'u · v');
+  } else if (qz.type === 'sign'){
+    const kind = rnd([0, 1, 2]); let u, v;
+    do { u = [nz(4), randInt(-4, 4)]; v = kind === 1 ? (() => { const k = rnd([1, -1, 2]); return [-u[1] * k, u[0] * k]; })() : [nz(4), randInt(-4, 4)]; }
+    while ((kind === 0 && dot(u, v) <= 0) || (kind === 2 && dot(u, v) >= 0) || (kind === 1 && !v[0] && !v[1]));
+    Object.assign(qz, { u, v, kind });
+    $('qTitle').textContent = 'Same way, perpendicular, or opposite?';
+    $('qText').innerHTML = `<b class="ku">u</b> = ${vstr(u)}, <b class="kv">v</b> = ${vstr(v)}. Without drawing: how do they point relative to each other?`;
+    setMode('choice', ['Roughly the same way (under 90°)', 'Perpendicular (exactly 90°)', 'Roughly opposite (over 90°)']);
+  } else if (qz.type === 'angle'){
+    const [u, v, a] = rnd(ANG); Object.assign(qz, { u, v, ans: a });
+    $('qTitle').textContent = 'Find the angle';
+    $('qText').innerHTML = `Find the angle θ (in degrees) between <b class="ku">u</b> = ${vstr(u)} and <b class="kv">v</b> = ${vstr(v)}. Use cos θ = u · v / (‖u‖ ‖v‖).`;
+    setMode('field', 'Angle θ (°)');
+  } else {
+    let u, c, ans; do { u = [nz(4), nz(4)]; c = nz(4); ans = -u[0] * c / u[1]; } while (!Number.isInteger(ans) || Math.abs(ans) > 8);
+    Object.assign(qz, { u, c, ans, v: [c, ans] });
+    $('qTitle').textContent = 'Make it perpendicular';
+    $('qText').innerHTML = `<b class="ku">u</b> = ${vstr(u)} and <b class="kv">v</b> = [${num(c)}, <i>y</i>]. What must <i>y</i> be so that <b class="ku">u</b> and <b class="kv">v</b> are perpendicular?`;
+    setMode('field', 'y');
+  }
+}
+function countQ(ok){ if (qz.counted) return; qz.counted = true; qz.total++; if (ok) qz.right++; $('score').textContent = `Score: ${qz.right} / ${qz.total}`; }
+function drawQ(){
+  if (qz.u.length !== 2) return;
+  $('qSvg').style.display = '';
+  const { u, v } = qz, P = plane($('qSvg'), 1000, 320, boxOf([u, v, [-u[0] * .2, -u[1] * .2]]), 40);
+  const sh = shadow(P, u, v), lv = len(v), th = lv ? Math.acos(Math.max(-1, Math.min(1, dot(u, v) / (len(u) * lv)))) * DEG : 0;
+  if (lv) angleArc(P, u, v, 28, `${num(th, 0)}°`);
+  arrow(P, [0, 0], u, C.u, { w: 4 }); arrow(P, [0, 0], v, C.v, { w: 4 });
+  const s = sgn(cross(u, v) || 1); sideLabel(P, [0, 0], u, -s, 'u', C.u, 'lab', .8); sideLabel(P, [0, 0], v, s, 'v', C.v, 'lab', .8);
+  mk('circle', { cx: P.X(0), cy: P.Y(0), r: 4.5, style: 'fill:var(--ink)' }, P.g);
+}
+function checkQ(){
+  const raw = $('q1').value.trim(), x = parseNum(raw);
+  if (raw === '' || isNaN(x)){ $('qErr').textContent = 'Type a number.'; return; }
+  $('qErr').textContent = '';
+  let ok, msg;
+  if (qz.type === 'comp'){
+    const { u, v } = qz, terms = u.map((a, i) => `${num(a)}·${pn(v[i])}`).join(' + ');
+    ok = Math.abs(x - qz.ans) < 1e-9;
+    const sumU = u.reduce((s, a) => s + a, 0), sumV = v.reduce((s, a) => s + a, 0);
+    if (ok) msg = `<b>Right: ${num(qz.ans)}.</b> ${terms} = ${num(qz.ans)}.`;
+    else if (Math.abs(x - sumU * sumV) < 1e-9) msg = '<b>You added each list first, then multiplied.</b> Multiply matching entries first, then add the products.';
+    else if (Math.abs(x - (u[0] * v[1] + u[1] * v[0] + (u[2] !== undefined ? u[2] * v[2] : 0))) < 1e-9 && u.length === 2) msg = '<b>You crossed the entries.</b> Multiply first with first and second with second.';
+    else msg = `<b>Not quite.</b> Multiply matching entries and add: ${terms}. Watch the signs: a negative times a negative is positive.`;
+  } else if (qz.type === 'angle'){
+    const { u, v } = qz, d = dot(u, v), c = d / (len(u) * len(v));
+    ok = Math.abs(x - qz.ans) <= 1;
+    if (ok) msg = `<b>Right: ${qz.ans}°.</b> u · v = ${num(d)}, ‖u‖ ‖v‖ = ${num(len(u) * len(v), 3)}, so cos θ = ${num(c, 3)}.`;
+    else if (Math.abs(x - c) < 0.01) msg = `<b>That’s cos θ, not θ.</b> Now find the angle whose cosine is ${num(c, 3)}.`;
+    else if (Math.abs(x - (180 - qz.ans)) <= 1) msg = `<b>Check the sign of u · v (${num(d)}).</b> ${d < 0 ? 'Negative means the angle is over 90°.' : 'Positive means the angle is under 90°.'}`;
+    else msg = `<b>Not quite.</b> u · v = ${num(d)}. Divide by ‖u‖ ‖v‖ = ${num(len(u), 3)} × ${num(len(v), 3)} to get cos θ, then find θ.`;
+  } else {
+    const { u, c } = qz; ok = Math.abs(x - qz.ans) < 1e-9;
+    if (ok) msg = `<b>Right: y = ${num(qz.ans)}.</b> u · v = ${num(u[0])}·${pn(c)} + ${num(u[1])}·${pn(qz.ans)} = 0.`;
+    else if (Math.abs(x + qz.ans) < 1e-9) msg = `<b>Check the sign.</b> With y = ${num(x)}, u · v = ${num(u[0] * c + u[1] * x)}, not 0.`;
+    else msg = `<b>Not quite.</b> Set u · v = 0: ${num(u[0])}·${pn(c)} + ${num(u[1])}·y = 0, then solve for y. (With y = ${num(x)}, u · v = ${num(u[0] * c + u[1] * x)}.)`;
+  }
+  countQ(ok); if (ok){ qz.done = true; drawQ(); }
+  $('qFb').className = 'feedback ' + (ok ? 'ok' : 'bad'); $('qFb').innerHTML = msg;
+}
+function answerChoice(i){
+  if (qz.done) return; qz.done = true;
+  const { u, v, kind } = qz, d = dot(u, v), ok = i === kind;
+  const names = ['roughly the same way', 'perpendicular', 'roughly opposite'];
+  countQ(ok); drawQ();
+  $('qFb').className = 'feedback ' + (ok ? 'ok' : 'bad');
+  $('qFb').innerHTML = `<b>${ok ? 'Right' : 'Not this time'}: ${names[kind]}.</b> u · v = ${num(u[0])}·${pn(v[0])} + ${num(u[1])}·${pn(v[1])} = ${num(d)}, which is ${d > 0 ? 'positive' : d < 0 ? 'negative' : 'zero'}.`;
+}
+function showQ(){
+  countQ(false); qz.done = true; $('qErr').textContent = ''; drawQ();
+  const fb = $('qFb'); fb.className = 'feedback info';
+  if (qz.type === 'comp') fb.innerHTML = `<b>${num(qz.ans)}</b> = ${qz.u.map((a, i) => `${num(a)}·${pn(qz.v[i])}`).join(' + ')}.`;
+  else if (qz.type === 'angle') fb.innerHTML = `<b>${qz.ans}°</b>. cos θ = ${num(dot(qz.u, qz.v))} / ${num(len(qz.u) * len(qz.v), 3)} = ${num(dot(qz.u, qz.v) / (len(qz.u) * len(qz.v)), 3)}.`;
+  else if (qz.type === 'perp') fb.innerHTML = `<b>y = ${num(qz.ans)}</b>, so that ${num(qz.u[0])}·${pn(qz.c)} + ${num(qz.u[1])}·${pn(qz.ans)} = 0.`;
+  else fb.innerHTML = `<b>${['Roughly the same way', 'Perpendicular', 'Roughly opposite'][qz.kind]}</b>: u · v = ${num(dot(qz.u, qz.v))}.`;
+}
+$('qCheck').onclick = checkQ; $('qShow').onclick = showQ; $('qNew').onclick = newQuestion;
+$('q1').addEventListener('input', () => { $('qErr').textContent = ''; });
+$('q1').addEventListener('focus', e => e.target.select());
+$('q1').addEventListener('keydown', e => { if (e.key === 'Enter') checkQ(); });
+
+/* =====================================================================
+   8. START
+   ===================================================================== */
+fillM(); markM(0); drawM();
+$('sPresets').children[0].click();
+$('wPresets').children[1].click();
+$('rPresets').children[0].click();
+newQuestion();
+</script>
+<script src="../shared/toc.js"></script>
+<script src="../shared/nav.js"></script>
+</body>
+</html>
