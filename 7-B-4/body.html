@@ -1,0 +1,948 @@
+<style>
+/* ===================== Page-specific styles (7.B.4) ===================== */
+/* î = green, ĵ = orange, the tracked point and the moved plane = purple, results = blue, shadows = gray */
+:root{ --ci:#1D9E75; --cj:#D85A30; --cp:#7F77DD; --cs:#AFA9EC; --cr:#2F6FDB; --shd:#4a4944; --yes:#1D9E75; --no:#D8443A; }
+@media (prefers-color-scheme:dark){ :root{ --ci:#5DCAA5; --cj:#F0997B; --cp:#AFA9EC; --cs:#6F67C9; --cr:#6EA2F5; --shd:#0d0d0c; --yes:#5DCAA5; --no:#F07B72; } }
+.ki{color:var(--ci);font-weight:700}.kj{color:var(--cj);font-weight:700}.kp{color:var(--cp);font-weight:700}.kr{color:var(--cr);font-weight:700}
+.field.fp input{border-color:var(--cp)}.field.fr input{border-color:var(--cr)}.field.sm input{width:70px}
+.inputs .grp{display:flex;gap:10px;align-items:flex-end;padding-right:12px;border-right:1px dashed var(--line);margin-right:4px}
+.inputs .grp:last-of-type{border-right:none}
+/* a 2×2 matrix of typed entries: first column green (where î lands), second orange (where ĵ lands) */
+.matw{display:flex;flex-direction:column;gap:4px}
+.mhead{display:grid;grid-template-columns:repeat(2,76px);gap:6px;padding:0 12px;font:600 11px var(--sans);letter-spacing:.05em;text-transform:uppercase;text-align:center}
+.mrow{display:flex;align-items:center;gap:6px}
+.mrow .rl2{font:600 11px var(--sans);letter-spacing:.05em;text-transform:uppercase;color:var(--muted);display:flex;flex-direction:column;gap:26px;padding-top:2px}
+.mat{display:grid;grid-template-columns:repeat(2,76px);gap:6px;padding:6px 10px;border-left:2.5px solid var(--ink);border-right:2.5px solid var(--ink);border-radius:7px}
+.mat input{width:76px;font:500 18px/1 var(--mono);padding:9px 4px;text-align:center;border-radius:9px;border:2px solid var(--line2);background:var(--bg);color:var(--ink)}
+.mat input:focus{outline:none;box-shadow:0 0 0 2px var(--accent)}
+.mat input.ci{border-color:var(--ci)}.mat input.cj{border-color:var(--cj)}
+/* a printed matrix (not editable) */
+.mshow{display:inline-grid;grid-template-columns:auto auto;gap:2px 14px;padding:3px 9px;border-left:2px solid var(--ink);border-right:2px solid var(--ink);border-radius:5px;font:600 15px var(--mono);vertical-align:middle;margin:0 3px}
+.mshow .c1{color:var(--ci);text-align:center}.mshow .c2{color:var(--cj);text-align:center}
+.split{display:grid;grid-template-columns:50% 50%;gap:0;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--paper)}
+.split svg{display:block;width:100%;height:auto;border:none;border-radius:0}
+.split > * + *{border-left:1px solid var(--line)}
+.split.lin{grid-template-columns:60% 40%}
+.eqs{font:15px/1.9 var(--mono);margin:10px 0 6px;padding:10px 16px;border:1px solid var(--line);border-radius:12px;background:var(--bg)}
+.eqs .lbl{display:inline-block;min-width:130px;font:600 12px var(--sans);letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+table.lists{border-collapse:collapse;margin:10px 0 14px;font:15px var(--sans)}
+table.lists th,table.lists td{border:1px solid var(--line);padding:6px 14px;text-align:left}
+table.lists th{background:var(--paper);font-weight:600}
+table.lists td.m{font-family:var(--mono)}
+pre.code{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:12px 16px;overflow-x:auto;font:13.5px/1.6 var(--mono);margin:10px 0 16px}
+.choice{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 0}.choice button{min-width:130px}
+.qtext{font:17px/1.55 var(--serif);margin:4px 0 10px}
+/* gallery of moves: small clickable panels */
+.gallery{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.gcard{display:flex;flex-direction:column;align-items:center;gap:6px;padding:8px 6px 10px;border-radius:12px;background:var(--bg);line-height:1.3}
+.gcard svg{width:100%;height:auto;display:block;border-radius:8px}
+.gcard b{font:700 14px var(--sans)}
+/* linear-or-not checklist */
+.checks{padding:16px 18px;font:15px/1.5 var(--sans);background:var(--bg)}
+.checks h4{margin:0 0 10px;font:700 16px var(--sans)}
+.checks .ck{display:flex;gap:10px;margin:0 0 12px}
+.checks .ck .m{font:700 18px var(--sans);width:20px;flex:none;text-align:center}
+.checks .ck.y .m{color:var(--yes)}.checks .ck.n .m{color:var(--no)}
+.checks .ck small{display:block;color:var(--muted);font-size:13.5px}
+.checks .verdict{margin-top:6px;padding:10px 12px;border-radius:10px;font-weight:600}
+.checks .verdict.y{background:var(--ok-bg);color:var(--ok)}.checks .verdict.n{background:var(--bad-bg);color:var(--bad)}
+</style>
+
+<!-- ===================== Top bar ===================== -->
+<div class="topbar"><div class="topbar-in">
+  <span class="brand">Math<b>Mastery</b></span>
+  <span class="crumbs">Chapter 7 · Linear Algebra › Basics</span>
+  <span class="pid">7.B.4</span>
+</div></div>
+
+<!-- ===================== Hero ===================== -->
+<header class="prose hero">
+  <div class="kicker">Chapter 7 · Linear Algebra</div>
+  <h1>A Matrix Is a Move</h1>
+  <p class="dek">A 2×2 matrix is just two arrows written side by side: where <b class="ki">î</b> lands and where <b class="kj">ĵ</b> lands. Those two arrows decide where every other point of the plane goes.</p>
+  <div class="tiers" aria-label="Tier">
+    <span class="tier on">Basics <small>you are here</small></span>
+    <span class="tier">Undergraduate</span>
+    <span class="tier">Masters</span>
+  </div>
+  <div class="goals">
+    <h3>On this page</h3>
+    <ul>
+      <li>Read a <b>matrix</b>’s <b>columns</b> as the landing spots of <b class="ki">î</b> and <b class="kj">ĵ</b>.</li>
+      <li>Watch the whole plane move, and see what makes a move <b>linear</b>: the origin stays put, and grid lines stay straight, parallel and evenly spaced.</li>
+      <li>Multiply a matrix by a vector by hand, two ways: as <i>x</i>·(column 1) + <i>y</i>·(column 2), and as a stack of dot products.</li>
+      <li>Recognize the basic moves (<b>stretch</b>, <b>shear</b>, <b>rotation</b>, <b>reflection</b>, <b>collapse</b>) and get a first look at how a move changes area.</li>
+    </ul>
+  </div>
+</header>
+
+<main>
+<!-- ===================== §1 Two arrows ===================== -->
+<section class="prose">
+  <h2><span class="n">1</span>Two arrows decide everything</h2>
+  <p>In 7.B.1 you met the two <b>basis vectors</b>: <b class="ki">î</b> = [1, 0], one step right, and <b class="kj">ĵ</b> = [0, 1], one step up. In 7.B.2 you saw that every point is a mix of them: the point (2, 1) is 2<b class="ki">î</b> + 1<b class="kj">ĵ</b>, two steps along <b class="ki">î</b> and one along <b class="kj">ĵ</b>.</p>
+  <p>Now move the whole plane: stretch it, turn it, tip it over. If the move keeps the origin where it was and keeps grid lines straight, parallel and evenly spaced, then the directions “2 steps along <b class="ki">î</b>, 1 step along <b class="kj">ĵ</b>” still lead to the same point afterwards, just using the <i>moved</i> arrows. So once you know where <b class="ki">î</b> and <b class="kj">ĵ</b> land, you know where every point lands.</p>
+  <p>That’s all a <b>matrix</b> is: the two landing spots written side by side as <b>columns</b>. The matrix <span class="mshow"><span class="c1">2</span><span class="c2">1</span><span class="c1">0</span><span class="c2">1</span></span> says “<b class="ki">î</b> lands at [2, 0] and <b class="kj">ĵ</b> lands at [1, 1].” Then (2, 1) = 2<b class="ki">î</b> + 1<b class="kj">ĵ</b> lands at 2·[2, 0] + 1·[1, 1] = [5, 1].</p>
+  <p>A move like this is called a <b>linear transformation</b>. <b>Transformation</b> is the mathematician’s word for a move: a rule that takes every point somewhere. Try it below. Drag where <b class="ki">î</b> and <b class="kj">ĵ</b> land, and watch everything else follow.</p>
+</section>
+
+<section class="wide">
+  <div class="card" id="main">
+    <div class="card-h"><span class="tag">Explore</span><h3>The Matrix Transformer</h3>
+      <span class="sub">Pick a move or type the matrix: the first column is where <b class="ki">î</b> lands, the second is where <b class="kj">ĵ</b> lands. Drag the green and orange tips in the After panel, or the purple point in the Before panel. Press Play to watch the plane move.</span></div>
+    <div class="row" id="mPresets"></div>
+    <div class="desc" id="mDesc"></div>
+    <div class="inputs">
+      <div class="grp">
+        <div class="matw">
+          <div class="mhead"><span class="ki">î lands at</span><span class="kj">ĵ lands at</span></div>
+          <div class="mat">
+            <input id="ma" class="ci" type="text" inputmode="decimal" autocomplete="off" aria-label="a: first entry of where i-hat lands">
+            <input id="mb" class="cj" type="text" inputmode="decimal" autocomplete="off" aria-label="b: first entry of where j-hat lands">
+            <input id="mc" class="ci" type="text" inputmode="decimal" autocomplete="off" aria-label="c: second entry of where i-hat lands">
+            <input id="md" class="cj" type="text" inputmode="decimal" autocomplete="off" aria-label="d: second entry of where j-hat lands">
+          </div>
+        </div>
+      </div>
+      <div class="grp">
+        <label class="field fp sm"><span>Point <i>x</i></span><input id="px" type="text" inputmode="decimal" autocomplete="off"></label>
+        <label class="field fp sm"><span>Point <i>y</i></span><input id="py" type="text" inputmode="decimal" autocomplete="off"></label>
+      </div>
+      <div class="row" style="margin:0"><button class="primary" id="mPlay">Play</button><button id="mReset">Reset</button></div>
+    </div>
+    <div class="err" id="mErr"></div>
+    <div class="split">
+      <svg id="bSvg" viewBox="0 0 500 440" role="img" aria-label="Before: the plane, î, ĵ and the point" style="cursor:grab;touch-action:none"></svg>
+      <svg id="aSvg" viewBox="0 0 500 440" role="img" aria-label="After: the moved plane" style="cursor:grab;touch-action:none"></svg>
+    </div>
+    <div class="eqs" id="mEqs"></div>
+    <div class="readout" id="mOut"></div>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--ci)"></i><b>î</b> and where it lands</span>
+      <span><i class="sw" style="background:var(--cj)"></i><b>ĵ</b> and where it lands</span>
+      <span><i class="sw" style="background:var(--cp)"></i>the point, the F and the moved grid</span>
+      <span><svg width="26" height="12" viewBox="0 0 26 12" aria-hidden="true"><line x1="2" y1="6" x2="24" y2="6" stroke="var(--muted)" stroke-width="1.4" stroke-dasharray="3 4"/></svg>fixed grid (doesn’t move): read positions here</span>
+      <span><i class="sw" style="background:var(--cs);height:10px;width:12px;opacity:.6"></i>the 1×1 square and what it becomes</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §2 Matrix times vector ===================== -->
+<section class="prose">
+  <h2><span class="n">2</span>Multiplying a matrix by a vector</h2>
+  <p>Finding where a point lands is called multiplying the matrix by the vector, written <i>A</i><b>v</b>. There are two ways to do it, and they always agree:</p>
+  <ul>
+    <li><b>The column way</b> (what the picture shows): take <i>x</i> copies of the first column and <i>y</i> copies of the second, and add: <i>x</i>·[<i>a</i>, <i>c</i>] + <i>y</i>·[<i>b</i>, <i>d</i>]. This is a <b>linear combination</b> of the columns, as in 7.B.2.</li>
+    <li><b>The row way</b> (often fastest by hand): each entry of the answer is a dot product (7.B.3) of one <b>row</b> with the vector. The top entry is <i>a</i>·<i>x</i> + <i>b</i>·<i>y</i>, and the bottom is <i>c</i>·<i>x</i> + <i>d</i>·<i>y</i>.</li>
+  </ul>
+  <table class="lists">
+    <tr><th colspan="2">Example: <span class="mshow"><span class="c1">1</span><span class="c2">−2</span><span class="c1">3</span><span class="c2">1</span></span> times [2, 1]</th></tr>
+    <tr><td>Column way</td><td class="m">2·[1, 3] + 1·[−2, 1] = [2, 6] + [−2, 1] = [0, 7]</td></tr>
+    <tr><td>Row way</td><td class="m">top: 1·2 + (−2)·1 = 0 &nbsp;&nbsp; bottom: 3·2 + 1·1 = 7</td></tr>
+  </table>
+  <p>The Matrix Transformer’s readout shows both, for whatever matrix and point you choose. The same arithmetic shows up far from geometry, too. In the smoothie bar below, each recipe is a column and an order is a vector:</p>
+</section>
+
+<section class="wide">
+  <div class="card" id="smoothie">
+    <div class="card-h"><span class="tag">Explore</span><h3>The smoothie bar</h3>
+      <span class="sub">Each column of the matrix is one recipe: scoops of fruit and cups of yogurt per smoothie. Type the recipes and an order (<i>x</i> of A, <i>y</i> of B) to see the shopping list.</span></div>
+    <div class="inputs">
+      <div class="grp">
+        <div class="matw">
+          <div class="mhead"><span class="ki">Recipe A</span><span class="kj">Recipe B</span></div>
+          <div class="mrow"><div class="rl2"><span>fruit</span><span>yogurt</span></div>
+            <div class="mat">
+              <input id="ra" class="ci" type="text" inputmode="decimal" autocomplete="off" aria-label="Recipe A fruit">
+              <input id="rb" class="cj" type="text" inputmode="decimal" autocomplete="off" aria-label="Recipe B fruit">
+              <input id="rc" class="ci" type="text" inputmode="decimal" autocomplete="off" aria-label="Recipe A yogurt">
+              <input id="rd" class="cj" type="text" inputmode="decimal" autocomplete="off" aria-label="Recipe B yogurt">
+            </div></div>
+        </div>
+      </div>
+      <div class="grp">
+        <label class="field fp sm"><span><i>x</i> = A’s ordered</span><input id="ox" type="text" inputmode="decimal" autocomplete="off"></label>
+        <label class="field fp sm"><span><i>y</i> = B’s ordered</span><input id="oy" type="text" inputmode="decimal" autocomplete="off"></label>
+      </div>
+    </div>
+    <div class="err" id="rErr"></div>
+    <svg class="nl" id="rSvg" viewBox="0 0 1000 260" role="img" aria-label="Smoothie order and ingredients"></svg>
+    <div class="readout" id="rOut"></div>
+  </div>
+</section>
+
+<section class="prose">
+  <p>The smoothie matrix is a move, too: it takes an order (how many of each smoothie) to a shopping list (how much of each ingredient). Working backwards, from the ingredients in the fridge to how many smoothies they make, is the job of the inverse matrix in 7.B.7.</p>
+</section>
+
+<!-- ===================== §3 Gallery ===================== -->
+<section class="prose">
+  <h2><span class="n">3</span>A gallery of moves</h2>
+  <p>Five kinds of moves come up again and again. Each is easy to spot from where <b class="ki">î</b> and <b class="kj">ĵ</b> land:</p>
+  <ul>
+    <li><b>Stretch</b> (also called scaling): <b class="ki">î</b> and <b class="kj">ĵ</b> stay on their axes but change length. Equal stretches resize a shape without changing its proportions.</li>
+    <li><b>Shear</b>: one arrow stays put while the other tips over. Each row slides sideways by an amount proportional to its height, like pushing over a deck of cards.</li>
+    <li><b>Rotation</b>: both arrows turn by the same angle, keeping length 1 and staying at right angles.</li>
+    <li><b>Reflection</b>: a mirror flip. The F comes out backwards, and no amount of turning can undo that.</li>
+    <li><b>Collapse</b> (a <b>projection</b>): <b class="ki">î</b> and <b class="kj">ĵ</b> land on the same line, so the whole plane is squashed flat.</li>
+  </ul>
+  <p>Click a picture to load it into the Matrix Transformer above and play it.</p>
+</section>
+<section class="wide">
+  <div class="card" id="gallery">
+    <div class="card-h"><span class="tag">Gallery</span><h3>Five basic moves</h3><span class="sub">Dashed: the fixed grid. Purple: the moved grid and F.</span></div>
+    <div class="gallery" id="gGrid"></div>
+  </div>
+</section>
+
+<section class="prose">
+  <p>Computer graphics runs on exactly these moves. When a game turns a character, a phone flips a selfie, or a word processor slants text, a matrix is applied to every point of the picture.</p>
+</section>
+<section class="wide">
+  <div class="card" id="pic">
+    <div class="card-h"><span class="tag">Explore</span><h3>Move a picture</h3>
+      <span class="sub">Pick a move and set its amount. The dashed outline is the original picture; the origin is where the ground meets the vertical axis. The matrix shows where <b class="ki">î</b> and <b class="kj">ĵ</b> land.</span></div>
+    <div class="row" id="pModes"></div>
+    <div class="desc" id="pDesc"></div>
+    <div class="inputs">
+      <label class="field fp" id="pAmtF"><span id="pAmtL"></span><input id="pAmt" type="text" inputmode="decimal" autocomplete="off"></label>
+      <div class="field"><span>The matrix</span><div id="pMat" style="padding-top:6px"></div></div>
+    </div>
+    <div class="err" id="pErr"></div>
+    <svg class="nl" id="pSvg" viewBox="0 0 1000 430" role="img" aria-label="A house and a word being moved"></svg>
+    <div class="readout" id="pOut"></div>
+  </div>
+</section>
+
+<!-- ===================== §4 Linear or not ===================== -->
+<section class="prose">
+  <h2><span class="n">4</span>What makes a move linear?</h2>
+  <p>Not every move can be written as a matrix. A move is a matrix exactly when it passes three checks:</p>
+  <ul>
+    <li>The origin stays put.</li>
+    <li>Straight lines stay straight (including slanted ones, not just the grid lines).</li>
+    <li>Evenly spaced points stay evenly spaced, so the middle of a segment lands in the middle of the moved segment.</li>
+  </ul>
+  <p>Sliding everything over fails the first check. Bending fails the second. An uneven stretch fails the third. None of these can be a 2×2 matrix, because a matrix always sends [0, 0] to [0, 0] and always sends <i>x</i><b class="ki">î</b> + <i>y</i><b class="kj">ĵ</b> to <i>x</i>·(where <b class="ki">î</b> lands) + <i>y</i>·(where <b class="kj">ĵ</b> lands).</p>
+</section>
+<section class="wide">
+  <div class="card" id="lin">
+    <div class="card-h"><span class="tag">Explore</span><h3>Linear or not?</h3>
+      <span class="sub">Pick a move. The blue line is the slanted line <i>y</i> = <i>x</i>; watch whether it stays straight. The checklist explains each verdict.</span></div>
+    <div class="row" id="lModes"></div>
+    <div class="split lin" style="margin-top:12px">
+      <svg id="lSvg" viewBox="0 0 600 440" role="img" aria-label="A move of the plane"></svg>
+      <div class="checks" id="lChecks"></div>
+    </div>
+  </div>
+</section>
+<section class="prose">
+  <p>Slides are so useful in graphics that programmers fit them into a matrix anyway, with a trick: they add a third coordinate. That trick comes later in the book; a plain 2×2 matrix can never slide.</p>
+</section>
+
+<!-- ===================== §5 Area preview ===================== -->
+<section class="prose">
+  <h2><span class="n">5</span>How a move changes area (a preview)</h2>
+  <p>Watch the shaded 1-by-1 square in the Matrix Transformer. The move turns it into a parallelogram built on the moved <b class="ki">î</b> and <b class="kj">ĵ</b>. Every square of the grid becomes an identical copy of that parallelogram, so <i>every</i> area in the plane gets multiplied by the same number: the parallelogram’s area. For the matrix with entries <i>a</i>, <i>b</i> (top row) and <i>c</i>, <i>d</i> (bottom row), it is <i>ad</i> − <i>bc</i>.</p>
+  <p>A few things to notice in the explorer: a stretch ×2 one way and ×3 the other multiplies area by 6. A shear or a rotation leaves area unchanged (<i>ad</i> − <i>bc</i> = 1). A collapse gives 0, because a flat shape has no area. And when <i>ad</i> − <i>bc</i> is negative, the F comes out mirrored: the move flipped the plane over. This number is the <b>determinant</b>, the star of 7.B.6.</p>
+</section>
+
+<!-- ===================== §6 In symbols ===================== -->
+<section class="prose">
+  <h2><span class="n">6</span>Now, in symbols</h2>
+  <div class="math">\[ A = \begin{bmatrix} a & b \\ c & d \end{bmatrix}, \qquad A\,\hat{\imath} = \begin{bmatrix} a \\ c \end{bmatrix}, \qquad A\,\hat{\jmath} = \begin{bmatrix} b \\ d \end{bmatrix} \]<div class="cap">The columns are where î and ĵ land.</div></div>
+  <div class="math">\[ A\begin{bmatrix} x \\ y \end{bmatrix} = x\begin{bmatrix} a \\ c \end{bmatrix} + y\begin{bmatrix} b \\ d \end{bmatrix} = \begin{bmatrix} ax + by \\ cx + dy \end{bmatrix} \]<div class="cap">The column way equals the row way: each entry is a row dotted with the vector.</div></div>
+  <div class="math">\[ A(\mathbf{u}+\mathbf{v}) = A\mathbf{u} + A\mathbf{v}, \qquad A(k\,\mathbf{v}) = k\,A\mathbf{v}, \qquad A\,\mathbf{0} = \mathbf{0} \]<div class="cap">What “linear” means in symbols: sums and stretches survive the move, and the origin stays put.</div></div>
+  <div class="math">\[ \text{area after} = |\,ad - bc\,| \times \text{area before} \]<div class="cap">Preview of the determinant (7.B.6). A negative <i>ad</i> − <i>bc</i> means the plane was flipped.</div></div>
+  <p>Graphics software moves a whole picture with one multiplication: put every corner of the picture as a column of one big array, and multiply.</p>
+  <pre class="code"><code>import numpy as np                                    # NumPy: arrays of numbers
+t = np.radians(30)                                    # turn by 30 degrees
+A = np.array([[np.cos(t), -np.sin(t)],                # top row:    a, b
+              [np.sin(t),  np.cos(t)]])               # bottom row: c, d  (columns = where i-hat and j-hat land)
+corners = np.array([[0, 2, 2, 0],                     # x of each corner of a 2-by-1 box
+                    [0, 0, 1, 1]])                    # y of each corner (one corner per column)
+moved = A @ corners                                   # every corner moved by one matrix multiplication
+print(moved.round(2))                                 # the turned box, ready to draw</code></pre>
+</section>
+
+<!-- ===================== §7 Where this goes ===================== -->
+<section class="prose">
+  <h2><span class="n">7</span>Where this goes</h2>
+  <ul class="goes">
+    <li><b>Next (7.B.5):</b> do one move, then another. Two moves in a row are again a single matrix, and the order matters: turning and then stretching is not the same as stretching and then turning.</li>
+    <li><b>Later in this book:</b> how much a move scales area (the determinant, 7.B.6), how to undo a move (inverse matrices, 7.B.7), arrows that a move only stretches (eigenvectors, Undergraduate tier), and bigger matrices that move 3D space or lists with thousands of entries.</li>
+    <li><b>In the world:</b> every 3D game and animated film, photo and video editing, robot arms, maps switching between coordinate systems, and the layers of neural networks, which apply matrices to long vectors.</li>
+  </ul>
+</section>
+
+<!-- ===================== §8 Vocabulary ===================== -->
+<section class="prose">
+  <h2><span class="n">8</span>Words to know</h2>
+  <div class="vocab">
+    <div class="term"><b>Matrix</b>A rectangular grid of numbers. A 2×2 matrix (2 rows, 2 columns) records a move of the plane.</div>
+    <div class="term"><b>Entry</b>One number in a matrix, such as <i>a</i> (top left) or <i>d</i> (bottom right).</div>
+    <div class="term"><b>Column and row</b>A column runs top to bottom; a row runs left to right. Column 1 is where î lands, column 2 is where ĵ lands.</div>
+    <div class="term"><b>Basis vectors î, ĵ</b>î = [1, 0] and ĵ = [0, 1]. Every point is a mix <i>x</i>î + <i>y</i>ĵ.</div>
+    <div class="term"><b>Transformation</b>A move or rule that sends every point of the plane to some point.</div>
+    <div class="term"><b>Linear transformation</b>A move that keeps the origin fixed and keeps lines straight, parallel and evenly spaced. Exactly the moves a matrix can make.</div>
+    <div class="term"><b>Identity matrix</b>The matrix with columns [1, 0] and [0, 1]: î and ĵ stay home, so nothing moves.</div>
+    <div class="term"><b>Matrix–vector product</b><i>A</i><b>v</b>: where the point <b>v</b> lands. Equal to <i>x</i>·(column 1) + <i>y</i>·(column 2).</div>
+    <div class="term"><b>Stretch (scaling)</b>î and ĵ keep their directions but change length.</div>
+    <div class="term"><b>Shear</b>One arrow stays put and the other tips over: rows slide sideways in proportion to their height.</div>
+    <div class="term"><b>Rotation</b>A turn around the origin: same lengths, same angles, nothing mirrored.</div>
+    <div class="term"><b>Reflection</b>A mirror flip across a line through the origin. Shapes come out backwards.</div>
+    <div class="term"><b>Collapse (projection)</b>A move that squashes the plane onto a line (or a point). Area becomes 0.</div>
+    <div class="term"><b>Determinant</b><i>ad</i> − <i>bc</i>: how much the move multiplies areas, negative if it flips. (Explored fully in 7.B.6.)</div>
+  </div>
+</section>
+
+<!-- ===================== Quiz ===================== -->
+<section class="prose"><h2><span class="n">9</span>Check yourself</h2>
+  <p>Three kinds of questions: where does a point land, name the move, and watch the move, then write its matrix.</p>
+</section>
+<section class="wide">
+  <div class="card" id="quiz">
+    <div class="card-h"><span class="tag">Quiz</span><h3 id="qTitle"></h3><span class="score" id="score">Score: 0 / 0</span></div>
+    <div class="qtext" id="qText"></div>
+    <svg class="nl" id="qSvg" viewBox="0 0 1000 400" role="img" aria-label="Quiz picture"></svg>
+    <div class="choice" id="qChoice"></div>
+    <div class="inputs" id="qLand">
+      <label class="field fr sm"><span>lands at: first</span><input id="q1" type="text" inputmode="decimal" autocomplete="off"></label>
+      <label class="field fr sm"><span>lands at: second</span><input id="q2" type="text" inputmode="decimal" autocomplete="off"></label>
+      <div class="row" style="margin:0"><button class="primary qcheck">Check</button></div>
+    </div>
+    <div class="inputs" id="qWrite">
+      <div class="matw">
+        <div class="mhead"><span class="ki">î lands at</span><span class="kj">ĵ lands at</span></div>
+        <div class="mat">
+          <input id="qa" class="ci" type="text" inputmode="decimal" autocomplete="off" aria-label="a">
+          <input id="qb" class="cj" type="text" inputmode="decimal" autocomplete="off" aria-label="b">
+          <input id="qc" class="ci" type="text" inputmode="decimal" autocomplete="off" aria-label="c">
+          <input id="qd" class="cj" type="text" inputmode="decimal" autocomplete="off" aria-label="d">
+        </div>
+      </div>
+      <div class="row" style="margin:0"><button class="primary qcheck">Check</button></div>
+    </div>
+    <div class="row" style="margin:10px 0 0"><button id="qShow">Show answer</button><button id="qReplay">Replay move</button><button id="qNew">New question</button></div>
+    <div class="err" id="qErr"></div>
+    <div class="feedback" id="qFb" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ===================== Pager (filled in by the shared navigation) ===================== -->
+<nav class="wide">
+  <div class="pager"></div>
+  <div class="meta">7.B.4 · Prerequisites: 7.B.1, 7.B.2, 7.B.3 · Leads to: 7.B.5 (matrix multiplication), 7.B.6 (determinant), 7.B.7 (inverse matrices)</div>
+</nav>
+</main>
+
+<script>
+/* =====================================================================
+   1. HELPERS
+   ===================================================================== */
+const NS = 'http://www.w3.org/2000/svg';
+const $ = id => document.getElementById(id);
+function mk(tag, attrs, parent){                           // create an SVG element with attributes
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function txt(parent, x, y, s, cls, extra){                 // create an SVG text element
+  extra = Object.assign({}, extra || {});
+  // a CSS class's text-anchor beats the attribute, so move a requested anchor into the style
+  if (extra['text-anchor']){ extra.style = (extra.style ? extra.style + ';' : '') + 'text-anchor:' + extra['text-anchor']; delete extra['text-anchor']; }
+  const t = mk('text', Object.assign({ x, y, class: cls || '' }, extra), parent);
+  t.textContent = s;
+  return t;
+}
+function num(x, d){ if (d === undefined) d = 2; const r = Math.round(x * Math.pow(10, d)) / Math.pow(10, d); return r === 0 ? '0' : (r < 0 ? '−' : '') + String(Math.abs(r)); }
+const pn = x => x < 0 || num(x).startsWith('−') ? `(${num(x)})` : num(x);   // a number, in parentheses when negative
+// Parse typed input: integers, decimals, a leading minus, fractions a/b, and roots like √2 or sqrt(3)
+function parseNum(s){
+  s = String(s).trim().replace(/[−–]/g, '-').replace(/\s+/g, '').replace(/°$/, '');
+  if (/^-?\d+(\.\d+)?$|^-?\.\d+$/.test(s)) return parseFloat(s);
+  let m = s.match(/^(-?\d+)\/(\d+)$/);
+  if (m && +m[2] !== 0) return +m[1] / +m[2];
+  m = s.match(/^(-?)(\d*\.?\d*)\*?(?:√|sqrt)\(?(\d+(?:\.\d+)?)\)?$/);
+  if (m){ const c = m[2] === '' ? 1 : parseFloat(m[2]); if (!isNaN(c)) return (m[1] ? -1 : 1) * c * Math.sqrt(+m[3]); }
+  return NaN;
+}
+const ease = t => t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+const C = { i: 'var(--ci)', j: 'var(--cj)', p: 'var(--cp)', s: 'var(--cs)', r: 'var(--cr)' };
+const DEG = 180 / Math.PI;
+function readAll(ids, errId, msg){
+  const out = ids.map(id => parseNum($(id).value));
+  if (ids.some(id => $(id).value.trim() === '') || out.some(isNaN)){ $(errId).textContent = msg || 'Fill in every box with a number.'; return null; }
+  $(errId).textContent = ''; return out;
+}
+// A matrix is stored as [a, b, c, d] = top row a b, bottom row c d. Column 1 = [a, c] (where î lands), column 2 = [b, d].
+const ap = (M, p) => [M[0] * p[0] + M[1] * p[1], M[2] * p[0] + M[3] * p[1]];   // where the point p lands
+const det = M => M[0] * M[3] - M[1] * M[2];
+const blend = (M, e) => [1 + e * (M[0] - 1), e * M[1], e * M[2], 1 + e * (M[3] - 1)];   // from "no move" (e = 0) to M (e = 1)
+const vstr = p => `[${p.map(x => num(x)).join(', ')}]`;
+const pstr = p => `(${p.map(x => num(x)).join(', ')})`;
+// A printed matrix with colored columns
+const mshow = M => `<span class="mshow"><span class="c1">${num(M[0])}</span><span class="c2">${num(M[1])}</span><span class="c1">${num(M[2])}</span><span class="c2">${num(M[3])}</span></span>`;
+function selectOnFocus(ids){ ids.forEach(id => $(id).addEventListener('focus', e => e.target.select())); }
+
+const svgCss = document.createElement('style');
+svgCss.textContent = `
+  .grid{stroke:var(--line);stroke-width:1} .axis{stroke:var(--ink);stroke-width:1.6;opacity:.7}
+  .ref{stroke:var(--muted);stroke-width:1;stroke-dasharray:3 4;opacity:.6} .refaxis{stroke:var(--muted);stroke-width:1.5;stroke-dasharray:6 4}
+  .tl{fill:var(--muted);font:500 11px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:3px}
+  .lab{font:700 15px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:5px}
+  .labS{font:600 12.5px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+  .cap{fill:var(--muted);font:500 12px var(--sans)}
+  .pl{fill:var(--ink);font:700 13px var(--sans);paint-order:stroke;stroke:var(--bg);stroke-width:5px;letter-spacing:.06em;text-transform:uppercase}
+  .bt{fill:var(--ink);font:600 13px var(--sans)}
+  .bn{fill:var(--ink);font:700 14px var(--mono)}
+`;
+document.head.appendChild(svgCss);
+
+/* =====================================================================
+   2. THE PLANE (grid, axes, arrows, labels)
+   ===================================================================== */
+// Draw a fixed grid that fits the box. o.dashed = the dashed fixed ruler for an After panel; o.noLabels hides tick labels.
+function plane(svg, W, H, box, maxU, o){
+  o = o || {};
+  svg.innerHTML = ''; const g = mk('g', {}, svg);
+  const pad = 1;
+  const u = Math.min(maxU || 44, (W - 40) / (box.x1 - box.x0 + 2 * pad), (H - 30) / (box.y1 - box.y0 + 2 * pad));
+  const cx = W / 2 - u * (box.x0 + box.x1) / 2, cy = H / 2 + u * (box.y0 + box.y1) / 2;   // pixel position of the origin
+  const X = x => cx + x * u, Y = y => cy - y * u;
+  const xa = Math.ceil((0 - cx) / u), xb = Math.floor((W - cx) / u), ya = Math.ceil((cy - H) / u), yb = Math.floor(cy / u);
+  const gc = o.dashed ? 'ref' : 'grid', ac = o.dashed ? 'refaxis' : 'axis';
+  for (let k = xa; k <= xb; k++) if (k) mk('line', { x1: X(k), y1: 0, x2: X(k), y2: H, class: gc }, g);
+  for (let k = ya; k <= yb; k++) if (k) mk('line', { x1: 0, y1: Y(k), x2: W, y2: Y(k), class: gc }, g);
+  mk('line', { x1: 0, y1: Y(0), x2: W, y2: Y(0), class: ac }, g);
+  mk('line', { x1: X(0), y1: 0, x2: X(0), y2: H, class: ac }, g);
+  const P = { g, X, Y, u, W, H, inv: (px, py) => [(px - cx) / u, (cy - py) / u] };
+  P.ticks = () => {                                          // tick labels, drawn last so they sit on top
+    if (o.noLabels) return;
+    const step = u >= 30 ? 1 : u >= 15 ? 2 : 5;
+    for (let k = xa; k <= xb; k++) if (k && k % step === 0 && X(k) > 12 && X(k) < W - 12) txt(g, X(k), Y(0) + 15, k < 0 ? '−' + (-k) : String(k), 'tl', { 'text-anchor': 'middle' });
+    for (let k = ya; k <= yb; k++) if (k && k % step === 0 && Y(k) > 10 && Y(k) < H - 6) txt(g, X(0) - 6, Y(k) + 4, k < 0 ? '−' + (-k) : String(k), 'tl', { 'text-anchor': 'end' });
+  };
+  return P;
+}
+function boxOf(pts){ const xs = pts.map(p => p[0]).concat(0), ys = pts.map(p => p[1]).concat(0); return { x0: Math.min(...xs), x1: Math.max(...xs), y0: Math.min(...ys), y1: Math.max(...ys) }; }
+function arrow(P, p, q, col, o){
+  o = o || {};
+  const x1 = P.X(p[0]), y1 = P.Y(p[1]), x2 = P.X(q[0]), y2 = P.Y(q[1]), L = Math.hypot(x2 - x1, y2 - y1), w = o.w || 3, op = o.op === undefined ? 1 : o.op;
+  const st = `stroke:${col};stroke-width:${w};opacity:${op}${o.dash ? ';stroke-dasharray:' + o.dash : ''}`;
+  if (L < 2){ mk('circle', { cx: x1, cy: y1, r: 5, style: `fill:${col};opacity:${op}` }, P.g); return; }
+  const ux = (x2 - x1) / L, uy = (y2 - y1) / L, h = Math.min(11 + w, L * 0.45);
+  mk('line', { x1, y1, x2: x2 - ux * h * 0.8, y2: y2 - uy * h * 0.8, style: st + ';stroke-linecap:round' }, P.g);
+  mk('polygon', { points: `${x2},${y2} ${x2 - ux * h - uy * h * .45},${y2 - uy * h + ux * h * .45} ${x2 - ux * h + uy * h * .45},${y2 - uy * h - ux * h * .45}`, style: `fill:${col};opacity:${op}` }, P.g);
+}
+// A label just past an arrow's tip (in the arrow's direction), so it never sits on the arrow itself
+function tipLabel(P, q, str, col, cls, push){
+  const L = Math.hypot(q[0], q[1]), d = push || 17;
+  const dx = L > 1e-6 ? q[0] / L : 0.7, dy = L > 1e-6 ? q[1] / L : 0.7;
+  const x = P.X(q[0]) + dx * d, y = P.Y(q[1]) - dy * d;
+  txt(P.g, x, y + 5, str, cls || 'lab', { 'text-anchor': Math.abs(dx) < .35 ? 'middle' : dx > 0 ? 'start' : 'end', style: `fill:${col}` });
+}
+// A label beside the middle of an arrow from the origin, on the side away from the other arrow (pref breaks ties when they're parallel)
+function armLabel(P, q, other, str, col, pref){
+  const sx = P.X(q[0]) - P.X(0), sy = P.Y(q[1]) - P.Y(0), L = Math.hypot(sx, sy);
+  if (L < 4){ txt(P.g, P.X(0) + 12 * (pref || 1), P.Y(0) + 20, str, 'lab', { 'text-anchor': 'middle', style: `fill:${col}` }); return; }
+  let nx = -sy / L, ny = sx / L;                               // a screen-space perpendicular
+  const ox = P.X(other[0]) - P.X(0), oy = P.Y(other[1]) - P.Y(0), side = nx * ox + ny * oy;
+  if (Math.abs(side) < 1e-6 * (Math.hypot(ox, oy) + 1)){ if ((pref || 1) < 0){ nx = -nx; ny = -ny; } }
+  else if (side > 0){ nx = -nx; ny = -ny; }
+  txt(P.g, P.X(0) + sx * .5 + nx * 15, P.Y(0) + sy * .5 + ny * 15 + 5, str, 'lab', { 'text-anchor': 'middle', style: `fill:${col}` });
+}
+// The moved grid: the images of the lines x = k and y = k under M (purple; the image of each axis darker)
+function movedGrid(P, M, R){
+  R = R || 16; const g = mk('g', {}, P.g);
+  for (let k = -R; k <= R; k++){
+    const st = k ? 'stroke:var(--cs);stroke-width:1.1;opacity:.85' : 'stroke:var(--cp);stroke-width:2;opacity:.75';
+    [[[k, -R], [k, R]], [[-R, k], [R, k]]].forEach(([p, q]) => { const a = ap(M, p), b = ap(M, q); mk('line', { x1: P.X(a[0]), y1: P.Y(a[1]), x2: P.X(b[0]), y2: P.Y(b[1]), style: st }, g); });
+  }
+}
+function poly(P, pts, M, style){ return mk('polygon', { points: pts.map(p => { const q = M ? ap(M, p) : p; return P.X(q[0]).toFixed(1) + ',' + P.Y(q[1]).toFixed(1); }).join(' '), style }, P.g); }
+// The F marker (asymmetric, so flips and turns can't hide) and the unit square
+const FP = [[.3, .3], [.7, .3], [.7, 1.1], [1.3, 1.1], [1.3, 1.5], [.7, 1.5], [.7, 1.9], [1.7, 1.9], [1.7, 2.3], [.3, 2.3]];
+const US = [[0, 0], [1, 0], [1, 1], [0, 1]];
+function drawSquareAndF(P, M){
+  poly(P, US, M, 'fill:var(--cs);opacity:.45;stroke:var(--cp);stroke-width:1.2');
+  poly(P, FP, M, 'fill:var(--cp);opacity:.85;stroke:var(--cp);stroke-width:1.5;stroke-linejoin:round');
+}
+const origin = P => mk('circle', { cx: P.X(0), cy: P.Y(0), r: 4.5, style: 'fill:var(--ink)' }, P.g);
+
+// Name the move a matrix makes (used by the explorer's readout and by the quiz)
+function classify(M){
+  const [a, b, c, d] = M, D = det(M), z = x => Math.abs(x) < 0.015;
+  if (z(a) && z(b) && z(c) && z(d)) return { k: 'zero', t: 'Every point lands on the origin: the zero matrix squashes the whole plane to a single point.' };
+  if (z(D)) return { k: 'collapse', t: '<b>Collapse.</b> î and ĵ land on the same line, so the whole plane is squashed flat onto that line. Area becomes 0.' };
+  if (z(a - 1) && z(b) && z(c) && z(d - 1)) return { k: 'identity', t: '<b>The identity.</b> î and ĵ stay home, so nothing moves. It’s the matrix version of ×1.' };
+  const orth = z(a * a + c * c - 1) && z(b * b + d * d - 1) && z(a * b + c * d);
+  if (orth && D > 0){ const ang = Math.atan2(c, a) * DEG; return { k: 'rotation', t: `<b>Rotation by ${num(Math.abs(ang), 0)}° ${ang >= 0 ? 'counterclockwise' : 'clockwise'}.</b> Both arrows turn together, keeping length 1 and staying at right angles. Shapes keep their size and aren’t mirrored.` }; }
+  if (orth && D < 0){ let ang = Math.atan2(c, a) * DEG / 2; if (ang < 0) ang += 180; const where = Math.abs(ang - 90) < .5 ? 'the vertical axis' : Math.abs(ang) < .5 || Math.abs(ang - 180) < .5 ? 'the horizontal axis' : `the dashed line at ${num(ang, 0)}°`;
+    return { k: 'reflection', line: ang, t: `<b>Reflection</b> across ${where}: a mirror flip. The F comes out backwards.` }; }
+  if (z(b) && z(c)){
+    if (a > 0 && d > 0) return { k: 'stretch', t: z(a - d) ? `<b>Resize ×${num(a)}.</b> î and ĵ stay on their axes and both get ${num(a)} times as long, so shapes keep their proportions.` : `<b>Stretch:</b> ×${num(a)} left–right and ×${num(d)} up–down. î and ĵ stay on their axes and only change length.` };
+    return { k: 'stretch', t: `<b>A stretch with a flip:</b> î and ĵ stay on their axes, but ${a < 0 ? 'î' : 'ĵ'} now points the other way, so the plane is also mirrored.` };
+  }
+  if (z(a - 1) && z(d - 1) && z(c)) return { k: 'shear', t: `<b>Horizontal shear.</b> î stays put and ĵ tips over to [${num(b)}, 1]. Each point slides sideways by ${num(b)} × its height.` };
+  if (z(a - 1) && z(d - 1) && z(b)) return { k: 'shear', t: `<b>Vertical shear.</b> ĵ stays put and î tips up to [1, ${num(c)}]. Each point slides up by ${num(c)} × its distance to the right.` };
+  return { k: 'general', t: `<b>A general move:</b> it stretches, turns and slants at once${D < 0 ? ', and flips the plane over (the F is mirrored)' : ''}. It’s still linear: lines stay straight, parallel and evenly spaced.` };
+}
+
+/* =====================================================================
+   3. THE MATRIX TRANSFORMER (Before / After)
+   ===================================================================== */
+const r30 = [Math.cos(Math.PI / 6), -Math.sin(Math.PI / 6), Math.sin(Math.PI / 6), Math.cos(Math.PI / 6)];
+const MP = [
+  { n: 'Do nothing', A: [1, 0, 0, 1], d: 'The identity: î stays at [1, 0] and ĵ stays at [0, 1], so nothing moves. Like ×1 on the number line.' },
+  { n: 'Stretch', A: [2, 0, 0, 1], d: 'î lands at [2, 0]: everything stretches ×2 left–right while up–down stays. Like ×2 on the number line, but only sideways.' },
+  { n: 'Shear', A: [1, 1, 0, 1], d: 'î stays put and ĵ tips over to [1, 1]. Each row slides sideways by its height, like pushing over a deck of cards.' },
+  { n: 'Rotate 90°', A: [0, -1, 1, 0], d: 'î lands at [0, 1] and ĵ at [−1, 0]: a quarter turn counterclockwise. The F turns but keeps its shape.' },
+  { n: 'Rotate 30°', A: r30, d: 'î lands at [cos 30°, sin 30°] ≈ [0.87, 0.5]: the unit-circle values from Chapter 5 are exactly what a rotation matrix needs.' },
+  { n: 'Mirror', A: [-1, 0, 0, 1], d: 'î flips to [−1, 0] and ĵ stays: a mirror across the vertical axis. The F now faces the other way, and no turn can fix that.' },
+  { n: 'Collapse', A: [1, 2, 0.5, 1], d: 'ĵ lands at [2, 1], on the same line as î’s [1, 0.5]. The whole plane flattens onto that line, and area becomes 0.' },
+  { n: 'Anything goes', A: [2, -1, 1, 1], d: 'A bit of everything: stretch, turn and slant at once. Still, the moved grid lines stay straight, parallel and evenly spaced.' },
+];
+const mx = { A: [1, 1, 0, 1], p: [2, 1], e: 1, t: 1, raf: 0, playing: false, drag: null };
+const MIDS = ['ma', 'mb', 'mc', 'md'];
+MP.forEach((p, i) => { const b = document.createElement('button'); b.className = 'preset'; b.textContent = p.n; b.onclick = () => loadMove(p.A, i); $('mPresets').appendChild(b); });
+function markM(i){ [...$('mPresets').children].forEach((b, j) => b.classList.toggle('on', j === i)); $('mDesc').textContent = i === null ? 'Your own matrix.' : MP[i].d; }
+function fillM(){ MIDS.forEach((id, k) => { $(id).value = num(mx.A[k]); }); $('px').value = num(mx.p[0]); $('py').value = num(mx.p[1]); }
+function loadMove(A, i){ stopPlay(); mx.A = A.slice(); fillM(); markM(i); $('mErr').textContent = ''; play(true); }
+const BOX = { x0: -4.6, x1: 4.6, y0: -3.6, y1: 4.2 };
+function readM(){
+  const r = readAll(MIDS.concat(['px', 'py']), 'mErr'); if (!r) return false;
+  if (r.slice(0, 4).some(x => Math.abs(x) > 4)){ $('mErr').textContent = 'Keep every matrix entry between −4 and 4, so the moved arrows stay in view.'; return false; }
+  if (Math.abs(r[4]) > 4 || Math.abs(r[5]) > 4){ $('mErr').textContent = 'Keep the point’s x and y between −4 and 4.'; return false; }
+  mx.A = r.slice(0, 4); mx.p = [r[4], r[5]]; return true;
+}
+// The point as x·(î's arrow) + y·(ĵ's arrow): two dashed hops, tip to tail
+function hops(P, M, p){
+  const c1 = [M[0], M[2]], c2 = [M[1], M[3]], s1 = [p[0] * c1[0], p[0] * c1[1]], end = ap(M, p);
+  if (Math.abs(p[0]) > 1e-9) arrow(P, [0, 0], s1, C.i, { w: 2.2, dash: '6 4', op: .9 });
+  if (Math.abs(p[1]) > 1e-9) arrow(P, s1, end, C.j, { w: 2.2, dash: '6 4', op: .9 });
+}
+function pointDot(P, q, label){
+  mk('circle', { cx: P.X(q[0]), cy: P.Y(q[1]), r: 7, style: 'fill:var(--cp);stroke:var(--paper);stroke-width:2' }, P.g);
+  const left = q[0] < -0.01, low = q[1] < -0.01;               // put the label on the far side from the origin
+  txt(P.g, P.X(q[0]) + (left ? -10 : 10), P.Y(q[1]) + (low ? 22 : -10), label, 'labS', { 'text-anchor': left ? 'end' : 'start', style: 'fill:var(--cp)' });
+}
+function drawMain(){
+  const { A, p } = mx, M = blend(A, mx.e);
+  // ---- Before: the ordinary grid, î, ĵ and the point
+  const B = plane($('bSvg'), 500, 440, BOX, 44);
+  drawSquareAndF(B, null); B.ticks();
+  hops(B, [1, 0, 0, 1], p);
+  arrow(B, [0, 0], [1, 0], C.i, { w: 4 }); arrow(B, [0, 0], [0, 1], C.j, { w: 4 });
+  armLabel(B, [1, 0], [0, 1], 'î', C.i, 1); armLabel(B, [0, 1], [1, 0], 'ĵ', C.j, -1);
+  origin(B); pointDot(B, p, `(${num(p[0])}, ${num(p[1])})`);
+  txt(B.g, 14, 24, 'Before', 'pl');
+  mx.B = B;
+  // ---- After: the fixed dashed ruler underneath, the moved grid, square, F, arrows and point on top
+  const Q = plane($('aSvg'), 500, 440, BOX, 44, { dashed: true });
+  movedGrid(Q, M);
+  const cls = classify(A);
+  if (cls.k === 'reflection' && mx.e > .999){ const t = cls.line / DEG, R = 12; mk('line', { x1: Q.X(-R * Math.cos(t)), y1: Q.Y(-R * Math.sin(t)), x2: Q.X(R * Math.cos(t)), y2: Q.Y(R * Math.sin(t)), style: 'stroke:var(--ink);stroke-width:1.6;stroke-dasharray:8 5;opacity:.7' }, Q.g); }
+  drawSquareAndF(Q, M); Q.ticks();
+  hops(Q, M, p);
+  const i2 = [M[0], M[2]], j2 = [M[1], M[3]];
+  arrow(Q, [0, 0], i2, C.i, { w: 4 }); arrow(Q, [0, 0], j2, C.j, { w: 4 });
+  armLabel(Q, i2, j2, 'î', C.i, 1); armLabel(Q, j2, i2, 'ĵ', C.j, -1);
+  if (mx.e > .999) [i2, j2].forEach((q, k) => mk('circle', { cx: Q.X(q[0]), cy: Q.Y(q[1]), r: 10, style: `fill:${k ? C.j : C.i};opacity:.25` }, Q.g));
+  origin(Q);
+  const land = ap(M, p); pointDot(Q, land, `(${num(land[0])}, ${num(land[1])})`);
+  txt(Q.g, 14, 24, mx.e > .999 ? 'After' : 'Moving…', 'pl');
+  mx.Q = Q;
+  writeM();
+}
+function writeM(){
+  const { A, p } = mx, [a, b, c, d] = A, [x, y] = p, r = ap(A, p), D = det(A);
+  $('mEqs').innerHTML =
+    `<span class="lbl">Column way</span>${num(x)}·<span class="ki">${vstr([a, c])}</span> + ${pn(y)}·<span class="kj">${vstr([b, d])}</span> = <b class="kr">${vstr(r)}</b><br>` +
+    `<span class="lbl">Row way</span>top: ${num(a)}·${pn(x)} + ${pn(b)}·${pn(y)} = <b class="kr">${num(r[0])}</b> &nbsp;&nbsp; bottom: ${num(c)}·${pn(x)} + ${pn(d)}·${pn(y)} = <b class="kr">${num(r[1])}</b><br>` +
+    `<span class="lbl">Area</span><i>ad</i> − <i>bc</i> = ${num(a)}·${pn(d)} − ${pn(b)}·${pn(c)} = <b>${num(D)}</b>: the 1×1 square ${Math.abs(D) < 1e-9 ? 'is flattened (area 0)' : `becomes area ${num(Math.abs(D))}${D < 0 ? ', flipped over' : ''}`}`;
+  $('mOut').innerHTML = classify(A).t + ` The point ${pstr(p)} = ${num(x)}<span class="ki">î</span> + ${pn(y)}<span class="kj">ĵ</span> lands at <b class="kr">${pstr(r)}</b>, read on the fixed dashed grid.`;
+}
+// Animation: blend from "no move" to the matrix over 2.2 s
+function play(restart){
+  if (mx.playing && !restart){ stopPlay(); return; }
+  if (!readM()) return;
+  if (restart || mx.t >= 1){ mx.t = 0; }
+  mx.playing = true; $('mPlay').textContent = 'Pause'; let last = performance.now();
+  cancelAnimationFrame(mx.raf);
+  const step = now => {
+    mx.t = Math.min(1, mx.t + (now - last) / 2200); last = now; mx.e = ease(mx.t); drawMain();
+    if (mx.t < 1 && mx.playing) mx.raf = requestAnimationFrame(step); else stopPlay();
+  };
+  mx.raf = requestAnimationFrame(step);
+}
+function stopPlay(){ cancelAnimationFrame(mx.raf); mx.playing = false; $('mPlay').textContent = 'Play'; }
+$('mPlay').onclick = () => play(false);
+$('mReset').onclick = () => { stopPlay(); if (!readM()) return; mx.t = 0; mx.e = 0; drawMain(); };
+MIDS.concat(['px', 'py']).forEach(id => $(id).addEventListener('input', () => { stopPlay(); markM(null); if (readM()){ mx.t = 1; mx.e = 1; drawMain(); } }));
+selectOnFocus(MIDS.concat(['px', 'py']));
+// Dragging: in After, grab the nearer of î's and ĵ's tips; in Before, move the point. Snap to halves.
+function svgPt(svg, P, ev){ const pt = svg.createSVGPoint(); pt.x = ev.clientX; pt.y = ev.clientY; const q = pt.matrixTransform(svg.getScreenCTM().inverse()); return P.inv(q.x, q.y); }
+const snap = (v, lo, hi) => Math.max(lo, Math.min(hi, Math.round(v * 2) / 2));
+$('aSvg').addEventListener('pointerdown', ev => {
+  stopPlay(); mx.t = 1; mx.e = 1; drawMain();
+  const q = svgPt($('aSvg'), mx.Q, ev), di = Math.hypot(q[0] - mx.A[0], q[1] - mx.A[2]), dj = Math.hypot(q[0] - mx.A[1], q[1] - mx.A[3]);
+  if (Math.min(di, dj) > 1.3) return;                       // only start a drag near one of the tips
+  mx.drag = di <= dj ? 'i' : 'j'; $('aSvg').setPointerCapture(ev.pointerId);
+});
+$('aSvg').addEventListener('pointermove', ev => {
+  if (mx.drag !== 'i' && mx.drag !== 'j') return;
+  const q = svgPt($('aSvg'), mx.Q, ev), x = snap(q[0], -4, 4), y = snap(q[1], -3.5, 4);
+  if (mx.drag === 'i'){ mx.A[0] = x; mx.A[2] = y; } else { mx.A[1] = x; mx.A[3] = y; }
+  markM(null); fillM(); $('mErr').textContent = ''; drawMain();
+});
+$('bSvg').addEventListener('pointerdown', ev => { stopPlay(); mx.t = 1; mx.e = 1; mx.drag = 'p'; $('bSvg').setPointerCapture(ev.pointerId); dragP(ev); });
+$('bSvg').addEventListener('pointermove', ev => { if (mx.drag === 'p') dragP(ev); });
+function dragP(ev){ const q = svgPt($('bSvg'), mx.B, ev); mx.p = [snap(q[0], -4, 4), snap(q[1], -3.5, 4)]; fillM(); $('mErr').textContent = ''; drawMain(); }
+['aSvg', 'bSvg'].forEach(id => $(id).addEventListener('pointerup', () => { mx.drag = null; }));
+
+/* =====================================================================
+   4. THE SMOOTHIE BAR (a matrix outside geometry)
+   ===================================================================== */
+const RIDS = ['ra', 'rb', 'rc', 'rd', 'ox', 'oy'];
+[2, 1, 1, 2, 3, 2].forEach((v, k) => { $(RIDS[k]).value = v; });
+function drawSmoothie(){
+  const r = readAll(RIDS, 'rErr'); if (!r) return;
+  if (r.some(v => !Number.isInteger(v) || v < 0)){ $('rErr').textContent = 'Use whole numbers, 0 or more.'; return; }
+  if (r.slice(0, 4).some(v => v > 3) || r[4] > 5 || r[5] > 5){ $('rErr').textContent = 'Keep recipes to at most 3 of each ingredient, and orders to at most 5 of each smoothie.'; return; }
+  const [a, b, c, d, x, y] = r, svg = $('rSvg'); svg.innerHTML = ''; const g = mk('g', {}, svg);
+  const X0 = 190, gap = 9, most = Math.max(x * a + y * b, x * c + y * d, 1), groups = 2 * (x + y);
+  const step = Math.min(23, (1000 - X0 - 70 - groups * gap) / most);   // shrink the blocks when the order is big
+  // Row 1: the order, as cups
+  txt(g, 20, 52, 'Order', 'bt');
+  let cx = X0;
+  const cup = (col, lab) => { mk('polygon', { points: `${cx},30 ${cx + 26},30 ${cx + 22},64 ${cx + 4},64`, style: `fill:${col};opacity:.85` }, g); txt(g, cx + 13, 53, lab, 'bt', { 'text-anchor': 'middle', style: 'fill:var(--paper)' }); cx += 34; };
+  for (let k = 0; k < x; k++) cup(C.i, 'A'); if (x && y) cx += 16; for (let k = 0; k < y; k++) cup(C.j, 'B');
+  if (!x && !y) txt(g, X0, 52, 'nothing ordered', 'cap');
+  // Rows 2–3: the ingredients, one block per scoop/cup, grouped by smoothie
+  const row = (Y, name, pa, pb) => {
+    txt(g, 20, Y + 16, name, 'bt');
+    let bx = X0;
+    for (let k = 0; k < x; k++){ for (let m = 0; m < pa; m++){ mk('rect', { x: bx, y: Y, width: step - 2.5, height: 22, rx: 4, style: `fill:${C.i};opacity:.8` }, g); bx += step; } if (pa) bx += gap; }
+    for (let k = 0; k < y; k++){ for (let m = 0; m < pb; m++){ mk('rect', { x: bx, y: Y, width: step - 2.5, height: 22, rx: 4, style: `fill:${C.j};opacity:.8` }, g); bx += step; } if (pb) bx += gap; }
+    const tot = x * pa + y * pb;
+    txt(g, bx + 8, Y + 17, `= ${tot}`, 'bn');
+    return tot;
+  };
+  const F = row(110, 'Fruit (scoops)', a, b), Yg = row(170, 'Yogurt (cups)', c, d);
+  txt(g, X0, 232, `green blocks: ${x} smoothie${x === 1 ? '' : 's'} A × recipe A;  orange blocks: ${y} smoothie${y === 1 ? '' : 's'} B × recipe B`, 'cap');
+  $('rOut').innerHTML = `${mshow([a, b, c, d])} times [${x}, ${y}]: column way ${x}·<span class="ki">${vstr([a, c])}</span> + ${y}·<span class="kj">${vstr([b, d])}</span> = <b class="kr">${vstr([F, Yg])}</b>. You need <b>${F}</b> scoop${F === 1 ? '' : 's'} of fruit and <b>${Yg}</b> cup${Yg === 1 ? '' : 's'} of yogurt. Row way: fruit = ${a}·${x} + ${b}·${y}, yogurt = ${c}·${x} + ${d}·${y}.`;
+}
+RIDS.forEach(id => $(id).addEventListener('input', drawSmoothie)); selectOnFocus(RIDS);
+
+/* =====================================================================
+   5. GALLERY OF MOVES (click to load into the Matrix Transformer)
+   ===================================================================== */
+const GAL = [
+  { n: 'Stretch', A: [1.5, 0, 0, 1], s: 'î → [1.5, 0]' },
+  { n: 'Shear', A: [1, 0.5, 0, 1], s: 'ĵ → [0.5, 1]' },
+  { n: 'Rotation', A: [0, -1, 1, 0], s: 'quarter turn' },
+  { n: 'Reflection', A: [-1, 0, 0, 1], s: 'mirror' },
+  { n: 'Collapse', A: [1, 0, 0, 0], s: 'ĵ → [0, 0]' },
+];
+GAL.forEach(m => {
+  const b = document.createElement('button'); b.className = 'gcard';
+  const svg = mk('svg', { viewBox: '0 0 190 170', role: 'img', 'aria-label': m.n });
+  b.appendChild(svg);
+  const cap = document.createElement('div'); cap.innerHTML = `<b>${m.n}</b><br>${mshow(m.A)}<br><small style="color:var(--muted)">${m.s}</small>`; b.appendChild(cap);
+  b.onclick = () => { const i = MP.findIndex(p => p.A.every((v, k) => Math.abs(v - m.A[k]) < 1e-9)); loadMove(m.A, i < 0 ? null : i); $('main').scrollIntoView({ behavior: 'smooth', block: 'start' }); };
+  $('gGrid').appendChild(b);
+  const P = plane(svg, 190, 170, { x0: -2.4, x1: 2.6, y0: -1.2, y1: 2.6 }, 40, { dashed: true, noLabels: true });
+  movedGrid(P, m.A, 8); drawSquareAndF(P, m.A);
+  arrow(P, [0, 0], [m.A[0], m.A[2]], C.i, { w: 2.5 }); arrow(P, [0, 0], [m.A[1], m.A[3]], C.j, { w: 2.5 });
+  origin(P);
+});
+
+/* =====================================================================
+   6. MOVE A PICTURE (graphics: resize, rotate, slant, mirror, shadow)
+   ===================================================================== */
+// The scene, in plane units: a house (door on the left, window and chimney on the right) and the word MATH, standing on the ground (y = 0)
+const HOUSE = {
+  walls: [[-5.4, 0], [-2.6, 0], [-2.6, 2.2], [-5.4, 2.2]],
+  roof: [[-5.8, 2.2], [-4, 3.6], [-2.2, 2.2]],
+  chimney: [[-3.2, 2.98], [-3.2, 3.5], [-2.8, 3.5], [-2.8, 2.67]],
+  door: [[-5, 0], [-4.3, 0], [-4.3, 1.3], [-5, 1.3]],
+  window: [[-3.6, 1.1], [-2.9, 1.1], [-2.9, 1.8], [-3.6, 1.8]],
+};
+const WORD = (() => {                                         // strokes of the letters M, A, T, H
+  const s = [], m = 0.6, a = 2.25, t = 3.9, h = 5.55;
+  s.push([[m, 0], [m, 2], [m + .6, 1], [m + 1.2, 2], [m + 1.2, 0]]);
+  s.push([[a, 0], [a + .6, 2], [a + 1.2, 0]], [[a + .24, .8], [a + .96, .8]]);
+  s.push([[t, 2], [t + 1.2, 2]], [[t + .6, 2], [t + .6, 0]]);
+  s.push([[h, 0], [h, 2]], [[h + 1.2, 0], [h + 1.2, 2]], [[h, 1], [h + 1.2, 1]]);
+  return s;
+})();
+const PM = [
+  { k: 'resize', n: 'Resize', lab: 'Size factor s', def: 1.5, lo: 0.2, hi: 2.5, d: 'Zoom in or out: î and ĵ both get s times as long.' },
+  { k: 'rotate', n: 'Rotate', lab: 'Angle θ (°)', def: 30, lo: -360, hi: 360, d: 'Turn the picture around the origin, like rotating a photo.' },
+  { k: 'slant', n: 'Slant (italic)', lab: 'Slant angle (°)', def: 15, lo: -60, hi: 60, d: 'Lean everything sideways by its height: a shear. This is how slanted (oblique) text is made from upright letters.' },
+  { k: 'mirror', n: 'Selfie mirror', lab: '', def: 0, lo: 0, hi: 0, d: 'A front camera’s preview shows you mirrored: left and right swap.' },
+  { k: 'shadow', n: 'Shadow', lab: 'Sun height (°)', def: 40, lo: 15, hi: 85, d: 'Sunlight from the left squashes everything onto the ground: a collapse.' },
+];
+const pg = { mode: 1, amt: 30, e: 1, raf: 0 };
+PM.forEach((m, i) => { const b = document.createElement('button'); b.className = 'preset'; b.textContent = m.n; b.onclick = () => setPicMode(i); $('pModes').appendChild(b); });
+function picMatrix(){
+  const m = PM[pg.mode].k, v = pg.amt;
+  if (m === 'resize') return [v, 0, 0, v];
+  if (m === 'rotate'){ const t = v / DEG; return [Math.cos(t), -Math.sin(t), Math.sin(t), Math.cos(t)]; }
+  if (m === 'slant') return [1, Math.tan(v / DEG), 0, 1];
+  if (m === 'mirror') return [-1, 0, 0, 1];
+  return [1, 1 / Math.tan(v / DEG), 0, 0];                    // shadow: (x, y) → (x + y / tan(sun height), 0)
+}
+function setPicMode(i){
+  pg.mode = i; pg.amt = PM[i].def;
+  [...$('pModes').children].forEach((b, j) => b.classList.toggle('on', j === i));
+  $('pDesc').textContent = PM[i].d;
+  $('pAmtF').style.display = PM[i].k === 'mirror' ? 'none' : '';
+  $('pAmtL').textContent = PM[i].lab; $('pAmt').value = num(pg.amt); $('pErr').textContent = '';
+  animPic();
+}
+function animPic(){
+  cancelAnimationFrame(pg.raf); const t0 = performance.now();
+  const step = now => { const t = Math.min(1, (now - t0) / 1100); pg.e = ease(t); drawPic(); if (t < 1) pg.raf = requestAnimationFrame(step); };
+  pg.raf = requestAnimationFrame(step);
+}
+function drawScene(P, M, look){
+  const ghost = look === 'ghost', shade = look === 'shadow';
+  const st = (fill, op) => ghost ? 'fill:none;stroke:var(--muted);stroke-width:1.5;stroke-dasharray:5 4;opacity:.8' : shade ? 'fill:var(--shd);opacity:.45;stroke:var(--shd);stroke-width:7;stroke-linejoin:round' : `fill:${fill};opacity:${op};stroke:var(--cp);stroke-width:1.2;stroke-linejoin:round`;
+  poly(P, HOUSE.walls, M, st('var(--cs)', .55)); poly(P, HOUSE.roof, M, st('var(--cp)', .85)); poly(P, HOUSE.chimney, M, st('var(--cp)', .85));
+  poly(P, HOUSE.door, M, st('var(--cj)', .9)); poly(P, HOUSE.window, M, st('var(--ci)', .85));
+  WORD.forEach(s => mk('polyline', { points: s.map(p => { const q = ap(M, p); return P.X(q[0]).toFixed(1) + ',' + P.Y(q[1]).toFixed(1); }).join(' '),
+    style: ghost ? 'fill:none;stroke:var(--muted);stroke-width:2;stroke-dasharray:5 4;opacity:.8' : shade ? 'fill:none;stroke:var(--shd);stroke-width:7;opacity:.38;stroke-linecap:round;stroke-linejoin:round' : 'fill:none;stroke:var(--cp);stroke-width:6;stroke-linecap:round;stroke-linejoin:round' }, P.g));
+}
+function drawPic(){
+  const A = picMatrix(), M = blend(A, pg.e), mode = PM[pg.mode].k, I = [1, 0, 0, 1];
+  const P = plane($('pSvg'), 1000, 430, { x0: -7.8, x1: 7.8, y0: -3, y1: 4.4 }, 48, { dashed: true, noLabels: true });
+  mk('rect', { x: 0, y: P.Y(0), width: 1000, height: 430 - P.Y(0), style: 'fill:var(--line);opacity:.25' }, P.g);   // the ground
+  if (mode === 'shadow'){
+    const e = pg.amt / DEG, dx = Math.cos(e), dy = -Math.sin(e);
+    [[-4, 3.6], [6.75, 2]].forEach(q => { const s = 12; mk('line', { x1: P.X(q[0] - dx * s), y1: P.Y(q[1] - dy * s), x2: P.X(q[0] + q[1] / Math.tan(e)), y2: P.Y(0), style: 'stroke:#E9A800;stroke-width:1.5;stroke-dasharray:6 5;opacity:.9' }, P.g); });
+    drawScene(P, M, 'shadow'); drawScene(P, I, 'solid');
+    if (pg.e > .999){ const far = ap(M, [-4, 3.6])[0]; txt(P.g, P.X(Math.min(7, (far + 0.6 + 6.75 + 2 / Math.tan(e)) / 2)), P.Y(0) + 26, 'shadows on the ground', 'labS', { 'text-anchor': 'middle', style: 'fill:var(--ink)' }); }
+    mk('circle', { cx: 46, cy: 46, r: 20, style: 'fill:#F5C518;stroke:#E9A800;stroke-width:2' }, P.g);
+    txt(P.g, 76, 52, `sun ${num(pg.amt, 0)}° up`, 'labS', { 'text-anchor': 'start', style: 'fill:var(--ink)' });
+  } else { drawScene(P, I, 'ghost'); drawScene(P, M, 'solid'); }
+  arrow(P, [0, 0], [M[0], M[2]], C.i, { w: 3.5 }); arrow(P, [0, 0], [M[1], M[3]], C.j, { w: 3.5 });
+  origin(P);
+  $('pMat').innerHTML = mshow(A);
+  const [a, b, c, d] = A;
+  const msg = {
+    resize: `î lands at [${num(a)}, 0] and ĵ at [0, ${num(d)}]. Every length is multiplied by ${num(a)} and every area by ${num(a)}² = ${num(a * a)}. The shapes stay the same, just ${a > 1 ? 'bigger' : a < 1 ? 'smaller' : 'unchanged'}.`,
+    rotate: `î lands at [cos θ, sin θ] = [${num(a)}, ${num(c)}] and ĵ at [−sin θ, cos θ] = [${num(b)}, ${num(d)}]. Everything turns ${num(Math.abs(pg.amt), 0)}° ${pg.amt >= 0 ? 'counterclockwise' : 'clockwise'} around the origin; lengths, angles and areas don’t change.`,
+    slant: `î stays at [1, 0] (the ground doesn’t move) and ĵ tips to [${num(b)}, 1], since tan ${num(pg.amt, 0)}° = ${num(b)}. Each point slides right by ${num(b)} × its height, so the tall strokes lean. Area is unchanged: <i>ad</i> − <i>bc</i> = 1.`,
+    mirror: `î flips to [−1, 0]; ĵ stays at [0, 1]. Left and right swap, so the word reads backwards and the door moves to the other side. <i>ad</i> − <i>bc</i> = −1: same area, but flipped over.`,
+    shadow: `A point at height <i>y</i> casts its shadow <i>y</i> / tan ${num(pg.amt, 0)}° to the right, on the ground. So î stays at [1, 0] (it’s already on the ground) and ĵ lands at [${num(b)}, 0]. Both land on the same line: the matrix collapses the plane onto the ground, and <i>ad</i> − <i>bc</i> = 0 (a shadow is flat).`,
+  };
+  $('pOut').innerHTML = msg[mode];
+}
+$('pAmt').addEventListener('input', () => {
+  const v = parseNum($('pAmt').value), m = PM[pg.mode];
+  if ($('pAmt').value.trim() === '' || isNaN(v)){ $('pErr').textContent = 'Type a number.'; return; }
+  if (v < m.lo || v > m.hi){ $('pErr').textContent = `Keep it between ${num(m.lo)} and ${num(m.hi)}.`; return; }
+  $('pErr').textContent = ''; pg.amt = v; pg.e = 1; cancelAnimationFrame(pg.raf); drawPic();
+});
+selectOnFocus(['pAmt']);
+
+/* =====================================================================
+   7. LINEAR OR NOT? (non-examples next to examples)
+   ===================================================================== */
+const t20 = 20 / DEG;
+const LM = [
+  { n: 'Shear', f: ([x, y]) => [x + .6 * y, y], ok: true,
+    ck: [[1, 'Origin stays put', '(0, 0) → (0, 0)'], [1, 'Straight lines stay straight', 'even the slanted blue line'], [1, 'Even spacing stays even', 'x = 1, 2, 3 still land 1 apart']],
+    v: 'Linear: it’s the matrix with columns [1, 0] and [0.6, 1].' },
+  { n: 'Rotate 20°', f: ([x, y]) => [x * Math.cos(t20) - y * Math.sin(t20), x * Math.sin(t20) + y * Math.cos(t20)], ok: true,
+    ck: [[1, 'Origin stays put', 'a turn around (0, 0)'], [1, 'Straight lines stay straight', 'every line just turns'], [1, 'Even spacing stays even', 'lengths don’t change at all']],
+    v: 'Linear: columns [cos 20°, sin 20°] ≈ [0.94, 0.34] and [−0.34, 0.94].' },
+  { n: 'Slide', f: ([x, y]) => [x + 1.5, y + 1], ok: false,
+    ck: [[0, 'Origin stays put', '(0, 0) → (1.5, 1): the origin moved'], [1, 'Straight lines stay straight', ''], [1, 'Even spacing stays even', '']],
+    v: 'Not a matrix: every matrix sends [0, 0] to [0, 0], so no 2×2 matrix can slide.' },
+  { n: 'Bend', f: ([x, y]) => [x, y + .12 * x * x], ok: false,
+    ck: [[1, 'Origin stays put', '(0, 0) → (0, 0)'], [0, 'Straight lines stay straight', 'the horizontal lines bend into curves'], [0, 'Even spacing stays even', 'the middle of a segment doesn’t land in the middle of its image']],
+    v: 'Not a matrix: matrices never bend lines.' },
+  { n: 'Uneven stretch', f: ([x, y]) => [x * Math.abs(x) / 3, y], ok: false,
+    ck: [[1, 'Origin stays put', '(0, 0) → (0, 0)'], [0, 'Straight lines stay straight', 'the grid lines do, but the slanted blue line bends'], [0, 'Even spacing stays even', 'x = 1, 2, 3 land at 0.33, 1.33, 3']],
+    v: 'Not a matrix: points near the middle get squeezed and far ones get stretched.' },
+];
+LM.forEach((m, i) => { const b = document.createElement('button'); b.className = 'preset'; b.textContent = m.n; b.onclick = () => drawLin(i); $('lModes').appendChild(b); });
+function curve(P, f, pts, style){                             // the image of a polyline, sampled finely so bends show
+  let d = '';
+  for (let s = 0; s < pts.length - 1; s++) for (let k = 0; k <= 12; k++){
+    if (s && !k) continue;
+    const t = k / 12, p = [pts[s][0] + t * (pts[s + 1][0] - pts[s][0]), pts[s][1] + t * (pts[s + 1][1] - pts[s][1])], q = f(p);
+    d += (d ? ' L' : 'M') + P.X(q[0]).toFixed(1) + ',' + P.Y(q[1]).toFixed(1);
+  }
+  return mk('path', { d, style }, P.g);
+}
+function drawLin(i){
+  [...$('lModes').children].forEach((b, j) => b.classList.toggle('on', j === i));
+  const m = LM[i], P = plane($('lSvg'), 600, 440, { x0: -4.2, x1: 4.2, y0: -3.4, y1: 3.6 }, 46, { dashed: true });
+  for (let k = -9; k <= 9; k++){
+    const st = k ? 'fill:none;stroke:var(--cs);stroke-width:1.1;opacity:.85' : 'fill:none;stroke:var(--cp);stroke-width:2;opacity:.75';
+    curve(P, m.f, [[k, -9], [k, 9]], st); curve(P, m.f, [[-9, k], [9, k]], st);
+  }
+  curve(P, m.f, [[-9, -9], [9, 9]], 'fill:none;stroke:var(--cr);stroke-width:2.6');
+  const F = curve(P, m.f, FP.concat([FP[0]]), 'fill:var(--cp);opacity:.85;stroke:var(--cp);stroke-width:1.5'); F.setAttribute('d', F.getAttribute('d') + ' Z');
+  P.ticks();
+  const o = m.f([0, 0]);
+  mk('circle', { cx: P.X(0), cy: P.Y(0), r: 5, style: 'fill:none;stroke:var(--ink);stroke-width:2' }, P.g);
+  mk('circle', { cx: P.X(o[0]), cy: P.Y(o[1]), r: 6, style: `fill:${m.ck[0][0] ? 'var(--yes)' : 'var(--no)'}` }, P.g);
+  txt(P.g, P.X(o[0]) + 10, P.Y(o[1]) + 22, m.ck[0][0] ? '0 stays put' : '0 moved!', 'labS', { 'text-anchor': 'start', style: `fill:${m.ck[0][0] ? 'var(--yes)' : 'var(--no)'}` });
+  txt(P.g, 14, 24, m.n, 'pl');
+  $('lChecks').innerHTML = `<h4>${m.n}: ${m.ok ? 'linear' : 'not linear'}</h4>` +
+    m.ck.map(([y, t, s]) => `<div class="ck ${y ? 'y' : 'n'}"><span class="m">${y ? '✓' : '✕'}</span><div>${t}${s ? `<small>${s}</small>` : ''}</div></div>`).join('') +
+    `<div class="verdict ${m.ok ? 'y' : 'n'}">${m.v}</div>`;
+}
+
+/* =====================================================================
+   8. QUIZ
+   ===================================================================== */
+const rnd = arr => arr[Math.floor(Math.random() * arr.length)];
+const randInt = (lo, hi) => lo + Math.floor(Math.random() * (hi - lo + 1));
+const qz = { counted: false, done: false, right: 0, total: 0, e: 1, raf: 0 };
+const NAMES = ['Stretch', 'Shear', 'Rotation', 'Reflection', 'Collapse'];
+const KINDS = ['stretch', 'shear', 'rotation', 'reflection', 'collapse'];
+const s45 = Math.SQRT1_2;
+const BANK = {
+  stretch: [[2, 0, 0, 1], [1, 0, 0, 2], [2, 0, 0, 2], [3, 0, 0, 1], [1, 0, 0, 3], [0.5, 0, 0, 1], [2, 0, 0, 0.5]],
+  shear: [[1, 1, 0, 1], [1, -1, 0, 1], [1, 0, 1, 1], [1, 0, -1, 1], [1, 2, 0, 1], [1, 0, 2, 1]],
+  rotation: [[0, -1, 1, 0], [-1, 0, 0, -1], [0, 1, -1, 0], [s45, -s45, s45, s45], [s45, s45, -s45, s45]],
+  reflection: [[-1, 0, 0, 1], [1, 0, 0, -1], [0, 1, 1, 0], [0, -1, -1, 0]],
+  collapse: [[1, 0, 0, 0], [0, 0, 0, 1], [1, 1, 0, 0], [.5, .5, .5, .5], [1, 2, .5, 1]],
+};
+const WHY = {
+  stretch: 'î and ĵ stay on their own axes and only change length.',
+  shear: 'one arrow stays put while the other tips over; the grid squares lean but keep their height (or width).',
+  rotation: 'both arrows turn by the same angle, keep their length and stay at right angles, and the F is not mirrored.',
+  reflection: 'the F comes out mirrored (backwards), which no turn can do.',
+  collapse: 'î and ĵ land on the same line (or at 0), so the whole plane is squashed flat.',
+};
+const QBOX = { x0: -4.6, x1: 4.6, y0: -3.3, y1: 3.4 };
+function setMode(kind){
+  $('qChoice').style.display = kind === 'name' ? '' : 'none';
+  $('qLand').style.display = kind === 'land' ? '' : 'none';
+  $('qWrite').style.display = kind === 'write' ? '' : 'none';
+  if (kind === 'name'){ $('qChoice').innerHTML = ''; NAMES.forEach((l, i) => { const b = document.createElement('button'); b.textContent = l; b.onclick = () => answerChoice(i); $('qChoice').appendChild(b); }); }
+}
+function newQuestion(){
+  Object.assign(qz, { counted: false, done: false });
+  $('qErr').textContent = ''; $('qFb').className = 'feedback'; $('qFb').innerHTML = '';
+  ['q1', 'q2', 'qa', 'qb', 'qc', 'qd'].forEach(id => { $(id).value = ''; });
+  qz.type = rnd(['land', 'land', 'name', 'write', 'write']);
+  if (qz.type === 'land'){
+    let A, p, r; do { A = [0, 0, 0, 0].map(() => randInt(-3, 3)); p = [randInt(-3, 3), randInt(-3, 3)]; r = ap(A, p); }
+    while (det(A) === 0 || (!p[0] && !p[1]) || !p[0] || !p[1] || Math.abs(r[0]) > 9 || Math.abs(r[1]) > 9 || (A[1] === A[2]));
+    Object.assign(qz, { A, p, ans: r });
+    $('qTitle').textContent = 'Where does the point land?';
+    $('qText').innerHTML = `The matrix ${mshow(A)} moves the plane. Where does the point <b class="kp">${pstr(p)}</b> land?`;
+    $('qSvg').style.display = 'none';
+  } else if (qz.type === 'name'){
+    const k = rnd(KINDS); Object.assign(qz, { kind: k, A: rnd(BANK[k]) });
+    $('qTitle').textContent = 'Name the move';
+    $('qText').innerHTML = 'Watch the plane move (the dashed grid stays fixed). Which kind of move is it?';
+    $('qSvg').style.display = '';
+  } else {
+    let A; do { A = [0, 0, 0, 0].map(() => randInt(-2, 2)); } while (det(A) === 0 || (A[0] === 1 && A[1] === 0 && A[2] === 0 && A[3] === 1));
+    Object.assign(qz, { A });
+    $('qTitle').textContent = 'Watch, then write the matrix';
+    $('qText').innerHTML = 'Watch where <b class="ki">î</b> and <b class="kj">ĵ</b> land, reading their tips on the fixed dashed grid. Type the matrix: <b class="ki">î</b>’s landing spot down the first column, <b class="kj">ĵ</b>’s down the second.';
+    $('qSvg').style.display = '';
+  }
+  setMode(qz.type); $('qReplay').disabled = qz.type === 'land';
+  if (qz.type !== 'land') replayQ();
+}
+function drawQ(){
+  const { A } = qz, M = blend(A, qz.e), land = qz.type === 'land';
+  const box = land ? boxOf([[-1, -1], [2.4, 2.4], ap(A, qz.p), [A[0] * qz.p[0], A[2] * qz.p[0]], [A[0], A[2]], [A[1], A[3]]]) : QBOX;
+  const P = plane($('qSvg'), 1000, 400, box, 44, { dashed: true });
+  movedGrid(P, M, 20); drawSquareAndF(P, M); P.ticks();
+  if (land && qz.done){ hops(P, M, qz.p); }
+  arrow(P, [0, 0], [M[0], M[2]], C.i, { w: 4 }); arrow(P, [0, 0], [M[1], M[3]], C.j, { w: 4 });
+  armLabel(P, [M[0], M[2]], [M[1], M[3]], 'î', C.i, 1); armLabel(P, [M[1], M[3]], [M[0], M[2]], 'ĵ', C.j, -1);
+  origin(P);
+  if (land && qz.done){ const q = ap(M, qz.p); pointDot(P, q, pstr(q)); }
+}
+function replayQ(){
+  cancelAnimationFrame(qz.raf); const t0 = performance.now();
+  const step = now => { const t = Math.min(1, (now - t0) / 2200); qz.e = ease(t); drawQ(); if (t < 1) qz.raf = requestAnimationFrame(step); };
+  qz.raf = requestAnimationFrame(step);
+}
+function countQ(ok){ if (qz.counted) return; qz.counted = true; qz.total++; if (ok) qz.right++; $('score').textContent = `Score: ${qz.right} / ${qz.total}`; }
+const close = (x, y) => Math.abs(x - y) < 0.011;
+function checkQ(){
+  $('qErr').textContent = '';
+  let ok, msg;
+  if (qz.type === 'land'){
+    const r = readAll(['q1', 'q2'], 'qErr', 'Fill in both boxes with a number.'); if (!r) return;
+    const { A, p, ans } = qz, [a, b, c, d] = A, [x, y] = p;
+    const AT = ap([a, c, b, d], p), only1 = [x * a, x * c], only2 = [y * b, y * d];
+    const m2 = (u, v) => close(u[0], v[0]) && close(u[1], v[1]);
+    ok = m2(r, ans);
+    if (ok) msg = `<b>Right: ${pstr(ans)}.</b> ${num(x)}·${vstr([a, c])} + ${pn(y)}·${vstr([b, d])} = ${vstr(ans)}.`;
+    else if (m2(r, AT)) msg = '<b>You used the rows as if they were columns.</b> The first column, [<i>a</i>, <i>c</i>] read top to bottom, is where î lands. Take <i>x</i> copies of it plus <i>y</i> copies of the second column.';
+    else if (m2(r, only1)) msg = `<b>That’s only ${num(x)} copies of the first column.</b> Add ${pn(y)} copies of the second column, ${vstr([b, d])}, too.`;
+    else if (m2(r, only2)) msg = `<b>That’s only ${num(y)} copies of the second column.</b> Add ${pn(x)} copies of the first column, ${vstr([a, c])}, too.`;
+    else if (m2(r, [-ans[0], ans[1]]) || m2(r, [ans[0], -ans[1]]) || m2(r, [-ans[0], -ans[1]])) msg = '<b>Close: check the signs.</b> A negative times a negative is positive.';
+    else if (close(r[0], ans[0])) msg = `<b>Your first entry is right.</b> Recheck the second, the bottom row times the point: ${num(c)}·${pn(x)} + ${pn(d)}·${pn(y)}.`;
+    else if (close(r[1], ans[1])) msg = `<b>Your second entry is right.</b> Recheck the first, the top row times the point: ${num(a)}·${pn(x)} + ${pn(b)}·${pn(y)}.`;
+    else msg = `<b>Not quite.</b> Top: ${num(a)}·${pn(x)} + ${pn(b)}·${pn(y)}. Bottom: ${num(c)}·${pn(x)} + ${pn(d)}·${pn(y)}.`;
+  } else {
+    const r = readAll(['qa', 'qb', 'qc', 'qd'], 'qErr', 'Fill in all four entries with a number.'); if (!r) return;
+    const [a, b, c, d] = qz.A, c1 = close(r[0], a) && close(r[2], c), c2 = close(r[1], b) && close(r[3], d);
+    ok = c1 && c2;
+    if (ok) msg = `<b>Right!</b> î landed at ${vstr([a, c])} and ĵ at ${vstr([b, d])}, so the matrix is ${mshow(qz.A)}.`;
+    else if (close(r[0], a) && close(r[1], c) && close(r[2], b) && close(r[3], d)) msg = '<b>You wrote the landing spots across the rows.</b> Each landing spot goes <i>down</i> a column: î’s in the first column, ĵ’s in the second.';
+    else if (close(r[0], b) && close(r[2], d) && close(r[1], a) && close(r[3], c)) msg = '<b>Your columns are swapped.</b> The first column is where î (green) lands; the second is where ĵ (orange) lands.';
+    else if (c1) msg = '<b>Your î column is right.</b> Recheck where ĵ (orange) landed: count steps right or left on the dashed grid, then up or down.';
+    else if (c2) msg = '<b>Your ĵ column is right.</b> Recheck where î (green) landed: count steps right or left on the dashed grid, then up or down.';
+    else if (close(-r[0], a) && close(-r[1], b) && close(-r[2], c) && close(-r[3], d)) msg = '<b>Check the signs.</b> Left and down are negative.';
+    else msg = '<b>Not quite.</b> Read the tip of the green arrow (î) on the dashed grid: that’s column 1, top then bottom. Then the orange arrow (ĵ) for column 2. Press Replay move to watch again.';
+  }
+  countQ(ok); if (ok){ qz.done = true; if (qz.type === 'land'){ $('qSvg').style.display = ''; $('qReplay').disabled = false; replayQ(); } }
+  $('qFb').className = 'feedback ' + (ok ? 'ok' : 'bad'); $('qFb').innerHTML = msg;
+}
+function answerChoice(i){
+  if (qz.done) return; qz.done = true;
+  const k = qz.kind, ok = KINDS[i] === k;
+  countQ(ok);
+  let msg = `<b>${ok ? 'Right' : 'Not this time'}: ${NAMES[KINDS.indexOf(k)].toLowerCase()}.</b> Here ${WHY[k]} The matrix: ${mshow(qz.A)}.`;
+  if (!ok && k === 'rotation' && KINDS[i] === 'reflection') msg += ' A half turn can look like a flip, but follow the F: it’s upside down, not backwards, so turning it back undoes the move.';
+  if (!ok && k === 'reflection' && KINDS[i] === 'rotation') msg += ' Read the F: a turn never makes it face backwards.';
+  if (!ok && k === 'stretch' && KINDS[i] === 'shear') msg += ' In a shear one arrow tips off its axis; here both stay on their axes.';
+  $('qFb').className = 'feedback ' + (ok ? 'ok' : 'bad'); $('qFb').innerHTML = msg;
+}
+function showQ(){
+  countQ(false); qz.done = true; $('qErr').textContent = '';
+  const fb = $('qFb'); fb.className = 'feedback info';
+  if (qz.type === 'land'){
+    const { A, p, ans } = qz;
+    fb.innerHTML = `<b>${pstr(ans)}</b> = ${num(p[0])}·${vstr([A[0], A[2]])} + ${pn(p[1])}·${vstr([A[1], A[3]])}.`;
+    $('qSvg').style.display = ''; $('qReplay').disabled = false; replayQ();
+  } else if (qz.type === 'name') fb.innerHTML = `<b>${NAMES[KINDS.indexOf(qz.kind)]}</b>: ${WHY[qz.kind]} The matrix: ${mshow(qz.A)}.`;
+  else fb.innerHTML = `<b>${mshow(qz.A)}</b>: î landed at ${vstr([qz.A[0], qz.A[2]])} and ĵ at ${vstr([qz.A[1], qz.A[3]])}.`;
+}
+document.querySelectorAll('.qcheck').forEach(b => { b.onclick = checkQ; });
+$('qShow').onclick = showQ; $('qNew').onclick = newQuestion; $('qReplay').onclick = replayQ;
+['q1', 'q2', 'qa', 'qb', 'qc', 'qd'].forEach(id => {
+  $(id).addEventListener('input', () => { $('qErr').textContent = ''; });
+  $(id).addEventListener('keydown', e => { if (e.key === 'Enter') checkQ(); });
+});
+selectOnFocus(['q1', 'q2', 'qa', 'qb', 'qc', 'qd']);
+
+/* =====================================================================
+   9. START
+   ===================================================================== */
+fillM(); markM(2); mx.e = 1; drawMain();
+drawSmoothie();
+setPicMode(2);
+drawLin(0);
+newQuestion();
+</script>
+</body>
+</html>
