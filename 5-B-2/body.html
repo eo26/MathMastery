@@ -1,0 +1,834 @@
+<style>
+/* ===================== Page-specific styles (5.B.2) ===================== */
+/* sine (up / opposite) = orange, cosine (across / adjacent) = green, tangent = blue, the point and hypotenuse = purple */
+:root{ --sin:#D85A30; --cos:#1D9E75; --tan:#2F6FDB; --pt:#7F77DD; --soft:#AFA9EC; --sky:#8EC5F0; --sun:#E9A800; }
+@media (prefers-color-scheme:dark){ :root{ --sin:#F0997B; --cos:#5DCAA5; --tan:#6EA2F5; --pt:#AFA9EC; --soft:#6F67C9; --sky:#2C4A63; --sun:#FFD44D; } }
+.sn{color:var(--sin);font-weight:700}.cs{color:var(--cos);font-weight:700}.tn{color:var(--tan);font-weight:700}.ph{color:var(--pt);font-weight:700}
+.field.fS input{border-color:var(--sin)}.field.fC input{border-color:var(--cos)}.field.fT input{border-color:var(--tan)}.field.fP input{border-color:var(--pt)}
+.field.sm input{width:84px}
+.split{display:grid;grid-template-columns:51% 49%;gap:0;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--paper)}
+.split svg{display:block;width:100%;height:auto;border:none;border-radius:0;touch-action:none}
+.split svg + svg{border-left:1px solid var(--line)}
+.chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
+.chip{border:1px solid var(--line);border-radius:12px;padding:8px 14px;background:var(--bg);min-width:140px}
+.chip small{display:block;font:600 11px var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.chip b{font:600 19px var(--mono)}
+.chip i{font:500 13px var(--mono);color:var(--muted);font-style:normal;margin-left:6px}
+table.lists{border-collapse:collapse;margin:10px 0 14px;font:15px var(--sans)}
+table.lists th,table.lists td{border:1px solid var(--line);padding:6px 14px;text-align:center}
+table.lists th{background:var(--paper);font-weight:600}
+table.lists td.m{font-family:var(--mono)}
+pre.code{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:12px 16px;overflow-x:auto;font:13.5px/1.6 var(--mono);margin:10px 0 16px}
+.qtext{font:17px/1.55 var(--serif);margin:4px 0 10px}
+.mnem{display:flex;gap:12px;flex-wrap:wrap;margin:10px 0 14px}
+.mnem div{border:1px solid var(--line);border-radius:12px;padding:10px 16px;background:var(--paper);font:16px var(--sans)}
+.mnem b{font:700 20px var(--mono);margin-right:6px}
+</style>
+
+<!-- ===================== Top bar ===================== -->
+<div class="topbar"><div class="topbar-in">
+  <span class="brand">Math<b>Mastery</b></span>
+  <span class="crumbs">Chapter 5 · Trigonometry › Basics</span>
+  <span class="pid">5.B.2</span>
+</div></div>
+
+<!-- ===================== Hero ===================== -->
+<header class="prose hero">
+  <div class="kicker">Chapter 5 · Trigonometry</div>
+  <h1>Sine, Cosine and Tangent</h1>
+  <p class="dek">Every angle comes with three numbers that never change: how far across, how far up, and how steep. They let you find heights you can’t climb and distances you can’t walk.</p>
+  <div class="tiers" aria-label="Tier">
+    <span class="tier on">Basics <small>you are here</small></span>
+    <span class="tier">Undergraduate</span>
+    <span class="tier">Masters</span>
+  </div>
+  <div class="goals">
+    <h3>On this page</h3>
+    <ul>
+      <li>Use the side ratios of a <b>right triangle</b>: <b class="sn">sine</b> = opposite / hypotenuse, <b class="cs">cosine</b> = adjacent / hypotenuse, <b class="tn">tangent</b> = opposite / adjacent (SOH-CAH-TOA).</li>
+      <li>See why the ratios depend only on the angle (<b>similar triangles</b>), and work backwards from sides to angles.</li>
+      <li>Extend sine and cosine to every angle with the <b>unit circle</b>: cos θ is how far across, sin θ is how far up, with signs that depend on the <b>quadrant</b>.</li>
+      <li>Know the <b>special angles</b> (30°, 45°, 60°) exactly, read tangent as a <b>slope</b>, and use sin²θ + cos²θ = 1.</li>
+    </ul>
+  </div>
+</header>
+
+<main>
+<!-- ===================== §1 ===================== -->
+<section class="prose">
+  <h2><span class="n">1</span>Same angle, same shape</h2>
+  <p>Draw a right triangle with a 30° angle. Draw a bigger one with the same 30° angle. The big one is just the small one scaled up: the two are <b>similar triangles</b>, like a photo and its enlargement (1.B.4). So every <i>ratio</i> of sides comes out the same, whatever the size. The angle alone decides the shape.</p>
+  <p>Name the sides from the angle θ’s point of view: the <b>hypotenuse</b> is the long side across from the right angle, the <b>opposite</b> side is across from θ, and the <b>adjacent</b> side lies next to θ (and isn’t the hypotenuse). The three ratios get names:</p>
+  <div class="mnem">
+    <div><b class="sn">SOH</b>sin θ = <span class="sn">opposite</span> / <span class="ph">hypotenuse</span></div>
+    <div><b class="cs">CAH</b>cos θ = <span class="cs">adjacent</span> / <span class="ph">hypotenuse</span></div>
+    <div><b class="tn">TOA</b>tan θ = <span class="sn">opposite</span> / <span class="cs">adjacent</span></div>
+  </div>
+</section>
+<section class="wide">
+  <div class="card" id="sim">
+    <div class="card-h"><span class="tag">Explore</span><h3>Same angle, any size</h3>
+      <span class="sub">Three right triangles share the angle θ, with hypotenuses 2, 4 and 6 cm. Change θ and compare the ratios in the table.</span></div>
+    <div class="inputs">
+      <label class="field fP sm"><span>Angle θ (°)</span><input id="sA" type="text" inputmode="decimal" autocomplete="off"></label>
+    </div>
+    <div class="err" id="sErr"></div>
+    <svg class="nl" id="sSvg" viewBox="0 0 1000 320" role="img" aria-label="Three similar right triangles" style="margin-top:10px"></svg>
+    <div id="sTab"></div>
+  </div>
+</section>
+<section class="prose">
+  <p><b>Working backwards.</b> If you know two sides, the ratio tells you the angle. Calculators have buttons for this: sin⁻¹, cos⁻¹ and tan⁻¹ (say “inverse sine,” and so on) take a ratio and return the angle. A ramp that rises 1 m over 12 m of ground has tan θ = 1/12, so θ = tan⁻¹(1/12) ≈ 4.8°. (Set your calculator to degrees for this page.)</p>
+</section>
+
+<!-- ===================== §2 ===================== -->
+<section class="prose">
+  <h2><span class="n">2</span>The unit circle: every angle at once</h2>
+  <p>A right triangle can only hold angles under 90°. To handle any angle, put a point on a circle of radius 1, the <b>unit circle</b>, turned θ counterclockwise from the right-hand side (as in 5.B.1). Drop a line straight down to the horizontal axis and you get a right triangle whose hypotenuse is 1. Its across side is cos θ / 1 = <b class="cs">cos θ</b> and its up side is <b class="sn">sin θ</b>.</p>
+  <p>So the point sits at (cos θ, sin θ). That definition keeps working past 90°: on the left half “across” is negative, so cos θ is negative; below the axis “up” is negative, so sin θ is negative.</p>
+</section>
+<section class="wide">
+  <div class="card" id="main">
+    <div class="card-h"><span class="tag">Explore</span><h3>The unit circle</h3>
+      <span class="sub">Drag the purple point, pick an angle, or type it in degrees or radians (like pi/6 or 3pi/4). Left: the triangle on the unit circle and the tangent on the line x = 1. Right: all three values as the angle goes once around.</span></div>
+    <div class="row" id="tPresets"></div>
+    <div class="desc" id="tDesc"></div>
+    <div class="inputs">
+      <label class="field fP sm"><span>Angle θ (°)</span><input id="tDeg" type="text" inputmode="decimal" autocomplete="off"></label>
+      <label class="field fP sm"><span>θ (radians)</span><input id="tRad" type="text" inputmode="text" autocomplete="off"></label>
+      <div class="row" style="margin:0"><button class="primary" id="tPlay">Play</button></div>
+    </div>
+    <div class="err" id="tErr"></div>
+    <div class="split" style="margin-top:12px">
+      <svg id="tSvg" viewBox="0 0 510 460" role="img" aria-label="Unit circle" style="cursor:grab"></svg>
+      <svg id="gSvg" viewBox="0 0 490 460" role="img" aria-label="Graphs of sine, cosine and tangent"></svg>
+    </div>
+    <div class="chips" id="tChips"></div>
+    <div class="readout" id="tOut"></div>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--cos)"></i>cos θ: across</span>
+      <span><i class="sw" style="background:var(--sin)"></i>sin θ: up</span>
+      <span><i class="sw" style="background:var(--tan)"></i>tan θ: height where the radius line meets x = 1</span>
+      <span><i class="sw" style="background:var(--pt)"></i>the radius (length 1) and the point</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §3 ===================== -->
+<section class="prose">
+  <h2><span class="n">3</span>Signs in each quadrant</h2>
+  <p>The axes cut the plane into four <b>quadrants</b>, numbered I to IV counterclockwise from the top right. Each one fixes the signs: in I everything is positive; in II only sine (up is still up); in III only tangent (negative ÷ negative); in IV only cosine. The point at 150° is a mirror image of the point at 30°: same height, opposite across. So sin 150° = sin 30° = 1/2 while cos 150° = −cos 30°. The 30° partner of any angle is its <b>reference angle</b>, the angle back to the nearest horizontal axis. Find the values for the reference angle, then fix the signs by quadrant.</p>
+</section>
+
+<!-- ===================== §4 ===================== -->
+<section class="prose">
+  <h2><span class="n">4</span>The special angles</h2>
+  <p>Three angles come up so often that their values are worth knowing exactly, and two simple shapes give them all. Cut a square along its diagonal: each half is a 45°-45°-90° triangle. Cut an equilateral triangle (all angles 60°) down the middle: each half is a 30°-60°-90° triangle. Shrink each so the hypotenuse is 1, and Pythagoras (1.B.9) does the rest.</p>
+</section>
+<section class="wide">
+  <div class="card" id="spec">
+    <div class="card-h"><span class="tag">Explore</span><h3>Where √2/2 and √3/2 come from</h3>
+      <span class="sub">Pick a shape to cut in half. Every hypotenuse here has length 1, so the sides <i>are</i> the sine and cosine.</span></div>
+    <div class="row" id="spPick"></div>
+    <svg class="nl" id="spSvg" viewBox="0 0 1000 330" role="img" aria-label="Special triangles" style="margin-top:10px"></svg>
+    <div class="readout" id="spOut"></div>
+  </div>
+</section>
+<section class="prose">
+  <table class="lists">
+    <tr><th>θ</th><th>0°</th><th>30° (π/6)</th><th>45° (π/4)</th><th>60° (π/3)</th><th>90° (π/2)</th></tr>
+    <tr><td class="sn">sin θ</td><td class="m">√0/2 = 0</td><td class="m">√1/2 = 1/2</td><td class="m">√2/2</td><td class="m">√3/2</td><td class="m">√4/2 = 1</td></tr>
+    <tr><td class="cs">cos θ</td><td class="m">1</td><td class="m">√3/2</td><td class="m">√2/2</td><td class="m">1/2</td><td class="m">0</td></tr>
+    <tr><td class="tn">tan θ</td><td class="m">0</td><td class="m">√3/3</td><td class="m">1</td><td class="m">√3</td><td class="m">undefined</td></tr>
+  </table>
+  <p>Notice the pattern in the sine row: √0/2, √1/2, √2/2, √3/2, √4/2. Cosine runs the same list backwards, because the across side for θ is the up side for 90° − θ. (√2/2 ≈ 0.707 and √3/2 ≈ 0.866.)</p>
+</section>
+
+<!-- ===================== §5 ===================== -->
+<section class="prose">
+  <h2><span class="n">5</span>Tangent is a slope, and a famous identity</h2>
+  <p>Tangent is sin θ / cos θ: up over across, which is the <b>slope</b> of the radius line (rise over run). That’s why the explorer draws it on the line x = 1: follow the radius line until it’s 1 across, and its height there is the slope. At 45° the slope is 1. As θ approaches 90° the line gets steeper without limit, and at exactly 90° it’s vertical: cos θ = 0 and tan θ is <b>undefined</b>.</p>
+  <p>Every point on the unit circle is distance 1 from the center, so Pythagoras gives the most-used fact in trigonometry, true for every angle:</p>
+  <p style="text-align:center;font:600 19px var(--mono)"><span class="sn">sin</span>²θ + <span class="cs">cos</span>²θ = 1</p>
+  <p>(sin²θ means (sin θ)².) The readout of the unit-circle explorer checks it for whatever angle you choose.</p>
+</section>
+
+<!-- ===================== §6 ===================== -->
+<section class="prose">
+  <h2><span class="n">6</span>Measuring what you can’t reach</h2>
+  <p>Surveyors find the height of a tree without climbing it: walk a measured distance away, measure the angle up to the top, and use tangent. The same right triangle, turned around, gives the length of a shadow from the sun’s height in the sky.</p>
+</section>
+<section class="wide">
+  <div class="card" id="hgt">
+    <div class="card-h"><span class="tag">Explore</span><h3>Heights and shadows</h3>
+      <span class="sub">“Angle up”: find a building’s height from your distance and the angle up to its top. “Shadow”: find a pole’s shadow from the sun’s angle.</span></div>
+    <div class="row" id="hModes"></div>
+    <div class="inputs" id="hIn"></div>
+    <div class="err" id="hErr"></div>
+    <svg class="nl" id="hSvg" viewBox="0 0 1000 340" role="img" aria-label="Height or shadow" style="margin-top:10px"></svg>
+    <div class="readout" id="hOut"></div>
+  </div>
+</section>
+<section class="prose">
+  <p>Ladders and ramps use sine and cosine the same way: the ladder is the hypotenuse, the wall height is the opposite side, and the distance out from the wall is the adjacent side.</p>
+</section>
+<section class="wide">
+  <div class="card" id="lad">
+    <div class="card-h"><span class="tag">Explore</span><h3>Ladders and ramps</h3>
+      <span class="sub">“Ladder”: how high it reaches and how far its foot sits from the wall. “Ramp”: how long a ramp must be to climb a given height at a gentle angle.</span></div>
+    <div class="row" id="lModes"></div>
+    <div class="inputs" id="lIn"></div>
+    <div class="err" id="lErr"></div>
+    <svg class="nl" id="lSvg" viewBox="0 0 1000 320" role="img" aria-label="Ladder or ramp" style="margin-top:10px"></svg>
+    <div class="readout" id="lOut"></div>
+  </div>
+</section>
+<section class="prose">
+  <p>A Ferris wheel is the unit circle, scaled up and lifted off the ground. A seat at angle θ (counterclockwise from the right-hand spoke) is <i>r</i> cos θ across from the hub and <i>r</i> sin θ above it. As the wheel turns, its height traces the wave of 5.B.4.</p>
+</section>
+<section class="wide">
+  <div class="card" id="fer">
+    <div class="card-h"><span class="tag">Explore</span><h3>A Ferris wheel seat</h3>
+      <span class="sub">Set the wheel’s radius, the hub’s height and the seat’s angle, or press Play to turn the wheel.</span></div>
+    <div class="inputs">
+      <label class="field fP sm"><span>Radius <i>r</i> (m)</span><input id="fR" type="text" inputmode="decimal" autocomplete="off"></label>
+      <label class="field sm"><span>Hub height (m)</span><input id="fH" type="text" inputmode="decimal" autocomplete="off"></label>
+      <label class="field fP sm"><span>Angle θ (°)</span><input id="fA" type="text" inputmode="decimal" autocomplete="off"></label>
+      <div class="row" style="margin:0"><button class="primary" id="fPlay">Play</button></div>
+    </div>
+    <div class="err" id="fErr"></div>
+    <svg class="nl" id="fSvg" viewBox="0 0 1000 360" role="img" aria-label="Ferris wheel" style="margin-top:10px"></svg>
+    <div class="readout" id="fOut"></div>
+  </div>
+</section>
+
+<!-- ===================== §7 ===================== -->
+<section class="prose">
+  <h2><span class="n">7</span>Now, in symbols</h2>
+  <div class="math">\[ \sin\theta = \frac{\text{opposite}}{\text{hypotenuse}}, \qquad \cos\theta = \frac{\text{adjacent}}{\text{hypotenuse}}, \qquad \tan\theta = \frac{\text{opposite}}{\text{adjacent}} = \frac{\sin\theta}{\cos\theta} \]<div class="cap">SOH-CAH-TOA, for an acute angle θ of a right triangle.</div></div>
+  <div class="math">\[ P(\theta) = (\cos\theta,\ \sin\theta), \qquad \sin^2\theta + \cos^2\theta = 1 \]<div class="cap">The point at angle θ on the unit circle, and the Pythagorean identity.</div></div>
+  <div class="math">\[ \theta = \sin^{-1}\!\Big(\frac{\text{opp}}{\text{hyp}}\Big) = \cos^{-1}\!\Big(\frac{\text{adj}}{\text{hyp}}\Big) = \tan^{-1}\!\Big(\frac{\text{opp}}{\text{adj}}\Big) \]<div class="cap">Working backwards from two sides to the angle.</div></div>
+  <div class="math">\[ \sin(90^\circ - \theta) = \cos\theta, \qquad \sin(180^\circ - \theta) = \sin\theta, \qquad \cos(180^\circ - \theta) = -\cos\theta \]<div class="cap">Partners: the complementary angle swaps sine and cosine; the mirror angle in quadrant II keeps the height and flips the across.</div></div>
+  <p>In code, the trig functions expect radians, which is the most common slip:</p>
+  <pre class="code"><code>import math                                    # Python's built-in math tools
+theta = math.radians(30)                       # convert 30 degrees to radians first (pi/6)
+print(math.sin(theta), math.cos(theta))        # 0.5  0.866...  (sin 30° = 1/2, cos 30° = √3/2)
+print(math.sin(30))                            # -0.988...: the sine of 30 RADIANS, not 30 degrees
+height = 1.6 + 40 * math.tan(math.radians(35)) # eye height + distance × tan(angle up): about 29.6 m
+print(round(height, 1))                        # 29.6
+print(math.degrees(math.atan(1 / 12)))         # 4.76...: the angle of a ramp rising 1 in 12</code></pre>
+</section>
+
+<!-- ===================== §8 ===================== -->
+<section class="prose">
+  <h2><span class="n">8</span>Where this goes</h2>
+  <ul class="goes">
+    <li><b>Next (5.B.3):</b> triangles without a right angle, solved with the laws of sines and cosines; then waves (5.B.4), where sine and cosine are graphed over time.</li>
+    <li><b>Later in this book:</b> rotation matrices in linear algebra (7.B.4), whose columns are [cos θ, sin θ] and [−sin θ, cos θ]; the dot product’s angle formula (7.B.3); and in calculus, the derivative of sin θ is cos θ (with θ in radians).</li>
+    <li><b>In the world:</b> surveying and map-making, GPS and navigation, building roofs and ramps, robot arms and video-game cameras, and anything that turns or repeats: wheels, gears, sound and light.</li>
+  </ul>
+</section>
+
+<!-- ===================== §9 ===================== -->
+<section class="prose">
+  <h2><span class="n">9</span>Words to know</h2>
+  <div class="vocab">
+    <div class="term"><b>Right triangle</b>A triangle with one 90° angle.</div>
+    <div class="term"><b>Hypotenuse</b>The longest side of a right triangle, across from the right angle.</div>
+    <div class="term"><b>Opposite and adjacent</b>For an angle θ: the side across from θ, and the side next to θ that isn’t the hypotenuse.</div>
+    <div class="term"><b>Sine</b>sin θ = opposite / hypotenuse; on the unit circle, the up coordinate of the point.</div>
+    <div class="term"><b>Cosine</b>cos θ = adjacent / hypotenuse; on the unit circle, the across coordinate.</div>
+    <div class="term"><b>Tangent</b>tan θ = opposite / adjacent = sin θ / cos θ: the slope of the radius line. Undefined at 90° and 270°.</div>
+    <div class="term"><b>Similar triangles</b>Triangles with the same angles: one is a scaled copy of the other, so their side ratios match.</div>
+    <div class="term"><b>Inverse trig functions</b>sin⁻¹, cos⁻¹, tan⁻¹: take a ratio and return the angle.</div>
+    <div class="term"><b>Unit circle</b>The circle of radius 1 centered at the origin. The point at angle θ is (cos θ, sin θ).</div>
+    <div class="term"><b>Quadrant</b>One of the four regions cut out by the axes, numbered I–IV counterclockwise from the top right.</div>
+    <div class="term"><b>Reference angle</b>The angle between the radius and the nearest horizontal axis, between 0° and 90°.</div>
+    <div class="term"><b>Special angles</b>30°, 45° and 60°, whose sine and cosine are 1/2, √2/2 and √3/2 in some order.</div>
+    <div class="term"><b>Pythagorean identity</b>sin²θ + cos²θ = 1, for every angle.</div>
+  </div>
+</section>
+
+<!-- ===================== Quiz ===================== -->
+<section class="prose"><h2><span class="n">10</span>Check yourself</h2>
+  <p>Three kinds of questions: find a side, read a value off the unit circle (exact answers like √3/2 or sqrt(3)/2 are fine), and find an angle.</p>
+</section>
+<section class="wide">
+  <div class="card" id="quiz">
+    <div class="card-h"><span class="tag">Quiz</span><h3 id="qTitle"></h3><span class="score" id="score">Score: 0 / 0</span></div>
+    <div class="qtext" id="qText"></div>
+    <svg class="nl" id="qSvg" viewBox="0 0 1000 320" role="img" aria-label="Quiz picture"></svg>
+    <div class="inputs">
+      <label class="field fP"><span id="qL"></span><input id="q1" type="text" inputmode="text" autocomplete="off"></label>
+      <div class="row" style="margin:0"><button class="primary" id="qCheck">Check</button></div>
+    </div>
+    <div class="row" style="margin:10px 0 0"><button id="qShow">Show answer</button><button id="qNew">New question</button></div>
+    <div class="err" id="qErr"></div>
+    <div class="feedback" id="qFb" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ===================== Pager (filled in by the shared navigation) ===================== -->
+<nav class="wide">
+  <div class="pager"></div>
+  <div class="meta">5.B.2 · Prerequisites: 5.B.1 (angles and radians), 1.B.4 (ratios), 1.B.9 (√2) · Leads to: 5.B.3 (laws of sines and cosines), 5.B.4 (waves), 7.B.3–7.B.4 (dot product, rotations)</div>
+</nav>
+</main>
+
+<script>
+/* =====================================================================
+   1. HELPERS
+   ===================================================================== */
+const NS = 'http://www.w3.org/2000/svg';
+const $ = id => document.getElementById(id);
+const PI = Math.PI, DEG = 180 / PI, RAD = PI / 180;
+function mk(tag, attrs, parent){                           // create an SVG element with attributes
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function txt(parent, x, y, s, cls, extra){                 // create an SVG text element
+  extra = Object.assign({}, extra || {});
+  // a CSS class's text-anchor beats the attribute, so move a requested anchor into the style
+  if (extra['text-anchor']){ extra.style = (extra.style ? extra.style + ';' : '') + 'text-anchor:' + extra['text-anchor']; delete extra['text-anchor']; }
+  const t = mk('text', Object.assign({ x, y, class: cls || '' }, extra), parent);
+  t.textContent = s;
+  return t;
+}
+function num(x, d){ if (d === undefined) d = 3; const r = Math.round(x * Math.pow(10, d)) / Math.pow(10, d); return r === 0 ? '0' : (r < 0 ? '−' : '') + String(Math.abs(r)); }
+const ease = t => t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+// Parse typed math: numbers, fractions, √ or sqrt( ), and (if allowed) pi or π. "2√3/3", "sqrt(2)/2", "3pi/4".
+function parseExpr(s, allowPi){
+  s = String(s).trim().toLowerCase().replace(/[−–]/g, '-').replace(/\s+/g, '').replace(/π/g, 'pi').replace(/°$/, '');
+  if (!s) return NaN;
+  s = s.replace(/sqrt/g, '√').replace(/√\(([^()]*)\)/g, 'R($1)').replace(/√(\d+(\.\d+)?)/g, 'R($1)');
+  if (allowPi) s = s.replace(/pi/g, 'P');
+  s = s.replace(/(\d|\))(?=[RP(])/g, '$1*').replace(/P(?=[\dR(P])/g, 'P*');   // implicit multiplication: 2√3, 3pi, 2(…)
+  if (!/^[0-9.+\-*/()RP]*$/.test(s) || (!allowPi && s.includes('P'))) return NaN;
+  try { const v = Function('R', 'P', '"use strict";return (' + s + ')')(Math.sqrt, PI); return typeof v === 'number' && isFinite(v) ? v : NaN; } catch (e){ return NaN; }
+}
+const EXACT = [[0, '0'], [.5, '1/2'], [Math.SQRT2 / 2, '√2/2'], [Math.sqrt(3) / 2, '√3/2'], [1, '1'], [Math.sqrt(3) / 3, '√3/3'], [Math.sqrt(3), '√3']];
+function exact(v){ for (const [x, s] of EXACT) if (Math.abs(Math.abs(v) - x) < 1e-9) return (v < 0 && x ? '−' : '') + s; return null; }
+// θ in radians as a tidy multiple of π when possible (π/6, 3π/4, −π/2), otherwise a decimal
+function radStr(deg){
+  const q = deg / 180;
+  for (const den of [1, 2, 3, 4, 6, 12]){ const n = q * den; if (Math.abs(n - Math.round(n)) < 1e-9){ const k = Math.round(n); if (!k) return '0'; const top = (k < 0 ? '−' : '') + (Math.abs(k) === 1 ? '' : Math.abs(k)) + 'π'; return den === 1 ? top : top + '/' + den; } }
+  return num(deg * RAD, 3);
+}
+const mod360 = d => ((d % 360) + 360) % 360;
+function quadrant(deg){ const m = mod360(deg); if (Math.abs(m % 90) < 1e-9) return 0; return Math.floor(m / 90) + 1; }
+const QN = ['', 'I', 'II', 'III', 'IV'];
+function selectOnFocus(ids){ ids.forEach(id => $(id).addEventListener('focus', e => e.target.select())); }
+// Read a list of inputs as numbers; show an inline error and return null if any is empty or invalid
+function readAll(ids, errId, msg){
+  const out = ids.map(id => parseExpr($(id).value, false));
+  if (ids.some(id => $(id).value.trim() === '') || out.some(isNaN)){ $(errId).textContent = msg || 'Fill in every box with a number.'; return null; }
+  $(errId).textContent = ''; return out;
+}
+// A row of preset buttons; returns a function that marks the chosen one
+function buttons(boxId, list, onPick){
+  list.forEach((p, i) => { const b = document.createElement('button'); b.className = 'preset'; b.textContent = p.n; b.onclick = () => onPick(i); $(boxId).appendChild(b); });
+  return i => [...$(boxId).children].forEach((b, j) => b.classList.toggle('on', j === i));
+}
+// An angle arc at (cx, cy) from screen angle a0 to a1 (radians, counterclockwise on screen means negative y), with a label
+function arc(g, cx, cy, r, a0, a1, col, label, lr){
+  const n = 40; let d = '';
+  for (let k = 0; k <= n; k++){ const a = a0 + (a1 - a0) * k / n; d += (k ? ' L' : 'M') + (cx + r * Math.cos(a)).toFixed(1) + ',' + (cy - r * Math.sin(a)).toFixed(1); }
+  mk('path', { d, style: `fill:none;stroke:${col};stroke-width:2` }, g);
+  if (label){ const am = (a0 + a1) / 2, rr = lr || r + 16; txt(g, cx + rr * Math.cos(am), cy - rr * Math.sin(am) + 5, label, 'labS', { 'text-anchor': 'middle', style: `fill:${col}` }); }
+}
+const line = (g, x1, y1, x2, y2, style) => mk('line', { x1, y1, x2, y2, style }, g);
+
+const svgCss = document.createElement('style');
+svgCss.textContent = `
+  .grid{stroke:var(--line);stroke-width:1} .axis{stroke:var(--ink);stroke-width:1.5;opacity:.7}
+  .tl{fill:var(--muted);font:500 11px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:3px}
+  .lab{font:700 15px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:5px}
+  .labS{font:600 12.5px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+  .cap{fill:var(--muted);font:500 12px var(--sans)}
+  .pl{fill:var(--ink);font:700 13px var(--sans);paint-order:stroke;stroke:var(--bg);stroke-width:5px;letter-spacing:.06em;text-transform:uppercase}
+  .bt{fill:var(--ink);font:600 13px var(--sans)}
+`;
+document.head.appendChild(svgCss);
+
+/* =====================================================================
+   2. SAME ANGLE, ANY SIZE (similar triangles)
+   ===================================================================== */
+$('sA').value = 30;
+function drawSim(){
+  const r = readAll(['sA'], 'sErr'); if (!r) return;
+  const a = r[0]; if (a <= 0 || a >= 90){ $('sErr').textContent = 'A right triangle’s other angles are between 0° and 90°.'; return; }
+  const svg = $('sSvg'); svg.innerHTML = ''; const g = mk('g', {}, svg);
+  const c = Math.cos(a * RAD), s = Math.sin(a * RAD), u = Math.min(880 / (6 * c + .4), 270 / (6 * s + .2)), X0 = 50, Y0 = 295;
+  [6, 4, 2].forEach((h, k) => {
+    const ax = X0 + h * c * u, ty = Y0 - h * s * u, op = [.18, .28, .4][k];
+    mk('polygon', { points: `${X0},${Y0} ${ax},${Y0} ${ax},${ty}`, style: `fill:var(--soft);opacity:${op}` }, g);
+    line(g, ax, Y0, ax, ty, 'stroke:var(--sin);stroke-width:3');
+    line(g, X0, Y0, ax, ty, 'stroke:var(--pt);stroke-width:2.5');
+    mk('polyline', { points: `${ax - 10},${Y0} ${ax - 10},${Y0 - 10} ${ax},${Y0 - 10}`, style: 'fill:none;stroke:var(--muted);stroke-width:1.2' }, g);
+    txt(g, ax + 6, (Y0 + ty) / 2 + 4, `${num(h * s, 2)}`, 'labS', { 'text-anchor': 'start', style: 'fill:var(--sin)' });
+    txt(g, X0 + (ax - X0) * .55 - 6 * s * 3, ty + (Y0 - ty) * .45 - 10, `hyp ${h}`, 'labS', { 'text-anchor': 'end', style: 'fill:var(--pt)' });
+  });
+  line(g, X0, Y0, X0 + 6 * c * u, Y0, 'stroke:var(--cos);stroke-width:3');
+  [2, 4, 6].forEach(h => { const ax = X0 + h * c * u; mk('circle', { cx: ax, cy: Y0, r: 3, style: 'fill:var(--cos)' }, g); txt(g, ax - 4, Y0 + 18, num(h * c, 2), 'labS', { 'text-anchor': 'end', style: 'fill:var(--cos)' }); });
+  arc(g, X0, Y0, 34, 0, a * RAD, 'var(--ink)', `θ = ${num(a, 1)}°`, 64);
+  const rows = [2, 4, 6].map(h => `<tr><td class="m">${h}</td><td class="m sn">${num(h * s, 3)}</td><td class="m cs">${num(h * c, 3)}</td><td class="m">${num(s, 3)}</td><td class="m">${num(c, 3)}</td><td class="m">${num(s / c, 3)}</td></tr>`).join('');
+  $('sTab').innerHTML = `<table class="lists"><tr><th>hypotenuse</th><th class="sn">opposite</th><th class="cs">adjacent</th><th>opp / hyp = sin θ</th><th>adj / hyp = cos θ</th><th>opp / adj = tan θ</th></tr>${rows}</table>` +
+    `<div class="readout">The sides double and triple, but every ratio stays put: they depend only on θ = ${num(a, 1)}°.</div>`;
+}
+$('sA').addEventListener('input', drawSim); selectOnFocus(['sA']);
+
+/* =====================================================================
+   3. THE UNIT CIRCLE (linked graphs)
+   ===================================================================== */
+const TP = [
+  { n: '30°', d: 30, t: 'Quadrant I: sin 30° = 1/2, cos 30° = √3/2. The triangle is half of an equilateral triangle.' },
+  { n: '45°', d: 45, t: 'Across equals up: cos 45° = sin 45° = √2/2, and the slope tan 45° = 1.' },
+  { n: '60°', d: 60, t: 'The 30° triangle turned on its side: sin and cos swap.' },
+  { n: '90°', d: 90, t: 'Straight up: cos 90° = 0, sin 90° = 1, and the radius line is vertical, so tan 90° is undefined.' },
+  { n: '120°', d: 120, t: 'Quadrant II: still up (sin +), but now left (cos −). Reference angle 60°.' },
+  { n: '135°', d: 135, t: 'The mirror image of 45° across the vertical axis: sin = √2/2, cos = −√2/2, tan = −1.' },
+  { n: '210°', d: 210, t: 'Quadrant III: left and down, so sin and cos are both negative, and tan = (−)/(−) is positive.' },
+  { n: '300°', d: 300, t: 'Quadrant IV: right (cos +) and down (sin −). Reference angle 60°.' },
+  { n: '−45°', d: -45, t: 'A negative angle turns clockwise. −45° lands where 315° does.' },
+  { n: '390°', d: 390, t: 'One full turn plus 30°: the same point as 30°, so the same sine, cosine and tangent.' },
+];
+const tr = { deg: 30, raf: 0, playing: false, drag: false };
+const markT = buttons('tPresets', TP, i => { stopT(); setDeg(TP[i].d); markT(i); $('tDesc').textContent = TP[i].t; });
+function setDeg(d, src){ tr.deg = d; if (src !== 'deg') $('tDeg').value = num(d, 1); if (src !== 'rad') $('tRad').value = radStr(d); $('tErr').textContent = ''; drawT(); }
+const CX = 255, CY = 230, RR = 165;
+function drawT(){
+  const d = tr.deg, t = d * RAD, c = Math.cos(t), s = Math.sin(t), cz = Math.abs(c) < 1e-9, tn = cz ? NaN : s / c, q = quadrant(d);
+  const svg = $('tSvg'); svg.innerHTML = ''; const g = mk('g', {}, svg);
+  const X = x => CX + x * RR, Y = y => CY - y * RR;
+  // quadrant tints and sign labels
+  [[1, 1, 'I', 'all +'], [-1, 1, 'II', 'sin +'], [-1, -1, 'III', 'tan +'], [1, -1, 'IV', 'cos +']].forEach(([sx, sy, n, lab], k) => {
+    const on = q === k + 1;
+    mk('rect', { x: sx > 0 ? CX : 0, y: sy > 0 ? 0 : CY, width: sx > 0 ? 510 - CX : CX, height: sy > 0 ? CY : 460 - CY, style: `fill:var(--soft);opacity:${on ? .16 : 0}` }, g);
+    txt(g, sx > 0 ? 498 : 12, sy > 0 ? 22 : 448, `${n}: ${lab}`, 'labS', { 'text-anchor': sx > 0 ? 'end' : 'start', style: `fill:${on ? 'var(--pt)' : 'var(--muted)'}` });
+  });
+  line(g, 0, CY, 510, CY, 'stroke:var(--ink);stroke-width:1.5;opacity:.7'); line(g, CX, 0, CX, 460, 'stroke:var(--ink);stroke-width:1.5;opacity:.7');
+  mk('circle', { cx: CX, cy: CY, r: RR, style: 'fill:none;stroke:var(--line2);stroke-width:2' }, g);
+  [[1, 0, '1'], [-1, 0, '−1'], [0, 1, '1'], [0, -1, '−1']].forEach(([x, y, l]) => txt(g, X(x) + (y ? -8 : x > 0 ? 8 : -8), Y(y) + (y ? 4 : 16), l, 'tl', { 'text-anchor': y ? 'end' : x > 0 ? 'start' : 'end' }));
+  // tangent: the line x = 1, and where the radius line meets it
+  line(g, X(1), 0, X(1), 460, 'stroke:var(--tan);stroke-width:1.2;stroke-dasharray:4 5;opacity:.6');
+  if (!cz && Math.abs(tn) < 1.35){
+    line(g, X(Math.min(0, c)), Y(Math.min(0, c) * tn), X(1), Y(tn), 'stroke:var(--pt);stroke-width:1.5;stroke-dasharray:5 4;opacity:.7');
+    line(g, X(1), Y(0), X(1), Y(tn), 'stroke:var(--tan);stroke-width:5;stroke-linecap:round');
+    mk('circle', { cx: X(1), cy: Y(tn), r: 4.5, style: 'fill:var(--tan)' }, g);
+    txt(g, X(1) + 10, Y(tn / 2) + 5, `tan = ${num(tn, 2)}`, 'labS', { 'text-anchor': 'start', style: 'fill:var(--tan)' });
+  } else txt(g, X(1) + 10, 40, cz ? 'tan undefined (vertical radius)' : 'tan off the chart', 'labS', { 'text-anchor': 'start', style: 'fill:var(--tan)' });
+  // the angle: arc from 0 to θ (more than a full turn spirals out)
+  const turns = Math.abs(d) > 360;
+  { const n = 80; let p = ''; for (let k = 0; k <= n; k++){ const a = t * k / n, r = 30 + (turns ? 10 * Math.abs(a) / (2 * PI) : 0); p += (k ? ' L' : 'M') + (CX + r * Math.cos(a)).toFixed(1) + ',' + (CY - r * Math.sin(a)).toFixed(1); } mk('path', { d: p, style: 'fill:none;stroke:var(--ink);stroke-width:1.6' }, g); }
+  const am = mod360(d) * RAD / 2 || (d < 0 ? -PI / 8 : PI / 8);
+  txt(g, CX + 58 * Math.cos(d < 0 ? t / 2 : am), CY - 58 * Math.sin(d < 0 ? t / 2 : am) + 5, 'θ', 'lab', { 'text-anchor': 'middle', style: 'fill:var(--ink)' });
+  // the triangle: across (cos), up (sin), radius
+  line(g, X(0), Y(0), X(c), Y(0), 'stroke:var(--cos);stroke-width:6;stroke-linecap:round');
+  line(g, X(c), Y(0), X(c), Y(s), 'stroke:var(--sin);stroke-width:6;stroke-linecap:round');
+  line(g, X(0), Y(0), X(c), Y(s), 'stroke:var(--pt);stroke-width:3');
+  if (Math.abs(s) > .12 && Math.abs(c) > .12) mk('polyline', { points: `${X(c) - 10 * Math.sign(c)},${Y(0)} ${X(c) - 10 * Math.sign(c)},${Y(0) - 10 * Math.sign(s)} ${X(c)},${Y(0) - 10 * Math.sign(s)}`, style: 'fill:none;stroke:var(--muted);stroke-width:1.2' }, g);
+  if (Math.abs(c) > .08) txt(g, X(c / 2), Y(0) + (s >= 0 ? 20 : -10), `cos = ${num(c, 2)}`, 'labS', { 'text-anchor': 'middle', style: 'fill:var(--cos)' });
+  if (Math.abs(s) > .08) txt(g, X(c) + (c >= 0 ? 10 : -10), Y(s / 2) + 4, `sin = ${num(s, 2)}`, 'labS', { 'text-anchor': c >= 0 ? 'start' : 'end', style: 'fill:var(--sin)' });
+  mk('circle', { cx: X(0), cy: Y(0), r: 4, style: 'fill:var(--ink)' }, g);
+  mk('circle', { cx: X(c), cy: Y(s), r: 9, style: 'fill:var(--pt);stroke:var(--paper);stroke-width:2' }, g);
+  txt(g, X(c) + (c >= 0 ? 14 : -14), Y(s) + (s >= 0 ? -12 : 22), `(${num(c, 2)}, ${num(s, 2)})`, 'labS', { 'text-anchor': c >= 0 ? 'start' : 'end', style: 'fill:var(--pt)' });
+  drawGraphs(d, c, s, tn);
+  writeT(d, c, s, tn, q);
+}
+function drawGraphs(d, c, s, tn){
+  const svg = $('gSvg'); svg.innerHTML = ''; const g = mk('g', {}, svg);
+  const L = 54, R = 470, MY = 230, A = 82, X = a => L + a / 360 * (R - L), Y = v => MY - v * A;
+  [0, 90, 180, 270, 360].forEach(a => { line(g, X(a), 30, X(a), 430, 'stroke:var(--line);stroke-width:1'); txt(g, X(a), 448, `${a}°`, 'tl', { 'text-anchor': 'middle' }); txt(g, X(a), 20, radStr(a), 'tl', { 'text-anchor': 'middle' }); });
+  [-2, -1, 1, 2].forEach(v => { line(g, L, Y(v), R, Y(v), 'stroke:var(--line);stroke-width:1'); txt(g, L - 6, Y(v) + 4, num(v), 'tl', { 'text-anchor': 'end' }); });
+  line(g, L, MY, R, MY, 'stroke:var(--ink);stroke-width:1.5;opacity:.7');
+  [90, 270].forEach(a => line(g, X(a), 30, X(a), 430, 'stroke:var(--tan);stroke-width:1.2;stroke-dasharray:5 5;opacity:.6'));
+  const curve = (f, col, w, op, clip) => { let p = '', pen = false; for (let a = 0; a <= 360; a += 1){ const v = f(a * RAD); const ok = isFinite(v) && Math.abs(v) <= clip; if (ok){ p += (pen ? ' L' : ' M') + X(a).toFixed(1) + ',' + Y(v).toFixed(1); pen = true; } else pen = false; } mk('path', { d: p, style: `fill:none;stroke:${col};stroke-width:${w};opacity:${op}` }, g); };
+  curve(x => Math.abs(Math.cos(x)) < 1e-6 ? NaN : Math.tan(x), 'var(--tan)', 1.8, .65, 2.4);
+  curve(Math.cos, 'var(--cos)', 2.8, 1, 9); curve(Math.sin, 'var(--sin)', 2.8, 1, 9);
+  txt(g, X(8), Y(1) - 8, 'cos', 'labS', { 'text-anchor': 'start', style: 'fill:var(--cos)' });
+  txt(g, X(98), Y(1) - 8, 'sin', 'labS', { 'text-anchor': 'start', style: 'fill:var(--sin)' });
+  txt(g, X(62), Y(2.15), 'tan', 'labS', { 'text-anchor': 'end', style: 'fill:var(--tan)' });
+  const m = mod360(d);
+  line(g, X(m), 30, X(m), 430, 'stroke:var(--pt);stroke-width:2');
+  [[c, 'var(--cos)'], [s, 'var(--sin)']].concat(isFinite(tn) && Math.abs(tn) <= 2.4 ? [[tn, 'var(--tan)']] : []).forEach(([v, col]) => mk('circle', { cx: X(m), cy: Y(v), r: 6, style: `fill:${col};stroke:var(--paper);stroke-width:2` }, g));
+  txt(g, X(m) + (m > 300 ? -8 : 8), 44, `θ = ${num(m, 1)}°`, 'labS', { 'text-anchor': m > 300 ? 'end' : 'start', style: 'fill:var(--pt)' });
+}
+function writeT(d, c, s, tn, q){
+  const cz = !isFinite(tn);                                  // on the vertical axis: tangent is undefined
+  const ex = v => { const e = exact(v); return e && !/^−?[01]$/.test(e) ? `<i>= ${e}</i>` : ''; };
+  $('tChips').innerHTML =
+    `<div class="chip"><small>θ</small><b>${num(d, 1)}°</b><i>= ${radStr(d)} rad</i></div>` +
+    `<div class="chip"><small class="cs">cos θ (across)</small><b class="cs">${num(c)}</b>${ex(c)}</div>` +
+    `<div class="chip"><small class="sn">sin θ (up)</small><b class="sn">${num(s)}</b>${ex(s)}</div>` +
+    `<div class="chip"><small class="tn">tan θ (slope)</small><b class="tn">${isFinite(tn) ? num(tn) : 'undefined'}</b>${isFinite(tn) ? ex(tn) : ''}</div>`;
+  const m = mod360(d), ref = q ? [m, 180 - m, m - 180, 360 - m][q - 1] : null;
+  let h = q ? `<b>Quadrant ${QN[q]}</b>: cos ${c > 0 ? '+' : '−'}, sin ${s > 0 ? '+' : '−'}, tan ${tn > 0 ? '+' : '−'}. Reference angle ${num(ref, 1)}°.` : `<b>On an axis</b>: one of sine and cosine is 0${cz ? ', so tan is undefined' : ''}.`;
+  if (Math.abs(m - d) > 1e-9) h += ` ${num(d, 1)}° lands in the same place as ${num(m, 1)}°.`;
+  h += ` Check: sin²θ + cos²θ = ${num(s * s)} + ${num(c * c)} = ${num(s * s + c * c)}.`;
+  $('tOut').innerHTML = h;
+}
+$('tDeg').addEventListener('input', () => { stopT(); markT(-1); $('tDesc').textContent = ''; const v = parseExpr($('tDeg').value, false); if ($('tDeg').value.trim() === '' || isNaN(v)){ $('tErr').textContent = 'Type an angle in degrees, like 150 or −45.'; return; } if (Math.abs(v) > 1080){ $('tErr').textContent = 'Keep it within three turns (−1080° to 1080°).'; return; } setDeg(v, 'deg'); });
+$('tRad').addEventListener('input', () => { stopT(); markT(-1); $('tDesc').textContent = ''; const v = parseExpr($('tRad').value, true); if ($('tRad').value.trim() === '' || isNaN(v)){ $('tErr').textContent = 'Type radians like 2pi/3, π/4 or 1.2.'; return; } if (Math.abs(v) > 6 * PI){ $('tErr').textContent = 'Keep it within three turns.'; return; } setDeg(v * DEG, 'rad'); });
+selectOnFocus(['tDeg', 'tRad']);
+function playT(){
+  if (tr.playing){ stopT(); return; }
+  tr.playing = true; $('tPlay').textContent = 'Pause'; markT(-1); $('tDesc').textContent = 'One full turn: watch sine and cosine trace their waves, and tangent shoot off to ±∞ at 90° and 270°.';
+  const d0 = mod360(tr.deg) > 359 ? 0 : mod360(tr.deg), t0 = performance.now() - d0 / 360 * 9000;
+  const step = now => { if (!tr.playing) return; const f = (now - t0) / 9000; if (f >= 1){ setDeg(360); stopT(); return; } setDeg(Math.round(f * 3600) / 10); tr.raf = requestAnimationFrame(step); };
+  tr.raf = requestAnimationFrame(step);
+}
+function stopT(){ cancelAnimationFrame(tr.raf); tr.playing = false; $('tPlay').textContent = 'Play'; }
+$('tPlay').onclick = playT;
+// Drag the point around the circle; snap to whole degrees, and to multiples of 15° when close
+function dragT(ev){
+  const svg = $('tSvg'), pt = svg.createSVGPoint(); pt.x = ev.clientX; pt.y = ev.clientY; const p = pt.matrixTransform(svg.getScreenCTM().inverse());
+  let a = mod360(Math.atan2(CY - p.y, p.x - CX) * DEG); const near = Math.round(a / 15) * 15;
+  a = Math.abs(a - near) < 3 ? near % 360 : Math.round(a);
+  markT(-1); $('tDesc').textContent = ''; setDeg(a);
+}
+$('tSvg').addEventListener('pointerdown', ev => { stopT(); tr.drag = true; $('tSvg').setPointerCapture(ev.pointerId); dragT(ev); });
+$('tSvg').addEventListener('pointermove', ev => { if (tr.drag) dragT(ev); });
+$('tSvg').addEventListener('pointerup', () => { tr.drag = false; });
+
+/* =====================================================================
+   4. THE SPECIAL TRIANGLES
+   ===================================================================== */
+const SP = [{ n: 'Half a square (45°)' }, { n: 'Half an equilateral triangle (30° and 60°)' }];
+let spi = 0;
+const markSP = buttons('spPick', SP, i => { spi = i; drawSpec(); });
+function drawSpec(){
+  markSP(spi);
+  const svg = $('spSvg'); svg.innerHTML = ''; const g = mk('g', {}, svg), u = 230;
+  if (spi === 0){
+    // the whole square (dashed), cut on its diagonal; then the half, scaled to hypotenuse 1
+    const s = 150, x0 = 70, y0 = 280;
+    mk('rect', { x: x0, y: y0 - s, width: s, height: s, style: 'fill:var(--soft);opacity:.15;stroke:var(--muted);stroke-width:1.5;stroke-dasharray:5 4' }, g);
+    line(g, x0, y0, x0 + s, y0 - s, 'stroke:var(--pt);stroke-width:2.5');
+    txt(g, x0 + s / 2, y0 + 20, 'side 1', 'labS', { 'text-anchor': 'middle', style: 'fill:var(--muted)' });
+    txt(g, x0 + s / 2 + 10, y0 - s / 2 - 10, 'diagonal √2', 'labS', { 'text-anchor': 'start', style: 'fill:var(--pt)' });
+    txt(g, x0 + s / 2, 40, 'A square, cut on its diagonal', 'bt', { 'text-anchor': 'middle' });
+    const k = Math.SQRT2 / 2, X0 = 480, Y0 = 285;
+    mk('polygon', { points: `${X0},${Y0} ${X0 + k * u},${Y0} ${X0 + k * u},${Y0 - k * u}`, style: 'fill:var(--soft);opacity:.35' }, g);
+    line(g, X0, Y0, X0 + k * u, Y0, 'stroke:var(--cos);stroke-width:5'); line(g, X0 + k * u, Y0, X0 + k * u, Y0 - k * u, 'stroke:var(--sin);stroke-width:5'); line(g, X0, Y0, X0 + k * u, Y0 - k * u, 'stroke:var(--pt);stroke-width:3');
+    arc(g, X0, Y0, 36, 0, PI / 4, 'var(--ink)', '45°', 58);
+    txt(g, X0 + k * u / 2, Y0 + 22, 'cos 45° = 1/√2 = √2/2', 'labS', { 'text-anchor': 'middle', style: 'fill:var(--cos)' });
+    txt(g, X0 + k * u + 12, Y0 - k * u / 2, 'sin 45° = √2/2', 'labS', { 'text-anchor': 'start', style: 'fill:var(--sin)' });
+    txt(g, X0 + k * u / 2 - 14, Y0 - k * u / 2 - 12, '1', 'lab', { 'text-anchor': 'end', style: 'fill:var(--pt)' });
+    txt(g, X0 + k * u / 2, 40, 'Half of it, shrunk so the hypotenuse is 1', 'bt', { 'text-anchor': 'middle' });
+    $('spOut').innerHTML = 'A square with side 1 has diagonal √(1² + 1²) = √2. Each half is a 45°-45°-90° triangle with sides 1, 1, √2. Divide every side by √2 to make the hypotenuse 1: the two legs become 1/√2 = √2/2 ≈ 0.707. So <span class="sn">sin 45°</span> = <span class="cs">cos 45°</span> = √2/2, and tan 45° = 1.';
+  } else {
+    const s = 170, x0 = 60, y0 = 285, h = s * Math.sqrt(3) / 2;
+    mk('polygon', { points: `${x0},${y0} ${x0 + s},${y0} ${x0 + s / 2},${y0 - h}`, style: 'fill:var(--soft);opacity:.15;stroke:var(--muted);stroke-width:1.5;stroke-dasharray:5 4' }, g);
+    line(g, x0 + s / 2, y0, x0 + s / 2, y0 - h, 'stroke:var(--pt);stroke-width:2.5');
+    txt(g, x0 + s / 4, y0 + 20, '1/2', 'labS', { 'text-anchor': 'middle', style: 'fill:var(--muted)' }); txt(g, x0 + 3 * s / 4, y0 + 20, '1/2', 'labS', { 'text-anchor': 'middle', style: 'fill:var(--muted)' });
+    txt(g, x0 + s / 4 - 12, y0 - h / 2, 'side 1', 'labS', { 'text-anchor': 'end', style: 'fill:var(--muted)' });
+    txt(g, x0 + s / 2, 40, 'An equilateral triangle (side 1), cut in half', 'bt', { 'text-anchor': 'middle' });
+    const X0 = 470, Y0 = 285, ax = Math.sqrt(3) / 2 * u, ay = .5 * u;
+    mk('polygon', { points: `${X0},${Y0} ${X0 + ax},${Y0} ${X0 + ax},${Y0 - ay}`, style: 'fill:var(--soft);opacity:.35' }, g);
+    line(g, X0, Y0, X0 + ax, Y0, 'stroke:var(--cos);stroke-width:5'); line(g, X0 + ax, Y0, X0 + ax, Y0 - ay, 'stroke:var(--sin);stroke-width:5'); line(g, X0, Y0, X0 + ax, Y0 - ay, 'stroke:var(--pt);stroke-width:3');
+    arc(g, X0, Y0, 42, 0, PI / 6, 'var(--ink)', '30°', 66);
+    arc(g, X0 + ax, Y0 - ay, 26, PI + PI / 6, 1.5 * PI, 'var(--ink)', '60°', 46);
+    txt(g, X0 + ax / 2, Y0 + 22, 'cos 30° = √3/2  (= sin 60°)', 'labS', { 'text-anchor': 'middle', style: 'fill:var(--cos)' });
+    txt(g, X0 + ax + 12, Y0 - ay / 2 + 4, 'sin 30° = 1/2  (= cos 60°)', 'labS', { 'text-anchor': 'start', style: 'fill:var(--sin)' });
+    txt(g, X0 + ax / 2 - 10, Y0 - ay / 2 - 12, '1', 'lab', { 'text-anchor': 'end', style: 'fill:var(--pt)' });
+    txt(g, X0 + ax / 2 + 40, 40, 'One half: hypotenuse 1', 'bt', { 'text-anchor': 'middle' });
+    $('spOut').innerHTML = 'Cutting the equilateral triangle down the middle splits the base into halves of 1/2 and the top angle into 30° + 30°. Each half has hypotenuse 1, short side 1/2, and tall side √(1² − (1/2)²) = √(3/4) = √3/2. Seen from the 30° corner: <span class="sn">sin 30°</span> = 1/2, <span class="cs">cos 30°</span> = √3/2. From the 60° corner the same sides swap roles: sin 60° = √3/2, cos 60° = 1/2.';
+  }
+}
+
+/* =====================================================================
+   5. HEIGHTS AND SHADOWS
+   ===================================================================== */
+const HM = [{ n: 'Angle up' }, { n: 'Shadow' }];
+let hmi = 0;
+const markH = buttons('hModes', HM, i => { hmi = i; buildH(); });
+const HF = [
+  [['hD', 'Distance d (m)', 40, 'fC'], ['hA', 'Angle up α (°)', 35, 'fP'], ['hE', 'Eye height (m)', 1.6, '']],
+  [['hP', 'Pole height h (m)', 6, 'fS'], ['hS', 'Sun height e (°)', 30, 'fP']],
+];
+function buildH(){
+  markH(hmi);
+  $('hIn').innerHTML = HF[hmi].map(([id, l, v, c]) => `<label class="field ${c} sm"><span>${l}</span><input id="${id}" type="text" inputmode="decimal" autocomplete="off" value="${v}"></label>`).join('');
+  HF[hmi].forEach(([id]) => $(id).addEventListener('input', drawH)); selectOnFocus(HF[hmi].map(f => f[0]));
+  drawH();
+}
+function drawH(){
+  const ids = HF[hmi].map(f => f[0]), r = readAll(ids, 'hErr'); if (!r) return;
+  const svg = $('hSvg'); svg.innerHTML = ''; const g = mk('g', {}, svg), GY = 300;
+  mk('rect', { x: 0, y: GY, width: 1000, height: 40, style: 'fill:var(--line);opacity:.5' }, g);
+  if (hmi === 0){
+    const [dd, a, e] = r;
+    if (dd <= 0 || dd > 200){ $('hErr').textContent = 'Use a distance from 0 to 200 m.'; return; }
+    if (a <= 0 || a >= 85){ $('hErr').textContent = 'Use an angle between 0° and 85°.'; return; }
+    if (e < 0 || e > 3){ $('hErr').textContent = 'Use an eye height from 0 to 3 m.'; return; }
+    const up = dd * Math.tan(a * RAD), H = e + up, u = Math.min(760 / (dd + 8), 270 / (H + 1)), X0 = 110, X = x => X0 + x * u, Y = y => GY - y * u;
+    // building
+    mk('rect', { x: X(dd), y: Y(H), width: 5 * u + 20, height: GY - Y(H), style: 'fill:var(--soft);opacity:.5;stroke:var(--pt);stroke-width:1.5' }, g);
+    // person (simple stick figure, eye at height e)
+    const ex = X(0), ey = Y(e), hs = Math.max(8, Math.min(14, e * u * .16));
+    mk('circle', { cx: ex, cy: ey, r: hs, style: 'fill:none;stroke:var(--ink);stroke-width:2' }, g);
+    line(g, ex, ey + hs, ex, GY - Math.max(10, e * u * .35), 'stroke:var(--ink);stroke-width:2');
+    line(g, ex, GY - Math.max(10, e * u * .35), ex - 8, GY, 'stroke:var(--ink);stroke-width:2'); line(g, ex, GY - Math.max(10, e * u * .35), ex + 8, GY, 'stroke:var(--ink);stroke-width:2');
+    // the right triangle: eye level across, up the wall, line of sight
+    line(g, ex, ey, X(dd), ey, 'stroke:var(--cos);stroke-width:4');
+    line(g, X(dd), ey, X(dd), Y(H), 'stroke:var(--sin);stroke-width:4');
+    line(g, ex, ey, X(dd), Y(H), 'stroke:var(--pt);stroke-width:2;stroke-dasharray:7 5');
+    arc(g, ex, ey, 46, 0, Math.atan2(ey - Y(H), X(dd) - ex), 'var(--ink)', `α = ${num(a, 1)}°`, 82);
+    txt(g, (ex + X(dd)) / 2, ey + 20, `d = ${num(dd, 1)} m`, 'labS', { 'text-anchor': 'middle', style: 'fill:var(--cos)' });
+    txt(g, X(dd) - 8, (ey + Y(H)) / 2, `d · tan α = ${num(up, 1)} m`, 'labS', { 'text-anchor': 'end', style: 'fill:var(--sin)' });
+    line(g, X(dd) + 5 * u + 34, GY, X(dd) + 5 * u + 34, Y(H), 'stroke:var(--ink);stroke-width:1.2');
+    txt(g, X(dd) + 5 * u + 40, (GY + Y(H)) / 2, `${num(H, 1)} m`, 'lab', { 'text-anchor': 'start', style: 'fill:var(--ink)' });
+    $('hOut').innerHTML = `The angle up and the distance make a right triangle at eye level. Opposite / adjacent = tan α, so the part above your eyes is <span class="cs">d</span> × tan ${num(a, 1)}° = ${num(dd, 1)} × ${num(Math.tan(a * RAD))} = <span class="sn">${num(up, 2)} m</span>. Add your eye height: the building is about <b>${num(H, 1)} m</b> tall.`;
+  } else {
+    const [h, e] = r;
+    if (h <= 0 || h > 50){ $('hErr').textContent = 'Use a height from 0 to 50 m.'; return; }
+    if (e < 5 || e > 90){ $('hErr').textContent = 'Use a sun height from 5° to 90°.'; return; }
+    const sh = e >= 90 ? 0 : h / Math.tan(e * RAD), u = Math.min(760 / (sh + 4), 250 / (h + .5)), X0 = 140, X = x => X0 + x * u, Y = y => GY - y * u;
+    line(g, X(0), GY, X(0), Y(h), 'stroke:var(--sin);stroke-width:6');
+    line(g, X(0), GY - 2, X(sh), GY - 2, 'stroke:var(--shd, #555);stroke-width:8;opacity:.45');
+    line(g, X(0), GY + 3, X(sh), GY + 3, 'stroke:var(--cos);stroke-width:3');
+    const dx = Math.cos(e * RAD), dy = Math.sin(e * RAD), back = 3 + 60 / u;
+    line(g, X(sh), Y(0), X(-dx * back), Y(h + dy * back), 'stroke:var(--sun);stroke-width:2;stroke-dasharray:7 5');
+    const sx = X(-dx * back), sy = Y(h + dy * back); mk('circle', { cx: Math.max(30, sx), cy: Math.max(30, sy), r: 18, style: 'fill:var(--sun)' }, g);
+    if (sh > .2) arc(g, X(sh), Y(0), 46, PI - e * RAD, PI, 'var(--ink)', `e = ${num(e, 1)}°`, 78);
+    txt(g, X(0) - 10, Y(h / 2), `h = ${num(h, 1)} m`, 'labS', { 'text-anchor': 'end', style: 'fill:var(--sin)' });
+    txt(g, X(sh / 2), GY + 26, `shadow = ${num(sh, 2)} m`, 'labS', { 'text-anchor': 'middle', style: 'fill:var(--cos)' });
+    $('hOut').innerHTML = e >= 90 ? 'With the sun straight overhead there is no shadow at all: tan 90° is undefined, and the shadow length h / tan e shrinks to 0.'
+      : `The pole, its shadow and the sun’s ray make a right triangle with the angle e at the shadow’s tip. tan e = <span class="sn">h</span> / shadow, so shadow = h / tan e = ${num(h, 1)} / ${num(Math.tan(e * RAD))} = <b>${num(sh, 2)} m</b>.${e < 45 ? ' A low sun (under 45°) makes shadows longer than the object is tall.' : ''}`;
+  }
+}
+
+/* =====================================================================
+   6. LADDERS AND RAMPS
+   ===================================================================== */
+const LM = [{ n: 'Ladder' }, { n: 'Ramp' }];
+let lmi = 0;
+const markL = buttons('lModes', LM, i => { lmi = i; buildL(); });
+const LF = [
+  [['lL', 'Ladder length L (m)', 6, 'fP'], ['lA', 'Angle with ground θ (°)', 75, '']],
+  [['lH', 'Rise needed (m)', 0.6, 'fS'], ['lA2', 'Ramp angle θ (°)', 4.76, '']],
+];
+function buildL(){
+  markL(lmi);
+  $('lIn').innerHTML = LF[lmi].map(([id, l, v, c]) => `<label class="field ${c} sm"><span>${l}</span><input id="${id}" type="text" inputmode="decimal" autocomplete="off" value="${v}"></label>`).join('');
+  LF[lmi].forEach(([id]) => $(id).addEventListener('input', drawL)); selectOnFocus(LF[lmi].map(f => f[0]));
+  drawL();
+}
+function drawL(){
+  const r = readAll(LF[lmi].map(f => f[0]), 'lErr'); if (!r) return;
+  const svg = $('lSvg'); svg.innerHTML = ''; const g = mk('g', {}, svg), GY = 285;
+  mk('rect', { x: 0, y: GY, width: 1000, height: 35, style: 'fill:var(--line);opacity:.5' }, g);
+  if (lmi === 0){
+    const [L, a] = r;
+    if (L <= 0 || L > 20){ $('lErr').textContent = 'Use a length from 0 to 20 m.'; return; }
+    if (a <= 0 || a >= 90){ $('lErr').textContent = 'Use an angle between 0° and 90°.'; return; }
+    const out = L * Math.cos(a * RAD), up = L * Math.sin(a * RAD), u = Math.min(600 / (L + .5), 250 / (L + .3)), WX = 700, X = x => WX - x * u, Y = y => GY - y * u;
+    mk('rect', { x: WX, y: 20, width: 40, height: GY - 20, style: 'fill:var(--soft);opacity:.45;stroke:var(--pt);stroke-width:1.2' }, g);
+    line(g, X(out), GY, WX, Y(up), 'stroke:var(--pt);stroke-width:7;stroke-linecap:round');
+    for (let k = 1; k < 10; k++){ const f = k / 10; mk('circle', { cx: X(out) + (WX - X(out)) * f, cy: GY + (Y(up) - GY) * f, r: 2.5, style: 'fill:var(--paper)' }, g); }
+    line(g, X(out), GY + 4, WX, GY + 4, 'stroke:var(--cos);stroke-width:4');
+    line(g, WX - 4, GY, WX - 4, Y(up), 'stroke:var(--sin);stroke-width:4');
+    arc(g, X(out), GY, 40, 0, a * RAD, 'var(--ink)', `θ = ${num(a, 1)}°`, 72);
+    txt(g, (X(out) + WX) / 2, GY + 26, `foot out: L cos θ = ${num(out, 2)} m`, 'labS', { 'text-anchor': 'middle', style: 'fill:var(--cos)' });
+    txt(g, WX + 50, Y(up / 2), `reaches: L sin θ = ${num(up, 2)} m`, 'labS', { 'text-anchor': 'start', style: 'fill:var(--sin)' });
+    txt(g, (X(out) + WX) / 2 - 14, (GY + Y(up)) / 2 - 8, `L = ${num(L, 1)} m`, 'labS', { 'text-anchor': 'end', style: 'fill:var(--pt)' });
+    $('lOut').innerHTML = `The ladder is the hypotenuse. It reaches <span class="sn">L sin θ = ${num(L, 1)} × ${num(Math.sin(a * RAD))} = ${num(up, 2)} m</span> up the wall, with its foot <span class="cs">L cos θ = ${num(out, 2)} m</span> out. A common safety rule puts the foot a quarter of the height out (tan θ = 4, so θ = tan⁻¹ 4 ≈ 76°): ${a < 70 ? 'this ladder is too shallow and could slide out.' : a > 80 ? 'this ladder is very steep and could tip back.' : 'this angle is about right.'}`;
+  } else {
+    const [h, a] = r;
+    if (h <= 0 || h > 3){ $('lErr').textContent = 'Use a rise from 0 to 3 m.'; return; }
+    if (a < 1 || a > 45){ $('lErr').textContent = 'Use an angle from 1° to 45°.'; return; }
+    const run = h / Math.tan(a * RAD), len = h / Math.sin(a * RAD), u = Math.min(800 / (run + .5), 200 / h), X0 = 80, X = x => X0 + x * u, Y = y => GY - y * u;
+    mk('polygon', { points: `${X(0)},${GY} ${X(run)},${GY} ${X(run)},${Y(h)}`, style: 'fill:var(--soft);opacity:.4' }, g);
+    line(g, X(0), GY, X(run), Y(h), 'stroke:var(--pt);stroke-width:5');
+    line(g, X(0), GY + 4, X(run), GY + 4, 'stroke:var(--cos);stroke-width:4');
+    line(g, X(run), GY, X(run), Y(h), 'stroke:var(--sin);stroke-width:4');
+    mk('rect', { x: X(run), y: Y(h), width: 120, height: GY - Y(h), style: 'fill:var(--line);opacity:.6' }, g);
+    arc(g, X(0), GY, 60, 0, a * RAD, 'var(--ink)', a > 15 ? `θ = ${num(a, 2)}°` : '', 96);
+    if (a <= 15) txt(g, X(0) + 66, GY + 26, `θ = ${num(a, 2)}°`, 'labS', { 'text-anchor': 'start', style: 'fill:var(--ink)' });   // a thin angle: label below the ground
+    txt(g, Math.max((X(0) + X(run)) / 2, X(0) + 330), GY + 26, `run = rise / tan θ = ${num(run, 2)} m`, 'labS', { 'text-anchor': 'middle', style: 'fill:var(--cos)' });
+    txt(g, X(run) - 10, Y(h / 2) + 4, `rise ${num(h, 2)} m`, 'labS', { 'text-anchor': 'end', style: 'fill:var(--sin)' });
+    txt(g, (X(0) + X(run)) / 2, (GY + Y(h)) / 2 - 14, `ramp length = rise / sin θ = ${num(len, 2)} m`, 'labS', { 'text-anchor': 'middle', style: 'fill:var(--pt)' });
+    $('lOut').innerHTML = `Rise is the opposite side, so the ground the ramp covers is <span class="cs">rise / tan θ = ${num(run, 2)} m</span> and the ramp itself is <span class="ph">rise / sin θ = ${num(len, 2)} m</span> long. Wheelchair ramps are often built to rise at most 1 for every 12 along the ground: tan θ = 1/12, so θ = tan⁻¹(1/12) ≈ 4.76°. ${a > 4.77 ? 'This ramp is steeper than that.' : 'This ramp meets that guideline.'}`;
+  }
+}
+
+/* =====================================================================
+   7. A FERRIS WHEEL SEAT
+   ===================================================================== */
+$('fR').value = 20; $('fH').value = 24; $('fA').value = 40;
+const fw = { raf: 0, playing: false, a: 40 };
+function drawF(){
+  const r = readAll(['fR', 'fH', 'fA'], 'fErr'); if (!r) return;
+  const [R, H, a] = r;
+  if (R <= 0 || R > 60){ $('fErr').textContent = 'Use a radius from 0 to 60 m.'; return; }
+  if (H < R || H > 3 * R + 10){ $('fErr').textContent = 'The hub must be at least as high as the radius, so the wheel clears the ground.'; return; }
+  const svg = $('fSvg'); svg.innerHTML = ''; const g = mk('g', {}, svg), GY = 340, u = 300 / (H + R + 2), HX = 420, X = x => HX + x * u, Y = y => GY - y * u;
+  mk('rect', { x: 0, y: GY, width: 1000, height: 20, style: 'fill:var(--line);opacity:.5' }, g);
+  line(g, X(0), Y(H), X(-R * .45), GY, 'stroke:var(--muted);stroke-width:4'); line(g, X(0), Y(H), X(R * .45), GY, 'stroke:var(--muted);stroke-width:4');
+  mk('circle', { cx: X(0), cy: Y(H), r: R * u, style: 'fill:none;stroke:var(--line2);stroke-width:3' }, g);
+  for (let k = 0; k < 12; k++){ const t = (a + k * 30) * RAD; line(g, X(0), Y(H), X(R * Math.cos(t)), Y(H + R * Math.sin(t)), 'stroke:var(--line2);stroke-width:1.2'); if (k) mk('circle', { cx: X(R * Math.cos(t)), cy: Y(H + R * Math.sin(t)), r: 7, style: 'fill:var(--soft);opacity:.7' }, g); }
+  const t = a * RAD, c = Math.cos(t), s = Math.sin(t), sx = X(R * c), sy = Y(H + R * s);
+  line(g, X(0), Y(H), sx, Y(H), 'stroke:var(--cos);stroke-width:5');
+  line(g, sx, Y(H), sx, sy, 'stroke:var(--sin);stroke-width:5');
+  line(g, X(0), Y(H), sx, sy, 'stroke:var(--pt);stroke-width:3');
+  line(g, sx, sy, sx, GY, 'stroke:var(--ink);stroke-width:1.2;stroke-dasharray:5 4');
+  mk('circle', { cx: sx, cy: sy, r: 11, style: 'fill:var(--pt);stroke:var(--paper);stroke-width:2' }, g);
+  mk('circle', { cx: X(0), cy: Y(H), r: 5, style: 'fill:var(--ink)' }, g);
+  arc(g, X(0), Y(H), 26, 0, mod360(a) * RAD, 'var(--ink)', 'θ', 44);
+  if (Math.abs(c) > .1) txt(g, (X(0) + sx) / 2, Y(H) + (s >= 0 ? 20 : -10), `r cos θ = ${num(R * c, 1)}`, 'labS', { 'text-anchor': 'middle', style: 'fill:var(--cos)' });
+  if (Math.abs(s) > .1) txt(g, sx + (c >= 0 ? 12 : -12), (Y(H) + sy) / 2 + 4, `r sin θ = ${num(R * s, 1)}`, 'labS', { 'text-anchor': c >= 0 ? 'start' : 'end', style: 'fill:var(--sin)' });   // outside the wheel
+  const ht = H + R * s;
+  txt(g, sx + (c >= 0 ? 14 : -14), sy + (s >= 0 ? -16 : 28), `seat: ${num(ht, 1)} m up`, 'lab', { 'text-anchor': c >= 0 ? 'start' : 'end', style: 'fill:var(--pt)' });   // outside the wheel
+  // a small height-vs-angle graph on the right: the sine wave of 5.B.4
+  const gx = 700, gw = 270, gt = 40, gb = 300, GXf = d => gx + d / 360 * gw, GYf = y => gb - y / (H + R) * (gb - gt);
+  line(g, gx, gb, gx + gw, gb, 'stroke:var(--ink);stroke-width:1.2'); line(g, gx, gt, gx, gb, 'stroke:var(--ink);stroke-width:1.2');
+  let p = ''; for (let d = 0; d <= 360; d += 3) p += (d ? ' L' : 'M') + GXf(d).toFixed(1) + ',' + GYf(H + R * Math.sin(d * RAD)).toFixed(1);
+  mk('path', { d: p, style: 'fill:none;stroke:var(--sin);stroke-width:2.4' }, g);
+  mk('circle', { cx: GXf(mod360(a)), cy: GYf(ht), r: 6, style: 'fill:var(--pt)' }, g);
+  [0, 180, 360].forEach(d => txt(g, GXf(d), gb + 16, d + '°', 'tl', { 'text-anchor': 'middle' }));
+  txt(g, gx - 6, GYf(H) + 4, `${num(H)} m`, 'tl', { 'text-anchor': 'end' }); line(g, gx, GYf(H), gx + gw, GYf(H), 'stroke:var(--line2);stroke-dasharray:4 4');
+  txt(g, gx + gw / 2, gt - 12, 'seat height as θ goes around', 'cap', { 'text-anchor': 'middle' });
+  $('fOut').innerHTML = `The seat is <span class="cs">r cos θ = ${num(R, 1)} × ${c < 0 ? '(' + num(c) + ')' : num(c)} = ${num(R * c, 2)} m</span> ${c >= 0 ? 'right of' : 'left of'} the hub and <span class="sn">r sin θ = ${num(R * s, 2)} m</span> ${s >= 0 ? 'above' : 'below'} it, so its height is ${num(H, 1)} + (${num(R * s, 2)}) = <b>${num(ht, 2)} m</b>. Highest at θ = 90° (${num(H + R)} m), lowest at θ = 270° (${num(H - R)} m).`;
+}
+['fR', 'fH', 'fA'].forEach(id => $(id).addEventListener('input', () => { stopF(); drawF(); })); selectOnFocus(['fR', 'fH', 'fA']);
+function stopF(){ cancelAnimationFrame(fw.raf); fw.playing = false; $('fPlay').textContent = 'Play'; }
+$('fPlay').onclick = () => {
+  if (fw.playing){ stopF(); return; }
+  const a0 = parseExpr($('fA').value, false); if (isNaN(a0)){ $('fErr').textContent = 'Type an angle first.'; return; }
+  fw.playing = true; $('fPlay').textContent = 'Pause'; const t0 = performance.now();
+  const step = now => { if (!fw.playing) return; $('fA').value = num(mod360(a0 + (now - t0) / 9000 * 360), 0); drawF(); fw.raf = requestAnimationFrame(step); };
+  fw.raf = requestAnimationFrame(step);
+};
+
+/* =====================================================================
+   8. QUIZ
+   ===================================================================== */
+const rnd = arr => arr[Math.floor(Math.random() * arr.length)];
+const randInt = (lo, hi) => lo + Math.floor(Math.random() * (hi - lo + 1));
+const qz = { counted: false, done: false, right: 0, total: 0 };
+const SIDE = { opp: 'opposite', adj: 'adjacent', hyp: 'hypotenuse' };
+// Each way to find one side from another, with the formula and the usual wrong turns
+const RULE = {
+  'hyp>opp': [(v, a) => v * Math.sin(a), 'hyp × sin θ'], 'hyp>adj': [(v, a) => v * Math.cos(a), 'hyp × cos θ'],
+  'adj>opp': [(v, a) => v * Math.tan(a), 'adj × tan θ'], 'opp>adj': [(v, a) => v / Math.tan(a), 'opp ÷ tan θ'],
+  'opp>hyp': [(v, a) => v / Math.sin(a), 'opp ÷ sin θ'], 'adj>hyp': [(v, a) => v / Math.cos(a), 'adj ÷ cos θ'],
+};
+function triSvg(sides, a){
+  // a right triangle: θ at the bottom left, right angle at the bottom right; sides = {opp, adj, hyp} labels
+  const svg = $('qSvg'); svg.innerHTML = ''; svg.style.display = ''; const g = mk('g', {}, svg);
+  const c = Math.cos(a), s = Math.sin(a), u = Math.min(560 / c, 250 / s), X0 = 220, Y0 = 285, ax = X0 + c * u, ty = Y0 - s * u;
+  mk('polygon', { points: `${X0},${Y0} ${ax},${Y0} ${ax},${ty}`, style: 'fill:var(--soft);opacity:.3' }, g);
+  line(g, X0, Y0, ax, Y0, 'stroke:var(--cos);stroke-width:4'); line(g, ax, Y0, ax, ty, 'stroke:var(--sin);stroke-width:4'); line(g, X0, Y0, ax, ty, 'stroke:var(--pt);stroke-width:3');
+  mk('polyline', { points: `${ax - 12},${Y0} ${ax - 12},${Y0 - 12} ${ax},${Y0 - 12}`, style: 'fill:none;stroke:var(--muted);stroke-width:1.3' }, g);
+  arc(g, X0, Y0, 44, 0, a, 'var(--ink)', sides.ang, 76);
+  txt(g, (X0 + ax) / 2, Y0 + 24, sides.adj, 'lab', { 'text-anchor': 'middle', style: 'fill:var(--cos)' });
+  txt(g, ax + 12, (Y0 + ty) / 2 + 5, sides.opp, 'lab', { 'text-anchor': 'start', style: 'fill:var(--sin)' });
+  txt(g, (X0 + ax) / 2 - 14, (Y0 + ty) / 2 - 10, sides.hyp, 'lab', { 'text-anchor': 'end', style: 'fill:var(--pt)' });
+}
+function circleSvg(deg){
+  const svg = $('qSvg'); svg.innerHTML = ''; svg.style.display = ''; const g = mk('g', {}, svg), cx = 500, cy = 160, R = 130, t = deg * RAD;
+  line(g, cx - 200, cy, cx + 200, cy, 'stroke:var(--ink);stroke-width:1.4;opacity:.7'); line(g, cx, 10, cx, 310, 'stroke:var(--ink);stroke-width:1.4;opacity:.7');
+  mk('circle', { cx, cy, r: R, style: 'fill:none;stroke:var(--line2);stroke-width:2' }, g);
+  arc(g, cx, cy, 30, 0, t, 'var(--ink)', `${deg}°`, 52);
+  line(g, cx, cy, cx + R * Math.cos(t), cy - R * Math.sin(t), 'stroke:var(--pt);stroke-width:3');
+  mk('circle', { cx: cx + R * Math.cos(t), cy: cy - R * Math.sin(t), r: 8, style: 'fill:var(--pt)' }, g);
+  [['I', 1, -1], ['II', -1, -1], ['III', -1, 1], ['IV', 1, 1]].forEach(([n, sx, sy]) => txt(g, cx + sx * 170, cy + sy * 120, n, 'labS', { 'text-anchor': 'middle', style: 'fill:var(--muted)' }));
+}
+function newQuestion(){
+  Object.assign(qz, { counted: false, done: false });
+  $('qErr').textContent = ''; $('qFb').className = 'feedback'; $('qFb').innerHTML = ''; $('q1').value = '';
+  qz.type = rnd(['side', 'side', 'read', 'read', 'angle']);
+  if (qz.type === 'side'){
+    const a = randInt(20, 70), keys = Object.keys(RULE), key = rnd(keys), [from, to] = key.split('>'), v = randInt(3, 20) * (Math.random() < .5 ? 1 : .5);
+    Object.assign(qz, { a, from, to, v, ans: RULE[key][0](v, a * RAD), key });
+    const lab = { ang: `${a}°`, opp: '', adj: '', hyp: '' }; lab[from] = `${num(v, 1)}`; lab[to] = '?';
+    triSvg(lab, a * RAD);
+    $('qTitle').textContent = 'Find a side';
+    $('qText').innerHTML = `In this right triangle, θ = ${a}° and the <b>${SIDE[from]}</b> is ${num(v, 1)}. Find the <b>${SIDE[to]}</b> (to 2 decimal places).`;
+    $('qL').innerHTML = SIDE[to];
+  } else if (qz.type === 'read'){
+    const deg = rnd([0, 30, 45, 60, 90, 120, 135, 150, 180, 210, 225, 240, 270, 300, 315, 330]), fn = rnd(['sin', 'cos', 'cos', 'sin', 'tan']);
+    const t = deg * RAD, val = fn === 'sin' ? Math.sin(t) : fn === 'cos' ? Math.cos(t) : (Math.abs(Math.cos(t)) < 1e-9 ? NaN : Math.tan(t));
+    Object.assign(qz, { deg, fn, ans: val });
+    circleSvg(deg);
+    $('qTitle').textContent = 'Read it from the unit circle';
+    $('qText').innerHTML = `What is <b>${fn} ${deg}°</b>? Give an exact value like √3/2 (or sqrt(3)/2), or type “undefined” if it doesn’t exist.`;
+    $('qL').innerHTML = `${fn} ${deg}°`;
+  } else {
+    const a = randInt(15, 75) + rnd([0, .5]), pair = rnd([['opp', 'adj'], ['opp', 'hyp'], ['adj', 'hyp']]), hyp = randInt(6, 20);
+    const sides = { hyp, opp: Math.round(hyp * Math.sin(a * RAD) * 10) / 10, adj: Math.round(hyp * Math.cos(a * RAD) * 10) / 10 };
+    const [p, q] = pair, ratio = sides[p] / sides[q], ans = (p === 'opp' && q === 'adj' ? Math.atan(ratio) : p === 'opp' ? Math.asin(Math.min(1, ratio)) : Math.acos(Math.min(1, ratio))) * DEG;
+    Object.assign(qz, { pair, sides, ratio, ans });
+    const lab = { ang: 'θ = ?', opp: '', adj: '', hyp: '' }; lab[p] = num(sides[p], 1); lab[q] = num(sides[q], 1);
+    triSvg(lab, ans * RAD);
+    $('qTitle').textContent = 'Find the angle';
+    $('qText').innerHTML = `The <b>${SIDE[p]}</b> is ${num(sides[p], 1)} and the <b>${SIDE[q]}</b> is ${num(sides[q], 1)}. Find θ in degrees (to 1 decimal place).`;
+    $('qL').innerHTML = 'θ (°)';
+  }
+}
+function countQ(ok){ if (qz.counted) return; qz.counted = true; qz.total++; if (ok) qz.right++; $('score').textContent = `Score: ${qz.right} / ${qz.total}`; }
+const near = (x, t, tol) => Math.abs(x - t) <= tol;
+function checkQ(){
+  const raw = $('q1').value.trim(); if (!raw){ $('qErr').textContent = 'Type an answer.'; return; }
+  const und = /^(undefined|undef|und|none|dne|∞)$/i.test(raw), x = und ? NaN : parseExpr(raw, false);
+  if (!und && isNaN(x)){ $('qErr').textContent = 'Type a number or an exact value like √3/2.'; return; }
+  $('qErr').textContent = ''; let ok, msg;
+  if (qz.type === 'side'){
+    const { a, from, to, v, ans, key } = qz, r = a * RAD, tol = Math.max(.02, .005 * ans);
+    ok = !und && near(x, ans, tol);
+    const swapped = { sin: 'cos', cos: 'sin', tan: 'tan' };
+    if (ok) msg = `<b>Right: ${num(ans, 2)}.</b> ${SIDE[to]} = ${RULE[key][1]} = ${num(v, 1)} ${RULE[key][1].includes('÷') ? '÷' : '×'} ${num(key.includes('opp') && key.includes('hyp') ? Math.sin(r) : key.includes('adj') && key.includes('hyp') ? Math.cos(r) : Math.tan(r), 4)}.`;
+    else if (!und && (near(x, v * Math.sin(r), tol) || near(x, v * Math.cos(r), tol) || near(x, v * Math.tan(r), tol) || near(x, v / Math.sin(r), tol) || near(x, v / Math.cos(r), tol) || near(x, v / Math.tan(r), tol))){
+      msg = `<b>Wrong ratio or wrong direction.</b> Which two sides are involved? The ${SIDE[from]} and the ${SIDE[to]}: ${from === 'hyp' || to === 'hyp' ? (from === 'opp' || to === 'opp' ? 'opposite and hypotenuse means sine' : 'adjacent and hypotenuse means cosine') : 'opposite and adjacent means tangent'}. Then decide: is the side you want bigger or smaller than the one you have?`;
+    } else if (!und && [Math.sin, Math.cos, Math.tan].some(f => near(x, v * f(a), tol) || near(x, v / f(a), tol))) msg = '<b>Your calculator is in radian mode.</b> Switch it to degrees (or convert: θ × π/180).';
+    else msg = `<b>Not quite.</b> Use ${RULE[key][1]}.`;
+  } else if (qz.type === 'read'){
+    const { deg, fn, ans } = qz, q = quadrant(deg);
+    if (isNaN(ans)){ ok = und; msg = ok ? `<b>Right: undefined.</b> cos ${deg}° = 0, and tan = sin / cos can’t divide by 0.` : `<b>tan ${deg}° is undefined.</b> The radius points straight ${deg === 90 ? 'up' : 'down'}, so cos ${deg}° = 0 and sin/cos divides by 0.`; }
+    else {
+      ok = !und && near(x, ans, .006);
+      const other = fn === 'sin' ? Math.cos(deg * RAD) : fn === 'cos' ? Math.sin(deg * RAD) : 1 / Math.tan(deg * RAD);
+      if (ok) msg = `<b>Right: ${exact(ans) || num(ans)}.</b>` + (q ? ` Reference angle ${[deg, 180 - deg, deg - 180, 360 - deg][q - 1]}°, quadrant ${QN[q]}.` : '');
+      else if (und) msg = `<b>It does exist.</b> ${fn} ${deg}° = ${exact(ans)}.`;
+      else if (near(x, -ans, .006)) msg = `<b>Right size, wrong sign.</b> ${deg}° is in quadrant ${QN[q]}, where ${fn} is ${ans > 0 ? 'positive' : 'negative'}.`;
+      else if (isFinite(other) && near(x, other, .006)) msg = fn === 'tan' ? '<b>That’s cos/sin, upside down.</b> tan = sin / cos (up over across).' : `<b>That’s ${fn === 'sin' ? 'cos' : 'sin'} ${deg}°.</b> ${fn === 'sin' ? 'Sine is the up coordinate.' : 'Cosine is the across coordinate.'}`;
+      else msg = `<b>Not quite.</b> Find the reference angle${q ? ` (${[deg, 180 - deg, deg - 180, 360 - deg][q - 1]}°)` : ''}, use the special-angle table, then fix the sign for quadrant ${q ? QN[q] : '(on an axis)'}.`;
+    }
+  } else {
+    const { ans, pair, ratio } = qz; ok = !und && near(x, ans, .25);
+    const fnm = pair[1] === 'adj' ? 'tan' : pair[0] === 'opp' ? 'sin' : 'cos';
+    if (ok) msg = `<b>Right: ${num(ans, 1)}°.</b> ${fnm} θ = ${num(qz.sides[pair[0]], 1)} / ${num(qz.sides[pair[1]], 1)} = ${num(ratio, 4)}, so θ = ${fnm}⁻¹(${num(ratio, 4)}) ≈ ${num(ans, 1)}°.`;
+    else if (!und && near(x, 90 - ans, .25)) msg = '<b>That’s the other acute angle</b> (they add to 90°). Check which sides are opposite and adjacent to θ.';
+    else if (!und && near(x, ans * RAD, .01)) msg = '<b>That’s in radians.</b> Switch your calculator to degrees.';
+    else if (!und && near(x, ratio, .01)) msg = `<b>That’s the ratio, ${fnm} θ.</b> Now use ${fnm}⁻¹ to turn it into an angle.`;
+    else msg = `<b>Not quite.</b> The two given sides are the ${SIDE[pair[0]]} and the ${SIDE[pair[1]]}, which means ${fnm}. Compute ${fnm}⁻¹(${num(qz.sides[pair[0]], 1)} / ${num(qz.sides[pair[1]], 1)}).`;
+  }
+  countQ(ok); if (ok) qz.done = true;
+  $('qFb').className = 'feedback ' + (ok ? 'ok' : 'bad'); $('qFb').innerHTML = msg;
+}
+function showQ(){
+  countQ(false); qz.done = true; $('qErr').textContent = '';
+  const fb = $('qFb'); fb.className = 'feedback info';
+  if (qz.type === 'side') fb.innerHTML = `<b>${num(qz.ans, 2)}</b> = ${RULE[qz.key][1]} with ${SIDE[qz.from]} ${num(qz.v, 1)} and θ = ${qz.a}°.`;
+  else if (qz.type === 'read') fb.innerHTML = isNaN(qz.ans) ? `<b>Undefined</b>: cos ${qz.deg}° = 0.` : `<b>${exact(qz.ans) || num(qz.ans)}</b> ≈ ${num(qz.ans)}.`;
+  else { const fnm = qz.pair[1] === 'adj' ? 'tan' : qz.pair[0] === 'opp' ? 'sin' : 'cos'; fb.innerHTML = `<b>${num(qz.ans, 1)}°</b> = ${fnm}⁻¹(${num(qz.ratio, 4)}).`; }
+}
+$('qCheck').onclick = checkQ; $('qShow').onclick = showQ; $('qNew').onclick = newQuestion;
+$('q1').addEventListener('input', () => { $('qErr').textContent = ''; }); $('q1').addEventListener('keydown', e => { if (e.key === 'Enter') checkQ(); });
+selectOnFocus(['q1']);
+
+/* =====================================================================
+   9. START
+   ===================================================================== */
+drawSim();
+setDeg(30); markT(0); $('tDesc').textContent = TP[0].t;
+drawSpec();
+buildH();
+buildL();
+drawF();
+newQuestion();
+</script>
+</body>
+</html>
