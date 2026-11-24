@@ -36,6 +36,11 @@ window.MM_TOC = [
     { id: '7.B.5', title: 'Matrix Multiplication: One Move After Another' },
     { id: '7.B.6', title: 'The Determinant' },
     { id: '7.B.7', title: 'Inverse Matrices' },
+    { id: '7.B.8', title: 'Systems of Equations as Matrices' },
+    { id: '7.B.9', title: 'Solving Systems by Row Reduction' },
+    { id: '7.B.10', title: 'Into 3D: Vectors and 3×3 Matrices' },
+    { id: '7.B.11', title: 'Matrices of Any Size: Adding, Scaling and the Transpose' },
+    { id: '7.B.12', title: 'Independence, Basis and Dimension: A First Look' },
   ]},
   { ch: 8, title: 'Calculus', pages: [
     { id: '8.B.1', title: 'Limits' },
