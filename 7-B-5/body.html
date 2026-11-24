@@ -1,0 +1,895 @@
+<style>
+/* ===================== Page-specific styles (7.B.5) ===================== */
+/* î = green, ĵ = orange, the F and moved grids = purple; move A = blue, move B = magenta; towns = blue / amber */
+:root{ --ci:#1D9E75; --cj:#D85A30; --cp:#7F77DD; --cs:#AFA9EC; --cr:#2F6FDB; --ca:#2F6FDB; --cb:#C2417D; --t1:#2F6FDB; --t2:#C98A0B; --yes:#1D9E75; --no:#D8443A; }
+@media (prefers-color-scheme:dark){ :root{ --ci:#5DCAA5; --cj:#F0997B; --cp:#AFA9EC; --cs:#6F67C9; --cr:#6EA2F5; --ca:#6EA2F5; --cb:#EE7FB0; --t1:#6EA2F5; --t2:#F0C24B; --yes:#5DCAA5; --no:#F07B72; } }
+.ki{color:var(--ci);font-weight:700}.kj{color:var(--cj);font-weight:700}.kp{color:var(--cp);font-weight:700}.kr{color:var(--cr);font-weight:700}
+.ka{color:var(--ca);font-weight:700}.kb{color:var(--cb);font-weight:700}
+.field.fp input{border-color:var(--cp)}.field.fa input{border-color:var(--ca)}.field.fb input{border-color:var(--cb)}.field.sm input{width:70px}.field.t1 input{border-color:var(--t1)}.field.t2 input{border-color:var(--t2)}
+.inputs .grp{display:flex;gap:10px;align-items:flex-end;padding-right:12px;border-right:1px dashed var(--line);margin-right:4px}
+.inputs .grp:last-of-type{border-right:none}
+.matw{display:flex;flex-direction:column;gap:4px}
+.mhead{display:grid;grid-template-columns:repeat(2,64px);gap:6px;padding:0 12px;font:600 11px var(--sans);letter-spacing:.05em;text-transform:uppercase;text-align:center;color:var(--muted)}
+.mhead.c3{grid-template-columns:repeat(3,58px)}
+.mlab{font:600 11px var(--sans);letter-spacing:.05em;text-transform:uppercase;padding-left:12px}
+.mrow{display:flex;align-items:center;gap:6px}
+.rlab{font:600 11px var(--sans);letter-spacing:.05em;text-transform:uppercase;color:var(--muted);display:flex;flex-direction:column;justify-content:space-around;align-self:stretch;padding:6px 0;text-align:right}
+.mat{display:grid;grid-template-columns:repeat(2,64px);gap:6px;padding:6px 10px;border-left:2.5px solid var(--ink);border-right:2.5px solid var(--ink);border-radius:7px}
+.mat.c3{grid-template-columns:repeat(3,58px)}
+.mat input{width:100%;font:500 17px/1 var(--mono);padding:8px 2px;text-align:center;border-radius:9px;border:2px solid var(--line2);background:var(--bg);color:var(--ink)}
+.mat input:focus{outline:none;box-shadow:0 0 0 2px var(--accent)}
+.mat.mA input{border-color:var(--ca)}.mat.mB input{border-color:var(--cb)}
+.mat input.ci{border-color:var(--ci)}.mat input.cj{border-color:var(--cj)}
+.mshow{display:inline-grid;grid-template-columns:auto auto;gap:2px 14px;padding:3px 9px;border-left:2px solid currentColor;border-right:2px solid currentColor;border-radius:5px;font:600 15px var(--mono);vertical-align:middle;margin:0 3px}
+.mshow .c1{color:var(--ci);text-align:center}.mshow .c2{color:var(--cj);text-align:center}
+.mshow.plain{color:var(--ink)}.mshow.plain span{color:var(--ink);text-align:center}
+.mshow.a{color:var(--ca)}.mshow.b{color:var(--cb)}.mshow.a span,.mshow.b span{color:inherit;text-align:center}
+.mshow.c3{grid-template-columns:auto auto auto}
+.split{display:grid;gap:0;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--paper)}
+.split.s3{grid-template-columns:repeat(3,1fr)}.split.s4{grid-template-columns:repeat(4,1fr)}
+.split svg{display:block;width:100%;height:auto;border:none;border-radius:0}
+.split > * + *{border-left:1px solid var(--line)}
+.eqs{font:14.5px/1.9 var(--mono);margin:10px 0 6px;padding:10px 16px;border:1px solid var(--line);border-radius:12px;background:var(--bg)}
+.eqs .lbl{display:inline-block;min-width:140px;font:600 12px var(--sans);letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+pre.code{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:12px 16px;overflow-x:auto;font:13.5px/1.6 var(--mono);margin:10px 0 16px}
+.choice{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 0}.choice button{min-width:150px}
+.qtext{font:17px/1.55 var(--serif);margin:4px 0 10px}
+.prow{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:6px 0}
+.prow .pl2{font:600 12px var(--sans);letter-spacing:.05em;text-transform:uppercase;color:var(--muted);min-width:110px}
+.verdict{margin-top:10px;padding:10px 14px;border-radius:10px;font-weight:600}
+.verdict.y{background:var(--ok-bg);color:var(--ok)}.verdict.n{background:var(--bad-bg);color:var(--bad)}
+table.lists{border-collapse:collapse;margin:10px 0 14px;font:15px var(--sans)}
+table.lists th,table.lists td{border:1px solid var(--line);padding:6px 14px;text-align:left}
+table.lists th{background:var(--paper);font-weight:600}
+table.lists td.m{font-family:var(--mono)}
+</style>
+
+<!-- ===================== Top bar ===================== -->
+<div class="topbar"><div class="topbar-in">
+  <span class="brand">Math<b>Mastery</b></span>
+  <span class="crumbs">Chapter 7 · Linear Algebra › Basics</span>
+  <span class="pid">7.B.5</span>
+</div></div>
+
+<!-- ===================== Hero ===================== -->
+<header class="prose hero">
+  <div class="kicker">Chapter 7 · Linear Algebra</div>
+  <h1>Matrix Multiplication: One Move After Another</h1>
+  <p class="dek">Do one move, then another, and the result is again a single move with its own matrix. Multiplying matrices is how you find it, and why the order you do things in matters.</p>
+  <div class="tiers" aria-label="Tier">
+    <span class="tier on">Basics <small>you are here</small></span>
+    <span class="tier">Undergraduate</span>
+    <span class="tier">Masters</span>
+  </div>
+  <div class="goals">
+    <h3>On this page</h3>
+    <ul>
+      <li>See that two moves in a row, <b class="ka">A</b> then <b class="kb">B</b>, make one move, written <b><span class="kb">B</span><span class="ka">A</span></b> (read right to left).</li>
+      <li>Compute a <b>matrix product</b> column by column (<b class="kb">B</b> times each column of <b class="ka">A</b>) and with the <b>row · column</b> shortcut.</li>
+      <li>Learn that <b>order matters</b>: usually <span class="kb">B</span><span class="ka">A</span> ≠ <span class="ka">A</span><span class="kb">B</span>, and spot the moves that <b>commute</b>.</li>
+      <li>Repeat a move with <b>powers</b> (<i>A</i>², <i>A</i>³, …), meet the <b>identity matrix</b> as “do nothing,” and see when the sizes of two matrices let you multiply them.</li>
+    </ul>
+  </div>
+</header>
+
+<main>
+<!-- ===================== §1 ===================== -->
+<section class="prose">
+  <h2><span class="n">1</span>Two moves make one move</h2>
+  <p>In 7.B.4 a matrix was a move of the plane, recorded by where <b class="ki">î</b> and <b class="kj">ĵ</b> land. Now do two moves in a row: first <b class="ka">A</b>, then <b class="kb">B</b>. Grid lines were still straight, parallel and evenly spaced after <b class="ka">A</b>, and <b class="kb">B</b> keeps them that way. So the combined move is linear too, and it has its own matrix.</p>
+  <p>To find it, follow <b class="ki">î</b>. Move <b class="ka">A</b> sends it to the first column of <b class="ka">A</b>. Then <b class="kb">B</b> moves <i>that</i> arrow, so <b class="ki">î</b> ends up at <b class="kb">B</b> × (column 1 of <b class="ka">A</b>), a matrix–vector product from 7.B.4. The same goes for <b class="kj">ĵ</b> and column 2. Those two end points are the columns of the combined matrix.</p>
+  <p>We write the combined move as <b><span class="kb">B</span><span class="ka">A</span></b>, with the first move on the <i>right</i>, closest to the point it acts on: (<span class="kb">B</span><span class="ka">A</span>)<b>v</b> = <span class="kb">B</span>(<span class="ka">A</span><b>v</b>). It’s the same right-to-left reading as putting one function inside another, like <i>f</i>(<i>g</i>(<i>x</i>)), where <i>g</i> happens first. Combining moves this way is called <b>composition</b>, and the combined matrix is the <b>matrix product</b>.</p>
+</section>
+
+<section class="wide">
+  <div class="card" id="main">
+    <div class="card-h"><span class="tag">Explore</span><h3>One move after another</h3>
+      <span class="sub">Type or pick two moves. The middle panel shows the plane after <b class="ka">A</b>; the right panel after <b class="ka">A</b> and then <b class="kb">B</b>. The dashed grid never moves. Press Play to watch both moves in turn, and Swap order to do <b class="kb">B</b> first.</span></div>
+    <div class="row" id="cPresets"></div>
+    <div class="desc" id="cDesc"></div>
+    <div class="inputs">
+      <div class="grp"><div class="matw"><span class="mlab ka">A · first move</span>
+        <div class="mat mA"><input id="a0" type="text" inputmode="decimal" autocomplete="off" aria-label="A top left"><input id="a1" type="text" inputmode="decimal" autocomplete="off" aria-label="A top right"><input id="a2" type="text" inputmode="decimal" autocomplete="off" aria-label="A bottom left"><input id="a3" type="text" inputmode="decimal" autocomplete="off" aria-label="A bottom right"></div></div></div>
+      <div class="grp"><div class="matw"><span class="mlab kb">B · second move</span>
+        <div class="mat mB"><input id="b0" type="text" inputmode="decimal" autocomplete="off" aria-label="B top left"><input id="b1" type="text" inputmode="decimal" autocomplete="off" aria-label="B top right"><input id="b2" type="text" inputmode="decimal" autocomplete="off" aria-label="B bottom left"><input id="b3" type="text" inputmode="decimal" autocomplete="off" aria-label="B bottom right"></div></div></div>
+      <div class="grp"><div class="matw"><span class="mlab">One move: <span class="kb">B</span><span class="ka">A</span></span><div id="cBA" style="padding:8px 0 4px"></div></div></div>
+      <div class="row" style="margin:0"><button class="primary" id="cPlay">Play</button><button id="cSwap">Swap order</button></div>
+    </div>
+    <div class="err" id="cErr"></div>
+    <div class="split s3">
+      <svg id="c1" viewBox="0 0 340 340" role="img" aria-label="Start"></svg>
+      <svg id="c2" viewBox="0 0 340 340" role="img" aria-label="After A"></svg>
+      <svg id="c3" viewBox="0 0 340 340" role="img" aria-label="After A, then B"></svg>
+    </div>
+    <div class="eqs" id="cEqs"></div>
+    <div class="readout" id="cOut"></div>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--ci)"></i><b>î</b> and where it ends up</span>
+      <span><i class="sw" style="background:var(--cj)"></i><b>ĵ</b> and where it ends up</span>
+      <span><svg width="26" height="12" viewBox="0 0 26 12" aria-hidden="true"><line x1="2" y1="6" x2="24" y2="6" stroke="var(--ink)" stroke-width="2" stroke-dasharray="4 3" opacity=".5"/></svg>right panel: where <b>A</b> had put î and ĵ, before <b>B</b> moved them</span>
+      <span><svg width="26" height="12" viewBox="0 0 26 12" aria-hidden="true"><line x1="2" y1="6" x2="24" y2="6" stroke="var(--muted)" stroke-width="1.4" stroke-dasharray="3 4"/></svg>fixed grid</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §2 ===================== -->
+<section class="prose">
+  <h2><span class="n">2</span>Computing the product</h2>
+  <p><b>Column by column.</b> Each column of <span class="kb">B</span><span class="ka">A</span> is <b class="kb">B</b> times the matching column of <b class="ka">A</b>. That’s two matrix–vector products, exactly the ones from 7.B.4.</p>
+  <p><b>Row · column shortcut.</b> Write out those matrix–vector products and a pattern appears: the entry in row <i>r</i>, column <i>c</i> of <span class="kb">B</span><span class="ka">A</span> is the dot product (7.B.3) of <b>row <i>r</i> of <span class="kb">B</span></b> with <b>column <i>c</i> of <span class="ka">A</span></b>. Slide along the row while sliding down the column, multiply matching entries, add.</p>
+  <table class="lists">
+    <tr><th colspan="2">Example: <span class="kb">B</span> = <span class="mshow b"><span>1</span><span>2</span><span>0</span><span>1</span></span>, <span class="ka">A</span> = <span class="mshow a"><span>3</span><span>0</span><span>1</span><span>2</span></span></th></tr>
+    <tr><td>Column 1 of BA</td><td class="m">B·[3, 1] = [1·3 + 2·1, 0·3 + 1·1] = [5, 1]</td></tr>
+    <tr><td>Column 2 of BA</td><td class="m">B·[0, 2] = [1·0 + 2·2, 0·0 + 1·2] = [4, 2]</td></tr>
+    <tr><td>Row · column check</td><td class="m">top-left = (row 1 of B)·(column 1 of A) = 1·3 + 2·1 = 5</td></tr>
+    <tr><td>So</td><td class="m">BA = [[5, 4], [1, 2]]  (rows listed top to bottom)</td></tr>
+  </table>
+  <p>One trap: multiplying matrices is <i>not</i> multiplying matching entries. That would give [[3, 0], [0, 2]] here, which is not where the moves send anything.</p>
+</section>
+
+<!-- ===================== §3 ===================== -->
+<section class="prose">
+  <h2><span class="n">3</span>Order matters</h2>
+  <p>Put on socks, then shoes, and you’re ready to go. Shoes, then socks, and you’re not. Moves of the plane are the same. Turning and then stretching sideways is not the same as stretching sideways and then turning: try the first two presets above, or press Swap order. In general <span class="kb">B</span><span class="ka">A</span> ≠ <span class="ka">A</span><span class="kb">B</span>: matrix multiplication is not <b>commutative</b>.</p>
+  <p>Some pairs of moves do <b>commute</b> (give the same result in either order): two turns, two stretches along the axes, a half turn with anything, and any move paired with the <b>identity matrix</b> <i>I</i> (the “do nothing” move, with columns [1, 0] and [0, 1]). Try it with a square tile that can be turned and flipped, like a face of a puzzle cube:</p>
+</section>
+<section class="wide">
+  <div class="card" id="tiles">
+    <div class="card-h"><span class="tag">Explore</span><h3>Flip and turn a tile</h3>
+      <span class="sub">Pick a first move and a second move. The top row does them in that order; the bottom row swaps the order. Do the two final tiles match?</span></div>
+    <div class="prow"><span class="pl2">First move</span><span id="tFirst" class="row" style="margin:0"></span></div>
+    <div class="prow"><span class="pl2">Second move</span><span id="tSecond" class="row" style="margin:0"></span></div>
+    <svg class="nl" id="tSvg" viewBox="0 0 1000 330" role="img" aria-label="Tiles in both orders" style="margin-top:10px"></svg>
+    <div id="tOut"></div>
+  </div>
+</section>
+
+<!-- ===================== §4 ===================== -->
+<section class="prose">
+  <h2><span class="n">4</span>Repeating a move: powers</h2>
+  <p>Doing the same move <i>n</i> times in a row is the <b>power</b> <i>A</i><sup><i>n</i></sup> = <i>A</i> · <i>A</i> ⋯ <i>A</i>. Here order can’t matter, since every step is the same move. Turning by 30° twelve times is a full turn: <i>A</i>¹² = <i>I</i>. A mirror done twice puts everything back, so a mirror <b>undoes</b> itself: <i>M</i>² = <i>I</i>. Moves that undo other moves are the inverse matrices of 7.B.7. And <i>A</i>⁰ = <i>I</i>: doing a move zero times is doing nothing.</p>
+</section>
+<section class="wide">
+  <div class="card" id="pow">
+    <div class="card-h"><span class="tag">Explore</span><h3>Repeat a move</h3>
+      <span class="sub">Pick a move and how many times to repeat it. Faded F’s show each step along the way; the dots trace where the point [2, 1] goes.</span></div>
+    <div class="row" id="wPresets"></div>
+    <div class="desc" id="wDesc"></div>
+    <div class="inputs">
+      <label class="field fp sm"><span>Times <i>n</i></span><input id="wN" type="text" inputmode="decimal" autocomplete="off"></label>
+      <div class="row" style="margin:0"><button id="wMinus">− 1</button><button id="wPlus">+ 1</button></div>
+      <div class="field"><span>The move <i>A</i></span><div id="wA" style="padding-top:6px"></div></div>
+      <div class="field"><span><i>A</i><sup><i>n</i></sup></span><div id="wAn" style="padding-top:6px"></div></div>
+    </div>
+    <div class="err" id="wErr"></div>
+    <svg class="nl" id="wSvg" viewBox="0 0 1000 380" role="img" aria-label="A repeated move"></svg>
+    <div class="readout" id="wOut"></div>
+  </div>
+</section>
+
+<!-- ===================== §5 ===================== -->
+<section class="prose">
+  <h2><span class="n">5</span>Chains of tables, and which sizes fit</h2>
+  <p>Matrix products aren’t only about pictures. A toy company sells two building kits, a Rover and a Crane. Each kit needs parts (wheels, arms, panels), and each part is snapped together from red and blue bricks. Two tables describe this. <b class="ka">P</b> says how many of each part go into each kit; <b class="kb">Q</b> says how many bricks of each color go into each part.</p>
+  <p><b class="ka">P</b> has 3 rows (parts) and 2 columns (kits): it’s a <b>3×2</b> matrix, read “3 by 2,” rows first. <b class="kb">Q</b> has 2 rows (colors) and 3 columns (parts): <b>2×3</b>. The product <span class="kb">Q</span><span class="ka">P</span> answers “how many bricks of each color per kit?” Each entry is a row of <b class="kb">Q</b> dotted with a column of <b class="ka">P</b>, and that only works when they have the same length. So a product needs the <b>inner sizes</b> to match: (2×<u>3</u>)(<u>3</u>×2) is fine, and the answer has the <b>outer sizes</b>, 2×2. (7.B.11 does sizes in full.)</p>
+</section>
+<section class="wide">
+  <div class="card" id="kits">
+    <div class="card-h"><span class="tag">Explore</span><h3>Kits → parts → bricks</h3>
+      <span class="sub">Edit the tables and the order. Each number on an arrow says how many of the right-hand item go into one of the left-hand item. Pick a kit and a color to see their entry of QP as a sum over paths.</span></div>
+    <div class="inputs">
+      <div class="grp"><div class="matw"><span class="mlab ka">P: parts per kit (3×2)</span>
+        <div class="mrow"><div class="rlab" style="visibility:hidden;padding:0">panels</div><div class="mhead"><span>Rover</span><span>Crane</span></div></div>
+        <div class="mrow"><div class="rlab"><span>wheels</span><span>arms</span><span>panels</span></div>
+        <div class="mat mA"><input id="p0" type="text" inputmode="decimal" autocomplete="off"><input id="p1" type="text" inputmode="decimal" autocomplete="off"><input id="p2" type="text" inputmode="decimal" autocomplete="off"><input id="p3" type="text" inputmode="decimal" autocomplete="off"><input id="p4" type="text" inputmode="decimal" autocomplete="off"><input id="p5" type="text" inputmode="decimal" autocomplete="off"></div></div></div></div>
+      <div class="grp"><div class="matw"><span class="mlab kb">Q: bricks per part (2×3)</span>
+        <div class="mrow"><div class="rlab" style="visibility:hidden;padding:0">blue</div><div class="mhead c3"><span>wheel</span><span>arm</span><span>panel</span></div></div>
+        <div class="mrow"><div class="rlab"><span>red</span><span>blue</span></div>
+        <div class="mat mB c3"><input id="q0" type="text" inputmode="decimal" autocomplete="off"><input id="q1x" type="text" inputmode="decimal" autocomplete="off"><input id="q2x" type="text" inputmode="decimal" autocomplete="off"><input id="q3" type="text" inputmode="decimal" autocomplete="off"><input id="q4" type="text" inputmode="decimal" autocomplete="off"><input id="q5" type="text" inputmode="decimal" autocomplete="off"></div></div></div></div>
+      <div class="grp">
+        <label class="field fp sm"><span>Rovers</span><input id="kx" type="text" inputmode="decimal" autocomplete="off"></label>
+        <label class="field fp sm"><span>Cranes</span><input id="ky" type="text" inputmode="decimal" autocomplete="off"></label>
+      </div>
+    </div>
+    <div class="prow"><span class="pl2">Show paths</span><span id="kPaths" class="row" style="margin:0"></span></div>
+    <div class="err" id="kErr"></div>
+    <svg class="nl" id="kSvg" viewBox="0 0 1000 360" role="img" aria-label="Kits, parts and bricks"></svg>
+    <div class="eqs" id="kEqs"></div>
+  </div>
+</section>
+
+<!-- ===================== §6 ===================== -->
+<section class="prose">
+  <h2><span class="n">6</span>The same move, year after year</h2>
+  <p>Two towns, Riverton and Hillside, swap people every year: some fraction of Riverton moves to Hillside, and some fraction of Hillside moves to Riverton. One year is a matrix <i>M</i> whose first column says where Riverton’s people end up (stay, or move) and whose second column says the same for Hillside. Ten years is <i>M</i>¹⁰. The populations settle down to a balance where the flows in each direction cancel. Finding that balance directly is a job for eigenvectors (Undergraduate tier).</p>
+</section>
+<section class="wide">
+  <div class="card" id="towns">
+    <div class="card-h"><span class="tag">Explore</span><h3>Two towns</h3>
+      <span class="sub">Set the starting populations (thousands) and the yearly moving rates. The chart shows 30 years; the marked year uses <i>M</i><sup><i>n</i></sup>.</span></div>
+    <div class="inputs">
+      <div class="grp"><label class="field t1 sm"><span>Riverton now</span><input id="tR" type="text" inputmode="decimal" autocomplete="off"></label>
+        <label class="field t2 sm"><span>Hillside now</span><input id="tH" type="text" inputmode="decimal" autocomplete="off"></label></div>
+      <div class="grp"><label class="field t1 sm"><span>R → H %</span><input id="tp" type="text" inputmode="decimal" autocomplete="off"></label>
+        <label class="field t2 sm"><span>H → R %</span><input id="tq" type="text" inputmode="decimal" autocomplete="off"></label></div>
+      <div class="grp"><label class="field fp sm"><span>Year <i>n</i></span><input id="tn" type="text" inputmode="decimal" autocomplete="off"></label></div>
+    </div>
+    <div class="err" id="tErr"></div>
+    <svg class="nl" id="pSvg" viewBox="0 0 1000 320" role="img" aria-label="Populations over 30 years"></svg>
+    <div class="eqs" id="tEqs"></div>
+    <div class="readout" id="tOut2"></div>
+  </div>
+</section>
+
+<!-- ===================== §7 ===================== -->
+<section class="prose">
+  <h2><span class="n">7</span>Graphics: many moves, one matrix</h2>
+  <p>A game might shrink a sprite, turn it, then slant it, every frame, for every point of the picture. Instead of three multiplications per point, it multiplies the three matrices once and uses the single result. Note the order in the product: the first step is on the right.</p>
+</section>
+<section class="wide">
+  <div class="card" id="pipe">
+    <div class="card-h"><span class="tag">Explore</span><h3>A graphics pipeline</h3>
+      <span class="sub">Set the three steps and pick an order. Each panel shows the sprite after one more step; the last matrix does all of it at once.</span></div>
+    <div class="row" id="gOrders"></div>
+    <div class="inputs">
+      <label class="field fp sm"><span>Scale <i>s</i></span><input id="gS" type="text" inputmode="decimal" autocomplete="off"></label>
+      <label class="field fp sm"><span>Turn θ (°)</span><input id="gT" type="text" inputmode="decimal" autocomplete="off"></label>
+      <label class="field fp sm"><span>Slant (°)</span><input id="gK" type="text" inputmode="decimal" autocomplete="off"></label>
+    </div>
+    <div class="err" id="gErr"></div>
+    <div class="split s4" style="margin-top:12px">
+      <svg id="g0" viewBox="0 0 250 250" role="img" aria-label="Start"></svg>
+      <svg id="g1" viewBox="0 0 250 250" role="img" aria-label="After step 1"></svg>
+      <svg id="g2" viewBox="0 0 250 250" role="img" aria-label="After step 2"></svg>
+      <svg id="g3" viewBox="0 0 250 250" role="img" aria-label="After step 3"></svg>
+    </div>
+    <div class="eqs" id="gEqs"></div>
+  </div>
+</section>
+
+<!-- ===================== §8 ===================== -->
+<section class="prose">
+  <h2><span class="n">8</span>Now, in symbols</h2>
+  <div class="math">\[ (BA)\,\mathbf{v} = B\,(A\,\mathbf{v}), \qquad BA = \big[\, B\mathbf{a}_1 \;\; B\mathbf{a}_2 \,\big] \]<div class="cap">Do A, then B. Each column of BA is B times a column of A.</div></div>
+  <div class="math">\[ \begin{bmatrix} p & q \\ r & s \end{bmatrix}\begin{bmatrix} a & b \\ c & d \end{bmatrix} = \begin{bmatrix} pa + qc & pb + qd \\ ra + sc & rb + sd \end{bmatrix} \]<div class="cap">Row · column: each entry is a row of the left matrix dotted with a column of the right one.</div></div>
+  <div class="math">\[ AB \ne BA \text{ in general}, \qquad AI = IA = A, \qquad (AB)C = A(BC), \qquad A^n = \underbrace{A\,A\cdots A}_{n} \]<div class="cap">Order matters; the identity does nothing; grouping doesn’t matter (you can combine any neighbors first); powers repeat a move.</div></div>
+  <div class="math">\[ (m\times \mathbf{n})\,(\mathbf{n}\times p) = (m\times p) \]<div class="cap">The inner sizes must match; the answer has the outer sizes.</div></div>
+  <p>For the towns, a computer finds a power like <i>M</i>⁵⁰ in a blink (it squares <i>M</i> repeatedly instead of multiplying 50 times):</p>
+  <pre class="code"><code>import numpy as np                                   # NumPy: arrays of numbers
+M = np.array([[0.9, 0.2],                            # top row: Riverton keeps 90%, gains 20% of Hillside
+              [0.1, 0.8]])                           # bottom row: Hillside gains 10% of Riverton, keeps 80%
+start = np.array([100, 20])                          # thousands of people in Riverton and Hillside now
+for n in [1, 10, 50]:                                # look 1, 10 and 50 years ahead
+    Mn = np.linalg.matrix_power(M, n)                # M multiplied by itself n times
+    print(n, (Mn @ start).round(1))                  # populations after n years -> settles near [80, 40]</code></pre>
+</section>
+
+<!-- ===================== §9 ===================== -->
+<section class="prose">
+  <h2><span class="n">9</span>Where this goes</h2>
+  <ul class="goes">
+    <li><b>Next (7.B.6):</b> the determinant. If one move multiplies areas by 2 and the next by 3, the pair multiplies them by 6: determinants multiply when matrices do.</li>
+    <li><b>Later in this book:</b> undoing a move (inverse matrices, 7.B.7, where <i>A</i><sup>−1</sup><i>A</i> = <i>I</i>), solving systems of equations (7.B.8–7.B.9), matrices of every size (7.B.11), and the long-run behavior of repeated moves (eigenvectors, Undergraduate tier; Markov chains in probability).</li>
+    <li><b>In the world:</b> every 3D game and animated film chains camera, turn and perspective matrices; robot arms chain one matrix per joint; and a neural network is a chain of matrix multiplications with a simple bend between them.</li>
+  </ul>
+</section>
+
+<!-- ===================== §10 Vocabulary ===================== -->
+<section class="prose">
+  <h2><span class="n">10</span>Words to know</h2>
+  <div class="vocab">
+    <div class="term"><b>Composition</b>Doing one move after another. A then B is written BA.</div>
+    <div class="term"><b>Matrix product</b>BA: the single matrix for “A, then B.” Its columns are B times the columns of A.</div>
+    <div class="term"><b>Row · column rule</b>Entry (row <i>r</i>, column <i>c</i>) of BA = (row <i>r</i> of B) · (column <i>c</i> of A).</div>
+    <div class="term"><b>Order matters</b>In general AB ≠ BA: doing the moves in the other order gives a different move.</div>
+    <div class="term"><b>Commute</b>Two matrices commute when AB = BA, like two turns or two axis stretches.</div>
+    <div class="term"><b>Identity matrix</b><i>I</i>, with columns [1, 0] and [0, 1]: the “do nothing” move. <i>AI</i> = <i>IA</i> = <i>A</i>.</div>
+    <div class="term"><b>Power</b><i>A</i><sup><i>n</i></sup>: the move A done <i>n</i> times in a row. <i>A</i>⁰ = <i>I</i>.</div>
+    <div class="term"><b>Size (m×n)</b>A matrix with <i>m</i> rows and <i>n</i> columns. A product needs matching inner sizes: (m×n)(n×p) = (m×p).</div>
+  </div>
+</section>
+
+<!-- ===================== Quiz ===================== -->
+<section class="prose"><h2><span class="n">11</span>Check yourself</h2>
+  <p>Four kinds of questions: multiply two matrices, decide whether order matters, watch two moves and write the single matrix, and tell which order made a picture.</p>
+</section>
+<section class="wide">
+  <div class="card" id="quiz">
+    <div class="card-h"><span class="tag">Quiz</span><h3 id="qTitle"></h3><span class="score" id="score">Score: 0 / 0</span></div>
+    <div class="qtext" id="qText"></div>
+    <svg class="nl" id="qSvg" viewBox="0 0 1000 380" role="img" aria-label="Quiz picture"></svg>
+    <div class="choice" id="qChoice"></div>
+    <div class="inputs" id="qMat">
+      <div class="matw"><span class="mlab" id="qMatL">Your answer</span>
+        <div class="mat">
+          <input id="qa" class="ci" type="text" inputmode="decimal" autocomplete="off" aria-label="top left">
+          <input id="qb" class="cj" type="text" inputmode="decimal" autocomplete="off" aria-label="top right">
+          <input id="qc" class="ci" type="text" inputmode="decimal" autocomplete="off" aria-label="bottom left">
+          <input id="qd" class="cj" type="text" inputmode="decimal" autocomplete="off" aria-label="bottom right">
+        </div>
+      </div>
+      <div class="row" style="margin:0"><button class="primary" id="qCheck">Check</button></div>
+    </div>
+    <div class="row" style="margin:10px 0 0"><button id="qShow">Show answer</button><button id="qReplay">Replay moves</button><button id="qNew">New question</button></div>
+    <div class="err" id="qErr"></div>
+    <div class="feedback" id="qFb" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ===================== Pager (filled in by the shared navigation) ===================== -->
+<nav class="wide">
+  <div class="pager"></div>
+  <div class="meta">7.B.5 · Prerequisites: 7.B.3 (dot product), 7.B.4 (a matrix is a move) · Leads to: 7.B.6 (determinant), 7.B.7 (inverse matrices), 7.B.11 (matrices of any size)</div>
+</nav>
+</main>
+
+<script>
+/* =====================================================================
+   1. HELPERS
+   ===================================================================== */
+const NS = 'http://www.w3.org/2000/svg';
+const $ = id => document.getElementById(id);
+function mk(tag, attrs, parent){                           // create an SVG element with attributes
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function txt(parent, x, y, s, cls, extra){                 // create an SVG text element
+  extra = Object.assign({}, extra || {});
+  // a CSS class's text-anchor beats the attribute, so move a requested anchor into the style
+  if (extra['text-anchor']){ extra.style = (extra.style ? extra.style + ';' : '') + 'text-anchor:' + extra['text-anchor']; delete extra['text-anchor']; }
+  const t = mk('text', Object.assign({ x, y, class: cls || '' }, extra), parent);
+  t.textContent = s;
+  return t;
+}
+function num(x, d){ if (d === undefined) d = 2; const r = Math.round(x * Math.pow(10, d)) / Math.pow(10, d); return r === 0 ? '0' : (r < 0 ? '−' : '') + String(Math.abs(r)); }
+const pn = x => x < 0 || num(x).startsWith('−') ? `(${num(x)})` : num(x);   // a number, in parentheses when negative
+// Parse typed input: integers, decimals, a leading minus, fractions a/b, and roots like √2 or sqrt(3)
+function parseNum(s){
+  s = String(s).trim().replace(/[−–]/g, '-').replace(/\s+/g, '').replace(/°$/, '');
+  if (/^-?\d+(\.\d+)?$|^-?\.\d+$/.test(s)) return parseFloat(s);
+  let m = s.match(/^(-?\d+)\/(\d+)$/);
+  if (m && +m[2] !== 0) return +m[1] / +m[2];
+  m = s.match(/^(-?)(\d*\.?\d*)\*?(?:√|sqrt)\(?(\d+(?:\.\d+)?)\)?$/);
+  if (m){ const c = m[2] === '' ? 1 : parseFloat(m[2]); if (!isNaN(c)) return (m[1] ? -1 : 1) * c * Math.sqrt(+m[3]); }
+  return NaN;
+}
+const ease = t => t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+const C = { i: 'var(--ci)', j: 'var(--cj)', p: 'var(--cp)', s: 'var(--cs)', r: 'var(--cr)' };
+const DEG = 180 / Math.PI;
+function readAll(ids, errId, msg){
+  const out = ids.map(id => parseNum($(id).value));
+  if (ids.some(id => $(id).value.trim() === '') || out.some(isNaN)){ $(errId).textContent = msg || 'Fill in every box with a number.'; return null; }
+  $(errId).textContent = ''; return out;
+}
+// A matrix is stored as [a, b, c, d] = top row a b, bottom row c d. Column 1 = [a, c] (where î lands), column 2 = [b, d].
+const ap = (M, p) => [M[0] * p[0] + M[1] * p[1], M[2] * p[0] + M[3] * p[1]];   // where the point p lands
+const det = M => M[0] * M[3] - M[1] * M[2];
+const blend = (M, e) => [1 + e * (M[0] - 1), e * M[1], e * M[2], 1 + e * (M[3] - 1)];   // from "no move" (e = 0) to M (e = 1)
+const vstr = p => `[${p.map(x => num(x)).join(', ')}]`;
+const pstr = p => `(${p.map(x => num(x)).join(', ')})`;
+// A printed matrix with colored columns
+const mshow = M => `<span class="mshow"><span class="c1">${num(M[0])}</span><span class="c2">${num(M[1])}</span><span class="c1">${num(M[2])}</span><span class="c2">${num(M[3])}</span></span>`;
+function selectOnFocus(ids){ ids.forEach(id => $(id).addEventListener('focus', e => e.target.select())); }
+
+const svgCss = document.createElement('style');
+svgCss.textContent = `
+  .grid{stroke:var(--line);stroke-width:1} .axis{stroke:var(--ink);stroke-width:1.6;opacity:.7}
+  .ref{stroke:var(--muted);stroke-width:1;stroke-dasharray:3 4;opacity:.6} .refaxis{stroke:var(--muted);stroke-width:1.5;stroke-dasharray:6 4}
+  .tl{fill:var(--muted);font:500 11px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:3px}
+  .lab{font:700 15px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:5px}
+  .labS{font:600 12.5px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+  .cap{fill:var(--muted);font:500 12px var(--sans)}
+  .pl{fill:var(--ink);font:700 13px var(--sans);paint-order:stroke;stroke:var(--bg);stroke-width:5px;letter-spacing:.06em;text-transform:uppercase}
+  .bt{fill:var(--ink);font:600 13px var(--sans)}
+  .bn{fill:var(--ink);font:700 14px var(--mono)}
+`;
+document.head.appendChild(svgCss);
+
+/* =====================================================================
+   2. THE PLANE (grid, axes, arrows, labels)
+   ===================================================================== */
+// Draw a fixed grid that fits the box. o.dashed = the dashed fixed ruler for an After panel; o.noLabels hides tick labels.
+function plane(svg, W, H, box, maxU, o){
+  o = o || {};
+  svg.innerHTML = ''; const g = mk('g', {}, svg);
+  const pad = 1;
+  const u = Math.min(maxU || 44, (W - 40) / (box.x1 - box.x0 + 2 * pad), (H - 30) / (box.y1 - box.y0 + 2 * pad));
+  const cx = W / 2 - u * (box.x0 + box.x1) / 2, cy = H / 2 + u * (box.y0 + box.y1) / 2;   // pixel position of the origin
+  const X = x => cx + x * u, Y = y => cy - y * u;
+  const xa = Math.ceil((0 - cx) / u), xb = Math.floor((W - cx) / u), ya = Math.ceil((cy - H) / u), yb = Math.floor(cy / u);
+  const gc = o.dashed ? 'ref' : 'grid', ac = o.dashed ? 'refaxis' : 'axis';
+  for (let k = xa; k <= xb; k++) if (k) mk('line', { x1: X(k), y1: 0, x2: X(k), y2: H, class: gc }, g);
+  for (let k = ya; k <= yb; k++) if (k) mk('line', { x1: 0, y1: Y(k), x2: W, y2: Y(k), class: gc }, g);
+  mk('line', { x1: 0, y1: Y(0), x2: W, y2: Y(0), class: ac }, g);
+  mk('line', { x1: X(0), y1: 0, x2: X(0), y2: H, class: ac }, g);
+  const P = { g, X, Y, u, W, H, inv: (px, py) => [(px - cx) / u, (cy - py) / u] };
+  P.ticks = () => {                                          // tick labels, drawn last so they sit on top
+    if (o.noLabels) return;
+    const step = u >= 30 ? 1 : u >= 15 ? 2 : 5;
+    for (let k = xa; k <= xb; k++) if (k && k % step === 0 && X(k) > 12 && X(k) < W - 12) txt(g, X(k), Y(0) + 15, k < 0 ? '−' + (-k) : String(k), 'tl', { 'text-anchor': 'middle' });
+    for (let k = ya; k <= yb; k++) if (k && k % step === 0 && Y(k) > 10 && Y(k) < H - 6) txt(g, X(0) - 6, Y(k) + 4, k < 0 ? '−' + (-k) : String(k), 'tl', { 'text-anchor': 'end' });
+  };
+  return P;
+}
+function boxOf(pts){ const xs = pts.map(p => p[0]).concat(0), ys = pts.map(p => p[1]).concat(0); return { x0: Math.min(...xs), x1: Math.max(...xs), y0: Math.min(...ys), y1: Math.max(...ys) }; }
+function arrow(P, p, q, col, o){
+  o = o || {};
+  const x1 = P.X(p[0]), y1 = P.Y(p[1]), x2 = P.X(q[0]), y2 = P.Y(q[1]), L = Math.hypot(x2 - x1, y2 - y1), w = o.w || 3, op = o.op === undefined ? 1 : o.op;
+  const st = `stroke:${col};stroke-width:${w};opacity:${op}${o.dash ? ';stroke-dasharray:' + o.dash : ''}`;
+  if (L < 2){ mk('circle', { cx: x1, cy: y1, r: 5, style: `fill:${col};opacity:${op}` }, P.g); return; }
+  const ux = (x2 - x1) / L, uy = (y2 - y1) / L, h = Math.min(11 + w, L * 0.45);
+  mk('line', { x1, y1, x2: x2 - ux * h * 0.8, y2: y2 - uy * h * 0.8, style: st + ';stroke-linecap:round' }, P.g);
+  mk('polygon', { points: `${x2},${y2} ${x2 - ux * h - uy * h * .45},${y2 - uy * h + ux * h * .45} ${x2 - ux * h + uy * h * .45},${y2 - uy * h - ux * h * .45}`, style: `fill:${col};opacity:${op}` }, P.g);
+}
+// A label just past an arrow's tip (in the arrow's direction), so it never sits on the arrow itself
+function tipLabel(P, q, str, col, cls, push){
+  const L = Math.hypot(q[0], q[1]), d = push || 17;
+  const dx = L > 1e-6 ? q[0] / L : 0.7, dy = L > 1e-6 ? q[1] / L : 0.7;
+  const x = P.X(q[0]) + dx * d, y = P.Y(q[1]) - dy * d;
+  txt(P.g, x, y + 5, str, cls || 'lab', { 'text-anchor': Math.abs(dx) < .35 ? 'middle' : dx > 0 ? 'start' : 'end', style: `fill:${col}` });
+}
+// A label beside the middle of an arrow from the origin, on the side away from the other arrow (pref breaks ties when they're parallel)
+function armLabel(P, q, other, str, col, pref){
+  const sx = P.X(q[0]) - P.X(0), sy = P.Y(q[1]) - P.Y(0), L = Math.hypot(sx, sy);
+  if (L < 4){ txt(P.g, P.X(0) + 12 * (pref || 1), P.Y(0) + 20, str, 'lab', { 'text-anchor': 'middle', style: `fill:${col}` }); return; }
+  let nx = -sy / L, ny = sx / L;                               // a screen-space perpendicular
+  const ox = P.X(other[0]) - P.X(0), oy = P.Y(other[1]) - P.Y(0), side = nx * ox + ny * oy;
+  if (Math.abs(side) < 1e-6 * (Math.hypot(ox, oy) + 1)){ if ((pref || 1) < 0){ nx = -nx; ny = -ny; } }
+  else if (side > 0){ nx = -nx; ny = -ny; }
+  txt(P.g, P.X(0) + sx * .5 + nx * 15, P.Y(0) + sy * .5 + ny * 15 + 5, str, 'lab', { 'text-anchor': 'middle', style: `fill:${col}` });
+}
+// The moved grid: the images of the lines x = k and y = k under M (purple; the image of each axis darker)
+function movedGrid(P, M, R){
+  R = R || 16; const g = mk('g', {}, P.g);
+  for (let k = -R; k <= R; k++){
+    const st = k ? 'stroke:var(--cs);stroke-width:1.1;opacity:.85' : 'stroke:var(--cp);stroke-width:2;opacity:.75';
+    [[[k, -R], [k, R]], [[-R, k], [R, k]]].forEach(([p, q]) => { const a = ap(M, p), b = ap(M, q); mk('line', { x1: P.X(a[0]), y1: P.Y(a[1]), x2: P.X(b[0]), y2: P.Y(b[1]), style: st }, g); });
+  }
+}
+function poly(P, pts, M, style){ return mk('polygon', { points: pts.map(p => { const q = M ? ap(M, p) : p; return P.X(q[0]).toFixed(1) + ',' + P.Y(q[1]).toFixed(1); }).join(' '), style }, P.g); }
+// The F marker (asymmetric, so flips and turns can't hide) and the unit square
+const FP = [[.3, .3], [.7, .3], [.7, 1.1], [1.3, 1.1], [1.3, 1.5], [.7, 1.5], [.7, 1.9], [1.7, 1.9], [1.7, 2.3], [.3, 2.3]];
+const US = [[0, 0], [1, 0], [1, 1], [0, 1]];
+function drawSquareAndF(P, M){
+  poly(P, US, M, 'fill:var(--cs);opacity:.45;stroke:var(--cp);stroke-width:1.2');
+  poly(P, FP, M, 'fill:var(--cp);opacity:.85;stroke:var(--cp);stroke-width:1.5;stroke-linejoin:round');
+}
+const origin = P => mk('circle', { cx: P.X(0), cy: P.Y(0), r: 4.5, style: 'fill:var(--ink)' }, P.g);
+
+// Name the move a matrix makes (used by the explorer's readout and by the quiz)
+function classify(M){
+  const [a, b, c, d] = M, D = det(M), z = x => Math.abs(x) < 0.015;
+  if (z(a) && z(b) && z(c) && z(d)) return { k: 'zero', t: 'Every point lands on the origin: the zero matrix squashes the whole plane to a single point.' };
+  if (z(D)) return { k: 'collapse', t: '<b>Collapse.</b> î and ĵ land on the same line, so the whole plane is squashed flat onto that line. Area becomes 0.' };
+  if (z(a - 1) && z(b) && z(c) && z(d - 1)) return { k: 'identity', t: '<b>The identity.</b> î and ĵ stay home, so nothing moves. It’s the matrix version of ×1.' };
+  const orth = z(a * a + c * c - 1) && z(b * b + d * d - 1) && z(a * b + c * d);
+  if (orth && D > 0){ const ang = Math.atan2(c, a) * DEG; return { k: 'rotation', t: `<b>Rotation by ${num(Math.abs(ang), 0)}° ${ang >= 0 ? 'counterclockwise' : 'clockwise'}.</b> Both arrows turn together, keeping length 1 and staying at right angles. Shapes keep their size and aren’t mirrored.` }; }
+  if (orth && D < 0){ let ang = Math.atan2(c, a) * DEG / 2; if (ang < 0) ang += 180; const where = Math.abs(ang - 90) < .5 ? 'the vertical axis' : Math.abs(ang) < .5 || Math.abs(ang - 180) < .5 ? 'the horizontal axis' : `the dashed line at ${num(ang, 0)}°`;
+    return { k: 'reflection', line: ang, t: `<b>Reflection</b> across ${where}: a mirror flip. The F comes out backwards.` }; }
+  if (z(b) && z(c)){
+    if (a > 0 && d > 0) return { k: 'stretch', t: z(a - d) ? `<b>Resize ×${num(a)}.</b> î and ĵ stay on their axes and both get ${num(a)} times as long, so shapes keep their proportions.` : `<b>Stretch:</b> ×${num(a)} left–right and ×${num(d)} up–down. î and ĵ stay on their axes and only change length.` };
+    return { k: 'stretch', t: `<b>A stretch with a flip:</b> î and ĵ stay on their axes, but ${a < 0 ? 'î' : 'ĵ'} now points the other way, so the plane is also mirrored.` };
+  }
+  if (z(a - 1) && z(d - 1) && z(c)) return { k: 'shear', t: `<b>Horizontal shear.</b> î stays put and ĵ tips over to [${num(b)}, 1]. Each point slides sideways by ${num(b)} × its height.` };
+  if (z(a - 1) && z(d - 1) && z(b)) return { k: 'shear', t: `<b>Vertical shear.</b> ĵ stays put and î tips up to [1, ${num(c)}]. Each point slides up by ${num(c)} × its distance to the right.` };
+  return { k: 'general', t: `<b>A general move:</b> it stretches, turns and slants at once${D < 0 ? ', and flips the plane over (the F is mirrored)' : ''}. It’s still linear: lines stay straight, parallel and evenly spaced.` };
+}
+
+/* =====================================================================
+   3. PAGE TOOLS: products, printed matrices
+   ===================================================================== */
+C.a = 'var(--ca)'; C.b = 'var(--cb)';
+const mul = (B, A) => [B[0] * A[0] + B[1] * A[2], B[0] * A[1] + B[1] * A[3], B[2] * A[0] + B[3] * A[2], B[2] * A[1] + B[3] * A[3]];   // B·A: do A, then B
+const eqM = (X, Y) => X.every((v, k) => Math.abs(v - Y[k]) < 1e-9);
+const ID = [1, 0, 0, 1];
+const ms = (M, cls, d) => `<span class="mshow ${cls || 'plain'}${M.length === 6 ? ' c3' : ''}">${M.map(v => `<span>${num(v, d)}</span>`).join('')}</span>`;   // a printed matrix in one color
+const rot = deg => { const t = deg / DEG; return [Math.cos(t), -Math.sin(t), Math.sin(t), Math.cos(t)]; };
+const R90 = [0, -1, 1, 0], ST2 = [2, 0, 0, 1], MIR = [-1, 0, 0, 1];
+function power(A, n){ let M = ID.slice(); for (let k = 0; k < n; k++) M = mul(A, M); return M; }
+
+/* =====================================================================
+   4. ONE MOVE AFTER ANOTHER (Start → After A → After A, then B)
+   ===================================================================== */
+const CP = [
+  { n: 'Turn, then stretch', A: R90, B: ST2, d: 'A is a quarter turn left; B then stretches ×2 sideways. The F ends up wide. Compare with the next preset.' },
+  { n: 'Stretch, then turn', A: ST2, B: R90, d: 'The same two moves in the other order: now the F ends up tall instead of wide. Order matters.' },
+  { n: 'Turn twice', A: R90, B: R90, d: 'Two quarter turns make a half turn: î ends up at [−1, 0]. Here BA = A².' },
+  { n: 'Shear twice', A: [1, 1, 0, 1], B: [1, 1, 0, 1], d: 'Two shears by 1 make one shear by 2: ĵ goes to [1, 1], then on to [2, 1].' },
+  { n: 'Mirror twice', A: MIR, B: MIR, d: 'A mirror undoes itself: BA is the identity, and the F is back where it started.' },
+  { n: 'Turn, then mirror', A: R90, B: MIR, d: 'A quarter turn followed by a mirror is a single mirror, across the diagonal line y = x.' },
+  { n: 'Flatten, then turn', A: [1, 0, 0, 0], B: R90, d: 'Once A flattens the plane onto a line, B can only move that line around: BA is still a collapse.' },
+];
+const cm = { A: R90.slice(), B: ST2.slice(), t: 2.3, raf: 0, playing: false };
+const AIDS = ['a0', 'a1', 'a2', 'a3'], BIDS = ['b0', 'b1', 'b2', 'b3'], TT = 2.3;
+CP.forEach((p, i) => { const b = document.createElement('button'); b.className = 'preset'; b.textContent = p.n; b.onclick = () => { cm.A = p.A.slice(); cm.B = p.B.slice(); fillC(); markC(); playC(true); }; $('cPresets').appendChild(b); });
+function markC(){                                           // light up the preset that matches the current pair, if any
+  const i = CP.findIndex(p => eqM(p.A, cm.A) && eqM(p.B, cm.B));
+  [...$('cPresets').children].forEach((b, j) => b.classList.toggle('on', j === i));
+  $('cDesc').textContent = i < 0 ? 'Your own pair of moves.' : CP[i].d;
+}
+function fillC(){ AIDS.forEach((id, k) => { $(id).value = num(cm.A[k]); }); BIDS.forEach((id, k) => { $(id).value = num(cm.B[k]); }); }
+function readC(){
+  const r = readAll(AIDS.concat(BIDS), 'cErr'); if (!r) return false;
+  if (r.some(x => Math.abs(x) > 3)){ $('cErr').textContent = 'Keep every entry between −3 and 3, so the moved arrows stay in view.'; return false; }
+  cm.A = r.slice(0, 4); cm.B = r.slice(4); return true;
+}
+const CB = { x0: -3.1, x1: 3.1, y0: -3.1, y1: 3.1 };
+// One panel: the fixed grid (dashed after a move), the moved grid, square, F, and where î and ĵ are now
+function panel(id, M, title, ghost){
+  const P = plane($(id), 340, 340, CB, 44, { dashed: !!M });
+  if (M) movedGrid(P, M);
+  drawSquareAndF(P, M); P.ticks();
+  if (ghost){ arrow(P, [0, 0], [ghost[0], ghost[2]], 'var(--ink)', { w: 2, dash: '5 4', op: .45 }); arrow(P, [0, 0], [ghost[1], ghost[3]], 'var(--ink)', { w: 2, dash: '5 4', op: .45 }); }
+  const T = M || ID, i2 = [T[0], T[2]], j2 = [T[1], T[3]];
+  arrow(P, [0, 0], i2, C.i, { w: 3.5 }); arrow(P, [0, 0], j2, C.j, { w: 3.5 });
+  armLabel(P, i2, j2, 'î', C.i, 1); armLabel(P, j2, i2, 'ĵ', C.j, -1);
+  origin(P); txt(P.g, 12, 22, title, 'pl');
+}
+const clamp01 = x => Math.max(0, Math.min(1, x));
+function drawC(){
+  const e1 = ease(clamp01(cm.t)), e2 = ease(clamp01(cm.t - 1.3));
+  const M1 = blend(cm.A, e1), M3 = mul(blend(cm.B, e2), M1);
+  panel('c1', null, 'Start');
+  panel('c2', M1, 'After A');
+  panel('c3', M3, 'After A, then B', cm.t > 1.3 ? M1 : null);
+  writeC();
+}
+function writeC(){
+  const { A, B } = cm, BA = mul(B, A), AB = mul(A, B);
+  $('cBA').innerHTML = mshow(BA);
+  const col = k => { const a = [A[k], A[k + 2]], r = ap(B, a);
+    return `<span class="kb">B</span>·<span class="ka">${vstr(a)}</span> = [${num(B[0])}·${pn(a[0])} + ${pn(B[1])}·${pn(a[1])}, ${num(B[2])}·${pn(a[0])} + ${pn(B[3])}·${pn(a[1])}] = <b class="${k ? 'kj' : 'ki'}">${vstr(r)}</b>`; };
+  const same = eqM(AB, BA);
+  $('cEqs').innerHTML =
+    `<span class="lbl">Column 1 (î)</span>${col(0)}<br>` +
+    `<span class="lbl">Column 2 (ĵ)</span>${col(1)}<br>` +
+    `<span class="lbl">Row · column</span>top-right = (row 1 of <span class="kb">B</span>)·(column 2 of <span class="ka">A</span>) = ${num(B[0])}·${pn(A[1])} + ${pn(B[1])}·${pn(A[3])} = ${num(BA[1])}<br>` +
+    `<span class="lbl">Other order</span><span class="ka">A</span><span class="kb">B</span> (B first, then A) = ${mshow(AB)} ${same ? '<b>= BA</b>: these two moves commute.' : '<b>≠ BA</b>: order matters here.'}`;
+  $('cOut').innerHTML = `<b>Together, as one move:</b> ` + classify(BA).t.replace(/^<b>/, '').replace('</b>', '').replace('the dashed line at', 'the line at');
+}
+function playC(restart){
+  if (cm.playing && !restart){ stopC(); return; }
+  if (!readC()) return;
+  if (restart || cm.t >= TT) cm.t = 0;
+  cm.playing = true; $('cPlay').textContent = 'Pause'; let last = performance.now(); cancelAnimationFrame(cm.raf);
+  const step = now => { cm.t = Math.min(TT, cm.t + (now - last) / 1500); last = now; drawC(); if (cm.t < TT && cm.playing) cm.raf = requestAnimationFrame(step); else stopC(); };
+  cm.raf = requestAnimationFrame(step);
+}
+function stopC(){ cancelAnimationFrame(cm.raf); cm.playing = false; $('cPlay').textContent = 'Play'; }
+$('cPlay').onclick = () => playC(false);
+$('cSwap').onclick = () => { stopC(); if (!readC()) return; [cm.A, cm.B] = [cm.B, cm.A]; fillC(); markC(); playC(true); };
+AIDS.concat(BIDS).forEach(id => $(id).addEventListener('input', () => { stopC(); if (readC()){ cm.t = TT; markC(); drawC(); } }));
+selectOnFocus(AIDS.concat(BIDS));
+
+/* =====================================================================
+   5. FLIP AND TURN A TILE (order matters, or not)
+   ===================================================================== */
+const TM = [
+  { n: 'Turn 90° left', M: [0, -1, 1, 0] }, { n: 'Turn 180°', M: [-1, 0, 0, -1] },
+  { n: 'Flip left↔right', M: [-1, 0, 0, 1] }, { n: 'Flip up↔down', M: [1, 0, 0, -1] }, { n: 'Flip on the diagonal', M: [0, 1, 1, 0] },
+];
+const tl = { f: 0, s: 2 };
+[['tFirst', 'f'], ['tSecond', 's']].forEach(([box, key]) => TM.forEach((m, i) => { const b = document.createElement('button'); b.className = 'preset'; b.textContent = m.n; b.onclick = () => { tl[key] = i; drawTiles(); }; $(box).appendChild(b); }));
+const FC = FP.map(([x, y]) => [x - 1, y - 1.3]);            // the F, centered on the tile
+function drawTiles(){
+  [['tFirst', tl.f], ['tSecond', tl.s]].forEach(([box, i]) => [...$(box).children].forEach((b, j) => b.classList.toggle('on', j === i)));
+  const svg = $('tSvg'); svg.innerHTML = ''; const g = mk('g', {}, svg);
+  const F = TM[tl.f], S = TM[tl.s], k = 32, H = 58;
+  const tile = (cx, cy, M) => {
+    mk('rect', { x: cx - H, y: cy - H, width: 2 * H, height: 2 * H, rx: 10, style: 'fill:var(--paper);stroke:var(--line2);stroke-width:1.5' }, g);
+    mk('polygon', { points: FC.map(p => { const q = ap(M, p); return (cx + k * q[0]).toFixed(1) + ',' + (cy - k * q[1]).toFixed(1); }).join(' '), style: 'fill:var(--cp);opacity:.9' }, g);
+  };
+  const step = (x1, x2, y, name, col) => {
+    mk('line', { x1: x1 + H + 10, y1: y, x2: x2 - H - 16, y2: y, style: `stroke:${col};stroke-width:2.5` }, g);
+    mk('polygon', { points: `${x2 - H - 8},${y} ${x2 - H - 20},${y - 7} ${x2 - H - 20},${y + 7}`, style: `fill:${col}` }, g);
+    txt(g, (x1 + x2) / 2, y - 12, name, 'labS', { 'text-anchor': 'middle', style: `fill:${col}` });
+  };
+  const X = [150, 500, 850], rows = [[95, F, S, 'First, then second'], [250, S, F, 'Second, then first']];
+  rows.forEach(([y, m1, m2, lab], r) => {
+    txt(g, 20, y - H - 10, lab, 'bt');
+    tile(X[0], y, ID); tile(X[1], y, m1.M); tile(X[2], y, mul(m2.M, m1.M));
+    step(X[0], X[1], y, m1.n, r ? C.b : C.a); step(X[1], X[2], y, m2.n, r ? C.a : C.b);
+  });
+  const top = mul(S.M, F.M), bot = mul(F.M, S.M), same = eqM(top, bot);
+  mk('rect', { x: X[2] - H - 6, y: 95 - H - 6, width: 2 * H + 12, height: 250 - 95 + 2 * H + 12, rx: 14, style: `fill:none;stroke:${same ? 'var(--yes)' : 'var(--no)'};stroke-width:2.5;stroke-dasharray:7 5` }, g);
+  txt(g, X[2] + H + 18, 178, same ? 'same ✓' : 'different ✕', 'bt', { 'text-anchor': 'start', style: `fill:${same ? 'var(--yes)' : 'var(--no)'}` });
+  $('tOut').innerHTML = `<div class="verdict ${same ? 'y' : 'n'}">${same ? 'Same final tile: these two moves commute.' : 'Different final tiles: order matters.'} &nbsp; First then second = ${ms(top)} ; second then first = ${ms(bot)}</div>`;
+}
+
+/* =====================================================================
+   6. REPEAT A MOVE (powers)
+   ===================================================================== */
+const sp = rot(25).map(v => v * 0.9);
+const WP = [
+  { n: 'Turn 30°', A: rot(30), N: 12, d: 'Each step turns 30°. After 12 steps (360°) everything is home: A¹² = I.' },
+  { n: 'Turn 90°', A: R90, N: 4, d: 'Four quarter turns make a full turn: A⁴ = I. Try n = 2: a half turn.' },
+  { n: 'Mirror', A: MIR, N: 2, d: 'A mirror twice is no change: A² = I. Odd powers are mirrors, even powers are the identity.' },
+  { n: 'Shear', A: [1, .5, 0, 1], N: 4, d: 'Each shear slides a bit more: Aⁿ is a shear by n × 0.5. Shears never come back home.' },
+  { n: 'Spiral', A: sp, N: 10, d: 'Turn 25° and shrink to 90% each step: the point spirals in toward the origin.' },
+];
+const pw = { i: 0, n: 12 };
+WP.forEach((p, i) => { const b = document.createElement('button'); b.className = 'preset'; b.textContent = p.n; b.onclick = () => { pw.i = i; pw.n = p.N; $('wN').value = p.N; $('wErr').textContent = ''; drawPow(); }; $('wPresets').appendChild(b); });
+function drawPow(){
+  [...$('wPresets').children].forEach((b, j) => b.classList.toggle('on', j === pw.i));
+  const A = WP[pw.i].A, n = pw.n; $('wDesc').textContent = WP[pw.i].d;
+  const P = plane($('wSvg'), 1000, 380, { x0: -4.6, x1: 4.6, y0: -3.3, y1: 3.6 }, 46, { dashed: true });
+  const An = power(A, n);
+  const sc = Math.sqrt(Math.abs(det(An))) || 1;               // shrinking moves need more grid lines to fill the panel
+  movedGrid(P, An, Math.max(16, Math.min(60, Math.ceil(16 / sc))));
+  for (let k = 0; k < n; k++){ const Mk = power(A, k); poly(P, FP, Mk, `fill:var(--cp);opacity:${.07 + .18 * k / Math.max(1, n)};stroke:var(--cp);stroke-width:1;stroke-opacity:.5`); }
+  drawSquareAndF(P, An); P.ticks();
+  // the trail of the point [2.4, 0]
+  const pts = []; for (let k = 0; k <= n; k++) pts.push(ap(power(A, k), [2, 1]));
+  mk('polyline', { points: pts.map(q => P.X(q[0]).toFixed(1) + ',' + P.Y(q[1]).toFixed(1)).join(' '), style: 'fill:none;stroke:var(--cr);stroke-width:1.6;opacity:.6' }, P.g);
+  pts.forEach((q, k) => { mk('circle', { cx: P.X(q[0]), cy: P.Y(q[1]), r: k === n ? 7 : 4, style: `fill:var(--cr);opacity:${k === n ? 1 : .7}` }, P.g); if (n <= 12 && (k < n || n === 0)) txt(P.g, P.X(q[0]) + 7, P.Y(q[1]) - 7, String(k), 'labS', { 'text-anchor': 'start', style: 'fill:var(--cr)' }); });
+  const i2 = [An[0], An[2]], j2 = [An[1], An[3]];
+  arrow(P, [0, 0], i2, C.i, { w: 3.5 }); arrow(P, [0, 0], j2, C.j, { w: 3.5 }); armLabel(P, i2, j2, 'î', C.i, 1); armLabel(P, j2, i2, 'ĵ', C.j, -1);
+  origin(P); txt(P.g, 14, 24, `After ${n} step${n === 1 ? '' : 's'}`, 'pl');
+  $('wA').innerHTML = mshow(A); $('wAn').innerHTML = mshow(An);
+  let h;
+  if (n === 0) h = '<b>A⁰ = I</b>: zero steps means nothing has moved yet.';
+  else if (eqM(An.map(v => Math.round(v * 1e6) / 1e6), ID)) h = `<b>A<sup>${n}</sup> = I</b>: after ${n} steps everything is back where it started, so the last step undid all the others.`;
+  else h = `A<sup>${n}</sup> = A · A ⋯ A (${n} times). The point [2, 1] is now at ${vstr(pts[n])}; the faded F’s show the earlier steps.`;
+  $('wOut').innerHTML = h;
+}
+$('wN').addEventListener('input', () => {
+  const v = parseNum($('wN').value);
+  if ($('wN').value.trim() === '' || isNaN(v) || !Number.isInteger(v) || v < 0 || v > 24){ $('wErr').textContent = 'Type a whole number from 0 to 24.'; return; }
+  $('wErr').textContent = ''; pw.n = v; drawPow();
+});
+$('wMinus').onclick = () => { if (pw.n > 0){ pw.n--; $('wN').value = pw.n; $('wErr').textContent = ''; drawPow(); } };
+$('wPlus').onclick = () => { if (pw.n < 24){ pw.n++; $('wN').value = pw.n; $('wErr').textContent = ''; drawPow(); } };
+selectOnFocus(['wN']);
+
+/* =====================================================================
+   7. KITS → PARTS → BRICKS (a 2×3 times a 3×2, and paths)
+   ===================================================================== */
+const PIDS = ['p0', 'p1', 'p2', 'p3', 'p4', 'p5'], QIDS = ['q0', 'q1x', 'q2x', 'q3', 'q4', 'q5'];
+[4, 2, 1, 2, 2, 3].forEach((v, k) => { $(PIDS[k]).value = v; });
+[1, 3, 2, 2, 1, 4].forEach((v, k) => { $(QIDS[k]).value = v; });
+$('kx').value = 2; $('ky').value = 1;
+const KITS = ['Rover', 'Crane'], PARTS = ['wheels', 'arms', 'panels'], COLS = ['red', 'blue'];
+const kp = { kit: 0, col: 0 };
+[[0, 0], [0, 1], [1, 0], [1, 1]].forEach(([k, c]) => { const b = document.createElement('button'); b.className = 'preset'; b.textContent = `${KITS[k]} → ${COLS[c]} bricks`; b.onclick = () => { kp.kit = k; kp.col = c; drawKits(); }; $('kPaths').appendChild(b); });
+function drawKits(){
+  [...$('kPaths').children].forEach((b, j) => b.classList.toggle('on', j === kp.kit * 2 + kp.col));
+  const r = readAll(PIDS.concat(QIDS, ['kx', 'ky']), 'kErr'); if (!r) return;
+  if (r.some(v => !Number.isInteger(v) || v < 0 || v > 6)){ $('kErr').textContent = 'Use whole numbers from 0 to 6.'; return; }
+  const P = [[r[0], r[1]], [r[2], r[3]], [r[4], r[5]]], Q = [[r[6], r[7], r[8]], [r[9], r[10], r[11]]], ord = [r[12], r[13]];
+  const parts = P.map(row => row[0] * ord[0] + row[1] * ord[1]), bricks = Q.map(row => row.reduce((s, q, p) => s + q * parts[p], 0));
+  const QP = Q.map(row => [0, 1].map(k => row.reduce((s, q, p) => s + q * P[p][k], 0)));
+  const svg = $('kSvg'); svg.innerHTML = ''; const g = mk('g', {}, svg);
+  const KX = 150, PX = 500, BX = 850, KY = [130, 260], PY = [85, 195, 305], BY = [130, 260];
+  [['Kits ordered', KX], ['Parts needed', PX], ['Bricks needed', BX]].forEach(([t, x]) => txt(g, x, 28, t, 'bt', { 'text-anchor': 'middle' }));
+  const edge = (x1, y1, x2, y2, w, hl, col, t) => {
+    if (!w) return;
+    mk('line', { x1, y1, x2, y2, style: hl ? `stroke:${col};stroke-width:${2 + w * 1.3};opacity:.85` : `stroke:var(--line2);stroke-width:${1 + w * .9};opacity:.7` }, g);
+    txt(g, x1 + (x2 - x1) * t, y1 + (y2 - y1) * t + 5, String(w), 'labS', { 'text-anchor': 'middle', style: `fill:${hl ? col : 'var(--muted)'}` });
+  };
+  for (let k = 0; k < 2; k++) for (let p = 0; p < 3; p++) edge(KX + 32, KY[k], PX - 32, PY[p], P[p][k], k === kp.kit, C.a, .3);
+  for (let p = 0; p < 3; p++) for (let c = 0; c < 2; c++) edge(PX + 32, PY[p], BX - 32, BY[c], Q[c][p], c === kp.col && P[p][kp.kit] > 0, C.b, .7);
+  const node = (x, y, n, name, fill) => { mk('circle', { cx: x, cy: y, r: 30, style: `fill:${fill || 'var(--paper)'};stroke:var(--ink);stroke-width:1.5` }, g); txt(g, x, y + 5, String(n), 'bn', { 'text-anchor': 'middle' }); txt(g, x, y + 48, name, 'cap', { 'text-anchor': 'middle' }); };
+  KITS.forEach((n, k) => node(KX, KY[k], ord[k], n));
+  PARTS.forEach((n, p) => node(PX, PY[p], parts[p], n));
+  COLS.forEach((n, c) => node(BX, BY[c], bricks[c], n + ' bricks', c ? 'rgba(47,111,219,.18)' : 'rgba(216,68,58,.18)'));
+  const k = kp.kit, c = kp.col, terms = [0, 1, 2].map(p => `${Q[c][p]}·${P[p][k]}`).join(' + ');
+  $('kEqs').innerHTML =
+    `<span class="lbl">Sizes</span><span class="kb">Q</span> is 2×<b>3</b>, <span class="ka">P</span> is <b>3</b>×2: inner sizes match, so <span class="kb">Q</span><span class="ka">P</span> is 2×2 = ${ms([].concat(...QP))} (rows: red, blue; columns: Rover, Crane)<br>` +
+    `<span class="lbl">Paths</span>${COLS[c]} bricks per ${KITS[k]} = (${COLS[c]} row of <span class="kb">Q</span>)·(${KITS[k]} column of <span class="ka">P</span>) = ${terms} = <b>${QP[c][k]}</b>: multiply along each path, add the paths<br>` +
+    `<span class="lbl">Two ways</span>bricks = <span class="kb">Q</span>(<span class="ka">P</span>·[${ord.join(', ')}]) = <span class="kb">Q</span>·[${parts.join(', ')}] = (<span class="kb">Q</span><span class="ka">P</span>)·[${ord.join(', ')}] = <b>[${bricks.join(', ')}]</b><br>` +
+    `<span class="lbl">Other order</span><span class="ka">P</span><span class="kb">Q</span> is also allowed (inner sizes 2 and 2), but it’s 3×3 and answers no sensible question: order changes even the size.`;
+}
+PIDS.concat(QIDS, ['kx', 'ky']).forEach(id => $(id).addEventListener('input', drawKits)); selectOnFocus(PIDS.concat(QIDS, ['kx', 'ky']));
+
+/* =====================================================================
+   8. TWO TOWNS (the same move, year after year)
+   ===================================================================== */
+const TIDS = ['tR', 'tH', 'tp', 'tq', 'tn'];
+[100, 20, 10, 20, 10].forEach((v, k) => { $(TIDS[k]).value = v; });
+function drawTowns(){
+  const r = readAll(TIDS, 'tErr'); if (!r) return;
+  const [R0, H0, p100, q100, n] = r;
+  if (R0 < 0 || H0 < 0 || R0 + H0 <= 0 || R0 + H0 > 1000){ $('tErr').textContent = 'Use populations from 0 to 1000 (thousands), not both 0.'; return; }
+  if (p100 < 0 || p100 > 100 || q100 < 0 || q100 > 100){ $('tErr').textContent = 'Moving rates are percents from 0 to 100.'; return; }
+  if (!Number.isInteger(n) || n < 0 || n > 30){ $('tErr').textContent = 'Pick a year from 0 to 30.'; return; }
+  const p = p100 / 100, q = q100 / 100, M = [1 - p, q, p, 1 - q];
+  const yrs = []; let v = [R0, H0]; for (let k = 0; k <= 30; k++){ yrs.push(v); v = ap(M, v); }
+  const T = R0 + H0, svg = $('pSvg'); svg.innerHTML = ''; const g = mk('g', {}, svg);
+  const L = 70, Rr = 960, Tp = 26, B = 270, X = k => L + k / 30 * (Rr - L), Y = y => B - y / T * (B - Tp);
+  for (let k = 0; k <= 30; k += 5){ mk('line', { x1: X(k), y1: Tp, x2: X(k), y2: B, class: 'grid' }, g); txt(g, X(k), B + 18, String(k), 'tl', { 'text-anchor': 'middle' }); }
+  [0, .25, .5, .75, 1].forEach(f => { mk('line', { x1: L, y1: Y(f * T), x2: Rr, y2: Y(f * T), class: 'grid' }, g); txt(g, L - 8, Y(f * T) + 4, num(f * T, 0), 'tl', { 'text-anchor': 'end' }); });
+  mk('line', { x1: L, y1: B, x2: Rr, y2: B, class: 'axis' }, g);
+  txt(g, (L + Rr) / 2, B + 40, 'years from now', 'cap', { 'text-anchor': 'middle' });
+  if (p + q > 0){ const Rs = T * q / (p + q); [[Rs, 'var(--t1)'], [T - Rs, 'var(--t2)']].forEach(([y, col]) => mk('line', { x1: L, y1: Y(y), x2: Rr, y2: Y(y), style: `stroke:${col};stroke-width:1.4;stroke-dasharray:6 5;opacity:.7` }, g)); }
+  [[0, 'var(--t1)', 'Riverton'], [1, 'var(--t2)', 'Hillside']].forEach(([i, col, name]) => {
+    mk('polyline', { points: yrs.map((y, k) => X(k).toFixed(1) + ',' + Y(y[i]).toFixed(1)).join(' '), style: `fill:none;stroke:${col};stroke-width:2.6` }, g);
+    txt(g, Rr - 4, Y(yrs[30][i]) + (yrs[30][i] >= yrs[30][1 - i] ? -10 : 18), name, 'labS', { 'text-anchor': 'end', style: `fill:${col}` });
+  });
+  mk('line', { x1: X(n), y1: Tp, x2: X(n), y2: B, style: 'stroke:var(--cp);stroke-width:2' }, g);
+  [[0, 'var(--t1)'], [1, 'var(--t2)']].forEach(([i, col]) => mk('circle', { cx: X(n), cy: Y(yrs[n][i]), r: 6, style: `fill:${col};stroke:var(--paper);stroke-width:2` }, g));
+  txt(g, X(n) + (n > 24 ? -8 : 8), Tp + 14, `year ${n}`, 'labS', { 'text-anchor': n > 24 ? 'end' : 'start', style: 'fill:var(--cp)' });
+  const Mn = power(M, n), vn = ap(Mn, [R0, H0]);
+  $('tEqs').innerHTML =
+    `<span class="lbl">One year</span><i>M</i> = ${ms(M, 'plain')} &nbsp; column 1: where Riverton’s people go; column 2: Hillside’s<br>` +
+    `<span class="lbl">${n} years</span><i>M</i><sup>${n}</sup> = ${ms(Mn, 'plain', 3)} &nbsp; <i>M</i><sup>${n}</sup>·[${num(R0)}, ${num(H0)}] = <b>[${num(vn[0], 1)}, ${num(vn[1], 1)}]</b>`;
+  $('tOut2').innerHTML = p + q > 0
+    ? `After ${n} year${n === 1 ? '' : 's'}: Riverton ${num(vn[0], 1)}k, Hillside ${num(vn[1], 1)}k (total stays ${num(T)}k, because each column of <i>M</i> adds to 1). The dashed lines show the balance, Riverton : Hillside = ${num(q100)} : ${num(p100)}, where as many people leave each town as arrive.`
+    : 'Nobody moves, so <i>M</i> = <i>I</i> and every power is <i>I</i>.';
+}
+TIDS.forEach(id => $(id).addEventListener('input', drawTowns)); selectOnFocus(TIDS);
+
+/* =====================================================================
+   9. A GRAPHICS PIPELINE (three moves in any order)
+   ===================================================================== */
+const SPRITE = {
+  walls: [[-1.4, -1.2], [1.4, -1.2], [1.4, 1], [-1.4, 1]], roof: [[-1.8, 1], [0, 2.3], [1.8, 1]],
+  door: [[-1, -1.2], [-.3, -1.2], [-.3, .1], [-1, .1]], win: [[.4, -.1], [1.1, -.1], [1.1, .6], [.4, .6]],
+};
+const ORDERS = [['scale', 'turn', 'slant'], ['scale', 'slant', 'turn'], ['turn', 'scale', 'slant'], ['turn', 'slant', 'scale'], ['slant', 'scale', 'turn'], ['slant', 'turn', 'scale']];
+const NAME = { scale: 'Scale', turn: 'Turn', slant: 'Slant' };
+const gp = { o: 0 };
+ORDERS.forEach((o, i) => { const b = document.createElement('button'); b.className = 'preset'; b.textContent = o.map(s => NAME[s]).join(' → '); b.onclick = () => { gp.o = i; drawPipe(); }; $('gOrders').appendChild(b); });
+$('gS').value = 0.8; $('gT').value = 30; $('gK').value = 20;
+function sprite(P, M, ghost){
+  const st = (f, op) => ghost ? 'fill:none;stroke:var(--muted);stroke-width:1.3;stroke-dasharray:4 4;opacity:.8' : `fill:${f};opacity:${op};stroke:var(--cp);stroke-width:1.1;stroke-linejoin:round`;
+  poly(P, SPRITE.walls, M, st('var(--cs)', .6)); poly(P, SPRITE.roof, M, st('var(--cp)', .85)); poly(P, SPRITE.door, M, st('var(--cj)', .9)); poly(P, SPRITE.win, M, st('var(--ci)', .85));
+}
+function drawPipe(){
+  [...$('gOrders').children].forEach((b, j) => b.classList.toggle('on', j === gp.o));
+  const r = readAll(['gS', 'gT', 'gK'], 'gErr'); if (!r) return;
+  if (r[0] <= 0 || r[0] > 1.5){ $('gErr').textContent = 'Keep the scale between 0 and 1.5.'; return; }
+  if (Math.abs(r[2]) > 60){ $('gErr').textContent = 'Keep the slant between −60° and 60°.'; return; }
+  const mats = { scale: [r[0], 0, 0, r[0]], turn: rot(r[1]), slant: [1, Math.tan(r[2] / DEG), 0, 1] };
+  const ord = ORDERS[gp.o]; let M = ID.slice(); const cum = [ID];
+  ord.forEach(s => { M = mul(mats[s], M); cum.push(M); });
+  ['g0', 'g1', 'g2', 'g3'].forEach((id, k) => {
+    const P = plane($(id), 250, 250, { x0: -2.4, x1: 2.4, y0: -2.4, y1: 2.4 }, 44, { dashed: k > 0, noLabels: true });
+    if (k) sprite(P, ID, true);
+    sprite(P, cum[k]);
+    const T = cum[k]; arrow(P, [0, 0], [T[0], T[2]], C.i, { w: 2.5 }); arrow(P, [0, 0], [T[1], T[3]], C.j, { w: 2.5 }); origin(P);
+    txt(P.g, 10, 20, k ? `${k}. ${NAME[ord[k - 1]]}` : 'Start', 'pl');
+  });
+  const all = ORDERS.map(o => o.reduce((acc, s) => mul(mats[s], acc), ID));
+  const distinct = all.filter((X, i) => all.findIndex(Y => eqM(X.map(v => Math.round(v * 1e6)), Y.map(v => Math.round(v * 1e6)))) === i).length;
+  $('gEqs').innerHTML =
+    `<span class="lbl">The steps</span>${ord.map((s, k) => `${k + 1}. ${NAME[s]} ${ms(mats[s], 'plain')}`).join(' &nbsp; ')}<br>` +
+    `<span class="lbl">All at once</span><i>M</i> = (step 3)(step 2)(step 1) = ${ms(mats[ord[2]], 'plain')}${ms(mats[ord[1]], 'plain')}${ms(mats[ord[0]], 'plain')} = ${mshow(M)}<br>` +
+    `<span class="lbl">Other orders</span>The 6 possible orders give ${distinct} different final matri${distinct === 1 ? 'x' : 'ces'}.${distinct < 6 ? ' Scaling the same amount in every direction commutes with every move, so only the order of turning and slanting matters.' : ''}`;
+}
+['gS', 'gT', 'gK'].forEach(id => $(id).addEventListener('input', drawPipe)); selectOnFocus(['gS', 'gT', 'gK']);
+
+/* =====================================================================
+   10. QUIZ
+   ===================================================================== */
+const rnd = arr => arr[Math.floor(Math.random() * arr.length)];
+const randInt = (lo, hi) => lo + Math.floor(Math.random() * (hi - lo + 1));
+const rm = (lo, hi) => [0, 0, 0, 0].map(() => randInt(lo, hi));
+const qz = { counted: false, done: false, right: 0, total: 0, t: TT, raf: 0 };
+const MOVES = [['turn 90° left', [0, -1, 1, 0]], ['turn 90° right', [0, 1, -1, 0]], ['flip left↔right', [-1, 0, 0, 1]], ['flip up↔down', [1, 0, 0, -1]],
+  ['stretch ×2 sideways', [2, 0, 0, 1]], ['stretch ×2 up–down', [1, 0, 0, 2]], ['shear right', [1, 1, 0, 1]], ['shear up', [1, 0, 1, 1]]];
+const QIN = ['qa', 'qb', 'qc', 'qd'];
+function pickPair(needDiff){ let a, b; do { a = rnd(MOVES); b = rnd(MOVES); } while (a === b || (needDiff && eqM(mul(a[1], b[1]), mul(b[1], a[1])))); return [a, b]; }
+function setMode(kind, labels){
+  $('qChoice').style.display = kind === 'choice' ? '' : 'none'; $('qMat').style.display = kind === 'choice' ? 'none' : '';
+  if (kind === 'choice'){ $('qChoice').innerHTML = ''; labels.forEach((l, i) => { const b = document.createElement('button'); b.textContent = l; b.onclick = () => answerChoice(i); $('qChoice').appendChild(b); }); }
+  else $('qMatL').innerHTML = labels;
+}
+function newQuestion(){
+  Object.assign(qz, { counted: false, done: false });
+  $('qErr').textContent = ''; $('qFb').className = 'feedback'; $('qFb').innerHTML = ''; QIN.forEach(id => { $(id).value = ''; });
+  cancelAnimationFrame(qz.raf);
+  qz.type = rnd(['mult', 'mult', 'order', 'watch', 'which']);
+  $('qReplay').disabled = qz.type !== 'watch';
+  $('qSvg').style.display = qz.type === 'watch' || qz.type === 'which' ? '' : 'none';
+  if (qz.type === 'mult'){
+    let A, B; do { A = rm(-3, 3); B = rm(-3, 3); } while (eqM(mul(A, B), mul(B, A)) || det(A) === 0 || det(B) === 0);
+    Object.assign(qz, { A, B, ans: mul(B, A) });
+    $('qTitle').textContent = 'Multiply two matrices';
+    $('qText').innerHTML = `<span class="ka">A</span> = ${ms(A, 'a')}, &nbsp; <span class="kb">B</span> = ${ms(B, 'b')}. Find <b><span class="kb">B</span><span class="ka">A</span></b> (do A first, then B).`;
+    setMode('mat', 'Your <span class="kb">B</span><span class="ka">A</span>');
+  } else if (qz.type === 'order'){
+    const yes = Math.random() < .5; let A, B;
+    if (yes){
+      const kind = rnd(['diag', 'pow', 'rot', 'scal', 'shear']);
+      if (kind === 'diag'){ A = [randInt(-3, 3) || 2, 0, 0, randInt(-3, 3) || 1]; B = [randInt(-3, 3) || 3, 0, 0, randInt(-3, 3) || -1]; }
+      else if (kind === 'pow'){ do { A = rm(-2, 2); } while (det(A) === 0 || (A[1] === 0 && A[2] === 0)); B = mul(A, A); }
+      else if (kind === 'rot'){ [A, B] = [rnd([R90, [-1, 0, 0, -1], [0, 1, -1, 0]]), rnd([R90, [-1, 0, 0, -1], [0, 1, -1, 0]])]; }
+      else if (kind === 'scal'){ do { A = rm(-2, 2); } while (det(A) === 0); const k = rnd([2, 3, -1, -2]); B = [k, 0, 0, k]; }
+      else { const s = rnd([0, 1]); A = s ? [1, randInt(1, 3), 0, 1] : [1, 0, randInt(1, 3), 1]; B = s ? [1, randInt(-3, -1), 0, 1] : [1, 0, randInt(-3, -1), 1]; }
+      if (Math.random() < .5) [A, B] = [B, A];
+    } else { do { A = rm(-2, 2); B = rm(-2, 2); } while (eqM(mul(A, B), mul(B, A)) || det(A) === 0 || det(B) === 0); }
+    Object.assign(qz, { A, B, yes: eqM(mul(A, B), mul(B, A)) });
+    $('qTitle').textContent = 'Does order matter here?';
+    $('qText').innerHTML = `<span class="ka">A</span> = ${ms(A, 'a')}, &nbsp; <span class="kb">B</span> = ${ms(B, 'b')}. Is <span class="ka">A</span><span class="kb">B</span> = <span class="kb">B</span><span class="ka">A</span>?`;
+    setMode('choice', ['Yes: AB = BA (they commute)', 'No: AB ≠ BA (order matters)']);
+  } else if (qz.type === 'watch'){
+    const [a, b] = pickPair(false); Object.assign(qz, { A: a[1], B: b[1], ans: mul(b[1], a[1]) });
+    $('qTitle').textContent = 'Watch two moves, write one matrix';
+    $('qText').innerHTML = 'The plane does one move, pauses, then does a second. Watch where <b class="ki">î</b> and <b class="kj">ĵ</b> end up (read their tips on the dashed grid), and type the single matrix for both moves together.';
+    setMode('mat', 'Both moves as one');
+    replayQ();
+  } else {
+    const [a, b] = pickPair(true), first = Math.random() < .5 ? 0 : 1;   // 0: A then B (BA); 1: B then A (AB)
+    Object.assign(qz, { A: a[1], B: b[1], an: a[0], bn: b[0], first, ans: first ? mul(a[1], b[1]) : mul(b[1], a[1]) });
+    $('qTitle').textContent = 'Which order made this?';
+    $('qText').innerHTML = `<span class="ka">A</span> = <b class="ka">${a[0]}</b> ${ms(a[1], 'a')}, &nbsp; <span class="kb">B</span> = <b class="kb">${b[0]}</b> ${ms(b[1], 'b')}. The picture shows the F after doing both moves (dashed: where it started). Which order was it?`;
+    setMode('choice', ['A, then B', 'B, then A']);
+    qz.t = TT; drawQ();
+  }
+}
+function drawQ(){
+  const P = plane($('qSvg'), 1000, 380, { x0: -4.6, x1: 4.6, y0: -3.3, y1: 3.4 }, 44, { dashed: true });
+  let M;
+  if (qz.type === 'which') M = qz.ans;
+  else { const e1 = ease(clamp01(qz.t)), e2 = ease(clamp01(qz.t - 1.3)); M = mul(blend(qz.B, e2), blend(qz.A, e1)); }
+  movedGrid(P, M);
+  if (qz.type === 'which') poly(P, FP, null, 'fill:none;stroke:var(--muted);stroke-width:1.5;stroke-dasharray:5 4');
+  drawSquareAndF(P, M); P.ticks();
+  const i2 = [M[0], M[2]], j2 = [M[1], M[3]];
+  arrow(P, [0, 0], i2, C.i, { w: 4 }); arrow(P, [0, 0], j2, C.j, { w: 4 }); armLabel(P, i2, j2, 'î', C.i, 1); armLabel(P, j2, i2, 'ĵ', C.j, -1);
+  origin(P);
+  if (qz.type === 'watch') txt(P.g, 14, 24, qz.t < 1.15 ? 'First move' : qz.t < 1.3 ? 'Pause' : qz.t < TT ? 'Second move' : 'Both moves done', 'pl');
+}
+function replayQ(){
+  cancelAnimationFrame(qz.raf); qz.t = 0; let last = performance.now();
+  const step = now => { qz.t = Math.min(TT, qz.t + (now - last) / 1500); last = now; drawQ(); if (qz.t < TT) qz.raf = requestAnimationFrame(step); };
+  qz.raf = requestAnimationFrame(step);
+}
+function countQ(ok){ if (qz.counted) return; qz.counted = true; qz.total++; if (ok) qz.right++; $('score').textContent = `Score: ${qz.right} / ${qz.total}`; }
+function checkQ(){
+  const r = readAll(QIN, 'qErr', 'Fill in all four entries with a number.'); if (!r) return;
+  const { A, B, ans } = qz, AB = mul(A, B), close = X => X.every((v, k) => Math.abs(v - r[k]) < 0.011);
+  const c1 = Math.abs(r[0] - ans[0]) < .011 && Math.abs(r[2] - ans[2]) < .011, c2 = Math.abs(r[1] - ans[1]) < .011 && Math.abs(r[3] - ans[3]) < .011;
+  let ok = c1 && c2, msg;
+  if (ok) msg = `<b>Right!</b> BA = ${mshow(ans)}: î ends at ${vstr([ans[0], ans[2]])} and ĵ at ${vstr([ans[1], ans[3]])}.`;
+  else if (close(AB)) msg = qz.type === 'mult' ? '<b>That’s AB, the other order.</b> In BA, each column is B times a column of A: B’s rows meet A’s columns.' : '<b>That’s the other order</b> (the second move first). Press Replay moves and watch which move happens first.';
+  else if (qz.type === 'mult' && close(A.map((v, k) => v * B[k]))) msg = '<b>You multiplied matching entries.</b> Each entry is a row of B dotted with a column of A, not one entry times one entry.';
+  else if (qz.type === 'watch' && close(A)) msg = '<b>That’s where things were after the first move only.</b> The second move then moved î and ĵ again.';
+  else if (qz.type === 'watch' && close(B)) msg = '<b>That’s the second move on its own.</b> It acted on arrows the first move had already moved.';
+  else if (c1) msg = '<b>Your first column (î) is right.</b> Recheck the second column: ' + (qz.type === 'mult' ? 'B times column 2 of A.' : 'where did ĵ end up?');
+  else if (c2) msg = '<b>Your second column (ĵ) is right.</b> Recheck the first column: ' + (qz.type === 'mult' ? 'B times column 1 of A.' : 'where did î end up?');
+  else msg = qz.type === 'mult' ? `<b>Not quite.</b> Top-left = (row 1 of B)·(column 1 of A) = ${num(B[0])}·${pn(A[0])} + ${pn(B[1])}·${pn(A[2])}. Do the same for the other three entries.` : '<b>Not quite.</b> Read the tip of the green arrow (î) for column 1 and the orange arrow (ĵ) for column 2. Press Replay moves to watch again.';
+  countQ(ok); if (ok) qz.done = true;
+  if (ok && qz.type === 'mult'){ $('qSvg').style.display = ''; qz.t = TT; qz.type = 'mult'; const keep = qz.A; qz.A = ID; qz.B = ans; drawQ(); qz.A = keep; qz.B = B; }
+  $('qFb').className = 'feedback ' + (ok ? 'ok' : 'bad'); $('qFb').innerHTML = msg;
+}
+function answerChoice(i){
+  if (qz.done) return; qz.done = true;
+  const { A, B } = qz, AB = mul(A, B), BA = mul(B, A); let ok, msg;
+  if (qz.type === 'order'){
+    ok = (i === 0) === qz.yes;
+    msg = `<b>${ok ? 'Right' : 'Not this time'}: ${qz.yes ? 'they commute' : 'order matters'}.</b> AB = ${mshow(AB)}, BA = ${mshow(BA)}.` + (qz.yes ? '' : ' One different entry is enough.');
+  } else {
+    ok = i === qz.first;
+    const name = qz.first ? `B, then A (${qz.bn}, then ${qz.an})` : `A, then B (${qz.an}, then ${qz.bn})`;
+    msg = `<b>${ok ? 'Right' : 'Not this time'}: ${name}.</b> A then B is BA = ${mshow(BA)}; B then A is AB = ${mshow(AB)}. The picture matches ${qz.first ? 'AB' : 'BA'}: î ended at ${vstr([qz.ans[0], qz.ans[2]])}.`;
+  }
+  countQ(ok); $('qFb').className = 'feedback ' + (ok ? 'ok' : 'bad'); $('qFb').innerHTML = msg;
+}
+function showQ(){
+  countQ(false); qz.done = true; $('qErr').textContent = '';
+  const fb = $('qFb'); fb.className = 'feedback info'; const { A, B } = qz, BA = mul(B, A), AB = mul(A, B);
+  if (qz.type === 'mult') fb.innerHTML = `<b>BA = ${mshow(BA)}</b>. Column 1 = B·${vstr([A[0], A[2]])}, column 2 = B·${vstr([A[1], A[3]])}.`;
+  else if (qz.type === 'watch') fb.innerHTML = `<b>${mshow(BA)}</b>: the first move was ${mshow(A)}, the second ${mshow(B)}, and second × first = ${mshow(BA)}.`;
+  else if (qz.type === 'order') fb.innerHTML = `<b>${qz.yes ? 'They commute' : 'Order matters'}</b>: AB = ${mshow(AB)}, BA = ${mshow(BA)}.`;
+  else fb.innerHTML = `<b>${qz.first ? 'B, then A' : 'A, then B'}</b>: the picture is ${qz.first ? 'AB' : 'BA'} = ${mshow(qz.ans)}.`;
+}
+$('qCheck').onclick = checkQ; $('qShow').onclick = showQ; $('qNew').onclick = newQuestion; $('qReplay').onclick = replayQ;
+QIN.forEach(id => { $(id).addEventListener('input', () => { $('qErr').textContent = ''; }); $(id).addEventListener('keydown', e => { if (e.key === 'Enter') checkQ(); }); });
+selectOnFocus(QIN);
+
+/* =====================================================================
+   11. START
+   ===================================================================== */
+fillC(); markC(); drawC();
+drawTiles();
+$('wN').value = 12; drawPow();
+drawKits();
+drawTowns();
+drawPipe();
+newQuestion();
+</script>
+</body>
+</html>

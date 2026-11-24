@@ -33,7 +33,7 @@ window.MM_TOC = [
     { id: '7.B.2', title: 'Linear Combinations and Span', url: 'https://claude.ai/artifact/AEB3V1XuSEPRrc2SmgovLu', built: true },
     { id: '7.B.3', title: 'The Dot Product', url: 'https://claude.ai/artifact/753Sm147dog88gwo9sKhaV', built: true },
     { id: '7.B.4', title: 'A Matrix Is a Move', url: 'https://claude.ai/artifact/ELcqpcxsc7H6S6b6VHPA47', built: true },
-    { id: '7.B.5', title: 'Matrix Multiplication: One Move After Another' },
+    { id: '7.B.5', title: 'Matrix Multiplication: One Move After Another', url: 'https://claude.ai/artifact/QW7X2CWcpVQAa1QPBKbsVp', built: true },
     { id: '7.B.6', title: 'The Determinant' },
     { id: '7.B.7', title: 'Inverse Matrices' },
     { id: '7.B.8', title: 'Systems of Equations as Matrices' },
