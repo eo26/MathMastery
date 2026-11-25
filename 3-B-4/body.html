@@ -1,0 +1,1397 @@
+<style>
+/* ===================== Page-specific styles (3.B.4) ===================== */
+/* inputs = blue, outputs = orange, points and graphs = purple, passes = green, fails = red */
+:root{ --in:#2F6FDB; --out:#E08A2E; --pt:#7F77DD; --pt-soft:#AFA9EC; --yes:#1D9E75; --no:#D8443A; --warm:#E0663A; --cool:#2BA3B8; }
+@media (prefers-color-scheme:dark){ :root{ --in:#6EA2F5; --out:#F2B266; --pt:#AFA9EC; --pt-soft:#7F77DD; --yes:#5DCAA5; --no:#F07B72; --warm:#F08A62; --cool:#5CC6D6; } }
+.ki{color:var(--in);font-weight:700}.ko{color:var(--out);font-weight:700}.kp{color:var(--pt);font-weight:700}.ky{color:var(--yes);font-weight:700}.kn{color:var(--no);font-weight:700}
+.field.fi input{border-color:var(--in)}.field.fo input{border-color:var(--out)}.field.fp input{border-color:var(--pt)}.field.sm input{width:76px}.field.wide input{width:330px}
+svg{user-select:none;-webkit-user-select:none}
+.twin{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:8px}
+.twin svg,.solo svg{width:100%;height:auto;display:block;background:var(--bg);border:1px solid var(--line);border-radius:10px}
+.panel-t{font:600 12px var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 4px 2px}
+.verdict{display:inline-block;font:600 15px var(--sans);padding:6px 12px;border-radius:8px;margin:8px 0 0}
+.verdict.ok{background:var(--ok-bg);color:var(--ok)}.verdict.bad{background:var(--bad-bg);color:var(--bad)}
+.toggle button.on{background:var(--accent-bg);border-color:var(--accent);color:var(--accent)}
+/* vending machine */
+.vend{display:grid;grid-template-columns:250px 1fr;gap:18px;align-items:start;margin-top:8px}
+.machine{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:14px}
+.keys{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.keys button{font:600 18px var(--mono);padding:12px 0}
+.keys button.dead{opacity:.35;text-decoration:line-through}
+.tray{margin-top:12px;padding:12px;border:2px dashed var(--line);border-radius:10px;text-align:center;font:600 18px var(--sans);min-height:52px}
+.tray small{display:block;font:500 12px var(--sans);color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:2px}
+/* function machine strip */
+.fmach{display:flex;align-items:center;gap:10px;justify-content:center;margin:10px 0 4px;font:600 20px var(--mono)}
+.fmach .box{padding:10px 16px;border-radius:10px;border:2px solid var(--line);background:var(--bg);min-width:70px;text-align:center}
+.fmach .box.i{border-color:var(--in);color:var(--in)}.fmach .box.o{border-color:var(--out);color:var(--out)}
+.fmach .box.r{font:600 15px var(--sans);color:var(--ink);max-width:340px}
+.fmach .box.r small{text-transform:none;font-style:italic;font-size:13px}
+.fmach .box small{display:block;font:600 11px var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.fmach .ar{color:var(--muted);font-size:24px}
+.bigeq{font:600 22px var(--mono);text-align:center;margin:8px 0 2px}
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
+.cmp div{padding:10px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);font:16px var(--mono)}
+.cmp div b{font:600 12px var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:4px}
+.traps{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:8px}
+.traps .t{border:1px solid var(--line);border-radius:10px;background:var(--bg);padding:10px}
+.traps .t h4{margin:0 0 4px;font:600 15px var(--sans)}
+.traps .t p{margin:6px 0 0;font-size:14.5px;line-height:1.5;color:var(--muted)}
+.traps svg{width:100%;height:auto;display:block}
+.legend span span{display:inline}
+.bigfx{font:600 30px var(--mono);text-align:center;margin:18px 0 6px}
+/* quiz */
+.qtext{font:17px/1.55 var(--serif);margin:4px 0 10px}
+.qvis{display:flex;justify-content:center;margin:6px 0}
+.qvis svg{width:520px;height:auto;background:var(--bg);border:1px solid var(--line);border-radius:10px}
+.qtab{border-collapse:collapse;font:17px var(--mono)}
+.qtab th,.qtab td{border:1px solid var(--line);padding:6px 18px;text-align:center}
+.qtab th{font:600 13px var(--sans);letter-spacing:.06em;text-transform:uppercase}
+.qtab tr.badrow td{background:var(--bad-bg);color:var(--bad)}
+.choice{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 0}.choice button{min-width:140px;font-family:var(--mono)}
+.choice button.right{border-color:var(--ok);background:var(--ok-bg);color:var(--ok)}.choice button.wrong{border-color:var(--bad);background:var(--bad-bg);color:var(--bad)}
+pre.code{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:12px 16px;overflow-x:auto;font:13.5px/1.6 var(--mono);margin:10px 0 16px}
+</style>
+
+<!-- ===================== Top bar ===================== -->
+<div class="topbar"><div class="topbar-in">
+  <span class="brand">Math<b>Mastery</b></span>
+  <span class="crumbs">Chapter 3 · Algebra › Basics</span>
+  <span class="pid">3.B.4</span>
+</div></div>
+
+<!-- ===================== Hero ===================== -->
+<header class="prose hero">
+  <div class="kicker">Chapter 3 · Algebra</div>
+  <h1>Functions</h1>
+  <p class="dek">A function is a rule that gives every input exactly one output. Put the same thing in, and you always get the same thing out.</p>
+  <div class="tiers" aria-label="Tier">
+    <span class="tier on">Basics <small>you are here</small></span>
+    <span class="tier">Undergraduate</span>
+    <span class="tier">Masters</span>
+  </div>
+  <div class="goals">
+    <h3>On this page</h3>
+    <ul>
+      <li>Tell a <b>function</b> from a <b>relation</b> that isn’t one, using arrow diagrams, tables and the <b>vertical line test</b>.</li>
+      <li>Read and use <b>function notation</b>: what <i>f</i>(3) means, how to <b>evaluate</b> it, and why <i>f</i>(<i>a</i> + 1) is not <i>f</i>(<i>a</i>) + 1.</li>
+      <li>Find the <b>domain</b> (the allowed inputs) and the <b>range</b> (the outputs that come out).</li>
+      <li>Read a graph: where it is <b>increasing</b> or <b>decreasing</b>, its <b>maximum</b> and <b>minimum</b>, its <b>zeros</b>, and every input that gives a chosen output.</li>
+    </ul>
+  </div>
+</header>
+
+<main>
+<!-- ===================== §1 ===================== -->
+<section class="prose">
+  <h2><span class="n">1</span>One input, one output</h2>
+  <p>A vending machine is a rule. You press a button (the <b>input</b>) and a snack drops out (the <b>output</b>). What makes it a <i>good</i> machine is that it’s predictable: press A1 today, tomorrow or next year, and you always get the same snack.</p>
+  <p>That is exactly what mathematicians mean by a <b>function</b>: a rule that gives <b>every input exactly one output</b>. Two different buttons may give the same snack (both A2 and B1 give pretzels), and that’s fine. What is <i>not</i> allowed is one button that sometimes gives one snack and sometimes another. Any pairing of inputs with outputs is called a <b>relation</b>; a function is a relation that never breaks the one-output rule.</p>
+</section>
+<section class="wide">
+  <div class="card" id="vend">
+    <div class="card-h"><span class="tag">Explore</span><h3>The vending machine</h3>
+      <span class="sub">Press buttons. The arrow diagram shows the machine’s rule: each arrow joins a button to the snack it gives. Then try the sticky machine and the sold-out machine.</span></div>
+    <div class="row" id="vPresets"></div>
+    <div class="desc" id="vDesc"></div>
+    <div class="vend">
+      <div class="machine">
+        <div class="panel-t">Buttons (inputs)</div>
+        <div class="keys" id="vKeys"></div>
+        <div class="tray" id="vTray"><small>Out comes</small>—</div>
+      </div>
+      <div><div class="panel-t">The rule as an arrow diagram</div><div class="solo"><svg id="vSvg" viewBox="0 0 640 330" role="img" aria-label="Arrow diagram from buttons to snacks"></svg></div></div>
+    </div>
+    <div class="verdict" id="vVerdict"></div>
+    <div class="readout" id="vOut"></div>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--in)"></i><span>input (button)</span></span>
+      <span><i class="sw" style="background:var(--out)"></i><span>output (snack)</span></span>
+      <span><i class="sw mv" style="background:var(--pt)"></i><span>arrow: input → its output</span></span>
+      <span><i class="sw mv" style="background:var(--no)"></i><span>an input with more than one output</span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §2 ===================== -->
+<section class="prose">
+  <h2><span class="n">2</span>Arrows and points</h2>
+  <p>With numbers, every arrow “<i>x</i> goes to <i>y</i>” is an <b>ordered pair</b> (<i>x</i>, <i>y</i>), and every ordered pair is a point on a grid. So the arrow diagram and the graph are two pictures of the same thing. The set of all points (<i>x</i>, <i>y</i>) is the <b>graph of the function</b>.</p>
+  <p>On the graph, an input with two outputs shows up as two points stacked one above the other. That gives a quick check called the <b>vertical line test</b>: slide a vertical line across the picture. If it ever touches the graph in two places, the graph is not a function. Several inputs sharing one output (called <b>many-to-one</b>) only puts points side by side at the same height, which a vertical line never catches twice.</p>
+</section>
+<section class="wide">
+  <div class="card" id="main">
+    <div class="card-h"><span class="tag">Explore</span><h3>Arrow diagram and graph, linked</h3>
+      <span class="sub">Pick a rule, or click grid points to add and remove your own pairs. Drag the vertical line (or press Sweep) and watch which input lights up in the arrow diagram.</span></div>
+    <div class="row" id="mPresets"></div>
+    <div class="desc" id="mDesc"></div>
+    <div class="inputs">
+      <label class="field wide"><span>Pairs (<i>x</i>, <i>y</i>)</span><input id="mPairs" type="text" autocomplete="off"></label>
+      <div class="row" style="margin:0"><button id="mUse">Use these pairs</button><button id="mClear">Clear</button></div>
+      <label class="field fi sm"><span>Line at <i>x</i> =</span><input id="mC" type="text" inputmode="decimal" autocomplete="off"></label>
+      <div class="row" style="margin:0"><button class="primary" id="mPlay">Sweep</button><button id="mReset">Reset</button></div>
+    </div>
+    <div class="err" id="mErr"></div>
+    <div class="twin">
+      <div><div class="panel-t">Arrow diagram</div><svg id="mArr" viewBox="0 0 470 420" role="img" aria-label="Arrow diagram"></svg></div>
+      <div><div class="panel-t">Graph (click to add or remove a point)</div><svg id="mGr" viewBox="0 0 470 420" role="img" aria-label="Graph with vertical line" style="cursor:crosshair"></svg></div>
+    </div>
+    <div class="verdict" id="mVerdict"></div>
+    <div class="readout" id="mOut"></div>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--in)"></i><span>inputs <i>x</i></span></span>
+      <span><i class="sw" style="background:var(--out)"></i><span>outputs <i>y</i></span></span>
+      <span><i class="sw" style="background:var(--pt)"></i><span>a pair (<i>x</i>, <i>y</i>)</span></span>
+      <span><i class="sw mv" style="background:var(--pt-soft)"></i><span>the whole rule, for every real input</span></span>
+      <span><i class="sw" style="background:var(--no)"></i><span>an input with two or more outputs</span></span>
+      <span><i class="sw mv" style="background:var(--yes)"></i><span>vertical line: one hit</span></span>
+      <span><i class="sw mv" style="background:var(--no)"></i><span>two or more hits</span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §3 ===================== -->
+<section class="prose">
+  <h2><span class="n">3</span>Naming a rule: <i>f</i>(<i>x</i>)</h2>
+  <p>Functions get names, usually a single letter like <i>f</i>, <i>g</i> or <i>h</i>. Then <b><i>f</i>(<i>x</i>)</b>, read “<i>f</i> of <i>x</i>,” means <i>the output of f when the input is x</i>. This is called <b>function notation</b>. If <i>f</i>(<i>x</i>) = 2<i>x</i> + 3, then <i>f</i>(4) is what comes out when 4 goes in: 2·4 + 3 = 11. Working that out is called <b>evaluating</b> the function.</p>
+  <p>Careful: the brackets in <i>f</i>(<i>x</i>) are not multiplication. <i>f</i>(4) does not mean <i>f</i> × 4. It means “feed 4 to <i>f</i>.” To evaluate, replace every <i>x</i> in the rule with the input, <b>in brackets</b>, then work it out. The brackets matter when the input is negative: if <i>g</i>(<i>x</i>) = <i>x</i>² − 1, then <i>g</i>(−3) = (−3)² − 1 = 9 − 1 = 8.</p>
+  <p>The input is also called the <b>independent variable</b> (you choose it freely) and the output the <b>dependent variable</b> (it depends on the input). On a graph, the input runs across and the output runs up, so <i>f</i>(<i>x</i>) is the height of the graph above <i>x</i>.</p>
+</section>
+<section class="wide">
+  <div class="card" id="eval">
+    <div class="card-h"><span class="tag">Explore</span><h3>The function machine</h3>
+      <span class="sub">Pick a rule and type an input (or click the graph). The steps show the substitution. Then switch to the comparison and see why <i>f</i>(<i>a</i> + 1) and <i>f</i>(<i>a</i>) + 1 are different things.</span></div>
+    <div class="row" id="ePresets"></div>
+    <div class="desc" id="eDesc"></div>
+    <div class="inputs">
+      <div class="row toggle" style="margin:0"><button id="eM1" class="on">Evaluate</button><button id="eM2"><i>f</i>(<i>a</i> + 1) vs <i>f</i>(<i>a</i>) + 1</button></div>
+      <label class="field fi sm" id="eXf"><span>Input <i>x</i></span><input id="eX" type="text" inputmode="decimal" autocomplete="off"></label>
+      <label class="field fp sm" id="eAf" style="display:none"><span><i>a</i> =</span><input id="eA" type="text" inputmode="decimal" autocomplete="off"></label>
+    </div>
+    <div class="err" id="eErr"></div>
+    <div id="eMachine"></div>
+    <div class="solo"><svg id="eSvg" viewBox="0 0 960 380" role="img" aria-label="Graph of the function with the evaluated point"></svg></div>
+    <div class="readout" id="eOut"></div>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--in)"></i><span>input, measured across</span></span>
+      <span><i class="sw" style="background:var(--out)"></i><span>output, measured up</span></span>
+      <span><i class="sw" style="background:var(--pt)"></i><span>the point (<i>x</i>, <i>f</i>(<i>x</i>)), always on the graph</span></span>
+      <span><i class="sw" style="background:var(--yes)"></i><span><i>f</i>(<i>a</i> + 1): step right, stay on the graph</span></span>
+      <span><i class="sw" style="border:2.4px solid var(--no)"></i><span><i>f</i>(<i>a</i>) + 1: lift up 1, usually off the graph</span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §4 ===================== -->
+<section class="prose">
+  <h2><span class="n">4</span>Domain and range</h2>
+  <p>The <b>domain</b> is the set of inputs a function accepts. The <b>range</b> is the set of outputs that actually come out. Picture squashing the graph flat: pushed straight down onto the <i>x</i>-axis, the graph’s shadow is the domain; pushed sideways onto the <i>y</i>-axis, its shadow is the range.</p>
+  <p>Three things usually shrink a domain. You <b>can’t divide by zero</b>, so 1/<i>x</i> refuses <i>x</i> = 0. A negative number has <b>no real square root</b>, so √<i>x</i> refuses negative <i>x</i>. And <b>the situation itself</b> can forbid inputs: you can’t line up 2.5 tables or throw a ball for −1 seconds.</p>
+</section>
+<section class="wide">
+  <div class="card" id="dom">
+    <div class="card-h"><span class="tag">Explore</span><h3>Squash the graph</h3>
+      <span class="sub">Pick a rule. Press a squash button to flatten the graph onto an axis and watch the domain or range appear. Type an input (or drag on the graph) to test whether it’s allowed.</span></div>
+    <div class="row" id="dPresets"></div>
+    <div class="desc" id="dDesc"></div>
+    <div class="inputs">
+      <label class="field fi sm"><span>Try <i>x</i> =</span><input id="dX" type="text" inputmode="decimal" autocomplete="off"></label>
+      <div class="row" style="margin:0"><button class="primary" id="dSqX">Squash down (domain)</button><button class="primary" id="dSqY">Squash sideways (range)</button><button id="dReset">Reset</button></div>
+    </div>
+    <div class="err" id="dErr"></div>
+    <div class="bigfx" id="dRule"></div>
+    <div class="solo"><svg id="dSvg" viewBox="0 0 960 420" role="img" aria-label="Graph with domain and range shown on the axes"></svg></div>
+    <div class="readout" id="dOut"></div>
+    <div class="legend">
+      <span><i class="sw mv" style="background:var(--in)"></i><span>domain, on the <i>x</i>-axis</span></span>
+      <span><i class="sw mv" style="background:var(--out)"></i><span>range, on the <i>y</i>-axis</span></span>
+      <span><i class="sw" style="border:2.4px solid var(--in)"></i><span>open circle: that value is left out</span></span>
+      <span><i class="sw" style="background:var(--in)"></i><span>filled dot: that value is included</span></span>
+      <span><i class="sw" style="background:var(--no)"></i><span>an input that isn’t allowed</span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §5 ===================== -->
+<section class="prose">
+  <h2><span class="n">5</span>Reading a graph</h2>
+  <p>A graph answers questions in two directions. <b>Across, then up</b>: pick an input, go up to the graph, read the output. That’s evaluating. <b>Up, then across</b>: pick an output, run a horizontal line at that height, and read every input where it meets the graph. That’s solving <i>f</i>(<i>x</i>) = some value, and there can be zero, one or several answers.</p>
+  <p>A graph also shows its shape at a glance. Where it rises from left to right, the function is <b>increasing</b>; where it falls, it is <b>decreasing</b>. Its highest point is the <b>maximum</b> and its lowest is the <b>minimum</b>. Where it crosses the <i>x</i>-axis, the output is 0; those inputs are the <b>zeros</b> of the function.</p>
+</section>
+<section class="wide">
+  <div class="card" id="temp">
+    <div class="card-h"><span class="tag">Explore</span><h3>Temperature through a day</h3>
+      <span class="sub">The input is the time of day, the output is the temperature. Type a time to read the temperature (across, then up), and a temperature to find every time it happened (up, then across). You can also drag the two lines.</span></div>
+    <div class="row" id="tPresets"></div>
+    <div class="desc" id="tDesc"></div>
+    <div class="inputs">
+      <label class="field fi sm"><span>Time (e.g. 9:30)</span><input id="tH" type="text" autocomplete="off"></label>
+      <label class="field fo sm"><span>Temperature °F</span><input id="tL" type="text" inputmode="decimal" autocomplete="off"></label>
+      <div class="row toggle" style="margin:0"><button id="tShade" class="on">Warming / cooling</button><button id="tExt" class="on">High and low</button></div>
+    </div>
+    <div class="err" id="tErr"></div>
+    <div class="solo"><svg id="tSvg" viewBox="0 0 960 400" role="img" aria-label="Temperature graph through one day" style="cursor:crosshair"></svg></div>
+    <div class="readout" id="tOut"></div>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--warm);opacity:.5"></i><span>warming (increasing)</span></span>
+      <span><i class="sw" style="background:var(--cool);opacity:.5"></i><span>cooling (decreasing)</span></span>
+      <span><i class="sw mv" style="background:var(--in)"></i><span>time line: across, then up</span></span>
+      <span><i class="sw mv" style="background:var(--out)"></i><span>temperature line: up, then across</span></span>
+      <span><i class="sw" style="background:var(--pt)"></i><span>high and low points</span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §6 ===================== -->
+<section class="prose">
+  <h2><span class="n">6</span>Functions in the world</h2>
+  <p>A thrown ball’s height depends on time: one moment, one height. The rule <i>h</i>(<i>t</i>) = <i>h</i>₀ + <i>v</i><i>t</i> − 5<i>t</i>² (in metres and seconds, rounding gravity to 10 m/s²) works for any <i>t</i>, but the story only makes sense from the throw until the ball lands. So the domain is set by the situation, and the moment it lands is a zero: <i>h</i>(<i>t</i>) = 0.</p>
+</section>
+<section class="wide">
+  <div class="card" id="ball">
+    <div class="card-h"><span class="tag">Explore</span><h3>A thrown ball</h3>
+      <span class="sub">Set the launch speed <i>v</i> (upward) and the starting height <i>h</i>₀, then press Play. The ball on the left and the point on the graph share the same height scale.</span></div>
+    <div class="row" id="bPresets"></div>
+    <div class="desc" id="bDesc"></div>
+    <div class="inputs">
+      <label class="field fp sm"><span><i>v</i> (m/s)</span><input id="bV" type="text" inputmode="decimal" autocomplete="off"></label>
+      <label class="field fp sm"><span><i>h</i>₀ (m)</span><input id="bH" type="text" inputmode="decimal" autocomplete="off"></label>
+      <div class="row" style="margin:0"><button id="bLoad">Use these</button><button class="primary" id="bPlay">Play</button><button id="bReset">Reset</button></div>
+    </div>
+    <div class="err" id="bErr"></div>
+    <div class="solo"><svg id="bSvg" viewBox="0 0 960 400" role="img" aria-label="Ball height over time"></svg></div>
+    <div class="readout" id="bOut"></div>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--pt)"></i><span>ball and its point (<i>t</i>, <i>h</i>(<i>t</i>))</span></span>
+      <span><i class="sw mv" style="background:var(--in)"></i><span>domain: from the throw to landing</span></span>
+      <span><i class="sw mv" style="background:var(--out)"></i><span>range: ground up to the peak</span></span>
+      <span><i class="sw mv" style="background:var(--pt-soft)"></i><span>where the formula keeps going but the ball doesn’t</span></span>
+    </div>
+  </div>
+</section>
+<section class="prose">
+  <p>Some functions jump. A taxi charges a starting fee plus a fixed amount for each mile <i>started</i>, so the price stays flat for a while, then jumps. This is a <b>step function</b>. At each jump the graph has a filled dot (this price includes that exact distance) and an open dot (this price doesn’t). The dots matter: if both ends were filled, the exact distance where the jump happens would get two prices, and the vertical line test would fail.</p>
+</section>
+<section class="wide">
+  <div class="card" id="taxi">
+    <div class="card-h"><span class="tag">Explore</span><h3>Step functions: fares that jump</h3>
+      <span class="sub">Type a distance or time (or drag on the graph). Try exactly 2, then 2.01. The broken version fills both ends of each step; watch what the vertical line finds there.</span></div>
+    <div class="row" id="xPresets"></div>
+    <div class="desc" id="xDesc"></div>
+    <div class="inputs">
+      <label class="field fi sm"><span id="xLab">Miles</span><input id="xD" type="text" inputmode="decimal" autocomplete="off"></label>
+    </div>
+    <div class="err" id="xErr"></div>
+    <div class="solo"><svg id="xSvg" viewBox="0 0 960 380" role="img" aria-label="Step function graph" style="cursor:crosshair"></svg></div>
+    <div class="verdict" id="xVerdict"></div>
+    <div class="readout" id="xOut"></div>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--pt)"></i><span>filled dot: price includes this point</span></span>
+      <span><i class="sw" style="border:2.4px solid var(--pt)"></i><span>open dot: price does not include it</span></span>
+      <span><i class="sw mv" style="background:var(--yes)"></i><span>vertical line: one price</span></span>
+      <span><i class="sw mv" style="background:var(--no)"></i><span>two prices at once</span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §7 ===================== -->
+<section class="prose">
+  <h2><span class="n">7</span>Traps and non-examples</h2>
+  <p>Three mistakes come up again and again. Each one is a misreading of the one-output rule or of the notation.</p>
+</section>
+<section class="wide">
+  <div class="card" id="traps">
+    <div class="card-h"><span class="tag">Compare</span><h3>Look alike, behave differently</h3></div>
+    <div class="traps">
+      <div class="t"><h4 class="ky">✓ Many-to-one is fine</h4><svg id="tr1" viewBox="0 0 300 220"></svg><p>−2 and 2 both go to 4 under <i>x</i>². Each input still has one output. Sharing an output breaks nothing.</p></div>
+      <div class="t"><h4 class="kn">✕ One-to-many is not</h4><svg id="tr2" viewBox="0 0 300 220"></svg><p>“Which number squares to 4?” sends 4 to both −2 and 2. One input, two outputs: not a function.</p></div>
+      <div class="t"><h4 class="kn">✕ <i>f</i>(<i>a</i> + 1) ≠ <i>f</i>(<i>a</i>) + 1</h4><svg id="tr3" viewBox="0 0 300 220"></svg><p>With <i>f</i>(<i>x</i>) = <i>x</i>², <i>f</i>(2 + 1) = 9 but <i>f</i>(2) + 1 = 5. The first steps right along the graph; the second lifts the output by 1.</p></div>
+    </div>
+    <p style="margin:12px 2px 0;font-size:15px;line-height:1.55">Also: <i>f</i>(<i>x</i>) is never <i>f</i> times <i>x</i>, and the vertical line test is the one for functions. A horizontal line hitting twice (like <i>x</i>² at height 4) is allowed; that test is about undoing a function, which comes in 3.B.13.</p>
+  </div>
+</section>
+
+<!-- ===================== §8 ===================== -->
+<section class="prose">
+  <h2><span class="n">8</span>Now, in symbols</h2>
+  <div class="math">\[ f : X \to Y,\qquad x \mapsto f(x) \]<div class="cap">A function <i>f</i> from a set <i>X</i> of inputs to a set <i>Y</i> assigns to each <i>x</i> in <i>X</i> exactly one value <i>f</i>(<i>x</i>) in <i>Y</i>.</div></div>
+  <div class="math">\[ \text{Function:}\quad x_1 = x_2 \;\Longrightarrow\; f(x_1) = f(x_2) \]<div class="cap">The one-output rule. (The reverse is not required: different inputs may share an output.)</div></div>
+  <div class="math">\[ \text{graph}(f) = \{\,(x, f(x)) : x \in \text{domain}\,\},\qquad \text{range}(f) = \{\, f(x) : x \in \text{domain}\,\} \]<div class="cap">The graph is all the pairs; the range is all the outputs that actually occur.</div></div>
+  <div class="math">\[ \frac{1}{x}:\ x \neq 0 \qquad \sqrt{x}:\ x \ge 0 \qquad [a, b] = \{a \le x \le b\},\quad (a, b) = \{a < x < b\} \]<div class="cap">Common domain limits, and interval notation: square brackets include the end, round brackets leave it out (the filled and open dots).</div></div>
+  <div class="math">\[ f(x) = x^2:\quad f(a+1) = (a+1)^2 = a^2 + 2a + 1 \;\ne\; a^2 + 1 = f(a) + 1 \]<div class="cap">Substitute the whole input, in brackets, for every <i>x</i>.</div></div>
+  <p>Programming languages borrow the word, but a code “function” is only a function in the math sense if the same input always gives the same output:</p>
+  <pre class="code"><code>import random                      # random numbers, to build a rule that is NOT a function
+
+def f(x):                          # a true function: the output depends only on the input
+    return 2 * x + 3               # f(4) is 11 every single time
+
+def sticky_button(x):              # the sticky vending button from section 1
+    return random.choice([x, -x])  # the same input can give different outputs
+
+print([f(4) for _ in range(5)])             # [11, 11, 11, 11, 11]: one output per input
+print([sticky_button(4) for _ in range(5)]) # e.g. [4, -4, 4, 4, -4]: two outputs, not a function</code></pre>
+</section>
+
+<!-- ===================== §9 ===================== -->
+<section class="prose">
+  <h2><span class="n">9</span>Where this goes</h2>
+  <ul class="goes">
+    <li><b>Next (3.B.5):</b> the simplest functions of all, straight lines, where every step right changes the output by the same amount.</li>
+    <li><b>Later in this book:</b> whole families of functions (exponentials in 3.B.7, quadratics in 3.B.9), sliding and stretching graphs (3.B.12), undoing a function (3.B.13), and calculus (Chapter 8), which studies how fast a function’s output changes.</li>
+    <li><b>In the world:</b> anything that depends on something else: distance on time, a fare on miles, a temperature on the hour, a pixel’s brightness on its position, a program’s output on its input.</li>
+  </ul>
+</section>
+
+<!-- ===================== §10 ===================== -->
+<section class="prose">
+  <h2><span class="n">10</span>Words to know</h2>
+  <div class="vocab">
+    <div class="term"><b>Function</b>A rule that gives every input exactly one output.</div>
+    <div class="term"><b>Relation</b>Any pairing of inputs with outputs. A function is a relation with one output per input.</div>
+    <div class="term"><b>Input</b>What goes into a function; the value of <i>x</i>.</div>
+    <div class="term"><b>Output</b>What comes out; the value <i>f</i>(<i>x</i>).</div>
+    <div class="term"><b>Ordered pair</b>An input and its output written (<i>x</i>, <i>y</i>); a point on the graph.</div>
+    <div class="term"><b>Graph of a function</b>All the points (<i>x</i>, <i>f</i>(<i>x</i>)) drawn on a grid.</div>
+    <div class="term"><b>Vertical line test</b>A graph is a function exactly when no vertical line meets it more than once.</div>
+    <div class="term"><b>Many-to-one</b>Different inputs sharing the same output. Allowed in a function.</div>
+    <div class="term"><b>Function notation</b>Writing <i>f</i>(<i>x</i>) for “the output of <i>f</i> at input <i>x</i>.” Not multiplication.</div>
+    <div class="term"><b>Evaluate</b>Work out the output for a given input by substituting it, in brackets, into the rule.</div>
+    <div class="term"><b>Independent variable</b>The input, chosen freely; drawn across.</div>
+    <div class="term"><b>Dependent variable</b>The output, which depends on the input; drawn up.</div>
+    <div class="term"><b>Domain</b>The set of allowed inputs. The graph’s shadow on the <i>x</i>-axis.</div>
+    <div class="term"><b>Range</b>The set of outputs that actually occur. The graph’s shadow on the <i>y</i>-axis.</div>
+    <div class="term"><b>Increasing / decreasing</b>The graph rises / falls as you move to the right.</div>
+    <div class="term"><b>Maximum / minimum</b>The highest / lowest output on the graph (or on part of it).</div>
+    <div class="term"><b>Zero</b>An input where the output is 0; where the graph meets the <i>x</i>-axis. Also called a root.</div>
+    <div class="term"><b>Step function</b>A function that stays flat and then jumps, like a fare charged per started mile.</div>
+  </div>
+</section>
+
+<!-- ===================== Quiz ===================== -->
+<section class="prose"><h2><span class="n">11</span>Check yourself</h2>
+  <p>Four kinds of questions: decide whether something is a function, evaluate, find a domain or range, and read a graph.</p>
+</section>
+<section class="wide">
+  <div class="card" id="quiz">
+    <div class="card-h"><span class="tag">Quiz</span><h3 id="qTitle"></h3><span class="score" id="score">Score: 0 / 0</span></div>
+    <div class="qtext" id="qText"></div>
+    <div class="qvis" id="qVis"></div>
+    <div class="choice" id="qChoice"></div>
+    <div class="inputs" id="qIn">
+      <label class="field fo"><span id="qLab">Answer</span><input id="q1" type="text" autocomplete="off" style="width:200px"></label>
+      <div class="row" style="margin:0"><button class="primary" id="qCheck">Check</button></div>
+    </div>
+    <div class="row" style="margin:10px 0 0"><button id="qShow">Show answer</button><button id="qNew">New question</button></div>
+    <div class="err" id="qErr"></div>
+    <div class="feedback" id="qFb" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ===================== Pager (filled in by the shared navigation) ===================== -->
+<nav class="wide">
+  <div class="pager"></div>
+  <div class="meta">3.B.4 · Prerequisites: 3.B.1 (variables and expressions), 3.B.2 (solving linear equations) · Leads to: 3.B.5 (lines), 3.B.12 (transforming graphs), 3.B.13 (inverse functions)</div>
+</nav>
+</main>
+
+<script>
+/* =====================================================================
+   1. HELPERS
+   ===================================================================== */
+const NS = 'http://www.w3.org/2000/svg';
+const $ = id => document.getElementById(id);
+function mk(tag, attrs, parent){                           // create an SVG element with attributes
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function txt(parent, x, y, s, cls, extra){                 // create an SVG text element
+  extra = Object.assign({}, extra || {});
+  if (extra['text-anchor']){ extra.style = (extra.style ? extra.style + ';' : '') + 'text-anchor:' + extra['text-anchor']; delete extra['text-anchor']; }
+  const t = mk('text', Object.assign({ x, y, class: cls || '' }, extra), parent);
+  t.textContent = s;
+  return t;
+}
+// round for display, use a true minus sign, never show −0
+function num(x, d){ if (d === undefined) d = 2; const r = Math.round(x * Math.pow(10, d)) / Math.pow(10, d); return r === 0 ? '0' : (r < 0 ? '−' : '') + String(Math.abs(r)); }
+const pn = x => x < 0 ? `(${num(x)})` : num(x);              // wrap negatives in brackets when substituting
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const ri = (a, b) => a + Math.floor(Math.random() * (b - a + 1));   // random whole number from a to b
+const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+function parseNum(s){                                     // integers, decimals, minus, simple fractions
+  s = String(s).trim().replace(/[−–]/g, '-').replace(/\s+/g, '');
+  if (/^-?\d+(\.\d+)?$|^-?\.\d+$/.test(s)) return parseFloat(s);
+  const m = s.match(/^(-?\d+)\/(\d+)$/);
+  if (m && +m[2] !== 0) return +m[1] / +m[2];
+  return NaN;
+}
+function selectOnFocus(ids){ ids.forEach(id => $(id).addEventListener('focus', e => e.target.select())); }
+function buttons(boxId, list, onPick){                    // a row of preset buttons; returns a function that marks one as on
+  list.forEach((p, i) => { const b = document.createElement('button'); b.className = 'preset'; b.textContent = p.n; b.onclick = () => onPick(i); $(boxId).appendChild(b); });
+  return i => [...$(boxId).children].forEach((b, j) => b.classList.toggle('on', j === i));
+}
+function svgPt(svg, ev){                                  // mouse position in the SVG's own coordinates
+  const p = svg.createSVGPoint(); p.x = ev.clientX; p.y = ev.clientY;
+  return p.matrixTransform(svg.getScreenCTM().inverse());
+}
+const svgCss = document.createElement('style');
+svgCss.textContent = `
+  .grid{stroke:var(--line);stroke-width:1}
+  .axis{stroke:var(--ink);stroke-width:1.4;opacity:.7}
+  .tl{fill:var(--muted);font:500 11.5px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:3px}
+  .lab{font:700 14px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:5px}
+  .labS{font:600 12.5px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+  .cap{fill:var(--muted);font:600 12px var(--sans);letter-spacing:.06em;paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+  .oval{fill:var(--paper);stroke:var(--line);stroke-width:1.5}
+`;
+document.head.appendChild(svgCss);
+let clipN = 0;                                            // unique clip-path ids
+
+/* ---------- axes: a coordinate grid inside an SVG, with separate x and y scales ---------- */
+function axes(svg, W, H, b, o){
+  o = o || {};
+  svg.innerHTML = '';
+  const L = o.padL ?? 44, R = o.padR ?? 16, T = o.padT ?? 16, B = o.padB ?? 30;
+  const sx = (W - L - R) / (b.x1 - b.x0), sy = (H - T - B) / (b.y1 - b.y0);   // pixels per unit
+  const X = x => L + (x - b.x0) * sx, Y = y => T + (b.y1 - y) * sy;
+  const step = (s, px) => (o.half ? [0.5, 1, 2, 5, 10, 20, 50, 100] : [1, 2, 5, 10, 20, 50, 100]).find(k => k * s >= px) || 200;   // a round step at least px pixels wide
+  const xg = o.xg || step(sx, 9), yg = o.yg || step(sy, 9);        // grid-line spacing
+  const xt = o.xt || step(sx, 34), yt = o.yt || step(sy, 26);      // tick-label spacing
+  const gGrid = mk('g', {}, svg), id = 'clp' + (++clipN);
+  const cp = mk('clipPath', { id }, svg); mk('rect', { x: L, y: T, width: W - L - R, height: H - T - B }, cp);
+  const cg = mk('g', { 'clip-path': `url(#${id})` }, svg);         // clipped layer for curves
+  const m = mk('g', {}, svg), top = mk('g', {}, svg);              // free layer, then labels on top
+  const near = (v, s) => Math.abs(v / s - Math.round(v / s)) < 1e-6;
+  for (let x = Math.ceil(b.x0 / xg) * xg; x <= b.x1 + 1e-9; x += xg) mk('line', { x1: X(x), y1: T, x2: X(x), y2: H - B, class: 'grid' }, gGrid);
+  for (let y = Math.ceil(b.y0 / yg) * yg; y <= b.y1 + 1e-9; y += yg) mk('line', { x1: L, y1: Y(y), x2: W - R, y2: Y(y), class: 'grid' }, gGrid);
+  const ay = (b.y0 <= 0 && b.y1 >= 0) ? Y(0) : H - B;              // where the x-axis is drawn
+  const ax = (b.x0 <= 0 && b.x1 >= 0) ? X(0) : L;                  // where the y-axis is drawn
+  mk('line', { x1: L, y1: ay, x2: W - R, y2: ay, class: 'axis' }, gGrid);
+  mk('line', { x1: ax, y1: T, x2: ax, y2: H - B, class: 'axis' }, gGrid);
+  const fx = o.fx || (v => num(v)), fy = o.fy || (v => num(v));
+  for (let x = Math.ceil(b.x0 / xt) * xt; x <= b.x1 + 1e-9; x += xt){
+    if (Math.abs(x) < 1e-9 && ax === X(0) && !o.zeroX) continue;
+    txt(top, X(x), ay + 16, fx(x), 'tl', { 'text-anchor': 'middle' });
+  }
+  for (let y = Math.ceil(b.y0 / yt) * yt; y <= b.y1 + 1e-9; y += yt){
+    if (Math.abs(y) < 1e-9 && ay === Y(0)) continue;
+    txt(top, ax - 6, Y(y) + 4, fy(y), 'tl', { 'text-anchor': 'end' });
+  }
+  if (o.xT) txt(top, W - R - 2, ay - 8, o.xT, 'cap', { 'text-anchor': 'end' });
+  if (o.yT) txt(top, ax + 8, T + 12, o.yT, 'cap');
+  return { svg, X, Y, sx, sy, cg, m, top, b, L, R, T, B, W, H, ay, ax,
+           inv: (px, py) => [b.x0 + (px - L) / sx, b.y1 - (py - T) / sy] };
+}
+function dPath(P, pts){ return pts.map((p, i) => (i ? 'L' : 'M') + P.X(p[0]).toFixed(1) + ' ' + P.Y(p[1]).toFixed(1)).join(''); }
+// sample y = f(x) from a to b, breaking the curve where f is undefined or jumps
+function sample(f, a, b, n, ok){
+  const out = []; let cur = [];
+  for (let i = 0; i <= n; i++){
+    const x = a + (b - a) * i / n, y = (ok && !ok(x)) ? NaN : f(x);
+    if (!isFinite(y)){ if (cur.length > 1) out.push(cur); cur = []; continue; }
+    if (cur.length && Math.abs(y - cur[cur.length - 1][1]) > 40){ if (cur.length > 1) out.push(cur); cur = []; }
+    cur.push([x, y]);
+  }
+  if (cur.length > 1) out.push(cur);
+  return out;
+}
+function dot(P, x, y, col, o){                              // a filled (or open) point
+  o = o || {};
+  return mk('circle', { cx: P.X(x), cy: P.Y(y), r: o.r || 6, style: o.open ? `fill:var(--bg);stroke:${col};stroke-width:2.6` : `fill:${col};stroke:var(--bg);stroke-width:1.5` }, o.layer || P.m);
+}
+function vline(P, x, col, o){ o = o || {}; return mk('line', { x1: P.X(x), y1: o.y0 !== undefined ? P.Y(o.y0) : P.T, x2: P.X(x), y2: o.y1 !== undefined ? P.Y(o.y1) : P.H - P.B, style: `stroke:${col};stroke-width:${o.w || 2.5};${o.dash ? 'stroke-dasharray:' + o.dash : ''}` }, o.layer || P.m); }
+function hline(P, y, col, o){ o = o || {}; return mk('line', { x1: o.x0 !== undefined ? P.X(o.x0) : P.L, y1: P.Y(y), x2: o.x1 !== undefined ? P.X(o.x1) : P.W - P.R, y2: P.Y(y), style: `stroke:${col};stroke-width:${o.w || 2.5};${o.dash ? 'stroke-dasharray:' + o.dash : ''}` }, o.layer || P.m); }
+function arrowHead(g, x1, y1, x2, y2, col, size){            // a small triangle at (x2, y2) pointing away from (x1, y1)
+  const a = Math.atan2(y2 - y1, x2 - x1), s = size || 9;
+  const p = [[x2, y2], [x2 - s * Math.cos(a - 0.4), y2 - s * Math.sin(a - 0.4)], [x2 - s * Math.cos(a + 0.4), y2 - s * Math.sin(a + 0.4)]];
+  mk('polygon', { points: p.map(q => q.join(',')).join(' '), style: `fill:${col}` }, g);
+}
+
+/* ---------- arrow diagram: inputs in a left oval, outputs in a right oval, one arrow per pair ---------- */
+// pairs: [[in, out], ...]; o.ins / o.outs give the order (defaults: sorted values); o.fmt formats a value;
+// o.hl = input to highlight (others fade); o.lit = [in, out] arrow drawn thick; o.dead = inputs shown crossed out
+function arrowDiagram(svg, W, H, pairs, o){
+  o = o || {};
+  svg.innerHTML = '';
+  const fmt = o.fmt || (v => typeof v === 'number' ? num(v) : v);
+  const key = v => String(v);
+  const uniq = arr => { const s = new Set(), r = []; arr.forEach(v => { if (!s.has(key(v))){ s.add(key(v)); r.push(v); } }); return r; };
+  const srt = arr => arr.every(v => typeof v === 'number') ? arr.slice().sort((a, b) => a - b) : arr;
+  const ins = o.ins || srt(uniq(pairs.map(p => p[0]))), outs = o.outs || srt(uniq(pairs.map(p => p[1])));
+  const top = o.top ?? 34, bot = H - (o.bottom ?? 14);
+  const lx = W * 0.25, rx = W * 0.75, ow = Math.min(W * 0.17, 90);
+  mk('ellipse', { cx: lx, cy: (top + bot) / 2, rx: ow, ry: (bot - top) / 2, class: 'oval' }, svg);
+  mk('ellipse', { cx: rx, cy: (top + bot) / 2, rx: ow, ry: (bot - top) / 2, class: 'oval' }, svg);
+  txt(svg, lx, 18, o.inLab || 'INPUTS x', 'cap', { 'text-anchor': 'middle', style: 'fill:var(--in)' });
+  txt(svg, rx, 18, o.outLab || 'OUTPUTS y', 'cap', { 'text-anchor': 'middle', style: 'fill:var(--out)' });
+  const ypos = (i, n) => n === 1 ? (top + bot) / 2 : top + 26 + (bot - top - 52) * i / (n - 1);
+  const iy = {}, oy = {};
+  ins.forEach((v, i) => iy[key(v)] = ypos(i, ins.length));
+  outs.forEach((v, i) => oy[key(v)] = ypos(i, outs.length));
+  const cnt = {}; pairs.forEach(p => cnt[key(p[0])] = (cnt[key(p[0])] || 0) + 1);   // how many outputs each input has
+  const dx = Math.min(ow * 0.45, 34), fs = ins.length > 9 || outs.length > 9 ? 'labS' : 'lab';
+  const ga = mk('g', {}, svg), gd = mk('g', {}, svg);
+  pairs.forEach(p => {                                     // arrows
+    const k = key(p[0]), bad = cnt[k] > 1, faded = o.hl !== undefined && o.hl !== null && key(o.hl) !== k;
+    const lit = o.lit && key(o.lit[0]) === k && key(o.lit[1]) === key(p[1]);
+    const col = bad ? 'var(--no)' : 'var(--pt)';
+    const x1 = lx + dx + 8, y1 = iy[k], x2 = rx - dx - 9, y2 = oy[key(p[1])];
+    mk('line', { x1, y1, x2, y2, style: `stroke:${col};stroke-width:${lit ? 4.5 : 2.4};opacity:${faded ? .18 : 1}` }, ga);
+    if (!faded) arrowHead(ga, x1, y1, x2, y2, col, lit ? 12 : 10);
+  });
+  ins.forEach(v => {                                       // input dots and labels
+    const k = key(v), dead = o.dead && o.dead.map(key).includes(k), bad = cnt[k] > 1;
+    const faded = o.hl !== undefined && o.hl !== null && key(o.hl) !== k;
+    const col = dead ? 'var(--muted)' : bad ? 'var(--no)' : 'var(--in)';
+    mk('circle', { cx: lx + dx, cy: iy[k], r: o.hl !== undefined && key(o.hl) === k ? 8 : 6, style: `fill:${col};opacity:${faded ? .35 : 1}` }, gd);
+    const t = txt(gd, lx + dx - 12, iy[k] + 5, fmt(v), fs, { 'text-anchor': 'end', style: `fill:${col};opacity:${faded ? .45 : 1}${dead ? ';text-decoration:line-through' : ''}` });
+  });
+  outs.forEach(v => {                                      // output dots and labels
+    const k = key(v);
+    mk('circle', { cx: rx - dx, cy: oy[k], r: 6, style: 'fill:var(--out)' }, gd);
+    txt(gd, rx - dx + 12, oy[k] + 5, fmt(v), fs, { style: 'fill:var(--out)' });
+  });
+  return { ins, outs };
+}
+// group pairs by input: Map from input to its list of distinct outputs
+function byInput(pairs){
+  const m = new Map();
+  pairs.forEach(([x, y]) => { const k = String(x); if (!m.has(k)) m.set(k, { x, ys: [] }); const e = m.get(k); if (!e.ys.some(v => String(v) === String(y))) e.ys.push(y); });
+  return m;
+}
+const setStr = arr => '{' + arr.map(v => num(v)).join(', ') + '}';
+
+/* =====================================================================
+   2. VENDING MACHINE
+   ===================================================================== */
+const V = { keys: ['A1', 'A2', 'A3', 'B1', 'B2', 'B3'], base: { A1: 'Chips', A2: 'Pretzels', A3: 'Cookie', B1: 'Pretzels', B2: 'Gum', B3: 'Water' },
+  snacks: ['Chips', 'Pretzels', 'Cookie', 'Gum', 'Mints', 'Water'], mode: 0, pressed: null, got: null, count: 0 };
+const vPresets = [
+  { n: 'Working machine', d: 'Every button gives one snack. A2 and B1 both give pretzels, which is fine.' },
+  { n: 'Sticky B2', d: 'B2 is jammed: sometimes it drops gum, sometimes mints. Press it a few times.' },
+  { n: 'B3 sold out', d: 'B3 gives nothing at all, so it’s no longer an input. The machine is still a function on the other buttons.' },
+];
+function vRule(){                                          // the machine's current pairs
+  const p = [];
+  V.keys.forEach(k => {
+    if (V.mode === 2 && k === 'B3') return;                // sold out: B3 isn't an input
+    if (V.mode === 1 && k === 'B2'){ p.push([k, 'Gum'], [k, 'Mints']); return; }
+    p.push([k, V.base[k]]);
+  });
+  return p;
+}
+function vDraw(){
+  const pairs = vRule(), outs = V.snacks.filter(s => pairs.some(p => p[1] === s));
+  arrowDiagram($('vSvg'), 640, 330, pairs, { ins: V.keys, outs, inLab: 'BUTTONS', outLab: 'SNACKS', hl: V.pressed, lit: V.got ? [V.pressed, V.got] : null, dead: V.mode === 2 ? ['B3'] : [] });
+  [...$('vKeys').children].forEach(b => b.classList.toggle('dead', V.mode === 2 && b.textContent === 'B3'));
+  $('vTray').innerHTML = '<small>Out comes</small>' + (V.pressed ? (V.got ? `<span class="ko">${V.got}</span> from <span class="ki">${V.pressed}</span>` : `<span class="kn">nothing: ${V.pressed} is sold out</span>`) : '—');
+  const ok = V.mode !== 1;
+  $('vVerdict').className = 'verdict ' + (ok ? 'ok' : 'bad');
+  $('vVerdict').textContent = ok ? '✓ A function: every button has exactly one snack' : '✕ Not a function: button B2 has two outputs';
+  let s = '';
+  if (!V.pressed) s = 'Press any button.';
+  else if (V.mode === 1 && V.pressed === 'B2') s = `B2 gave <span class="ko">${V.got}</span> this time (press ${V.count}). Press it again: you can’t predict which snack comes out, so B2 has two arrows, and the machine is not a function.`;
+  else if (V.mode === 2 && V.pressed === 'B3') s = 'B3 gives nothing, so it has no arrow. A function doesn’t have to accept every possible input; the inputs it accepts are its <b>domain</b>. The domain here is {A1, A2, A3, B1, B2}.';
+  else if (V.got === 'Pretzels') s = `${V.pressed} gives <span class="ko">Pretzels</span>, and so does ${V.pressed === 'A2' ? 'B1' : 'A2'}. Two inputs sharing one output is allowed: each button still has just one arrow leaving it.`;
+  else s = `${V.pressed} → <span class="ko">${V.got}</span>, the same every time you press it. One arrow leaves ${V.pressed}.`;
+  $('vOut').innerHTML = s;
+}
+const vMark = buttons('vPresets', vPresets, i => { V.mode = i; V.pressed = null; V.got = null; V.count = 0; vMark(i); $('vDesc').textContent = vPresets[i].d; vDraw(); });
+V.keys.forEach(k => {
+  const b = document.createElement('button'); b.textContent = k;
+  b.onclick = () => {
+    V.pressed = k; V.count = (V.count || 0) + 1;
+    if (V.mode === 2 && k === 'B3') V.got = null;
+    else if (V.mode === 1 && k === 'B2') V.got = Math.random() < 0.5 ? 'Gum' : 'Mints';
+    else V.got = V.base[k];
+    vDraw();
+  };
+  $('vKeys').appendChild(b);
+});
+
+/* =====================================================================
+   3. MAIN EXPLORER: arrow diagram + graph + vertical line
+   ===================================================================== */
+const circlePts = () => { const r = 5, p = []; for (let k = 0; k <= 200; k++){ const a = 2 * Math.PI * k / 200; p.push([r * Math.cos(a), r * Math.sin(a)]); } return [p]; };
+const mPresets = [
+  { n: 'Double it', d: 'y = 2x. Each input gets one output, and every vertical line meets the line once.', pairs: [-3, -2, -1, 0, 1, 2, 3].map(x => [x, 2 * x]), curve: () => [[[-7, -14], [7, 14]]] },
+  { n: 'Square it', d: 'y = x². −2 and 2 both give 4: many-to-one, still a function.', pairs: [-2, -1, 0, 1, 2].map(x => [x, x * x]), curve: () => sample(x => x * x, -3, 3, 120) },
+  { n: 'Same output', d: 'y = 3 for every input. Boring, but a perfectly good function.', pairs: [-2, -1, 0, 1, 2].map(x => [x, 3]), curve: () => [[[-7, 3], [7, 3]]] },
+  { n: 'Square roots', d: 'Pair each x with every number that squares to it: 4 goes to 2 and to −2. Not a function.', pairs: [[0, 0], [1, 1], [1, -1], [4, 2], [4, -2]], curve: () => [sample(y => y * y, -3, 3, 120)[0].map(p => [p[1], p[0]])] },
+  { n: 'Circle', d: 'The points with x² + y² = 25. Most vertical lines cut a circle twice. Not a function.', pairs: [[-5, 0], [-4, 3], [-4, -3], [-3, 4], [-3, -4], [0, 5], [0, -5], [3, 4], [3, -4], [4, 3], [4, -3], [5, 0]], curve: circlePts },
+  { n: 'Your own', d: 'Click grid points on the graph, or type pairs, to build your own relation.', pairs: [[-2, 1], [0, 3], [2, 1]], curve: null },
+];
+const M = { pairs: [], curve: null, c: 1, pi: 0, anim: null };
+const MB = { x0: -6, x1: 6, y0: -6, y1: 6 };
+let MP = null;                                              // the graph's coordinate system
+function mParse(s){                                         // read "(1, 2), (3, −4)" into pairs
+  const re = /\(\s*([^,()]+?)\s*,\s*([^,()]+?)\s*\)/g; const out = []; let m, rest = s;
+  while ((m = re.exec(s))){ const x = parseNum(m[1]), y = parseNum(m[2]); if (isNaN(x) || isNaN(y)) return null; out.push([x, y]); }
+  rest = s.replace(re, '').replace(/[\s,;]/g, '');
+  if (rest.length) return null;
+  return out;
+}
+const mPairStr = () => M.pairs.map(p => `(${num(p[0])}, ${num(p[1])})`).join(', ');
+function curveHits(c){                                      // where the vertical line x = c crosses the curve
+  if (!M.curve) return [];
+  const hits = [];
+  M.curve.forEach(poly => {
+    for (let i = 0; i < poly.length - 1; i++){
+      const [x1, y1] = poly[i], [x2, y2] = poly[i + 1];
+      if ((x1 - c) * (x2 - c) > 0 || x1 === x2) continue;
+      const y = y1 + (y2 - y1) * (c - x1) / (x2 - x1);
+      if (!hits.some(h => Math.abs(h - y) < 0.05)) hits.push(y);
+    }
+  });
+  return hits.sort((a, b) => b - a);
+}
+function mDraw(){
+  const g = byInput(M.pairs), bad = [...g.values()].filter(e => e.ys.length > 1);
+  const c = M.c, dotHits = M.pairs.filter(p => Math.abs(p[0] - c) < 1e-9);
+  const cHits = curveHits(c);
+  // --- arrow diagram, highlighting the input under the line ---
+  const hl = dotHits.length ? dotHits[0][0] : null;
+  if (M.pairs.length) arrowDiagram($('mArr'), 470, 420, M.pairs, { hl });
+  else { $('mArr').innerHTML = ''; txt($('mArr'), 235, 210, 'No pairs yet: click the graph', 'cap', { 'text-anchor': 'middle' }); }
+  // --- graph ---
+  const P = MP = axes($('mGr'), 470, 420, MB, { padL: 30, padB: 24, padT: 10, padR: 10, xt: 2, yt: 2, xg: 1, yg: 1 });
+  if (M.curve) M.curve.forEach(poly => mk('path', { d: dPath(P, poly), style: 'fill:none;stroke:var(--pt-soft);stroke-width:3;opacity:.8' }, P.cg));
+  const n = Math.max(dotHits.length, cHits.length);
+  const col = n >= 2 ? 'var(--no)' : n === 1 ? 'var(--yes)' : 'var(--muted)';
+  vline(P, c, col, { w: 3, layer: P.cg });
+  mk('rect', { x: P.X(c) - 26, y: P.T, width: 52, height: 20, rx: 6, style: `fill:${col}` }, P.m);   // drag handle
+  txt(P.m, P.X(c), P.T + 14, 'x = ' + num(c, 1), 'labS', { 'text-anchor': 'middle', style: 'fill:#fff;stroke:none' });
+  const badX = new Set(bad.map(e => String(e.x)));
+  M.pairs.forEach(([x, y]) => dot(P, x, y, badX.has(String(x)) ? 'var(--no)' : 'var(--pt)'));
+  cHits.forEach(y => mk('circle', { cx: P.X(c), cy: P.Y(y), r: 10, style: `fill:none;stroke:${col};stroke-width:2.5` }, P.m));
+  dotHits.forEach(p => { if (!cHits.some(y => Math.abs(y - p[1]) < 0.05)) mk('circle', { cx: P.X(c), cy: P.Y(p[1]), r: 10, style: `fill:none;stroke:${col};stroke-width:2.5` }, P.m); });
+  // --- verdict ---
+  const curveBad = M.curve && (() => { for (let x = -6; x <= 6; x += 0.05){ if (curveHits(x).length > 1) return true; } return false; })();
+  const ok = !bad.length && !curveBad;
+  $('mVerdict').className = 'verdict ' + (ok ? 'ok' : 'bad');
+  $('mVerdict').textContent = !M.pairs.length ? 'No pairs yet' : ok ? '✓ A function: every input has exactly one output' :
+    bad.length ? `✕ Not a function: input ${num(bad[0].x)} has ${bad[0].ys.length} outputs (${bad[0].ys.map(v => num(v)).join(' and ')})` : '✕ Not a function: some vertical line crosses the curve twice';
+  // --- readout ---
+  let s = '';
+  const ptList = arr => arr.map(y => `(${num(c, 1)}, ${num(y)})`).join(' and ');
+  if (dotHits.length > 1) s = `The line at <span class="ki">x = ${num(c, 1)}</span> hits <b class="kn">${dotHits.length} points</b>: ${ptList(dotHits.map(p => p[1]))}. In the arrow diagram, ${num(c)} has ${dotHits.length} arrows leaving it.`;
+  else if (dotHits.length === 1) s = `The line at <span class="ki">x = ${num(c, 1)}</span> hits <b class="ky">one point</b>, (${num(c)}, ${num(dotHits[0][1])}): input ${num(c)} has the single output <span class="ko">${num(dotHits[0][1])}</span>.`;
+  else s = `No pair has input <span class="ki">${num(c, 1)}</span>${M.curve ? ' among the dots' : ''}, so nothing lights up in the arrow diagram.`;
+  if (M.curve && !dotHits.length) s += cHits.length > 1 ? ` The whole curve is crossed <b class="kn">${cHits.length} times</b> here: ${ptList(cHits)}.` : cHits.length === 1 ? ` The whole curve is crossed <b class="ky">once</b>, at ${ptList(cHits)}.` : ' The whole curve isn’t crossed at all: this input isn’t in its domain.';
+  if (M.pairs.length){
+    s += `<br>Domain (the inputs used): <span class="ki">${setStr([...g.values()].map(e => e.x).sort((a, b) => a - b))}</span>. Range (the outputs that come out): <span class="ko">${setStr([...new Set(M.pairs.map(p => p[1]))].sort((a, b) => a - b))}</span>.`;
+  }
+  $('mOut').innerHTML = s;
+  $('mC').value = num(c, 1).replace('−', '-');
+}
+function mSetC(v){ v = Math.round(v * 10) / 10; if (Math.abs(v - Math.round(v)) < 0.15) v = Math.round(v); M.c = clamp(v, MB.x0, MB.x1); mDraw(); }
+function mStop(){ if (M.anim){ cancelAnimationFrame(M.anim); M.anim = null; } $('mPlay').textContent = 'Sweep'; }
+const mMark = buttons('mPresets', mPresets, i => {
+  mStop(); M.pi = i; mMark(i); const p = mPresets[i];
+  M.pairs = p.pairs.map(q => q.slice()); M.curve = p.curve ? p.curve() : null; M.c = 1;
+  $('mDesc').textContent = p.d; $('mPairs').value = mPairStr().replace(/−/g, '-'); $('mErr').textContent = ''; mDraw();
+});
+function mCustom(){ M.pi = 5; mMark(5); M.curve = null; $('mDesc').textContent = mPresets[5].d; }
+$('mUse').onclick = () => {
+  const p = mParse($('mPairs').value);
+  if (!p){ $('mErr').textContent = 'Type pairs like (1, 2), (−3, 4).'; return; }
+  if (p.some(q => Math.abs(q[0]) > 6 || Math.abs(q[1]) > 6)){ $('mErr').textContent = 'Keep every number between −6 and 6 so it fits on the grid.'; return; }
+  $('mErr').textContent = ''; mStop(); M.pairs = p; mCustom(); mDraw();
+};
+$('mClear').onclick = () => { mStop(); M.pairs = []; mCustom(); $('mPairs').value = ''; mDraw(); };
+$('mC').addEventListener('change', () => { const v = parseNum($('mC').value); if (isNaN(v)){ $('mErr').textContent = 'Type a number for the line’s position.'; return; } $('mErr').textContent = ''; mStop(); mSetC(v); });
+$('mReset').onclick = () => { mStop(); M.c = 1; mDraw(); };
+$('mPlay').onclick = () => {                               // sweep the vertical line from left to right
+  if (M.anim){ mStop(); return; }
+  $('mPlay').textContent = 'Pause';
+  const t0 = performance.now(), from = M.c >= MB.x1 - 0.2 ? MB.x0 : M.c, dur = (MB.x1 - from) / 12 * 7000;
+  const step = now => {
+    const e = Math.min(1, (now - t0) / dur), v = from + (MB.x1 - from) * e;
+    // linger briefly on whole numbers, where the dots are
+    M.c = Math.abs(v - Math.round(v)) < 0.12 ? Math.round(v) : Math.round(v * 10) / 10; mDraw();
+    if (e < 1) M.anim = requestAnimationFrame(step); else mStop();
+  };
+  M.anim = requestAnimationFrame(step);
+};
+(function(){                                                // dragging the line, clicking to toggle points
+  const svg = $('mGr'); let drag = false;
+  svg.addEventListener('pointerdown', ev => {
+    const q = svgPt(svg, ev), [x, y] = MP.inv(q.x, q.y);
+    if (Math.abs(q.x - MP.X(M.c)) < 12 || q.y < MP.T + 22){ drag = true; svg.setPointerCapture(ev.pointerId); mStop(); mSetC(x); return; }
+    const gx = Math.round(x), gy = Math.round(y);
+    if (Math.hypot(x - gx, y - gy) > 0.35 || Math.abs(gx) > 6 || Math.abs(gy) > 6) return;
+    const i = M.pairs.findIndex(p => p[0] === gx && p[1] === gy);
+    if (i >= 0) M.pairs.splice(i, 1); else M.pairs.push([gx, gy]);
+    mStop(); mCustom(); $('mPairs').value = mPairStr().replace(/−/g, '-'); mDraw();
+  });
+  svg.addEventListener('pointermove', ev => { if (!drag) return; const q = svgPt(svg, ev); mSetC(MP.inv(q.x, q.y)[0]); });
+  svg.addEventListener('pointerup', () => drag = false);
+})();
+
+/* =====================================================================
+   4. FUNCTION MACHINE (evaluate, and f(a+1) vs f(a)+1)
+   ===================================================================== */
+const ePresets = [
+  { n: 'f(x) = 2x + 3', nm: 'f', rule: '2<i>x</i> + 3', words: 'double it, then add 3', f: x => 2 * x + 3, b: { x0: -6, x1: 6, y0: -10, y1: 16 },
+    steps: x => [`2·${pn(x)} + 3`, `${num(2 * x)} + 3`] },
+  { n: 'g(x) = x² − 1', nm: 'g', rule: '<i>x</i>² − 1', words: 'square it, then subtract 1', f: x => x * x - 1, b: { x0: -5, x1: 5, y0: -3, y1: 16 },
+    steps: x => [`${pn(x)}² − 1`, `${num(x * x)} − 1`] },
+  { n: 'h(x) = 10 − 3x', nm: 'h', rule: '10 − 3<i>x</i>', words: 'triple it, then take that away from 10', f: x => 10 - 3 * x, b: { x0: -4, x1: 7, y0: -10, y1: 22 },
+    steps: x => [`10 − 3·${pn(x)}`, `10 − ${pn(3 * x)}`] },
+  { n: 'p(x) = x² − 4x', nm: 'p', rule: '<i>x</i>² − 4<i>x</i>', words: 'square it, then subtract 4 times it', f: x => x * x - 4 * x, b: { x0: -3, x1: 7, y0: -6, y1: 20 },
+    steps: x => [`${pn(x)}² − 4·${pn(x)}`, `${num(x * x)} − ${pn(4 * x)}`] },
+  { n: 'k(x) = (x + 4) ÷ 2', nm: 'k', rule: '(<i>x</i> + 4) ÷ 2', words: 'add 4, then halve it', f: x => (x + 4) / 2, b: { x0: -8, x1: 8, y0: -3, y1: 7 },
+    steps: x => [`(${num(x)} + 4) ÷ 2`, `${num(x + 4)} ÷ 2`] },
+];
+const E = { pi: 0, x: -2, a: 2, mode: 1 };
+function eBox(pts){                                         // the preset box, grown to fit the points we must show
+  const b = Object.assign({}, ePresets[E.pi].b);
+  pts.forEach(([x, y]) => { b.x0 = Math.min(b.x0, Math.floor(x) - 1); b.x1 = Math.max(b.x1, Math.ceil(x) + 1); b.y0 = Math.min(b.y0, Math.floor(y) - 2); b.y1 = Math.max(b.y1, Math.ceil(y) + 2); });
+  return b;
+}
+function eDraw(){
+  const p = ePresets[E.pi], f = p.f, nm = p.nm;
+  if (E.mode === 1){
+    const x = E.x, y = f(x);
+    const chain = [...p.steps(x), num(y)].filter((s, i, a) => a.indexOf(s) === i);   // drop repeated steps
+    $('eMachine').innerHTML = `<div class="fmach"><div class="box i"><small>input</small>${num(x)}</div><span class="ar">→</span><div class="box r"><small>rule ${nm}</small>${p.words}</div><span class="ar">→</span><div class="box o"><small>output</small>${num(y)}</div></div>
+      <div class="bigeq"><i>${nm}</i>(<span class="ki">${num(x)}</span>) = ${chain.join(' = ').replace(/= ([^=]*)$/, '= <span class="ko">$1</span>')}</div>`;
+    const P = axes($('eSvg'), 960, 380, eBox([[x, y]]), { xT: 'input x', yT: `output ${nm}(x)` });
+    sample(f, P.b.x0, P.b.x1, 300).forEach(poly => mk('path', { d: dPath(P, poly), style: 'fill:none;stroke:var(--pt-soft);stroke-width:3' }, P.cg));
+    vline(P, x, 'var(--in)', { y0: 0, y1: y, dash: '6 5' });
+    hline(P, y, 'var(--out)', { x0: 0, x1: x, dash: '6 5' });
+    dot(P, x, 0, 'var(--in)', { r: 5 }); dot(P, 0, y, 'var(--out)', { r: 5 }); dot(P, x, y, 'var(--pt)', { r: 7 });
+    txt(P.top, P.X(x) + (x >= 0 ? 10 : -10), P.Y(y) + (y >= 0 ? -10 : 18), `(${num(x)}, ${num(y)})`, 'lab', { 'text-anchor': x >= 0 ? 'start' : 'end', style: 'fill:var(--pt)' });
+    $('eOut').innerHTML = `Across to <span class="ki">x = ${num(x)}</span>, up to the graph, across to the axis: the height there is <span class="ko">${nm}(${num(x)}) = ${num(y)}</span>. The rule (“${p.words}”) and the graph give the same answer, because the graph is every (<i>x</i>, ${nm}(<i>x</i>)) pair drawn at once.`;
+  } else {
+    const a = E.a, fa = f(a), fa1 = f(a + 1), up = fa + 1, f2a = f(2 * a), tw = 2 * fa;
+    $('eMachine').innerHTML = `<div class="cmp">
+      <div><b>Put a + 1 in: step right</b><i>${nm}</i>(<i>a</i> + 1) = <i>${nm}</i>(${num(a + 1)}) = <span class="ky">${num(fa1)}</span></div>
+      <div><b>Add 1 to the output: lift up</b><i>${nm}</i>(<i>a</i>) + 1 = ${num(fa)} + 1 = <span class="kn">${num(up)}</span></div>
+      <div><b>Put 2a in</b><i>${nm}</i>(2<i>a</i>) = <i>${nm}</i>(${num(2 * a)}) = ${num(f2a)}</div>
+      <div><b>Double the output</b>2·<i>${nm}</i>(<i>a</i>) = 2·${pn(fa)} = ${num(tw)}</div></div>`;
+    const P = axes($('eSvg'), 960, 380, eBox([[a, fa], [a + 1, fa1], [a, up]]), { xT: 'input x', yT: `output ${nm}(x)` });
+    sample(f, P.b.x0, P.b.x1, 300).forEach(poly => mk('path', { d: dPath(P, poly), style: 'fill:none;stroke:var(--pt-soft);stroke-width:3' }, P.cg));
+    vline(P, a + 1, 'var(--yes)', { y0: 0, y1: fa1, dash: '5 5', w: 2 });
+    dot(P, a, fa, 'var(--pt)', { r: 7 }); dot(P, a + 1, fa1, 'var(--yes)', { r: 7 }); dot(P, a, up, 'var(--no)', { r: 7, open: true });
+    mk('line', { x1: P.X(a), y1: P.Y(fa) - 8, x2: P.X(a), y2: P.Y(up) + 9, style: 'stroke:var(--no);stroke-width:2' }, P.m);
+    const side = (a + 1) > (P.b.x0 + P.b.x1) / 2 ? -1 : 1;
+    txt(P.top, P.X(a) - 12, P.Y(fa) + 5, `${nm}(a) = ${num(fa)}`, 'labS', { 'text-anchor': 'end', style: 'fill:var(--pt)' });
+    txt(P.top, P.X(a + 1) + 12, P.Y(fa1) + 5, `${nm}(a + 1) = ${num(fa1)}`, 'labS', { style: 'fill:var(--yes)' });
+    txt(P.top, P.X(a) - 12, P.Y(up) - 4, `${nm}(a) + 1 = ${num(up)}`, 'labS', { 'text-anchor': 'end', style: 'fill:var(--no)' });
+    const same = Math.abs(fa1 - up) < 1e-9;
+    $('eOut').innerHTML = same ? `With <i>a</i> = ${num(a)} the two happen to agree (${num(fa1)}). Try another <i>a</i>: for most inputs they differ.`
+      : `<span class="ky">${nm}(a + 1) = ${num(fa1)}</span> changes the <i>input</i>: move one step right and read the graph there. <span class="kn">${nm}(a) + 1 = ${num(up)}</span> changes the <i>output</i>: stay at <i>a</i> and lift the height by 1, which lands off the graph. ` +
+        (Math.abs(f2a - tw) < 1e-9 ? `Here ${nm}(2a) and 2·${nm}(a) agree (${num(tw)}), but only for special rules or inputs.` : `Likewise ${nm}(2a) = ${num(f2a)} is not 2·${nm}(a) = ${num(tw)}.`);
+  }
+}
+const eMark = buttons('ePresets', ePresets, i => { E.pi = i; eMark(i); $('eDesc').innerHTML = `${ePresets[i].nm}(<i>x</i>) = ${ePresets[i].rule}: ${ePresets[i].words}.`; eDraw(); });
+function eMode(m){ E.mode = m; $('eM1').classList.toggle('on', m === 1); $('eM2').classList.toggle('on', m === 2); $('eXf').style.display = m === 1 ? '' : 'none'; $('eAf').style.display = m === 2 ? '' : 'none'; eDraw(); }
+$('eM1').onclick = () => eMode(1); $('eM2').onclick = () => eMode(2);
+$('eX').addEventListener('input', () => { const v = parseNum($('eX').value); if (isNaN(v) || $('eX').value.trim() === ''){ $('eErr').textContent = 'Type a number for the input (like −2 or 1/2).'; return; } if (Math.abs(v) > 30){ $('eErr').textContent = 'Keep the input between −30 and 30.'; return; } $('eErr').textContent = ''; E.x = v; eDraw(); });
+$('eA').addEventListener('input', () => { const v = parseNum($('eA').value); if (isNaN(v) || $('eA').value.trim() === ''){ $('eErr').textContent = 'Type a number for a.'; return; } if (Math.abs(v) > 20){ $('eErr').textContent = 'Keep a between −20 and 20.'; return; } $('eErr').textContent = ''; E.a = v; eDraw(); });
+(function(){
+  const svg = $('eSvg');
+  svg.addEventListener('pointerdown', ev => {
+    const q = svgPt(svg, ev), p = ePresets[E.pi];
+    // rebuild the same coordinate system the last draw used
+    const pts = E.mode === 1 ? [[E.x, p.f(E.x)]] : [[E.a, p.f(E.a)], [E.a + 1, p.f(E.a + 1)], [E.a, p.f(E.a) + 1]];
+    const b = eBox(pts), L = 44, R = 16; const x = b.x0 + (q.x - L) / ((960 - L - R) / (b.x1 - b.x0));
+    const v = Math.round(x * 2) / 2;
+    if (E.mode === 1){ E.x = v; $('eX').value = String(v); } else { E.a = v; $('eA').value = String(v); }
+    $('eErr').textContent = ''; eDraw();
+  });
+})();
+
+/* =====================================================================
+   5. DOMAIN AND RANGE (squash the graph)
+   ===================================================================== */
+const INF = Infinity;
+const dPresets = [
+  { n: 'x²', rule: 'f(x) = x²', f: x => x * x, ok: () => true, b: { x0: -5, x1: 5, y0: -3, y1: 10 },
+    dom: [[-INF, INF]], ran: [[0, INF, true]], dT: 'all real numbers, (−∞, ∞)', rT: 'y ≥ 0, [0, ∞): a square is never negative',
+    d: 'Every number can be squared, so the domain is everything. But no square is negative, so the range stops at 0.' },
+  { n: '1 / x', rule: 'f(x) = 1 / x', f: x => 1 / x, ok: x => x !== 0, b: { x0: -5, x1: 5, y0: -5, y1: 5 },
+    dom: [[-INF, 0, false, false], [0, INF, false, false]], ran: [[-INF, 0, false, false], [0, INF, false, false]], dT: 'every x except 0 (x ≠ 0)', rT: 'every y except 0: 1 ÷ x is never 0',
+    why: x => '1 ÷ 0 is undefined: you can’t share 1 into 0 equal groups.', d: 'Dividing by zero is impossible, so x = 0 is left out. The graph splits into two pieces.' },
+  { n: '√x', rule: 'f(x) = √x', f: x => Math.sqrt(x), ok: x => x >= 0, b: { x0: -3, x1: 10, y0: -2, y1: 4.5 },
+    dom: [[0, INF, true]], ran: [[0, INF, true]], dT: 'x ≥ 0, [0, ∞)', rT: 'y ≥ 0, [0, ∞)',
+    why: x => `No real number squares to ${num(x)}: squares are never negative.`, d: 'Negative numbers have no real square root, so the graph starts at x = 0.' },
+  { n: '√(4 − x)', rule: 'f(x) = √(4 − x)', f: x => Math.sqrt(4 - x), ok: x => x <= 4, b: { x0: -6, x1: 6, y0: -2, y1: 4.5 },
+    dom: [[-INF, 4, false, true]], ran: [[0, INF, true]], dT: 'x ≤ 4, (−∞, 4]', rT: 'y ≥ 0, [0, ∞)',
+    why: x => `4 − ${pn(x)} = ${num(4 - x)} is negative, and a negative number has no real square root.`, d: 'The part under the root, 4 − x, must not be negative, so x can be at most 4.' },
+  { n: '1 / (x − 2) + 1', rule: 'f(x) = 1 / (x − 2) + 1', f: x => 1 / (x - 2) + 1, ok: x => x !== 2, b: { x0: -4, x1: 8, y0: -4, y1: 6 },
+    dom: [[-INF, 2, false, false], [2, INF, false, false]], ran: [[-INF, 1, false, false], [1, INF, false, false]], dT: 'every x except 2 (x ≠ 2)', rT: 'every y except 1: the curve creeps toward height 1 but never reaches it',
+    why: x => 'x − 2 = 0 here, and you can’t divide by 0.', d: 'Now the forbidden input is 2, where the bottom becomes 0. The range misses 1.' },
+  { n: 'Tables in a row', rule: 'seats(n) = 2n + 2', f: x => 2 * x + 2, ok: x => Number.isInteger(x) && x >= 1 && x <= 6, b: { x0: -1, x1: 7, y0: -2, y1: 16 }, disc: [1, 2, 3, 4, 5, 6],
+    dT: '{1, 2, 3, 4, 5, 6} (whole numbers of tables, up to 6 in the room)', rT: '{4, 6, 8, 10, 12, 14}',
+    why: x => x < 1 || x > 6 ? `The room holds 1 to 6 tables, so n = ${num(x)} makes no sense here.` : `You can’t set out ${num(x)} tables: only whole tables.`, d: 'n tables pushed into a row seat 2n + 2 people. The formula takes any number, but the situation only allows whole tables.' },
+];
+const D = { pi: 0, x: 1, sq: null, t: 0, anim: null };
+function dBand(P, ivs, axis, col, b){                         // draw a domain/range band along an axis
+  const g = P.m, lo = axis === 'x' ? b.x0 : b.y0, hi = axis === 'x' ? b.x1 : b.y1;
+  const pos = v => axis === 'x' ? [P.X(v), P.ay] : [P.ax, P.Y(v)];
+  ivs.forEach(([a, c, ca, cc]) => {
+    const A = Math.max(a, lo), C = Math.min(c, hi), [x1, y1] = pos(A), [x2, y2] = pos(C);
+    mk('line', { x1, y1, x2, y2, style: `stroke:${col};stroke-width:7;opacity:.55;stroke-linecap:butt` }, g);
+    if (a === -INF) arrowHead(g, x2, y2, x1 - (axis === 'x' ? 6 : 0), y1 + (axis === 'x' ? 0 : 6), col, 12);
+    if (c === INF) arrowHead(g, x1, y1, x2 + (axis === 'x' ? 6 : 0), y2 - (axis === 'x' ? 0 : 6), col, 12);
+    [[a, ca], [c, cc]].forEach(([v, cl]) => { if (isFinite(v)){ const [px, py] = pos(v); mk('circle', { cx: px, cy: py, r: 6, style: cl ? `fill:${col};stroke:var(--bg);stroke-width:1.5` : `fill:var(--bg);stroke:${col};stroke-width:2.6` }, g); } });
+  });
+}
+function dDraw(){
+  const p = dPresets[D.pi], b = p.b;
+  $('dRule').innerHTML = p.rule.replace(/x/g, '<i>x</i>').replace(/\bn\b/g, '<i>n</i>');
+  const P = axes($('dSvg'), 960, 420, b, { xt: b.x1 - b.x0 > 12 ? 2 : 1, yt: b.y1 - b.y0 > 12 ? 2 : 1, xg: 1, yg: 1, xT: p.disc ? 'tables n' : 'x', yT: p.disc ? 'seats' : 'y' });
+  const e = D.t < 0.5 ? 2 * D.t * D.t : 1 - Math.pow(-2 * D.t + 2, 2) / 2;   // ease in-out
+  // the graph, faded as it gets squashed
+  const sq = D.sq;
+  if (p.disc){
+    p.disc.forEach(n => {
+      const y = p.f(n), xx = sq === 'y' ? n * (1 - e) : n, yy = sq === 'x' ? y * (1 - e) : y;
+      dot(P, xx, yy, 'var(--pt)');
+    });
+    if (D.t >= 1 || !sq){                                   // shadows on the axes as dots
+      p.disc.forEach(n => { dot(P, n, 0, 'var(--in)', { r: 5 }); dot(P, 0, p.f(n), 'var(--out)', { r: 5 }); });
+    }
+  } else {
+    const polys = sample(p.f, b.x0, b.x1, 600, p.ok);
+    polys.forEach(poly => mk('path', { d: dPath(P, poly), style: `fill:none;stroke:var(--pt);stroke-width:3;opacity:${sq ? 0.25 : 1}` }, P.cg));
+    if (sq){                                                // the squash: dots slide onto the axis
+      polys.forEach(poly => poly.forEach((q, i) => {
+        if (i % 6) return;
+        const x = sq === 'y' ? q[0] * (1 - e) : q[0], y = sq === 'x' ? q[1] * (1 - e) : q[1];
+        if (y < b.y0 - 1 || y > b.y1 + 1) return;
+        mk('circle', { cx: P.X(x), cy: P.Y(y), r: 3, style: `fill:${sq === 'x' ? 'var(--in)' : 'var(--out)'};opacity:.7` }, P.cg);
+      }));
+    }
+    if (!sq || D.t >= 1){
+      if (!sq || sq === 'x') dBand(P, p.dom, 'x', 'var(--in)', b);
+      if (!sq || sq === 'y') dBand(P, p.ran, 'y', 'var(--out)', b);
+    }
+  }
+  // the probe input
+  const x = D.x, ok = p.ok(x), y = ok ? p.f(x) : NaN;
+  if (ok){
+    vline(P, x, 'var(--in)', { y0: 0, y1: clamp(y, b.y0, b.y1), dash: '6 5', w: 2 });
+    if (y >= b.y0 && y <= b.y1){ hline(P, y, 'var(--out)', { x0: 0, x1: x, dash: '6 5', w: 2 }); dot(P, x, y, 'var(--pt)', { r: 7 }); }
+  } else {
+    mk('line', { x1: P.X(x) - 7, y1: P.ay - 7, x2: P.X(x) + 7, y2: P.ay + 7, style: 'stroke:var(--no);stroke-width:3' }, P.m);
+    mk('line', { x1: P.X(x) - 7, y1: P.ay + 7, x2: P.X(x) + 7, y2: P.ay - 7, style: 'stroke:var(--no);stroke-width:3' }, P.m);
+    vline(P, x, 'var(--no)', { dash: '3 6', w: 1.5 });
+  }
+  let s = ok ? `<span class="ki">x = ${num(x)}</span> is allowed: f(${num(x)}) = <span class="ko">${num(y)}</span>.` : `<span class="kn">x = ${num(x)} is not allowed.</span> ${p.why(x)}`;
+  s += `<br><b>Domain:</b> <span class="ki">${p.dT}</span>.<br><b>Range:</b> <span class="ko">${p.rT}</span>.`;
+  if (sq && D.t >= 1) s += sq === 'x' ? '<br>Squashed straight down, the graph’s shadow on the x-axis is the domain.' : '<br>Squashed sideways, the graph’s shadow on the y-axis is the range.';
+  $('dOut').innerHTML = s;
+  $('dX').value = num(x).replace('−', '-');
+}
+function dStop(){ if (D.anim){ cancelAnimationFrame(D.anim); D.anim = null; } }
+function dSquash(which){
+  dStop(); D.sq = which; D.t = 0; const t0 = performance.now();
+  const step = now => { D.t = Math.min(1, (now - t0) / 1600); dDraw(); if (D.t < 1) D.anim = requestAnimationFrame(step); };
+  D.anim = requestAnimationFrame(step);
+}
+const dMark = buttons('dPresets', dPresets, i => { dStop(); D.pi = i; D.sq = null; D.t = 0; D.x = i === 5 ? 3 : 1; dMark(i); $('dDesc').textContent = dPresets[i].d; $('dErr').textContent = ''; dDraw(); });
+$('dSqX').onclick = () => dSquash('x'); $('dSqY').onclick = () => dSquash('y');
+$('dReset').onclick = () => { dStop(); D.sq = null; D.t = 0; dDraw(); };
+$('dX').addEventListener('change', () => { const v = parseNum($('dX').value); if (isNaN(v)){ $('dErr').textContent = 'Type a number to test.'; return; } $('dErr').textContent = ''; D.x = clamp(v, dPresets[D.pi].b.x0, dPresets[D.pi].b.x1); dDraw(); });
+(function(){
+  const svg = $('dSvg'); let drag = false;
+  const set = ev => { const p = dPresets[D.pi], b = p.b, q = svgPt(svg, ev), x = b.x0 + (q.x - 44) / ((960 - 60) / (b.x1 - b.x0)); D.x = clamp(Math.round(x * (p.disc ? 2 : 10)) / (p.disc ? 2 : 10), b.x0, b.x1); dDraw(); };
+  svg.addEventListener('pointerdown', ev => { drag = true; svg.setPointerCapture(ev.pointerId); set(ev); });
+  svg.addEventListener('pointermove', ev => { if (drag) set(ev); });
+  svg.addEventListener('pointerup', () => drag = false);
+})();
+
+/* =====================================================================
+   6. TEMPERATURE THROUGH A DAY (reading a graph)
+   ===================================================================== */
+const smooth = u => u <= 0 ? 0 : u >= 1 ? 1 : u * u * (3 - 2 * u);
+const tPresets = [
+  { n: 'Summer day', f: h => 80 + 11 * Math.cos(2 * Math.PI * (h - 15) / 24), L: 85, H: 9, b: [60, 100], d: 'Cool before dawn, hottest mid-afternoon. One minimum, one maximum.' },
+  { n: 'Winter day', f: h => 33 + 9 * Math.cos(2 * Math.PI * (h - 14) / 24), L: 32, H: 8, b: [15, 50], d: 'Below freezing (32 °F) at night, thawing in the afternoon. When was it exactly 32 °F?' },
+  { n: 'Cold front', f: h => 70 + 8 * Math.cos(2 * Math.PI * (h - 13) / 24) - 20 * smooth((h - 13) / 5), L: 65, H: 16, b: [40, 85], d: 'Warming all morning, then a front sweeps through and it drops 20 degrees. The high comes early.' },
+];
+const TT = { pi: 0, h: 9, L: 85, shade: true, ext: true };
+const hm = h => { let m = Math.round(h * 60 / 5) * 5; const hh = Math.floor(m / 60), mm = m % 60; return `${hh}:${String(mm).padStart(2, '0')}`; };   // 9.5 → "9:30"
+function parseTime(s){
+  s = String(s).trim().replace(/[−–]/g, '-');
+  let m = s.match(/^(\d{1,2}):(\d{2})$/); if (m && +m[2] < 60) return +m[1] + m[2] / 60;
+  const v = parseNum(s); return v;
+}
+function tLevel(f, L){                                       // every time in the day where f(h) = L
+  const out = []; let prev = f(0) - L;
+  for (let i = 1; i <= 2400; i++){
+    const h = i / 100, cur = f(h) - L;
+    if (prev === 0) out.push(h - 0.01);
+    else if (prev * cur < 0) out.push(h - 0.01 + 0.01 * prev / (prev - cur));
+    prev = cur;
+  }
+  return out;
+}
+function tExtremes(f){ let lo = [0, f(0)], hi = [0, f(0)]; for (let i = 0; i <= 2400; i++){ const h = i / 100, v = f(h); if (v < lo[1]) lo = [h, v]; if (v > hi[1]) hi = [h, v]; } return { lo, hi }; }
+let TP = null;
+function tDraw(){
+  const p = tPresets[TT.pi], f = p.f;
+  const P = TP = axes($('tSvg'), 960, 400, { x0: 0, x1: 24, y0: p.b[0], y1: p.b[1] }, { xt: 3, xg: 1, yt: 5, yg: 5, fx: v => v + ':00', fy: v => v + '°', yT: 'temperature °F', zeroX: true });
+  if (TT.shade){                                             // warming / cooling bands under the curve
+    let start = 0, up = f(0.01) > f(0);
+    const flush = (a, c, warm) => { const pts = [[a, p.b[0]]]; for (let h = a; h <= c + 1e-9; h += 0.05) pts.push([h, f(h)]); pts.push([c, f(c)], [c, p.b[0]]); mk('path', { d: dPath(P, pts) + 'Z', style: `fill:${warm ? 'var(--warm)' : 'var(--cool)'};opacity:.16` }, P.cg); };
+    for (let h = 0.05; h <= 24; h += 0.05){ const u = f(h + 0.01) > f(h); if (u !== up){ flush(start, h, up); start = h; up = u; } }
+    flush(start, 24, up);
+  }
+  mk('path', { d: dPath(P, sample(f, 0, 24, 480)[0]), style: 'fill:none;stroke:var(--pt);stroke-width:3.5' }, P.cg);
+  if (p.L === 32) hline(P, 32, 'var(--muted)', { dash: '2 4', w: 1, layer: P.cg });
+  const ex = tExtremes(f);
+  if (TT.ext){
+    dot(P, ex.hi[0], ex.hi[1], 'var(--pt)', { r: 7 }); dot(P, ex.lo[0], ex.lo[1], 'var(--pt)', { r: 7 });
+    const anc = h => h < 2.5 ? 'start' : h > 21.5 ? 'end' : 'middle', off = h => h < 2.5 ? 8 : h > 21.5 ? -8 : 0;
+    txt(P.top, P.X(ex.hi[0]) + off(ex.hi[0]), P.Y(ex.hi[1]) - 12, `high ${num(ex.hi[1], 0)}° at ${hm(ex.hi[0])}`, 'labS', { 'text-anchor': anc(ex.hi[0]), style: 'fill:var(--pt)' });
+    txt(P.top, P.X(ex.lo[0]) + off(ex.lo[0]), P.Y(ex.lo[1]) - 12, `low ${num(ex.lo[1], 0)}° at ${hm(ex.lo[0])}`, 'labS', { 'text-anchor': anc(ex.lo[0]), style: 'fill:var(--pt)' });
+  }
+  // up, then across: horizontal line at the chosen temperature and every time it's met
+  const L = TT.L, sol = tLevel(f, L);
+  hline(P, L, 'var(--out)', { w: 2.5 });
+  txt(P.top, P.W - P.R - 4, P.Y(L) - 7, `${num(L)}°`, 'labS', { 'text-anchor': 'end', style: 'fill:var(--out)' });
+  sol.forEach(h => { vline(P, h, 'var(--out)', { y0: p.b[0], y1: L, dash: '4 4', w: 1.5 }); dot(P, h, L, 'var(--out)', { r: 6 }); txt(P.top, P.X(h), P.H - P.B - 6, hm(h), 'labS', { 'text-anchor': 'middle', style: 'fill:var(--out)' }); });
+  // across, then up: the chosen time
+  const H = TT.h, v = f(H);
+  vline(P, H, 'var(--in)', { y0: p.b[0], y1: v, w: 2.5 });
+  hline(P, v, 'var(--in)', { x0: 0, x1: H, dash: '6 5', w: 1.5 });
+  dot(P, H, v, 'var(--in)', { r: 7 });
+  txt(P.top, P.L + 6, P.Y(v) - 7, `${hm(H)} → ${num(v, 1)}°`, 'lab', { style: 'fill:var(--in)' });
+  // readout
+  const rising = f(H + 0.01) > f(H);
+  let s = `<b>Across, then up:</b> at <span class="ki">${hm(H)}</span> it was <span class="ki">${num(v, 1)} °F</span>, and it was <b>${rising ? '<span style="color:var(--warm)">warming</span> (increasing)' : '<span style="color:var(--cool)">cooling</span> (decreasing)'}</b> then.<br>`;
+  s += `<b>Up, then across:</b> it was <span class="ko">${num(L)} °F</span> ` + (sol.length === 0 ? `<b>at no time today</b>: the horizontal line misses the graph (the range is about ${num(ex.lo[1], 0)}° to ${num(ex.hi[1], 0)}°).` : sol.length === 1 ? `at exactly one time, about <span class="ko">${hm(sol[0])}</span>.` : `at ${sol.length} different times: ${sol.map(h => `<span class="ko">${hm(h)}</span>`).join(' and ')}. One temperature, several times — that’s fine, because each time still has one temperature.`);
+  s += `<br><b>Shape:</b> maximum ${num(ex.hi[1], 0)}° at ${hm(ex.hi[0])}, minimum ${num(ex.lo[1], 0)}° at ${hm(ex.lo[0])}.`;
+  $('tOut').innerHTML = s;
+  $('tH').value = hm(H); $('tL').value = String(L);
+}
+const tMark = buttons('tPresets', tPresets, i => { TT.pi = i; TT.L = tPresets[i].L; TT.h = tPresets[i].H; tMark(i); $('tDesc').textContent = tPresets[i].d; $('tErr').textContent = ''; tDraw(); });
+$('tH').addEventListener('change', () => { const v = parseTime($('tH').value); if (isNaN(v) || v < 0 || v > 24){ $('tErr').textContent = 'Type a time from 0:00 to 24:00, like 9:30 or 14.'; return; } $('tErr').textContent = ''; TT.h = v; tDraw(); });
+$('tL').addEventListener('change', () => { const v = parseNum($('tL').value); if (isNaN(v)){ $('tErr').textContent = 'Type a temperature, like 80.'; return; } $('tErr').textContent = ''; TT.L = clamp(v, tPresets[TT.pi].b[0], tPresets[TT.pi].b[1]); tDraw(); });
+$('tShade').onclick = () => { TT.shade = !TT.shade; $('tShade').classList.toggle('on', TT.shade); tDraw(); };
+$('tExt').onclick = () => { TT.ext = !TT.ext; $('tExt').classList.toggle('on', TT.ext); tDraw(); };
+(function(){                                                 // drag either line: near the temperature line moves it, otherwise moves the time
+  const svg = $('tSvg'); let what = null;
+  const move = ev => { const q = svgPt(svg, ev), [h, T] = TP.inv(q.x, q.y); if (what === 'L') TT.L = clamp(Math.round(T), tPresets[TT.pi].b[0], tPresets[TT.pi].b[1]); else TT.h = clamp(Math.round(h * 12) / 12, 0, 24); tDraw(); };
+  svg.addEventListener('pointerdown', ev => { const q = svgPt(svg, ev); what = Math.abs(q.y - TP.Y(TT.L)) < 10 ? 'L' : 'h'; svg.setPointerCapture(ev.pointerId); move(ev); });
+  svg.addEventListener('pointermove', ev => { if (what) move(ev); });
+  svg.addEventListener('pointerup', () => what = null);
+})();
+
+/* =====================================================================
+   7. THROWN BALL (domain from the situation, a zero at landing)
+   ===================================================================== */
+const bPresets = [
+  { n: 'Toss up', v: 15, h: 2, d: 'Thrown upward at 15 m/s from 2 m (about hand height).' },
+  { n: 'Gentle lob', v: 6, h: 1, d: 'A soft throw: a low peak and a short flight.' },
+  { n: 'Off a roof', v: 5, h: 20, d: 'Thrown up a little from a 20 m roof: it rises, then falls past where it started.' },
+  { n: 'Dropped', v: 0, h: 20, d: 'Just let go from 20 m: no upward speed, so it only falls. The peak is the start.' },
+];
+const BL = { v: 15, h0: 2, t: null, anim: null };
+const bH = t => BL.h0 + BL.v * t - 5 * t * t;
+const bLand = () => (BL.v + Math.sqrt(BL.v * BL.v + 20 * BL.h0)) / 10;
+function bDraw(){
+  const T = bLand(), tp = Math.max(0, BL.v / 10), hp = bH(tp);
+  const b = { x0: -0.6 * Math.max(1, T / 4), x1: Math.ceil(T + 0.6), y0: -Math.max(3, hp * 0.18), y1: Math.ceil(hp * 1.12 + 1) };
+  const P = axes($('bSvg'), 960, 400, b, { padL: 52, fx: v => v < 0 ? '' : num(v), xT: 'time t (s)', yT: 'height h (m)', zeroX: true });
+  // the ball's lane, left of the y-axis, shares the height scale
+  const laneX = (P.L + P.X(0)) / 2;
+  mk('line', { x1: P.L, y1: P.Y(0), x2: P.X(0), y2: P.Y(0), style: 'stroke:var(--ink);stroke-width:3' }, P.m);
+  // formula curve: solid for the real flight, faint dashes where the formula keeps going
+  mk('path', { d: dPath(P, sample(bH, 0, T, 300)[0]), style: 'fill:none;stroke:var(--pt);stroke-width:3.5' }, P.cg);
+  mk('path', { d: dPath(P, sample(bH, T, b.x1 + 0.5, 60)[0]), style: 'fill:none;stroke:var(--pt-soft);stroke-width:2.5;stroke-dasharray:6 6' }, P.cg);
+  txt(P.top, P.W - P.R - 4, P.H - P.B - 6, 'dashed: the formula keeps going, the ball doesn’t', 'labS', { 'text-anchor': 'end', style: 'fill:var(--muted)' });
+  // domain and range bands
+  dBand(P, [[0, T, true, true]], 'x', 'var(--in)', b);
+  dBand(P, [[0, hp, true, true]], 'y', 'var(--out)', b);
+  dot(P, T, 0, 'var(--no)', { r: 7 });
+  txt(P.top, P.X(T), P.Y(0) - 12, `lands: h = 0 at t ≈ ${num(T, 2)}`, 'labS', { 'text-anchor': 'end', style: 'fill:var(--no)' });
+  if (BL.v > 0){ dot(P, tp, hp, 'var(--pt)', { r: 6 }); txt(P.top, P.X(tp), P.Y(hp) - 12, `peak ${num(hp, 2)} m at t = ${num(tp, 2)}`, 'labS', { 'text-anchor': 'middle', style: 'fill:var(--pt)' }); }
+  // the moving ball and its point
+  if (BL.t !== null){
+    const t = BL.t, h = bH(t);
+    const trail = sample(bH, 0, t, Math.max(2, Math.round(t * 60)))[0];
+    if (trail) mk('path', { d: dPath(P, trail), style: 'fill:none;stroke:var(--pt);stroke-width:6;opacity:.35' }, P.cg);
+    hline(P, h, 'var(--pt)', { x0: P.inv(laneX, 0)[0], x1: t, dash: '4 4', w: 1.5 });
+    dot(P, t, h, 'var(--pt)', { r: 8 });
+    mk('circle', { cx: laneX, cy: P.Y(h) - 9, r: 9, style: 'fill:var(--pt);stroke:var(--bg);stroke-width:2' }, P.m);
+    txt(P.top, P.X(t) + 12, P.Y(h) + 18, `h(${num(t, 1)}) = ${num(h, 1)}`, 'labS', { style: 'fill:var(--pt)' });
+  } else mk('circle', { cx: laneX, cy: P.Y(BL.h0) - 9, r: 9, style: 'fill:var(--pt);stroke:var(--bg);stroke-width:2' }, P.m);
+  $('bOut').innerHTML = `Rule: <b>h(t) = ${[BL.h0 ? num(BL.h0) : '', BL.v ? num(BL.v) + 't' : ''].filter(Boolean).join(' + ')} − 5t²</b>. ` +
+    `<b>Domain</b> (the times that make sense): <span class="ki">0 ≤ t ≤ ${num(T, 2)}</span> seconds, from the throw until it lands. ` +
+    `<b>Range</b> (the heights it reaches): <span class="ko">0 ≤ h ≤ ${num(hp, 2)}</span> metres. ` +
+    `<b>Zero:</b> h(t) = 0 at <span class="kn">t ≈ ${num(T, 2)}</span>, the moment it hits the ground. The formula would happily give h(${num(Math.ceil(T + 0.4))}) = ${num(bH(Math.ceil(T + 0.4)), 1)}, a height below ground, so the situation, not the formula, sets the domain.` +
+    (BL.v > 0 ? ` It is <b>increasing</b> until t = ${num(tp, 2)} (rising) and <b>decreasing</b> after (falling); the <b>maximum</b> is the peak.` : ' It is decreasing the whole time; the maximum is the starting height.');
+  $('bV').value = String(BL.v); $('bH').value = String(BL.h0);
+}
+function bStop(){ if (BL.anim){ cancelAnimationFrame(BL.anim); BL.anim = null; } $('bPlay').textContent = 'Play'; }
+const bMark = buttons('bPresets', bPresets, i => { bStop(); BL.v = bPresets[i].v; BL.h0 = bPresets[i].h; BL.t = null; bMark(i); $('bDesc').textContent = bPresets[i].d; $('bErr').textContent = ''; bDraw(); });
+$('bLoad').onclick = () => {
+  const v = parseNum($('bV').value), h = parseNum($('bH').value);
+  if (isNaN(v) || isNaN(h) || $('bV').value.trim() === '' || $('bH').value.trim() === ''){ $('bErr').textContent = 'Fill in both boxes with numbers.'; return; }
+  if (v < 0 || v > 40 || h < 0 || h > 100){ $('bErr').textContent = 'Use a speed from 0 to 40 m/s and a height from 0 to 100 m.'; return; }
+  if (v === 0 && h === 0){ $('bErr').textContent = 'With no speed and no height the ball never leaves the ground. Give it one or the other.'; return; }
+  $('bErr').textContent = ''; bStop(); BL.v = v; BL.h0 = h; BL.t = null; bMark(-1); $('bDesc').textContent = 'Your own throw.'; bDraw();
+};
+$('bPlay').onclick = () => {
+  if (BL.anim){ bStop(); return; }
+  $('bPlay').textContent = 'Pause';
+  const T = bLand(), start = BL.t === null || BL.t >= T ? 0 : BL.t, t0 = performance.now();
+  const step = now => { BL.t = Math.min(T, start + (now - t0) / 1000); bDraw(); if (BL.t < T) BL.anim = requestAnimationFrame(step); else bStop(); };
+  BL.anim = requestAnimationFrame(step);
+};
+$('bReset').onclick = () => { bStop(); BL.t = null; bDraw(); };
+
+/* =====================================================================
+   8. STEP FUNCTIONS (taxi, parking, and a broken version)
+   ===================================================================== */
+const xPresets = [
+  { n: 'Taxi fare', unit: 'Miles', xT: 'distance (miles)', f: d => 3 + 2 * Math.ceil(d), max: 6, y1: 18, start: 2, broken: false,
+    d: '$3 to get in, plus $2 for every mile started. 0.2 miles and 1 mile cost the same; 1.01 miles starts a new mile.' },
+  { n: 'Parking garage', unit: 'Hours', xT: 'time parked (hours)', f: d => Math.min(15, 4 + 3 * (Math.ceil(d) - 1)), max: 8, y1: 18, start: 3, broken: false,
+    d: '$4 for the first hour, $3 for each hour started after that, but never more than $15 a day. The steps stop climbing at the cap.' },
+  { n: 'Broken: both ends filled', unit: 'Miles', xT: 'distance (miles)', f: d => 3 + 2 * Math.ceil(d), max: 6, y1: 18, start: 2, broken: true,
+    d: 'The taxi graph drawn carelessly, with filled dots at both ends of every step. Put the line on a whole number of miles.' },
+];
+const X = { pi: 0, d: 2 };
+let XP = null;
+function xDraw(){
+  const p = xPresets[X.pi], d = X.d;
+  const P = XP = axes($('xSvg'), 960, 380, { x0: 0, x1: p.max + 0.4, y0: 0, y1: p.y1 }, { xt: 1, xg: 0.5, yt: 2, yg: 1, fy: v => '$' + v, xT: p.xT, yT: 'price', zeroX: true });
+  const vals = [];                                           // all the step segments
+  for (let n = 1; n <= p.max; n++){
+    const y = p.f(n - 0.5);
+    mk('line', { x1: P.X(n - 1), y1: P.Y(y), x2: P.X(n), y2: P.Y(y), style: 'stroke:var(--pt);stroke-width:3.5' }, P.m);
+    dot(P, n - 1, y, 'var(--pt)', { open: !p.broken, r: 6 });
+    dot(P, n, y, 'var(--pt)', { r: 6 });
+  }
+  // vertical line at the chosen input: find every price the graph shows there
+  let prices = [];
+  if (d > 0){
+    prices.push(p.f(d));
+    if (p.broken && Number.isInteger(d) && d < p.max) prices.push(p.f(d + 0.5));
+    prices = [...new Set(prices)];
+  }
+  const two = prices.length > 1;
+  const col = two ? 'var(--no)' : d > 0 ? 'var(--yes)' : 'var(--muted)';
+  vline(P, d, col, { w: 3 });
+  prices.forEach(y => mk('circle', { cx: P.X(d), cy: P.Y(y), r: 11, style: `fill:none;stroke:${col};stroke-width:2.5` }, P.m));
+  prices.forEach((y, i) => txt(P.top, P.X(d) + 14, P.Y(y) + (i ? 16 : -8), '$' + num(y), 'lab', { style: `fill:${col}` }));
+  const unit = p.unit.toLowerCase();
+  $('xVerdict').className = 'verdict ' + (p.broken ? 'bad' : 'ok');
+  $('xVerdict').textContent = p.broken ? '✕ Not a function: at each whole number the graph shows two prices' : '✓ A function: every input has exactly one price';
+  let s;
+  if (d <= 0) s = `At 0 ${unit} there is no ride and no fare: 0 is not in the domain (the open dot at the start).`;
+  else if (two) s = `At exactly <span class="ki">${num(d)} ${unit}</span> the line meets <b class="kn">two filled dots</b>: $${num(prices[0])} and $${num(prices[1])}. Which do you pay? The graph can’t say, so this isn’t a function. The fix is an open dot at one end of every step.`;
+  else {
+    s = `<span class="ki">${num(d)} ${unit}</span> → <span class="ko">$${num(prices[0])}</span>.`;
+    if (Number.isInteger(d) && d < p.max && !p.broken) s += ` Exactly ${num(d)} is the filled dot at the end of a step, so it’s still $${num(prices[0])}; the open dot just above means $${num(p.f(d + 0.01))} starts the moment you go past ${num(d)}.`;
+    else s += ` Every input on this flat step gives the same output (many-to-one), which is allowed.`;
+  }
+  $('xOut').innerHTML = s;
+  $('xD').value = num(d).replace('−', '-'); $('xLab').textContent = p.unit;
+}
+const xMark = buttons('xPresets', xPresets, i => { X.pi = i; X.d = xPresets[i].start; xMark(i); $('xDesc').textContent = xPresets[i].d; $('xErr').textContent = ''; xDraw(); });
+$('xD').addEventListener('change', () => { const v = parseNum($('xD').value), p = xPresets[X.pi]; if (isNaN(v)){ $('xErr').textContent = 'Type a number.'; return; } if (v < 0 || v > p.max){ $('xErr').textContent = `Use a number from 0 to ${p.max}.`; return; } $('xErr').textContent = ''; X.d = v; xDraw(); });
+(function(){
+  const svg = $('xSvg'); let drag = false;
+  const set = ev => { const q = svgPt(svg, ev), p = xPresets[X.pi]; let v = XP.inv(q.x, q.y)[0]; v = Math.round(v * 20) / 20; if (Math.abs(v - Math.round(v)) < 0.06) v = Math.round(v); X.d = clamp(v, 0, p.max); xDraw(); };
+  svg.addEventListener('pointerdown', ev => { drag = true; svg.setPointerCapture(ev.pointerId); set(ev); });
+  svg.addEventListener('pointermove', ev => { if (drag) set(ev); });
+  svg.addEventListener('pointerup', () => drag = false);
+})();
+
+/* =====================================================================
+   9. TRAPS (static pictures)
+   ===================================================================== */
+arrowDiagram($('tr1'), 300, 220, [[-2, 4], [2, 4], [0, 0]], { top: 30, bottom: 8 });
+arrowDiagram($('tr2'), 300, 220, [[4, -2], [4, 2], [0, 0]], { top: 30, bottom: 8 });
+(function(){
+  const P = axes($('tr3'), 300, 220, { x0: -1, x1: 4, y0: -1, y1: 11 }, { padL: 26, padB: 20, padT: 8, padR: 8, xt: 1, yt: 2, xg: 1, yg: 1 });
+  mk('path', { d: dPath(P, sample(x => x * x, -1, 4, 100)[0]), style: 'fill:none;stroke:var(--pt-soft);stroke-width:3' }, P.cg);
+  dot(P, 2, 4, 'var(--pt)'); dot(P, 3, 9, 'var(--yes)'); dot(P, 2, 5, 'var(--no)', { open: true });
+  txt(P.top, P.X(3) - 8, P.Y(9) + 4, 'f(3) = 9', 'labS', { 'text-anchor': 'end', style: 'fill:var(--yes)' });
+  txt(P.top, P.X(2) - 9, P.Y(5) + 2, 'f(2)+1 = 5', 'labS', { 'text-anchor': 'end', style: 'fill:var(--no)' });
+  txt(P.top, P.X(2) + 9, P.Y(4) + 14, 'f(2) = 4', 'labS', { style: 'fill:var(--pt)' });
+})();
+
+/* =====================================================================
+   10. QUIZ
+   ===================================================================== */
+const Q = { right: 0, total: 0 };
+let qq = null;
+const qTitles = { isfn: 'Is it a function?', eval: 'Evaluate', dom: 'Domain and range', read: 'Read the graph' };
+function qReset(){
+  $('qVis').innerHTML = ''; $('qChoice').innerHTML = ''; $('qFb').className = 'feedback'; $('qFb').innerHTML = ''; $('qErr').textContent = ''; $('q1').value = '';
+}
+function qScore(ok){ if (qq.counted) return; qq.counted = true; Q.total++; if (ok) Q.right++; $('score').textContent = `Score: ${Q.right} / ${Q.total}`; }
+function qFeedback(ok, html){ $('qFb').className = 'feedback ' + (ok ? 'ok' : 'bad'); $('qFb').innerHTML = html; }
+function qChoices(list, correct, explain){                    // multiple-choice buttons
+  $('qIn').style.display = 'none'; $('qChoice').innerHTML = '';
+  list.forEach(c => {
+    const b = document.createElement('button'); b.textContent = c;
+    b.onclick = () => {
+      const ok = c === correct; qScore(ok);
+      [...$('qChoice').children].forEach(x => { x.classList.remove('right', 'wrong'); if (x.textContent === b.textContent) x.classList.add(ok ? 'right' : 'wrong'); });
+      qFeedback(ok, (ok ? '<b>Right.</b> ' : '<b>Not quite.</b> ') + explain(c));
+      if (qq.reveal) qq.reveal();
+    };
+    $('qChoice').appendChild(b);
+  });
+}
+function qSvg(W, H){ const s = document.createElementNS(NS, 'svg'); s.setAttribute('viewBox', `0 0 ${W} ${H}`); $('qVis').appendChild(s); return s; }
+const shuffle = a => { for (let i = a.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const ineq = (a, c, ca, cc, v) => `${num(a)} ${ca ? '≤' : '<'} ${v} ${cc ? '≤' : '<'} ${num(c)}`;
+
+// ---- type 1: is it a function? ----
+function qIsFn(){
+  const rep = pick(['table', 'arrows', 'graph']);
+  qq.rep = rep;
+  if (rep !== 'graph'){
+    const xs = shuffle([-3, -2, -1, 0, 1, 2, 3, 4]).slice(0, ri(4, 5)).sort((a, b) => a - b);
+    const pairs = xs.map(x => [x, ri(-3, 5)]);
+    const isF = Math.random() < 0.5;
+    if (isF && Math.random() < 0.6) pairs[pairs.length - 1][1] = pairs[0][1];          // a shared output, the classic trap
+    if (!isF){ const k = ri(0, pairs.length - 1); let y; do { y = ri(-3, 5); } while (y === pairs[k][1]); pairs.push([pairs[k][0], y]); }
+    qq.pairs = pairs; qq.isF = isF;
+    const g = byInput(pairs), bad = [...g.values()].find(e => e.ys.length > 1);
+    const shared = (() => { const m = {}; for (const [x, y] of pairs){ (m[y] = m[y] || []).push(x); } const k = Object.keys(m).find(k => new Set(m[k]).size > 1); return k !== undefined ? [m[k], +k] : null; })();
+    if (rep === 'table'){
+      const rows = shuffle(pairs.slice());
+      $('qText').innerHTML = 'Does this table describe <i>y</i> as a function of <i>x</i>?';
+      $('qVis').innerHTML = `<table class="qtab"><tr><th class="ki">x</th><th class="ko">y</th></tr>${rows.map(p => `<tr data-x="${p[0]}"><td>${num(p[0])}</td><td>${num(p[1])}</td></tr>`).join('')}</table>`;
+      qq.reveal = () => { if (bad) [...$('qVis').querySelectorAll('tr')].forEach(r => { if (r.dataset.x === String(bad.x)) r.classList.add('badrow'); }); };
+    } else {
+      $('qText').innerHTML = 'Is the rule in this arrow diagram a function?';
+      arrowDiagram(qSvg(520, 330), 520, 330, pairs, {});
+      qq.reveal = null;
+    }
+    qq.why = isF ? `Each input has exactly one output.${shared ? ` Inputs ${(a => a.length > 2 ? a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1] : a.join(' and '))([...new Set(shared[0])].map(v => num(v)))} share the output ${num(shared[1])}, which is allowed.` : ''}`
+                 : `Input ${num(bad.x)} has two outputs, ${bad.ys.map(v => num(v)).join(' and ')}.`;
+  } else {
+    const shapes = [
+      { f: true, n: 'parabola', poly: () => sample(x => 0.5 * (x - 1) * (x - 1) - 3, -6, 6, 200) },
+      { f: true, n: 'line', poly: () => [[[-6, -4], [6, 4]]] },
+      { f: true, n: 'wave', poly: () => sample(x => x * x * x / 12 - x, -6, 6, 200) },
+      { f: true, n: 'V', poly: () => [[[-6, 4], [0, -2], [6, 4]]] },
+      { f: false, n: 'circle', poly: () => { const p = []; for (let k = 0; k <= 120; k++){ const a = 2 * Math.PI * k / 120; p.push([1 + 3.5 * Math.cos(a), 1 + 3.5 * Math.sin(a)]); } return [p]; }, bx: 1 },
+      { f: false, n: 'sideways parabola', poly: () => [sample(y => 0.5 * y * y - 3, -4.5, 4.5, 120)[0].map(p => [p[1], p[0]])], bx: 0 },
+      { f: false, n: 'sideways S', poly: () => [sample(y => y * y * y / 12 - y, -6, 6, 200)[0].map(p => [p[1], p[0]])], bx: 0.5 },
+      { f: false, n: 'vertical segment', poly: () => [[[2, -4], [2, 4]]], bx: 2 },
+    ];
+    const sh = pick(shapes); qq.isF = sh.f;
+    $('qText').innerHTML = 'Is this graph the graph of a function?';
+    const svg = qSvg(520, 360);
+    const P = axes(svg, 520, 360, { x0: -6, x1: 6, y0: -6, y1: 6 }, { xt: 2, yt: 2, xg: 1, yg: 1, padL: 30, padB: 24 });
+    sh.poly().forEach(poly => mk('path', { d: dPath(P, poly), style: 'fill:none;stroke:var(--pt);stroke-width:3.5' }, P.cg));
+    qq.reveal = () => { if (!sh.f){ vline(P, sh.bx, 'var(--no)', { w: 3 }); } else [-4, -1, 2, 5].forEach(x => vline(P, x, 'var(--yes)', { w: 1.5, dash: '5 5' })); };
+    qq.why = sh.f ? `Every vertical line crosses this ${sh.n} at most once (try a few: they each hit once).` : `The vertical line at x = ${num(sh.bx)} crosses the ${sh.n} ${sh.n === 'vertical segment' ? 'at infinitely many points' : 'more than once'}, so one input has several outputs.`;
+  }
+  qChoices(['Function', 'Not a function'], qq.isF ? 'Function' : 'Not a function', c => {
+    if (c === 'Not a function' && qq.isF && qq.rep !== 'graph' && /share/.test(qq.why)) return qq.why + ' A function may send two inputs to the same output; it just can’t send one input to two.';
+    return qq.why;
+  });
+}
+
+// ---- type 2: evaluate ----
+function qEval(){
+  const kind = pick(['lin', 'quad', 'negsq', 'quad2']);
+  let rule, f, steps;
+  if (kind === 'lin'){ const a = pick([2, 3, 4, 5, -2, -3]), b = pick([-7, -5, -3, -1, 1, 2, 4, 6]); rule = `${a === -1 ? '−' : num(a)}x ${b < 0 ? '−' : '+'} ${Math.abs(b)}`; f = x => a * x + b; steps = x => `${num(a)}·${pn(x)} ${b < 0 ? '−' : '+'} ${Math.abs(b)} = ${num(a * x)} ${b < 0 ? '−' : '+'} ${Math.abs(b)}`; }
+  else if (kind === 'quad'){ const b = pick([-4, -3, -2, 2, 3]), c = pick([-5, -2, 1, 3, 4]); rule = `x² ${b < 0 ? '−' : '+'} ${Math.abs(b)}x ${c < 0 ? '−' : '+'} ${Math.abs(c)}`; f = x => x * x + b * x + c; steps = x => `${pn(x)}² ${b < 0 ? '−' : '+'} ${Math.abs(b)}·${pn(x)} ${c < 0 ? '−' : '+'} ${Math.abs(c)} = ${num(x * x)} ${b * x < 0 ? '−' : '+'} ${num(Math.abs(b * x))} ${c < 0 ? '−' : '+'} ${Math.abs(c)}`; }
+  else if (kind === 'negsq'){ const c = pick([5, 8, 10, 12]); rule = `${c} − x²`; f = x => c - x * x; steps = x => `${c} − ${pn(x)}² = ${c} − ${num(x * x)}`; qq.c = c; }
+  else { const h = pick([1, 2, -1]); rule = `(x ${h < 0 ? '+' : '−'} ${Math.abs(h)})²`; f = x => (x - h) * (x - h); steps = x => `(${num(x)} ${h < 0 ? '+' : '−'} ${Math.abs(h)})² = ${pn(x - h)}²`; }
+  const nm = pick(['f', 'g', 'h']), ask = Math.random() < 0.35 ? 'plus' : 'num';
+  const n = ask === 'num' ? pick([-4, -3, -2, -1, 2, 3, 4, -3, -2]) : pick([-3, -2, 1, 2, 3]);
+  const input = ask === 'num' ? n : n + 1, ans = f(input);
+  qq.kind = kind; qq.ans = ans; qq.f = f; qq.n = n; qq.ask = ask; qq.nm = nm;
+  qq.explain = `${nm}(${num(input)}) = ${steps(input)} = ${num(ans)}.`;
+  $('qText').innerHTML = ask === 'num' ? `<i>${nm}</i>(<i>x</i>) = ${rule.replace(/x/g, '<i>x</i>')}. Find <b><i>${nm}</i>(${num(n)})</b>.`
+    : `<i>${nm}</i>(<i>x</i>) = ${rule.replace(/x/g, '<i>x</i>')} and <i>a</i> = ${num(n)}. Find <b><i>${nm}</i>(<i>a</i> + 1)</b>.`;
+  $('qLab').innerHTML = ask === 'num' ? `${nm}(${num(n)}) =` : `${nm}(a + 1) =`;
+  $('qIn').style.display = '';
+}
+function qEvalCheck(v){
+  const ok = Math.abs(v - qq.ans) < 1e-6;
+  let why = qq.explain;
+  if (!ok){
+    if (qq.ask === 'plus' && Math.abs(v - (qq.f(qq.n) + 1)) < 1e-6) why = `That’s ${qq.nm}(a) + 1: you evaluated at a and then added 1. ${qq.nm}(a + 1) means put a + 1 = ${num(qq.n + 1)} in first. ` + why;
+    else if (qq.kind === 'negsq' && Math.abs(v - (qq.c + qq.n * qq.n)) < 1e-6 && qq.ask === 'num') why = `−x² means −(x²): square first, then subtract. ${pn(qq.n)}² = ${num(qq.n * qq.n)}, which is taken away. ` + why;
+    else if (qq.ask === 'num' && qq.n < 0 && Math.abs(v - qq.f(-qq.n)) < 1e-6) why = `You used ${num(-qq.n)} instead of ${num(qq.n)}: keep the minus sign, inside brackets. ` + why;
+    else why = 'Substitute the input, in brackets, for every x. ' + why;
+  }
+  return [ok, why];
+}
+
+// ---- type 3: domain and range ----
+function qDom(){
+  if (Math.random() < 0.5){                                    // from a formula
+    const k = ri(-3, 4), ks = k < 0 ? `+ ${-k}` : `− ${k}`, kind = pick(['div', 'root', 'root2', 'poly']);
+    const ex = { div: `1 / (x ${ks})`, root: `√(x ${ks})`, root2: `√(${k} − x)`, poly: `x² ${ks}` }[kind];
+    let list, correct;
+    if (kind === 'root2'){ list = [`x ≤ ${num(k)}`, `x < ${num(k)}`, `x ≥ ${num(k)}`, 'all real numbers']; correct = list[0]; }
+    else { list = [`x ≥ ${num(k)}`, `x > ${num(k)}`, `x ≠ ${num(k)}`, 'all real numbers']; correct = { div: list[2], root: list[0], poly: list[3] }[kind]; }
+    $('qText').innerHTML = `What is the domain of <i>f</i>(<i>x</i>) = ${ex.replace(/x/g, '<i>x</i>')}?`;
+    qq.reveal = null;
+    qChoices(list, correct, c => {
+      const base = { div: `Only x = ${num(k)} is a problem: it makes the bottom x ${ks} equal 0, and you can’t divide by 0. Every other x is fine.`,
+        root: `The part under the root, x ${ks}, must be 0 or more, so x ≥ ${num(k)}. x = ${num(k)} itself is fine: √0 = 0.`,
+        root2: `The part under the root, ${k} − x, must be 0 or more, so x ≤ ${num(k)}. Try x = ${num(k + 1)}: ${k} − ${pn(k + 1)} = −1, which has no real square root.`,
+        poly: 'Any number can be squared and shifted: there is no division and no square root, so every real x is allowed.' }[kind];
+      if (c === correct) return base;
+      if (/>|</.test(c) && !/≤|≥/.test(c) && kind !== 'div') return `Too strict: x = ${num(k)} gives √0 = 0, which is allowed. ` + base;
+      if (c.includes('≠') && kind !== 'div') return 'x ≠ k is the rule for dividing by zero; here the issue is a square root of a negative. ' + base;
+      return base;
+    });
+  } else {                                                      // from a graph
+    let xa, xm, xb; do { xa = ri(-5, -1); xb = ri(1, 5); } while (xb - xa < 4); xm = ri(xa + 1, xb - 1);
+    let ya, ym, yb; do { ya = ri(-3, 5); ym = ri(-4, 5); yb = ri(-3, 5); } while (ya === ym && ym === yb);
+    const ca = Math.random() < 0.5, cb = Math.random() < 0.5;
+    const pts = [[xa, ya], [xm, ym], [xb, yb]], ask = pick(['domain', 'range']);
+    const svg = qSvg(520, 360), P = axes(svg, 520, 360, { x0: -6, x1: 6, y0: -6, y1: 6 }, { xt: 1, yt: 1, xg: 1, yg: 1, padL: 30, padB: 24 });
+    mk('path', { d: dPath(P, pts), style: 'fill:none;stroke:var(--pt);stroke-width:3.5' }, P.m);
+    dot(P, xa, ya, 'var(--pt)', { open: !ca }); dot(P, xb, yb, 'var(--pt)', { open: !cb });
+    // range: min and max over the three corners; an extreme is left out only if it happens only at an open end
+    const ext = (cmp) => { const v = cmp(ya, ym, yb); const at = pts.map((p, i) => p[1] === v ? i : -1).filter(i => i >= 0); const incl = at.some(i => i === 1 || (i === 0 && ca) || (i === 2 && cb)); return [v, incl]; };
+    const [lo, lc] = ext(Math.min), [hi, hc] = ext(Math.max);
+    let correct, list;
+    if (ask === 'domain'){
+      correct = ineq(xa, xb, ca, cb, 'x');
+      list = [correct, ineq(xa, xb, !ca, !cb, 'x'), ineq(xa, xb, true, true, 'x'), ineq(lo, hi, true, true, 'x')];
+      qq.reveal = () => dBand(P, [[xa, xb, ca, cb]], 'x', 'var(--in)', P.b);
+    } else {
+      correct = lo === hi ? `y = ${num(lo)}` : ineq(lo, hi, lc, hc, 'y');
+      list = [correct, ineq(lo, hi, !lc, !hc, 'y'), ineq(Math.min(ya, yb), Math.max(ya, yb), true, true, 'y'), ineq(xa, xb, ca, cb, 'y')];
+      qq.reveal = () => dBand(P, [[lo, hi, lc, hc]], 'y', 'var(--out)', P.b);
+    }
+    list = shuffle([...new Set(list)]);
+    while (list.length < 4){ const extra = ineq(xa - 1, xb + 1, true, true, ask === 'domain' ? 'x' : 'y'); if (list.includes(extra)) break; list.push(extra); }
+    $('qText').innerHTML = `What is the <b>${ask}</b> of the function graphed below? (Filled dot: included. Open dot: left out.)`;
+    qChoices(list, correct, c => {
+      const base = ask === 'domain' ? `Squash the graph straight down: it covers x from ${num(xa)} (${ca ? 'filled, included' : 'open, left out'}) to ${num(xb)} (${cb ? 'filled, included' : 'open, left out'}), so ${correct}.`
+        : `Squash it sideways onto the y-axis: the lowest height is ${num(lo)} and the highest is ${num(hi)}, so ${correct}.${(!lc || !hc) ? ' An extreme that only happens at an open dot is left out.' : ''}`;
+      if (c === correct) return base;
+      if (ask === 'range' && c === list.find(s => s === ineq(xa, xb, ca, cb, 'y'))) return 'Those are the x-values (the domain). The range is about heights. ' + base;
+      if (ask === 'domain' && c === ineq(lo, hi, true, true, 'x')) return 'Those are the heights (the range). The domain is about how far across the graph reaches. ' + base;
+      if (ask === 'range' && c === ineq(Math.min(ya, yb), Math.max(ya, yb), true, true, 'y')) return 'The ends aren’t always the highest and lowest points: check the corner in the middle. ' + base;
+      return 'Check which ends have open dots. ' + base;
+    });
+  }
+}
+
+// ---- type 4: read the graph ----
+function qRead(){
+  const svg = qSvg(520, 380), P = axes(svg, 520, 380, { x0: -6, x1: 6, y0: -6, y1: 7 }, { xt: 1, yt: 1, xg: 1, yg: 1, padL: 30, padB: 24 });
+  const nm = 'f';
+  if (Math.random() < 0.5){                                   // f(c) from a zig-zag through whole-number corners
+    const par = ri(0, 1), xs = [-6, -4, -2, 0, 2, 4, 6];
+    const ys = xs.map(() => { let y; do { y = ri(-5, 6); } while (Math.abs(y % 2) !== par); return y; });
+    const f = x => { const i = Math.min(5, Math.floor((x + 6) / 2)); return ys[i] + (ys[i + 1] - ys[i]) * (x - xs[i]) / 2; };
+    mk('path', { d: dPath(P, xs.map((x, i) => [x, ys[i]])), style: 'fill:none;stroke:var(--pt);stroke-width:3.5' }, P.cg);
+    let c; do { c = ri(-5, 5); } while (c === 0 || Math.abs(f(c)) > 6);
+    qq.mode = 'val'; qq.ans = f(c); qq.c = c; qq.fy = f;
+    $('qText').innerHTML = `The graph of <i>f</i> is shown. What is <b><i>f</i>(${num(c)})</b>?`;
+    $('qLab').innerHTML = `f(${num(c)}) =`;
+    qq.reveal = () => { vline(P, c, 'var(--in)', { y0: 0, y1: qq.ans, dash: '6 5' }); hline(P, qq.ans, 'var(--out)', { x0: 0, x1: c, dash: '6 5' }); dot(P, c, qq.ans, 'var(--pt)', { r: 7 }); };
+    // which x-values have f(x) = c? used to spot the "read it backwards" mistake
+    qq.back = []; for (let x = -6; x <= 6; x++) if (Math.abs(f(x) - c) < 1e-9) qq.back.push(x);
+  } else {                                                    // all x with f(x) = k on a parabola with a whole-number vertex
+    const a = pick([1, -1]), h = ri(-2, 2), v = a > 0 ? ri(-5, -2) : ri(2, 5);
+    const f = x => a * (x - h) * (x - h) + v;
+    mk('path', { d: dPath(P, sample(f, -6, 6, 300)[0]), style: 'fill:none;stroke:var(--pt);stroke-width:3.5' }, P.cg);
+    const r = Math.random(), d = pick([1, 2, 3].filter(d => { const kk = v + a * d * d; return kk >= -5 && kk <= 6; }));
+    let k, sol;
+    if (r < 0.15){ k = v; sol = [h]; }
+    else if (r < 0.27){ k = v - a; sol = []; }
+    else { k = v + a * d * d; sol = [h - d, h + d]; }
+    qq.mode = 'solve'; qq.sol = sol; qq.k = k;
+    $('qText').innerHTML = `The graph of <i>f</i> is shown. Find <b>every</b> <i>x</i> with <b><i>f</i>(<i>x</i>) = ${num(k)}</b>. Separate answers with commas, or type “none”.`;
+    $('qLab').innerHTML = 'x =';
+    qq.reveal = () => { hline(P, k, 'var(--out)', { w: 2 }); sol.forEach(x => { dot(P, x, k, 'var(--out)', { r: 7 }); vline(P, x, 'var(--in)', { y0: 0, y1: k, dash: '5 5', w: 1.5 }); }); };
+  }
+  $('qIn').style.display = '';
+}
+function qReadCheck(raw){
+  if (qq.mode === 'val'){
+    const v = parseNum(raw); if (isNaN(v)) return null;
+    const ok = Math.abs(v - qq.ans) < 1e-6;
+    let why = `Go across to x = ${num(qq.c)}, then up (or down) to the graph: the height there is ${num(qq.ans)}.`;
+    if (!ok && qq.back.includes(v)) why = `That’s an x where the height is ${num(qq.c)}: you read the graph backwards. f(${num(qq.c)}) means start at x = ${num(qq.c)} and read the height. ` + why;
+    else if (!ok && Math.abs(v - qq.c) < 1e-9) why = `${num(qq.c)} is the input. The answer is the output: the graph’s height above x = ${num(qq.c)}. ` + why;
+    return [ok, why];
+  }
+  const s = raw.trim().toLowerCase();
+  let got;
+  if (/^(none|no|no solution|no solutions|nothing|∅|\{\})$/.test(s)) got = [];
+  else { const parts = s.replace(/\band\b/g, ',').split(/[,;]+|\s+/).filter(Boolean).map(parseNum); if (!parts.length || parts.some(isNaN)) return null; got = [...new Set(parts)].sort((a, b) => a - b); }
+  const want = qq.sol.slice().sort((a, b) => a - b);
+  const ok = got.length === want.length && got.every((v, i) => Math.abs(v - want[i]) < 1e-6);
+  const list = want.length ? want.map(v => num(v)).join(' and ') : 'nowhere';
+  let why = want.length ? `Draw a horizontal line at height ${num(qq.k)}: it meets the graph at x = ${list}.` : `A horizontal line at height ${num(qq.k)} misses the graph completely, so there is no such x.`;
+  if (!ok){
+    if (got.length && got.every(v => want.some(w => Math.abs(v - w) < 1e-6)) && got.length < want.length) why = `You found ${got.length} of the ${want.length} answers. A parabola usually meets a horizontal line twice. ` + why;
+    else if (!want.length && got.length) why = 'Check the height: the graph never reaches it. ' + why;
+    else if (want.length && !got.length) why = 'The line does meet the graph. ' + why;
+  }
+  return [ok, why];
+}
+
+// ---- quiz plumbing ----
+let lastType = null;
+function qNew(){
+  qReset();
+  let t; do { t = pick(['isfn', 'eval', 'dom', 'read']); } while (t === lastType);
+  lastType = t; qq = { type: t, counted: false, reveal: null };
+  $('qTitle').textContent = qTitles[t];
+  $('qLab').textContent = 'Answer'; $('q1').setAttribute('inputmode', t === 'read' ? 'text' : 'decimal');
+  ({ isfn: qIsFn, eval: qEval, dom: qDom, read: qRead })[t]();
+}
+$('qCheck').onclick = () => {
+  const raw = $('q1').value;
+  if (raw.trim() === ''){ $('qErr').textContent = 'Type an answer first.'; return; }
+  let r;
+  if (qq.type === 'eval'){ const v = parseNum(raw); if (isNaN(v)){ $('qErr').textContent = 'Type a number, like −7 or 5/2.'; return; } r = qEvalCheck(v); }
+  else { r = qReadCheck(raw); if (!r){ $('qErr').textContent = qq.mode === 'val' ? 'Type a number.' : 'Type numbers separated by commas (like −1, 3), or “none”.'; return; } }
+  $('qErr').textContent = '';
+  qScore(r[0]); qFeedback(r[0], (r[0] ? '<b>Right.</b> ' : '<b>Not quite.</b> ') + r[1]);
+  if (r[0] && qq.reveal) qq.reveal();
+};
+$('q1').addEventListener('keydown', e => { if (e.key === 'Enter') $('qCheck').click(); });
+$('q1').addEventListener('input', () => $('qErr').textContent = '');
+$('qShow').onclick = () => {
+  qScore(false);
+  let s = '';
+  if (qq.type === 'isfn') s = `<b>${qq.isF ? 'Function' : 'Not a function'}.</b> ${qq.why}`;
+  else if (qq.type === 'eval') s = `<b>${num(qq.ans)}.</b> ${qq.explain}`;
+  else if (qq.type === 'read') s = qq.mode === 'val' ? `<b>${num(qq.ans)}.</b> ${qReadCheck(String(qq.ans))[1]}` : `<b>${qq.sol.length ? qq.sol.map(v => num(v)).join(', ') : 'none'}.</b> ${qReadCheck(qq.sol.length ? qq.sol.join(',') : 'none')[1]}`;
+  if (qq.type === 'dom' || qq.type === 'isfn'){                // mark the right button
+    const right = [...$('qChoice').children].find(b => b.textContent === qq.correctChoice);
+    if (right) right.classList.add('right');
+    if (qq.type === 'dom') s = `<b>${qq.correctChoice}.</b> ${qq.explainFn(qq.correctChoice)}`;
+  }
+  qFeedback(false, s);
+  if (qq.reveal) qq.reveal();
+};
+$('qNew').onclick = qNew;
+// remember the right choice and its explanation, so Show answer can use them
+const _qChoices = qChoices;
+qChoices = function(list, correct, explain){ qq.correctChoice = correct; qq.explainFn = explain; _qChoices(list, correct, explain); };
+
+/* =====================================================================
+   11. START
+   ===================================================================== */
+selectOnFocus(['mPairs', 'mC', 'eX', 'eA', 'dX', 'tH', 'tL', 'bV', 'bH', 'xD', 'q1']);
+$('vPresets').children[0].click();
+$('mPresets').children[0].click();
+$('ePresets').children[1].click(); $('eX').value = '-2'; $('eA').value = '2';
+$('dPresets').children[0].click();
+$('tPresets').children[0].click();
+$('bPresets').children[0].click();
+$('xPresets').children[0].click();
+qNew();
+</script>
+</body></html>
