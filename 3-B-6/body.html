@@ -1,0 +1,560 @@
+<style>
+/* ===================== Page-specific styles (3.B.6) ===================== */
+/* equation 1 = blue, equation 2 = orange, the solution point = purple, the combined (eliminated) equation = green */
+:root{ --e1:#2F6FDB; --e2:#D85A30; --pt:#7F77DD; --ok2:#1D9E75; --soft:#AFA9EC; }
+@media (prefers-color-scheme:dark){ :root{ --e1:#6EA2F5; --e2:#F0997B; --pt:#AFA9EC; --ok2:#5DCAA5; --soft:#6F67C9; } }
+.k1{color:var(--e1);font-weight:700}.k2{color:var(--e2);font-weight:700}.kp{color:var(--pt);font-weight:700}.kg{color:var(--ok2);font-weight:700}
+.field.f1 input{border-color:var(--e1)}.field.f2 input{border-color:var(--e2)}.field.fp input{border-color:var(--pt)}.field.sm input{width:66px}
+.eqin{display:flex;align-items:flex-end;gap:6px;font:600 18px var(--mono)}
+.eqin .op{padding-bottom:10px}
+.eqrow{display:flex;flex-direction:column;gap:10px}
+.split{display:grid;grid-template-columns:57% 43%;gap:0;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--paper)}
+.split svg{display:block;width:100%;height:auto;border:none;border-radius:0}
+.split > div{border-left:1px solid var(--line);padding:14px 16px;background:var(--bg)}
+.mtabs{display:flex;gap:6px;margin-bottom:10px}
+.msteps{margin:0;padding:0;list-style:none}
+.msteps li{padding:7px 0;border-bottom:1px dashed var(--line)}
+.msteps li .w{display:block;font:13.5px var(--sans);color:var(--muted)}
+.msteps li .e{font:600 16px var(--mono)}
+.verdict{margin-top:10px;padding:10px 12px;border-radius:10px;font-weight:600}
+.verdict.y{background:var(--ok-bg);color:var(--ok)}.verdict.n{background:var(--bad-bg);color:var(--bad)}.verdict.i{background:var(--accent-bg);color:var(--accent)}
+.sys{display:inline-flex;flex-direction:column;gap:2px;padding:4px 12px;border-left:3px solid var(--ink);border-radius:3px;font:600 17px var(--mono);vertical-align:middle}
+table.lists{border-collapse:collapse;margin:10px 0 14px;font:15px var(--sans)}
+table.lists th,table.lists td{border:1px solid var(--line);padding:6px 14px;text-align:left;vertical-align:top}
+table.lists th{background:var(--paper);font-weight:600}
+pre.code{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:12px 16px;overflow-x:auto;font:13.5px/1.6 var(--mono);margin:10px 0 16px}
+.choice{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0 0}.choice button{min-width:160px}
+.choice button .sys{border-left-color:currentColor;font-size:15px}
+.qtext{font:17px/1.55 var(--serif);margin:4px 0 10px}
+</style>
+
+<!-- ===================== Top bar ===================== -->
+<div class="topbar"><div class="topbar-in">
+  <span class="brand">Math<b>Mastery</b></span>
+  <span class="crumbs">Chapter 3 · Algebra › Basics</span>
+  <span class="pid">3.B.6</span>
+</div></div>
+
+<!-- ===================== Hero ===================== -->
+<header class="prose hero">
+  <div class="kicker">Chapter 3 · Algebra</div>
+  <h1>Systems of Linear Equations</h1>
+  <p class="dek">Two unknowns need two facts. Each fact is a line of possibilities; where the lines cross is the one answer that fits both.</p>
+  <div class="tiers" aria-label="Tier">
+    <span class="tier on">Basics <small>you are here</small></span>
+    <span class="tier">Undergraduate</span>
+    <span class="tier">Masters</span>
+  </div>
+  <div class="goals">
+    <h3>On this page</h3>
+    <ul>
+      <li>See a <b>system of equations</b> as two lines, and its <b>solution</b> as the point where they <b>intersect</b>.</li>
+      <li>Solve a system three ways: <b>graphing</b>, <b>substitution</b> and <b>elimination</b>, and know when each is easiest.</li>
+      <li>Recognize the three possible outcomes: exactly one solution (lines cross), <b>no solution</b> (<b>parallel</b> lines), or <b>infinitely many</b> (the same line).</li>
+      <li>Turn a word problem with two unknowns into a system and solve it.</li>
+    </ul>
+  </div>
+</header>
+
+<main>
+<!-- ===================== §1 ===================== -->
+<section class="prose">
+  <h2><span class="n">1</span>Two facts, two unknowns</h2>
+  <p>“Two numbers add up to 10.” That alone doesn’t pin them down: 7 and 3, 5 and 5, 12 and −2 all work. Every pair (<i>x</i>, <i>y</i>) with <i>x</i> + <i>y</i> = 10 is a point, and together those points form a straight line. “Their difference is 4” is a second line of possibilities. Only one pair fits <i>both</i> facts: the point where the lines cross, (7, 3).</p>
+  <p>Two or more equations that must be true at the same time form a <b>system of equations</b>, written with a brace. Its <b>solution</b> is every pair (<i>x</i>, <i>y</i>) that makes all the equations true at once. Graphically, that’s the <b>intersection</b> of the lines.</p>
+</section>
+
+<section class="wide">
+  <div class="card" id="main">
+    <div class="card-h"><span class="tag">Explore</span><h3>Two lines, one answer</h3>
+      <span class="sub">Pick a system or type your own (<i>a</i>x + <i>b</i>y = <i>c</i>, whole numbers). Then choose a method on the right to see it worked out step by step, linked to the graph.</span></div>
+    <div class="row" id="sPresets"></div>
+    <div class="desc" id="sDesc"></div>
+    <div class="inputs">
+      <div class="eqrow">
+        <div class="eqin"><label class="field f1 sm"><span><i>a</i>₁</span><input id="a1" type="text" inputmode="decimal" autocomplete="off"></label><span class="op">x +</span><label class="field f1 sm"><span><i>b</i>₁</span><input id="b1" type="text" inputmode="decimal" autocomplete="off"></label><span class="op">y =</span><label class="field f1 sm"><span><i>c</i>₁</span><input id="c1" type="text" inputmode="decimal" autocomplete="off"></label></div>
+        <div class="eqin"><label class="field f2 sm"><span><i>a</i>₂</span><input id="a2" type="text" inputmode="decimal" autocomplete="off"></label><span class="op">x +</span><label class="field f2 sm"><span><i>b</i>₂</span><input id="b2" type="text" inputmode="decimal" autocomplete="off"></label><span class="op">y =</span><label class="field f2 sm"><span><i>c</i>₂</span><input id="c2" type="text" inputmode="decimal" autocomplete="off"></label></div>
+      </div>
+    </div>
+    <div class="err" id="sErr"></div>
+    <div class="split" style="margin-top:12px">
+      <svg id="sSvg" viewBox="0 0 560 460" role="img" aria-label="The two lines"></svg>
+      <div><div class="mtabs" id="mTabs"></div><ol class="msteps" id="mSteps"></ol><div id="mVerdict"></div></div>
+    </div>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--e1)"></i>equation 1</span>
+      <span><i class="sw" style="background:var(--e2)"></i>equation 2</span>
+      <span><i class="sw" style="background:var(--pt)"></i>the solution (intersection)</span>
+      <span><svg width="26" height="12" viewBox="0 0 26 12" aria-hidden="true"><line x1="13" y1="1" x2="13" y2="11" stroke="var(--ok2)" stroke-width="2" stroke-dasharray="3 2"/></svg>substitution/elimination’s one-variable equation: a line through the same point</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §2 ===================== -->
+<section class="prose">
+  <h2><span class="n">2</span>Three ways to solve</h2>
+  <table class="lists">
+    <tr><th>Method</th><th>How</th><th>Best when</th></tr>
+    <tr><td><b>Graphing</b></td><td>Draw both lines and read off where they cross.</td><td>You want to see the situation, or only need an estimate. Answers like (11/7, 9/7) are hard to read exactly off a grid.</td></tr>
+    <tr><td><b>Substitution</b></td><td>Solve one equation for one letter (say <i>y</i> = 10 − <i>x</i>), then substitute that expression into the other equation, leaving one unknown.</td><td>A letter already has coefficient 1 or −1, or an equation is already written as “<i>y</i> = …”.</td></tr>
+    <tr><td><b>Elimination</b></td><td>Multiply the equations so one letter has matching (or opposite) coefficients, then subtract (or add) the equations to cancel it.</td><td>Both equations are in the form <i>ax</i> + <i>by</i> = <i>c</i>, especially with bigger coefficients.</td></tr>
+  </table>
+  <p>Why is elimination allowed? Both equations are true at the solution, so adding equal amounts to equal amounts (left side plus left side, right side plus right side) keeps things equal, exactly the balance from 3.B.2. On the graph, the one-variable equation that substitution or elimination produces (like <i>x</i> = 7) is a vertical line through the very same crossing point: the methods throw away a letter without losing the answer.</p>
+</section>
+
+<!-- ===================== §3 ===================== -->
+<section class="prose">
+  <h2><span class="n">3</span>One, none, or infinitely many</h2>
+  <p>Two straight lines can meet in only three ways. They cross once: <b>exactly one solution</b>. They’re <b>parallel</b> (same steepness, different place) and never meet: <b>no solution</b>, and the algebra collapses to something false like 0 = 6. Or they’re the <b>same line</b>, with every point in common: <b>infinitely many solutions</b>, and the algebra collapses to 0 = 0. Watch a crossing point run away as one line turns toward parallel:</p>
+</section>
+<section class="wide">
+  <div class="card" id="turn">
+    <div class="card-h"><span class="tag">Explore</span><h3>Turning toward parallel</h3>
+      <span class="sub">The blue line is y = 0.5x + 1. The orange line is y = m·x + k. Press Play to turn the orange line toward the blue one’s slope, or type m and k.</span></div>
+    <div class="inputs">
+      <label class="field f2 sm"><span>slope m</span><input id="tm" type="text" inputmode="decimal" autocomplete="off"></label>
+      <label class="field f2 sm"><span>intercept k</span><input id="tk" type="text" inputmode="decimal" autocomplete="off"></label>
+      <div class="row" style="margin:0"><button class="primary" id="tPlay">Play</button><button id="tSame">Make it the same line</button></div>
+    </div>
+    <div class="err" id="tErr"></div>
+    <svg class="nl" id="tSvg" viewBox="0 0 1000 340" role="img" aria-label="Two lines approaching parallel" style="margin-top:10px"></svg>
+    <div class="readout" id="tOut"></div>
+  </div>
+</section>
+
+<!-- ===================== §4 ===================== -->
+<section class="prose">
+  <h2><span class="n">4</span>Word problems with two unknowns</h2>
+  <p>Name both unknowns, write one equation per fact, and solve. A classic: a farmyard has chickens and cows. You count 20 heads and 56 legs. With <i>c</i> chickens and <i>w</i> cows: <i>c</i> + <i>w</i> = 20 (heads) and 2<i>c</i> + 4<i>w</i> = 56 (legs).</p>
+</section>
+<section class="wide">
+  <div class="card" id="word">
+    <div class="card-h"><span class="tag">Explore</span><h3>Set it up and solve it</h3>
+      <span class="sub">Pick a story and change its numbers. The system, its solution, and a check against the story update together.</span></div>
+    <div class="row" id="wModes"></div>
+    <div class="inputs" id="wIn"></div>
+    <div class="err" id="wErr"></div>
+    <div class="split" style="margin-top:12px">
+      <svg id="wSvg" viewBox="0 0 560 360" role="img" aria-label="The story's two lines"></svg>
+      <div><ol class="msteps" id="wSteps"></ol></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §5 ===================== -->
+<section class="prose">
+  <h2><span class="n">5</span>Now, in symbols</h2>
+  <div class="math">\[ \begin{cases} a_1 x + b_1 y = c_1 \\ a_2 x + b_2 y = c_2 \end{cases} \qquad x = \frac{c_1 b_2 - c_2 b_1}{a_1 b_2 - a_2 b_1}, \quad y = \frac{a_1 c_2 - a_2 c_1}{a_1 b_2 - a_2 b_1} \]<div class="cap">Elimination done once and for all. It works whenever the bottom number is not 0.</div></div>
+  <div class="math">\[ a_1 b_2 - a_2 b_1 = 0 \iff \text{the lines are parallel or the same line} \]<div class="cap">That bottom number is the determinant of the coefficients (7.B.6): zero means the two lines point the same way.</div></div>
+  <pre class="code"><code>import numpy as np                              # NumPy: arrays of numbers
+A = np.array([[3, 2], [2, -3]])                 # the coefficients: 3x + 2y and 2x − 3y
+c = np.array([16, -11])                         # the right-hand sides
+print(np.linalg.solve(A, c))                    # [2. 5.]  → x = 2, y = 5
+print(np.linalg.det(np.array([[1, 2], [1, 2]])))  # 0.0: parallel lines, no single answer</code></pre>
+</section>
+
+<!-- ===================== §6 ===================== -->
+<section class="prose">
+  <h2><span class="n">6</span>Where this goes</h2>
+  <ul class="goes">
+    <li><b>Next (3.B.7):</b> exponents and exponential growth.</li>
+    <li><b>Later in this book:</b> systems written as a matrix times a vector (7.B.8), solved for any number of unknowns by row reduction (7.B.9), which is elimination done systematically; and three equations in three unknowns, which are planes meeting in 3D (7.B.10).</li>
+    <li><b>In the world:</b> mixing ingredients to hit two targets at once, balancing chemical equations, GPS finding a position from several distances, and pricing problems where two totals are known.</li>
+  </ul>
+</section>
+
+<!-- ===================== §7 ===================== -->
+<section class="prose">
+  <h2><span class="n">7</span>Words to know</h2>
+  <div class="vocab">
+    <div class="term"><b>System of equations</b>Two or more equations that must all be true at the same time.</div>
+    <div class="term"><b>Solution of a system</b>A pair (x, y), or more generally a set of values, that makes every equation true.</div>
+    <div class="term"><b>Intersection</b>Where two lines cross: the solution of their system.</div>
+    <div class="term"><b>Graphing method</b>Solving by drawing both lines and reading the crossing point.</div>
+    <div class="term"><b>Substitution</b>Solve one equation for a letter and put that expression into the other equation.</div>
+    <div class="term"><b>Elimination</b>Add or subtract (multiples of) the equations so one letter cancels.</div>
+    <div class="term"><b>Parallel lines</b>Lines with the same slope that never meet: the system has no solution.</div>
+    <div class="term"><b>No solution / infinitely many</b>The algebra collapses to a false statement (0 = 6) or to 0 = 0 (the same line).</div>
+  </div>
+</section>
+
+<!-- ===================== Quiz ===================== -->
+<section class="prose"><h2><span class="n">8</span>Check yourself</h2>
+  <p>Three kinds of questions: solve a system, decide how many solutions it has, and choose the system that matches a story.</p>
+</section>
+<section class="wide">
+  <div class="card" id="quiz">
+    <div class="card-h"><span class="tag">Quiz</span><h3 id="qTitle"></h3><span class="score" id="score">Score: 0 / 0</span></div>
+    <div class="qtext" id="qText"></div>
+    <div class="choice" id="qChoice"></div>
+    <div class="inputs" id="qIn">
+      <label class="field fp sm"><span>x =</span><input id="qx" type="text" inputmode="decimal" autocomplete="off"></label>
+      <label class="field fp sm"><span>y =</span><input id="qy" type="text" inputmode="decimal" autocomplete="off"></label>
+      <div class="row" style="margin:0"><button class="primary" id="qCheck">Check</button></div>
+    </div>
+    <div class="row" style="margin:10px 0 0"><button id="qShow">Show answer</button><button id="qNew">New question</button></div>
+    <div class="err" id="qErr"></div>
+    <div class="feedback" id="qFb" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ===================== Pager (filled in by the shared navigation) ===================== -->
+<nav class="wide">
+  <div class="pager"></div>
+  <div class="meta">3.B.6 · Prerequisites: 3.B.2 (solving equations), 3.B.5 (lines and slope) · Leads to: 7.B.8 (systems as matrices), 7.B.9 (row reduction)</div>
+</nav>
+</main>
+
+<script>
+/* =====================================================================
+   1. HELPERS (including exact fractions, so answers like 11/7 stay exact)
+   ===================================================================== */
+const NS = 'http://www.w3.org/2000/svg';
+const $ = id => document.getElementById(id);
+function mk(tag, attrs, parent){                           // create an SVG element with attributes
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function txt(parent, x, y, s, cls, extra){                 // create an SVG text element
+  extra = Object.assign({}, extra || {});
+  // a CSS class's text-anchor beats the attribute, so move a requested anchor into the style
+  if (extra['text-anchor']){ extra.style = (extra.style ? extra.style + ';' : '') + 'text-anchor:' + extra['text-anchor']; delete extra['text-anchor']; }
+  const t = mk('text', Object.assign({ x, y, class: cls || '' }, extra), parent);
+  t.textContent = s;
+  return t;
+}
+function num(x, d){ if (d === undefined) d = 3; const r = Math.round(x * Math.pow(10, d)) / Math.pow(10, d); return r === 0 ? '0' : (r < 0 ? '−' : '') + String(Math.abs(r)); }
+function parseNum(s){
+  s = String(s).trim().replace(/[−–]/g, '-').replace(/\s+/g, '');
+  if (/^-?\d+(\.\d+)?$|^-?\.\d+$/.test(s)) return parseFloat(s);
+  const m = s.match(/^(-?\d+)\/(\d+)$/);
+  if (m && +m[2] !== 0) return +m[1] / +m[2];
+  return NaN;
+}
+function readAll(ids, errId, msg){
+  const out = ids.map(id => parseNum($(id).value));
+  if (ids.some(id => $(id).value.trim() === '') || out.some(isNaN)){ $(errId).textContent = msg || 'Fill in every box with a number.'; return null; }
+  $(errId).textContent = ''; return out;
+}
+function selectOnFocus(ids){ ids.forEach(id => $(id).addEventListener('focus', e => e.target.select())); }
+function buttons(boxId, list, onPick){
+  list.forEach((p, i) => { const b = document.createElement('button'); b.className = 'preset'; b.textContent = p.n; b.onclick = () => onPick(i); $(boxId).appendChild(b); });
+  return i => [...$(boxId).children].forEach((b, j) => b.classList.toggle('on', j === i));
+}
+const gcd = (a, b) => { a = Math.abs(a); b = Math.abs(b); while (b){ [a, b] = [b, a % b]; } return a; };
+class Q {                                                   // an exact fraction n/d
+  constructor(n, d){ if (d === undefined) d = 1; if (d < 0){ n = -n; d = -d; } const g = gcd(n, d) || 1; this.n = n / g; this.d = d / g; }
+  add(o){ return new Q(this.n * o.d + o.n * this.d, this.d * o.d); } sub(o){ return new Q(this.n * o.d - o.n * this.d, this.d * o.d); }
+  mul(o){ return new Q(this.n * o.n, this.d * o.d); } div(o){ return new Q(this.n * o.d, this.d * o.n); }
+  get v(){ return this.n / this.d; } get zero(){ return this.n === 0; }
+  toString(){ return this.d === 1 ? num(this.n) : `${this.n < 0 ? '−' : ''}${Math.abs(this.n)}/${this.d}`; }
+}
+const q = n => new Q(n);
+const pq = f => f.n < 0 ? `(${f})` : `${f}`;                // a fraction, bracketed when negative
+// a coefficient in front of a letter: 1 → "", −1 → "−", 3/2 → "(3/2)"
+const cf = f => f.d === 1 ? (f.n === 1 ? '' : f.n === -1 ? '−' : num(f.n)) : `(${f})`;
+// "2x + 3y = 12" with tidy signs and coefficients
+function term(c, v, first){ if (!c) return ''; const a = Math.abs(c), s = c < 0 ? (first ? '−' : ' − ') : (first ? '' : ' + '); return s + (a === 1 ? '' : a) + v; }
+function eqStr(a, b, c, vx, vy){ const L = (term(a, vx || 'x', true) + term(b, vy || 'y', !a)) || '0'; return `${L} = ${num(c)}`; }
+function sysHTML(e1, e2, cls, vx, vy){ return `<span class="sys ${cls || ''}"><span class="k1">${eqStr(...e1, vx, vy)}</span><span class="k2">${eqStr(...e2, vx, vy)}</span></span>`; }
+const line = (g, x1, y1, x2, y2, style) => mk('line', { x1, y1, x2, y2, style }, g);
+const svgCss = document.createElement('style');
+svgCss.textContent = `
+  .tl{fill:var(--muted);font:500 11px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:3px}
+  .lab{font:700 15px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:5px}
+  .labS{font:600 12.5px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+  .cap{fill:var(--muted);font:500 12px var(--sans)}
+`;
+document.head.appendChild(svgCss);
+
+/* =====================================================================
+   2. SOLVING A SYSTEM (all three methods)
+   ===================================================================== */
+// Classify and solve a1x + b1y = c1, a2x + b2y = c2. Returns { kind: 'one'|'none'|'many', x, y } with exact fractions.
+function solveSys(e1, e2){
+  const [a1, b1, c1] = e1, [a2, b2, c2] = e2, D = a1 * b2 - a2 * b1;
+  if (D) return { kind: 'one', x: new Q(c1 * b2 - c2 * b1, D), y: new Q(a1 * c2 - a2 * c1, D) };
+  const same = a1 * c2 - a2 * c1 === 0 && b1 * c2 - b2 * c1 === 0;
+  return { kind: same ? 'many' : 'none' };
+}
+// Elimination steps (cancel y; if one equation has no y, it already gives x)
+function elimSteps(e1, e2, sol){
+  const [a1, b1, c1] = e1, [a2, b2, c2] = e2, S = [];
+  if (!b1 || !b2){
+    const [a, c, k] = !b1 ? [a1, c1, 1] : [a2, c2, 2];
+    S.push([`Equation ${k} has no y: ${eqStr(a, 0, c)}`, 'nothing to eliminate']);
+    if (sol.kind !== 'one') return S;
+    if (a !== 1) S.push([`x = ${sol.x}`, `divide both sides by ${num(a)}`]);
+  } else {
+    const L = Math.abs(b1 * b2) / gcd(b1, b2), m1 = L / Math.abs(b1), m2 = L / Math.abs(b2), same = Math.sign(b1) === Math.sign(b2);
+    const E1 = [a1 * m1, b1 * m1, c1 * m1], E2 = [a2 * m2, b2 * m2, c2 * m2];
+    if (m1 !== 1 || m2 !== 1) S.push([`${eqStr(...E1)}<br>${eqStr(...E2)}`, `multiply ${m1 !== 1 ? `equation 1 by ${m1}${m2 !== 1 ? ` and equation 2 by ${m2}` : ''}` : `equation 2 by ${m2}`} so the y’s match in size (${num(E1[1])}y and ${num(E2[1])}y)`]);
+    const R = same ? [E1[0] - E2[0], 0, E1[2] - E2[2]] : [E1[0] + E2[0], 0, E1[2] + E2[2]];
+    S.push([`${R[0] ? term(R[0], 'x', true) : '0'} = ${num(R[2])}`, `${same ? 'subtract' : 'add'} the equations: the y’s cancel`]);
+    if (sol.kind !== 'one') return S;
+    if (R[0] !== 1) S.push([`x = ${sol.x}`, `divide both sides by ${num(R[0])}`]);
+  }
+  const [a, b, c, k] = b1 ? [a1, b1, c1, 1] : [a2, b2, c2, 2];
+  S.push([`${a ? `${a === 1 ? '' : a === -1 ? '−' : num(a) + '·'}${pq(sol.x)}` : ''}${term(b, 'y', !a)} = ${num(c)}`, `substitute x = ${sol.x} into equation ${k}`]);
+  S.push([`y = ${sol.y}`, 'solve for y']);
+  return S;
+}
+// Substitution steps: solve the equation with the "nicest" y-coefficient for y, then substitute into the other
+function subSteps(e1, e2, sol){
+  const S = [];
+  let k = [e1, e2].findIndex(e => Math.abs(e[1]) === 1); if (k < 0) k = [e1, e2].findIndex(e => e[1] !== 0);
+  if (k < 0){ S.push(['Neither equation has a y', 'both are vertical lines']); return S; }
+  const [a, b, c] = k ? e2 : e1, [A, B, C] = k ? e1 : e2;
+  const p = new Q(c, b), r = new Q(-a, b);                  // y = p + r·x
+  const ry = `${p}${r.zero ? '' : (r.n < 0 ? ' − ' : ' + ') + cf(new Q(Math.abs(r.n), r.d)) + 'x'}`;   // the expression for y
+  S.push([`y = ${ry}`, `solve equation ${k + 1} for y`]);
+  S.push([`${A ? term(A, 'x', true) : ''}${B ? `${A ? (B < 0 ? ' − ' : ' + ') : (B < 0 ? '−' : '')}${Math.abs(B) === 1 ? '' : Math.abs(B)}(${ry})` : ''} = ${num(C)}`, `substitute that for y in equation ${k ? 1 : 2}`]);
+  const cx = q(A).add(q(B).mul(r)), cc = q(C).sub(q(B).mul(p));   // (A + B·r)x = C − B·p
+  S.push([`${cx.zero ? '0' : `${cf(cx)}x`} = ${cc}`, 'expand and collect: now there is only x']);
+  if (sol.kind !== 'one') return S;
+  if (cx.v !== 1) S.push([`x = ${sol.x}`, `divide both sides by ${cx}`]);
+  const ra = new Q(Math.abs(r.n), r.d);
+  S.push([`y = ${p}${r.zero ? '' : ` ${r.n < 0 ? '−' : '+'} ${ra.v === 1 ? '' : (ra.d === 1 ? ra : '(' + ra + ')') + '·'}${pq(sol.x)}`} = ${sol.y}`, 'put x back into the expression for y']);
+  return S;
+}
+const SP = [
+  { n: 'Sum 10, difference 4', e: [[1, 1, 10], [1, -1, 4]], d: 'x + y = 10 and x − y = 4: adding the equations cancels y immediately.' },
+  { n: '2x + y = 7, x − y = 2', e: [[2, 1, 7], [1, -1, 2]], d: 'A y with coefficient 1: substitution is easy (y = 7 − 2x).' },
+  { n: 'Bigger coefficients', e: [[3, 2, 16], [2, -3, -11]], d: 'No coefficient of 1: elimination (multiply by 3 and by 2 to match the y’s) is cleanest.' },
+  { n: 'Two y = … lines', e: [[-2, 1, -1], [1, 1, 5]], d: 'y = 2x − 1 and y = −x + 5, rewritten as −2x + y = −1 and x + y = 5. Setting the two right sides equal is substitution.' },
+  { n: 'Fraction answer', e: [[2, 3, 7], [4, -1, 5]], d: 'The lines cross at (11/7, 9/7): impossible to read exactly off the grid, easy by algebra.' },
+  { n: 'Parallel', e: [[1, 2, 4], [1, 2, -2]], d: 'Same left sides, different right sides: the same steepness in different places. They never meet.' },
+  { n: 'Same line', e: [[2, -1, 3], [4, -2, 6]], d: 'The second equation is just the first doubled: one line drawn twice, so every point on it works.' },
+];
+const ms = { e1: [1, 1, 10], e2: [1, -1, 4], meth: 2 };
+const SIDS = ['a1', 'b1', 'c1', 'a2', 'b2', 'c2'];
+const markS = buttons('sPresets', SP, i => { [ms.e1, ms.e2] = SP[i].e.map(e => e.slice()); fillS(); markS(i); $('sDesc').textContent = SP[i].d; drawS(); });
+const MT = [{ n: 'Graphing' }, { n: 'Substitution' }, { n: 'Elimination' }];
+const markM = buttons('mTabs', MT, i => { ms.meth = i; markM(i); drawS(); });
+function fillS(){ ms.e1.concat(ms.e2).forEach((v, k) => { $(SIDS[k]).value = v; }); }
+function readS(){
+  const r = readAll(SIDS, 'sErr'); if (!r) return false;
+  if (r.some(v => !Number.isInteger(v) || Math.abs(v) > 30)){ $('sErr').textContent = 'Use whole numbers from −30 to 30.'; return false; }
+  if ((!r[0] && !r[1]) || (!r[3] && !r[4])){ $('sErr').textContent = 'Each equation needs an x or a y (a and b can’t both be 0).'; return false; }
+  ms.e1 = r.slice(0, 3); ms.e2 = r.slice(3); return true;
+}
+// Draw the lines of a system in a box; returns the screen mapping. vline: x value of the one-variable equation to show
+function drawLines(svg, W, H, e1, e2, sol, vline){
+  svg.innerHTML = ''; const g = mk('g', {}, svg);
+  let R = 8; if (sol.kind === 'one') R = Math.max(8, Math.ceil(Math.max(Math.abs(sol.x.v), Math.abs(sol.y.v)) + 2));
+  const u = Math.min((W - 30) / (2 * R), (H - 30) / (2 * R * H / W)), cx = W / 2, cy = H / 2, X = x => cx + x * u, Y = y => cy - y * u;
+  const step = R <= 10 ? 1 : R <= 25 ? 5 : 10;
+  for (let k = -Math.ceil(W / u); k <= Math.ceil(W / u); k++) if (k % step === 0){ line(g, X(k), 0, X(k), H, 'stroke:var(--line);stroke-width:1'); line(g, 0, Y(k), W, Y(k), 'stroke:var(--line);stroke-width:1'); }
+  line(g, 0, Y(0), W, Y(0), 'stroke:var(--ink);stroke-width:1.5;opacity:.7'); line(g, X(0), 0, X(0), H, 'stroke:var(--ink);stroke-width:1.5;opacity:.7');
+  for (let k = -R; k <= R; k += step) if (k && X(k) > 10 && X(k) < W - 10){ txt(g, X(k), Y(0) + 14, num(k), 'tl', { 'text-anchor': 'middle' }); }
+  for (let k = -R; k <= R; k += step) if (k && Y(k) > 10 && Y(k) < H - 6){ txt(g, X(0) - 5, Y(k) + 4, num(k), 'tl', { 'text-anchor': 'end' }); }
+  const xr = (W / 2) / u + 1, yr = (H / 2) / u + 1;
+  const drawEq = ([a, b, c], col, w, dash, lab, labT) => {
+    let p1, p2;
+    if (b){ p1 = [-xr, (c - a * -xr) / b]; p2 = [xr, (c - a * xr) / b]; } else { p1 = [c / a, -yr]; p2 = [c / a, yr]; }
+    line(g, X(p1[0]), Y(p1[1]), X(p2[0]), Y(p2[1]), `stroke:${col};stroke-width:${w}${dash ? ';stroke-dasharray:' + dash : ''}`);
+    if (lab){ let t = labT, lx = p1[0] + (p2[0] - p1[0]) * t, ly = p1[1] + (p2[1] - p1[1]) * t; for (let k = 0; k < 20 && (Math.abs(lx) > xr - 2 || Math.abs(ly) > yr - 1.2); k++){ t = .5 + (t - .5) * .8; lx = p1[0] + (p2[0] - p1[0]) * t; ly = p1[1] + (p2[1] - p1[1]) * t; } txt(g, X(lx) + 8, Y(ly) - 8, lab, 'labS', { 'text-anchor': 'start', style: `fill:${col}` }); }
+  };
+  if (vline !== undefined && vline !== null) drawEq([1, 0, vline], 'var(--ok2)', 2, '6 4', `x = ${num(vline, 3)}`, .85);
+  drawEq(e1, 'var(--e1)', 3, '', eqStr(...e1), .8);
+  drawEq(e2, 'var(--e2)', sol.kind === 'many' ? 7 : 3, sol.kind === 'many' ? '2 9' : '', eqStr(...e2), .2);
+  if (sol.kind === 'one'){
+    mk('circle', { cx: X(sol.x.v), cy: Y(sol.y.v), r: 8, style: 'fill:var(--pt);stroke:var(--paper);stroke-width:2.5' }, g);
+    txt(g, X(sol.x.v) + 12, Y(sol.y.v) + 20, `(${sol.x}, ${sol.y})`, 'lab', { 'text-anchor': 'start', style: 'fill:var(--pt)' });
+  }
+  return { X, Y, u };
+}
+function drawS(){
+  const sol = solveSys(ms.e1, ms.e2);
+  let steps = [], vline = null;
+  if (ms.meth === 0){
+    if (sol.kind === 'one') steps = [[`Line 1: ${eqStr(...ms.e1)}`, 'draw all the points that fit fact 1'], [`Line 2: ${eqStr(...ms.e2)}`, 'draw all the points that fit fact 2'], [`crossing ≈ (${num(sol.x.v, 2)}, ${num(sol.y.v, 2)})`, sol.x.d === 1 && sol.y.d === 1 ? 'read the crossing point off the grid' : 'read off the grid: only an estimate here, since the answer isn’t on a grid point']];
+    else steps = [[`Line 1: ${eqStr(...ms.e1)}`, ''], [`Line 2: ${eqStr(...ms.e2)}`, ''], [sol.kind === 'none' ? 'the lines never cross' : 'the lines lie on top of each other', '']];
+  } else {
+    steps = ms.meth === 1 ? subSteps(ms.e1, ms.e2, sol) : elimSteps(ms.e1, ms.e2, sol);
+    if (sol.kind === 'one') vline = sol.x.v;
+  }
+  drawLines($('sSvg'), 560, 460, ms.e1, ms.e2, sol, vline);
+  $('mSteps').innerHTML = steps.map(([e, w]) => `<li><span class="e">${e}</span>${w ? `<span class="w">${w}</span>` : ''}</li>`).join('');
+  $('mVerdict').innerHTML = sol.kind === 'one' ? `<div class="verdict y">One solution: x = ${sol.x}, y = ${sol.y}</div><div class="cap" style="margin-top:6px;font:13px var(--sans);color:var(--muted)">${ms.meth ? 'The green dashed line x = ' + sol.x + ' is the one-variable equation the method produced: it passes through the same crossing point.' : ''}</div>`
+    : sol.kind === 'none' ? '<div class="verdict n">No solution: the lines are parallel. The algebra ends in a false statement.</div>'
+    : '<div class="verdict i">Infinitely many solutions: both equations describe the same line. The algebra ends in 0 = 0.</div>';
+}
+SIDS.forEach(id => $(id).addEventListener('input', () => { if (readS()){ markS(-1); $('sDesc').textContent = 'Your own system.'; drawS(); } })); selectOnFocus(SIDS);
+
+/* =====================================================================
+   3. TURNING TOWARD PARALLEL
+   ===================================================================== */
+$('tm').value = 2; $('tk').value = -2;
+const tp = { raf: 0, playing: false };
+function drawT(){
+  const r = readAll(['tm', 'tk'], 'tErr'); if (!r) return;
+  const [m, k] = r;
+  if (Math.abs(m) > 5 || Math.abs(k) > 6){ $('tErr').textContent = 'Keep m between −5 and 5 and k between −6 and 6.'; return; }
+  const svg = $('tSvg'); svg.innerHTML = ''; const g = mk('g', {}, svg), W = 1000, H = 340, u = 24, cx = 500, cy = 190, X = x => cx + x * u, Y = y => cy - y * u;
+  for (let x = -20; x <= 20; x++) line(g, X(x), 0, X(x), H, 'stroke:var(--line);stroke-width:1;opacity:.6');
+  for (let y = -8; y <= 8; y++) line(g, 0, Y(y), W, Y(y), 'stroke:var(--line);stroke-width:1;opacity:.6');
+  line(g, 0, Y(0), W, Y(0), 'stroke:var(--ink);stroke-width:1.4;opacity:.7'); line(g, X(0), 0, X(0), H, 'stroke:var(--ink);stroke-width:1.4;opacity:.7');
+  const L = (s, b, col, w, dash) => line(g, X(-25), Y(s * -25 + b), X(25), Y(s * 25 + b), `stroke:${col};stroke-width:${w}${dash ? ';stroke-dasharray:' + dash : ''}`);
+  const same = Math.abs(m - .5) < 1e-9 && Math.abs(k - 1) < 1e-9, par = Math.abs(m - .5) < 1e-9 && !same;
+  L(.5, 1, 'var(--e1)', 3); L(m, k, 'var(--e2)', same ? 7 : 3, same ? '2 9' : '');
+  let msg;
+  if (same) msg = '<b>The same line:</b> y = 0.5x + 1 twice. Every point on it solves both equations, so there are infinitely many solutions.';
+  else if (par) msg = `<b>Parallel:</b> both slopes are 0.5 but the intercepts differ (1 and ${num(k)}). The lines never meet, so there is no solution. Elimination gives 0 = ${num(k - 1)}, which is false.`;
+  else {
+    const x = (k - 1) / (.5 - m), y = .5 * x + 1, on = Math.abs(X(x) - cx) < W / 2 - 10 && Math.abs(Y(y) - cy) < cy - 10 && Y(y) < H - 10;
+    if (on){ mk('circle', { cx: X(x), cy: Y(y), r: 8, style: 'fill:var(--pt);stroke:var(--paper);stroke-width:2' }, g); txt(g, X(x) + 12, Y(y) - 10, `(${num(x, 2)}, ${num(y, 2)})`, 'lab', { 'text-anchor': 'start', style: 'fill:var(--pt)' }); }
+    else txt(g, x > 0 ? W - 14 : 14, 24, `crossing at (${num(x, 1)}, ${num(y, 1)}): off the screen ${x > 0 ? '→' : '←'}`, 'lab', { 'text-anchor': x > 0 ? 'end' : 'start', style: 'fill:var(--pt)' });
+    msg = `The slopes differ by ${num(Math.abs(m - .5), 3)}, so the lines cross once, at x = (${num(k)} − 1) / (0.5 − ${num(m)}) = <b>${num(x, 2)}</b>. The closer the slopes get, the farther away the crossing point runs; when they are equal it is gone altogether.`;
+  }
+  $('tOut').innerHTML = msg;
+}
+function stopT(){ cancelAnimationFrame(tp.raf); tp.playing = false; $('tPlay').textContent = 'Play'; }
+$('tPlay').onclick = () => {
+  if (tp.playing){ stopT(); return; }
+  tp.playing = true; $('tPlay').textContent = 'Pause'; const t0 = performance.now(), m0 = 2;
+  const step = now => { if (!tp.playing) return; const f = Math.min(1, (now - t0) / 6000), m = .5 + (m0 - .5) * Math.pow(1 - f, 2.2); $('tm').value = f >= 1 ? 0.5 : num(m, 4); drawT(); if (f < 1) tp.raf = requestAnimationFrame(step); else stopT(); };
+  tp.raf = requestAnimationFrame(step);
+};
+$('tSame').onclick = () => { stopT(); $('tm').value = 0.5; $('tk').value = 1; drawT(); };
+['tm', 'tk'].forEach(id => $(id).addEventListener('input', () => { stopT(); drawT(); })); selectOnFocus(['tm', 'tk']);
+
+/* =====================================================================
+   4. SET IT UP AND SOLVE IT (word problems)
+   ===================================================================== */
+const WM = [
+  { n: 'Chickens and cows', f: [['wH', 'heads', 20], ['wL', 'legs', 56]],
+    sys: v => [[1, 1, v.wH], [2, 4, v.wL]], vars: ['chickens c', 'cows w'],
+    tell: v => ['Let c = chickens, w = cows (x = c, y = w on the graph).', `Heads: c + w = ${v.wH}`, `Legs: 2c + 4w = ${v.wL} (chickens have 2 legs, cows 4)`],
+    check: (v, x, y) => `${x} chickens and ${y} cows: ${x + y} heads, ${2 * x + 4 * y} legs ✓` },
+  { n: 'Concert tickets', f: [['wA', 'adult price', 12], ['wC', 'child price', 7], ['wT', 'tickets sold', 9], ['wP', 'total paid', 88]],
+    sys: v => [[1, 1, v.wT], [v.wA, v.wC, v.wP]], vars: ['adults a', 'children k'],
+    tell: v => ['Let a = adult tickets, k = child tickets (x = a, y = k on the graph).', `Tickets: a + k = ${v.wT}`, `Total: ${v.wA}a + ${v.wC}k = ${v.wP}`],
+    check: (v, x, y) => `${x} adults and ${y} children: ${x + y} tickets, ${v.wA}·${x} + ${v.wC}·${y} = ${v.wA * x + v.wC * y} ✓` },
+  { n: 'Basketball points', f: [['wS', 'baskets made', 13], ['wP2', 'points scored', 31]],
+    sys: v => [[1, 1, v.wS], [2, 3, v.wP2]], vars: ['2-pointers t', '3-pointers h'],
+    tell: v => ['Let t = 2-point baskets, h = 3-point baskets (x = t, y = h on the graph).', `Baskets: t + h = ${v.wS}`, `Points: 2t + 3h = ${v.wP2}`],
+    check: (v, x, y) => `${x} two-pointers and ${y} three-pointers: ${x + y} baskets, ${2 * x + 3 * y} points ✓` },
+];
+let wmi = 0;
+const markW = buttons('wModes', WM, i => { wmi = i; markW(i); buildW(); });
+function buildW(){
+  $('wIn').innerHTML = WM[wmi].f.map(([id, l, v]) => `<label class="field fp sm"><span>${l}</span><input id="${id}" type="text" inputmode="decimal" autocomplete="off" value="${v}"></label>`).join('');
+  WM[wmi].f.forEach(([id]) => $(id).addEventListener('input', drawW)); selectOnFocus(WM[wmi].f.map(f => f[0]));
+  drawW();
+}
+function drawW(){
+  const M = WM[wmi], r = readAll(M.f.map(f => f[0]), 'wErr'); if (!r) return;
+  if (r.some(v => !Number.isInteger(v) || v < 0 || v > 500)){ $('wErr').textContent = 'Use whole numbers from 0 to 500.'; return; }
+  const v = {}; M.f.forEach(([id], k) => { v[id] = r[k]; });
+  const [e1, e2] = M.sys(v), sol = solveSys(e1, e2);
+  drawLines($('wSvg'), 560, 360, e1, e2, sol);
+  let out = M.tell(v).map(t => `<li><span class="e" style="font-size:15px">${t}</span></li>`).join('');
+  if (sol.kind !== 'one') out += `<li><div class="verdict n">${sol.kind === 'none' ? 'These numbers have no solution: the two facts contradict each other.' : 'These facts say the same thing twice: not enough information.'}</div></li>`;
+  else {
+    const x = sol.x.v, y = sol.y.v, whole = sol.x.d === 1 && sol.y.d === 1 && x >= 0 && y >= 0;
+    out += elimSteps(e1, e2, sol).map(([e, w]) => `<li><span class="e">${e}</span><span class="w">${w}</span></li>`).join('');
+    out += whole ? `<li><div class="verdict y">${M.vars[0]} = ${x}, ${M.vars[1]} = ${y}. ${M.check(v, x, y)}</div></li>`
+      : `<li><div class="verdict n">The algebra gives ${M.vars[0]} = ${sol.x}, ${M.vars[1]} = ${sol.y}, but you can’t have ${x < 0 || y < 0 ? 'a negative number' : 'a fraction'} of these. The story’s numbers don’t fit together: change them.</div></li>`;
+  }
+  $('wSteps').innerHTML = out;
+}
+
+/* =====================================================================
+   5. QUIZ
+   ===================================================================== */
+const rnd = arr => arr[Math.floor(Math.random() * arr.length)];
+const randInt = (lo, hi) => lo + Math.floor(Math.random() * (hi - lo + 1));
+const nz = (lo, hi) => { let v; do { v = randInt(lo, hi); } while (!v); return v; };
+const qz = { counted: false, done: false, right: 0, total: 0 };
+function randSys(){ let a1, b1, a2, b2, x, y; do { a1 = nz(-4, 5); b1 = nz(-4, 5); a2 = nz(-4, 5); b2 = nz(-4, 5); x = randInt(-5, 8); y = randInt(-5, 8); } while (a1 * b2 - a2 * b1 === 0 || (a1 === a2 && b1 === b2)); return { e1: [a1, b1, a1 * x + b1 * y], e2: [a2, b2, a2 * x + b2 * y], x, y }; }
+function setMode(kind, labels){
+  $('qChoice').style.display = kind === 'choice' ? '' : 'none'; $('qIn').style.display = kind === 'choice' ? 'none' : '';
+  if (kind === 'choice'){ $('qChoice').innerHTML = ''; labels.forEach((l, i) => { const b = document.createElement('button'); b.innerHTML = l; b.onclick = () => answerChoice(i); $('qChoice').appendChild(b); }); }
+}
+function newQuestion(){
+  Object.assign(qz, { counted: false, done: false });
+  $('qErr').textContent = ''; $('qFb').className = 'feedback'; $('qFb').innerHTML = ''; $('qx').value = ''; $('qy').value = '';
+  qz.type = rnd(['solve', 'solve', 'count', 'setup']);
+  if (qz.type === 'solve'){
+    const s = randSys(); Object.assign(qz, s);
+    $('qTitle').textContent = 'Solve the system';
+    $('qText').innerHTML = `Find x and y. ${sysHTML(s.e1, s.e2)}`;
+    setMode('field');
+  } else if (qz.type === 'count'){
+    const kind = rnd(['one', 'none', 'many']); let e1, e2;
+    const a = nz(-4, 5), b = nz(-4, 5), c = randInt(-10, 12), k = rnd([1, 2, 3, -1, -2]);
+    e1 = [a, b, c];
+    if (kind === 'one'){ const s = randSys(); e1 = s.e1; e2 = s.e2; }
+    else if (kind === 'many') e2 = [a * k, b * k, c * k];
+    else { let c2; do { c2 = randInt(-12, 12); } while (c2 === c * k); e2 = [a * k, b * k, c2]; }
+    Object.assign(qz, { kind, e1, e2, k });
+    $('qTitle').textContent = 'How many solutions?';
+    $('qText').innerHTML = `How many solutions does this system have? ${sysHTML(e1, e2)}`;
+    setMode('choice', ['Exactly one', 'No solution', 'Infinitely many']);
+  } else {
+    const S = [
+      () => { const c = randInt(4, 14), w = randInt(3, 12); return { t: `A farmyard has chickens (c) and cows (w): ${c + w} heads and ${2 * c + 4 * w} legs in all.`, ok: [[1, 1, c + w], [2, 4, 2 * c + 4 * w]], bad: [[[1, 1, c + w], [4, 2, 2 * c + 4 * w]], [[2, 4, c + w], [1, 1, 2 * c + 4 * w]], [[1, 1, 2 * c + 4 * w], [2, 4, c + w]]], vx: 'c', vy: 'w' }; },
+      () => { const a = randInt(2, 9), k = randInt(2, 9); return { t: `A cinema sold ${a + k} tickets: adults (a) at 11 each and children (k) at 6 each, taking ${11 * a + 6 * k} in total.`, ok: [[1, 1, a + k], [11, 6, 11 * a + 6 * k]], bad: [[[1, 1, a + k], [6, 11, 11 * a + 6 * k]], [[11, 6, a + k], [1, 1, 11 * a + 6 * k]], [[1, 1, 11 * a + 6 * k], [11, 6, a + k]]], vx: 'a', vy: 'k' }; },
+      () => { const x = randInt(8, 20), y = randInt(1, x - 1); return { t: `Two numbers x and y add up to ${x + y}, and x is ${x - y} more than y.`, ok: [[1, 1, x + y], [1, -1, x - y]], bad: [[[1, 1, x + y], [-1, 1, x - y]], [[1, 1, x - y], [1, -1, x + y]], [[1, 1, x + y], [1, 1, x - y]]], vx: 'x', vy: 'y' }; },
+      () => { const t = randInt(3, 10), h = randInt(1, 7); return { t: `A player made ${t + h} baskets, some worth 2 points (t) and some worth 3 (h), scoring ${2 * t + 3 * h} points.`, ok: [[1, 1, t + h], [2, 3, 2 * t + 3 * h]], bad: [[[1, 1, t + h], [3, 2, 2 * t + 3 * h]], [[2, 3, t + h], [1, 1, 2 * t + 3 * h]], [[1, 1, 2 * t + 3 * h], [2, 3, t + h]]], vx: 't', vy: 'h' }; },
+    ];
+    const s = rnd(S)(), opts = [s.ok].concat(s.bad).map((sys, i) => ({ sys, ok: i === 0 })).sort(() => Math.random() - .5);
+    const show = sys => sysHTML(sys[0], sys[1], '', s.vx, s.vy);   // the story's own letters
+    Object.assign(qz, { s, opts, ansI: opts.findIndex(o => o.ok), show });
+    $('qTitle').textContent = 'Which system matches the story?';
+    $('qText').innerHTML = s.t;
+    setMode('choice', opts.map(o => show(o.sys)));
+  }
+}
+function countQ(ok){ if (qz.counted) return; qz.counted = true; qz.total++; if (ok) qz.right++; $('score').textContent = `Score: ${qz.right} / ${qz.total}`; }
+function checkQ(){
+  const r = readAll(['qx', 'qy'], 'qErr', 'Fill in both x and y.'); if (!r) return;
+  const [x, y] = r, ok = x === qz.x && y === qz.y; let msg;
+  const fits = e => e[0] * x + e[1] * y === e[2];
+  if (ok) msg = `<b>Right: (${num(qz.x)}, ${num(qz.y)}).</b> Both equations check out.`;
+  else if (x === qz.y && y === qz.x) msg = '<b>Swapped.</b> You have the right numbers in the wrong boxes: check which one is x.';
+  else if (fits(qz.e1) && !fits(qz.e2)) msg = '<b>That pair fits the first equation but not the second.</b> A solution has to satisfy both: it’s where the two lines cross.';
+  else if (fits(qz.e2) && !fits(qz.e1)) msg = '<b>That pair fits the second equation but not the first.</b> Both must be true at once.';
+  else if (x === qz.x) msg = '<b>Your x is right.</b> Substitute it back into one equation to find y, carefully with signs.';
+  else if (y === qz.y) msg = '<b>Your y is right.</b> Substitute it back into one equation to find x.';
+  else msg = '<b>Not quite.</b> Eliminate one letter (match its coefficients, then add or subtract the equations), solve for the other, then substitute back.';
+  countQ(ok); if (ok) qz.done = true;
+  $('qFb').className = 'feedback ' + (ok ? 'ok' : 'bad'); $('qFb').innerHTML = msg;
+}
+function answerChoice(i){
+  if (qz.done) return; qz.done = true; let ok, msg;
+  if (qz.type === 'count'){
+    const kinds = ['one', 'none', 'many']; ok = kinds[i] === qz.kind;
+    const why = { one: 'The x- and y-coefficients are not in the same ratio, so the lines have different slopes and cross exactly once.', none: `The left side of equation 2 is ${qz.k} × the left side of equation 1, but the right side isn’t: same slope, different line. Parallel lines never meet.`, many: `Equation 2 is just ${qz.k} × equation 1, every number included: the same line twice.` };
+    msg = `<b>${ok ? 'Right' : 'Not this time'}: ${['exactly one', 'no solution', 'infinitely many'][kinds.indexOf(qz.kind)]}.</b> ${why[qz.kind]}`;
+  } else {
+    ok = i === qz.ansI;
+    const why = qz.s.vx === 'x' ? 'one equation is the sum, x + y, and the other the difference, x − y (x is the bigger one).' : 'one equation counts the things, and the other multiplies each count by its own value (legs, price, points), with each value paired to the right letter.';
+    msg = ok ? `<b>Right:</b> ${why}` : `<b>Not this time.</b> The match is ${qz.show(qz.s.ok)}: ${why}`;
+  }
+  countQ(ok); $('qFb').className = 'feedback ' + (ok ? 'ok' : 'bad'); $('qFb').innerHTML = msg;
+}
+function showQ(){
+  countQ(false); qz.done = true; $('qErr').textContent = '';
+  const fb = $('qFb'); fb.className = 'feedback info';
+  if (qz.type === 'solve') fb.innerHTML = `<b>x = ${num(qz.x)}, y = ${num(qz.y)}</b>.`;
+  else if (qz.type === 'count') fb.innerHTML = `<b>${{ one: 'Exactly one', none: 'No solution', many: 'Infinitely many' }[qz.kind]}</b>.`;
+  else fb.innerHTML = `<b>${qz.show(qz.s.ok)}</b>`;
+}
+$('qCheck').onclick = checkQ; $('qShow').onclick = showQ; $('qNew').onclick = newQuestion;
+['qx', 'qy'].forEach(id => { $(id).addEventListener('input', () => { $('qErr').textContent = ''; }); $(id).addEventListener('keydown', e => { if (e.key === 'Enter') checkQ(); }); });
+selectOnFocus(['qx', 'qy']);
+
+/* =====================================================================
+   6. START
+   ===================================================================== */
+markM(2); $('sPresets').children[0].click();
+drawT();
+markW(0); buildW();
+newQuestion();
+</script>
+</body>
+</html>

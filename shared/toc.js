@@ -21,7 +21,7 @@ window.MM_TOC = [
     { id: '3.B.3', title: 'Inequalities and Absolute Value' },
     { id: '3.B.4', title: 'Functions' },
     { id: '3.B.5', title: 'Lines: Slope and Linear Functions' },
-    { id: '3.B.6', title: 'Systems of Linear Equations' },
+    { id: '3.B.6', title: 'Systems of Linear Equations', url: 'https://claude.ai/artifact/LrkSikg8hPYrZDCGphD4Wh', built: true },
     { id: '3.B.7', title: 'Exponents and Exponential Growth' },
     { id: '3.B.8', title: 'Polynomials and Factoring' },
     { id: '3.B.9', title: 'Quadratics and Parabolas' },
