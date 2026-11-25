@@ -1,0 +1,893 @@
+<style>
+/* ===================== Page-specific styles (7.B.12) ===================== */
+/* v₁ = purple, v₂ = gold, v₃ = pink; a redundant vector = red; the span = soft purple; the target point = teal;
+   axes keep the book's x green, y orange, z blue */
+:root{ --ci:#1D9E75; --cj:#D85A30; --ck:#2F6FDB; --c1:#7F77DD; --c2:#B86E00; --c3:#C2417D; --cs:#AFA9EC; --ct:#1D9E75; --wrong:#D8443A; --good:#1D9E75; }
+@media (prefers-color-scheme:dark){ :root{ --ci:#5DCAA5; --cj:#F0997B; --ck:#6EA2F5; --c1:#AFA9EC; --c2:#FFB547; --c3:#EE7FB0; --cs:#6F67C9; --ct:#5DCAA5; --wrong:#F07B72; --good:#5DCAA5; } }
+.k1{color:var(--c1);font-weight:700}.k2{color:var(--c2);font-weight:700}.k3{color:var(--c3);font-weight:700}.kt{color:var(--ct);font-weight:700}.kbad{color:var(--wrong);font-weight:700}.kgood{color:var(--good);font-weight:700}
+.ki{color:var(--ci);font-weight:700}.kj{color:var(--cj);font-weight:700}.kk{color:var(--ck);font-weight:700}
+svg{user-select:none;-webkit-user-select:none}
+.solo svg{width:100%;height:auto;display:block;background:var(--bg);border:1px solid var(--line);border-radius:10px;margin-top:10px}
+.views{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.views svg{width:100%;height:auto;display:block;background:var(--bg);border:1px solid var(--line);border-radius:10px}
+.inputs .grp{display:flex;gap:8px;align-items:flex-end;padding-right:12px;border-right:1px dashed var(--line);margin-right:4px}
+.inputs .grp:last-of-type{border-right:none}
+.vin{display:flex;flex-direction:column;gap:4px;align-items:center}
+.vin .h{font:600 12px var(--sans);letter-spacing:.06em;text-transform:uppercase}
+.vin .col{display:flex;flex-direction:column;gap:4px;padding:4px 8px;border-left:2.5px solid var(--ink);border-right:2.5px solid var(--ink);border-radius:7px}
+.vin input{width:58px;font:500 16px/1 var(--mono);padding:7px 2px;text-align:center;border-radius:9px;border:2px solid var(--line2);background:var(--bg);color:var(--ink)}
+.vin.off{opacity:.35}
+.field.sm input{width:64px}
+.toggle button.on{background:var(--accent-bg);border-color:var(--accent);color:var(--accent)}
+.verdict{display:inline-block;font:600 15px var(--sans);padding:6px 12px;border-radius:8px;margin:8px 8px 0 0}
+.verdict.ok{background:var(--ok-bg);color:var(--ok)}.verdict.bad{background:var(--bad-bg);color:var(--bad)}.verdict.info{background:var(--accent-bg);color:var(--accent)}
+.legend span span{display:inline}
+.mshow{display:inline-grid;gap:1px 12px;padding:3px 9px;border-left:2px solid var(--ink);border-right:2px solid var(--ink);border-radius:6px;font:600 15px var(--mono);vertical-align:middle;text-align:right}
+.foods{display:flex;gap:8px;flex-wrap:wrap}
+.foods button.on{background:var(--accent-bg);border-color:var(--accent);color:var(--accent)}
+.ftab{border-collapse:collapse;font:15px var(--mono);margin-top:10px}
+.ftab th,.ftab td{border:1px solid var(--line);padding:6px 14px;text-align:right}
+.ftab th{font:600 12px var(--sans);letter-spacing:.05em;text-transform:uppercase;text-align:center}
+.ftab tr.red td{color:var(--wrong)}
+.lights{display:flex;gap:18px;align-items:flex-end;flex-wrap:wrap;margin-top:12px}
+.lt{display:flex;flex-direction:column;align-items:center;gap:4px;font:600 13px var(--sans)}
+.lt .sw2{width:78px;height:58px;border-radius:10px;border:1px solid var(--line2)}
+.lt small{font:500 13px var(--mono);color:var(--muted)}
+.lt.red small{color:var(--wrong)}
+.lt .op{font:700 24px var(--mono);color:var(--muted);align-self:center}
+.traps{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:8px}
+.traps .t{border:1px solid var(--line);border-radius:10px;background:var(--bg);padding:10px}
+.traps .t h4{margin:0 0 4px;font:600 15px var(--sans)}
+.traps .t p{margin:6px 0 0;font-size:14.5px;line-height:1.5;color:var(--muted)}
+.traps svg{width:100%;height:auto;display:block}
+.qtext{font:17px/1.55 var(--serif);margin:4px 0 10px}
+.qmath{font:600 18px var(--mono);margin:6px 0 10px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.choice{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 0}.choice button{min-width:130px}
+.choice button.right{border-color:var(--ok);background:var(--ok-bg);color:var(--ok)}.choice button.wrong{border-color:var(--bad);background:var(--bad-bg);color:var(--bad)}
+pre.code{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:12px 16px;overflow-x:auto;font:13.5px/1.6 var(--mono);margin:10px 0 16px}
+</style>
+
+<!-- ===================== Top bar ===================== -->
+<div class="topbar"><div class="topbar-in">
+  <span class="brand">Math<b>Mastery</b></span>
+  <span class="crumbs">Chapter 7 · Linear Algebra › Basics</span>
+  <span class="pid">7.B.12</span>
+</div></div>
+
+<!-- ===================== Hero ===================== -->
+<header class="prose hero">
+  <div class="kicker">Chapter 7 · Linear Algebra</div>
+  <h1>Independence, Basis and Dimension: A First Look</h1>
+  <p class="dek">Some sets of arrows reach everywhere, some only a line or a sheet, and some carry passengers that add nothing new. Counting the truly different directions is what “dimension” means.</p>
+  <div class="tiers" aria-label="Tier">
+    <span class="tier on">Basics <small>you are here</small></span>
+    <span class="tier">Undergraduate</span>
+    <span class="tier">Masters</span>
+  </div>
+  <div class="goals">
+    <h3>On this page</h3>
+    <ul>
+      <li>Build <b>linear combinations</b> and see the <b>span</b> of a set of vectors: a point, a line, a plane or all of space.</li>
+      <li>Tell <b>linearly independent</b> vectors from <b>dependent</b> ones, where one is a mix of the others.</li>
+      <li>Use a <b>basis</b> to give every point its <b>coordinates</b>, and see that coordinates depend on the basis.</li>
+      <li>Count <b>dimension</b>, and read the <b>rank</b> of a matrix as its number of independent columns.</li>
+    </ul>
+  </div>
+</header>
+
+<main>
+<!-- ===================== §1 ===================== -->
+<section class="prose">
+  <h2><span class="n">1</span>Mixing arrows: span</h2>
+  <p>Give someone a few arrows and two permissions: stretch any arrow by any amount (including backwards, or to zero), and add the results. What they build is a <b>linear combination</b>: <i>c</i>₁<b>v</b>₁ + <i>c</i>₂<b>v</b>₂ + <i>c</i>₃<b>v</b>₃. Everything they could ever build is the <b>span</b> of the arrows.</p>
+  <p>One nonzero arrow reaches a whole <b>line</b> through the origin: all its stretches. Two arrows pointing in different directions reach the whole <b>plane</b>. But two arrows along the same line still only reach that line: the second one is just a stretch of the first, so it adds nothing new.</p>
+  <p>That is the key idea. A vector is <b>redundant</b> if it is already in the span of the others, that is, if it is a mix of them. A set with a redundant vector is called <b>linearly dependent</b>. A set where every vector adds a genuinely new direction is <b>linearly independent</b>.</p>
+</section>
+<section class="wide">
+  <div class="card" id="main">
+    <div class="card-h"><span class="tag">Explore</span><h3>Span builder and basis grid</h3>
+      <span class="sub">Drag the arrow tips (or type them). The shading shows the span. A vector that adds nothing new turns red. Set the amounts <i>c</i> and press Play to build a mix. Then switch to the basis grid: the same two arrows become a slanted grid, and every point gets coordinates in it.</span></div>
+    <div class="row" id="mPresets"></div>
+    <div class="desc" id="mDesc"></div>
+    <div class="inputs">
+      <div class="grp" id="mVecs"></div>
+      <div class="grp"><label class="field sm"><span class="k1">c₁</span><input id="mc0" type="text" inputmode="decimal" autocomplete="off"></label><label class="field sm"><span class="k2">c₂</span><input id="mc1" type="text" inputmode="decimal" autocomplete="off"></label><label class="field sm"><span class="k3">c₃</span><input id="mc2" type="text" inputmode="decimal" autocomplete="off"></label></div>
+      <div class="row" style="margin:0"><button id="mUse">Use these</button><button class="primary" id="mPlay">Play</button></div>
+      <div class="row toggle" style="margin:0"><button id="mM1" class="on">Span</button><button id="mM2">Basis grid</button></div>
+    </div>
+    <div class="err" id="mErr"></div>
+    <div class="solo"><svg id="mSvg" viewBox="0 0 960 470" role="img" aria-label="Vectors, their span, and a basis grid" style="touch-action:none"></svg></div>
+    <div><span class="verdict" id="mV1"></span><span class="verdict info" id="mV2"></span></div>
+    <div class="readout" id="mOut"></div>
+    <div class="legend">
+      <span><i class="sw mv" style="background:var(--c1)"></i><span><b>v</b>₁</span></span>
+      <span><i class="sw mv" style="background:var(--c2)"></i><span><b>v</b>₂</span></span>
+      <span><i class="sw mv" style="background:var(--c3)"></i><span><b>v</b>₃</span></span>
+      <span><i class="sw" style="background:var(--cs);opacity:.5;border-radius:3px"></i><span>the span</span></span>
+      <span><i class="sw mv" style="background:var(--wrong)"></i><span>redundant: already in the span of the earlier vectors</span></span>
+      <span><i class="sw" style="background:var(--ct)"></i><span>the mix <i>c</i>₁<b>v</b>₁ + <i>c</i>₂<b>v</b>₂ + <i>c</i>₃<b>v</b>₃ (or the point P on the grid)</span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §2 ===================== -->
+<section class="prose">
+  <h2><span class="n">2</span>Basis and coordinates</h2>
+  <p>A <b>basis</b> is a set of vectors that does two jobs at once: it reaches everything (its span is the whole space) and it carries no passengers (it is independent). Then every point can be reached in <b>exactly one</b> way, and the amounts are the point’s <b>coordinates</b> in that basis.</p>
+  <p>Our usual coordinates are just coordinates in the basis <b>î</b>, <b>ĵ</b>. Pick a different basis and the same point gets different numbers. A city whose streets run at an angle works this way: “3 blocks along Main Street, then 1 block along Oak Avenue” is a perfectly good address, measured in the street grid instead of north and east. In the basis-grid mode above, the slanted grid lines are the streets.</p>
+  <p>Why exactly one way? If a point could be reached two different ways, subtracting them would give a mix of the basis vectors equal to zero with amounts not all zero, and then one basis vector could be written using the others: a redundant passenger. Independence rules that out.</p>
+</section>
+
+<!-- ===================== §3 ===================== -->
+<section class="prose">
+  <h2><span class="n">3</span>Dimension and rank</h2>
+  <p>Every basis of the plane has exactly 2 vectors; every basis of space has exactly 3. Fewer can’t reach everything, and more must include a redundant one. That count is the <b>dimension</b>: a line has dimension 1, a plane 2, space 3. A single point (just the origin) has dimension 0.</p>
+  <p>For a matrix, the dimension of the span of its columns is called its <b>rank</b>: the number of truly independent columns. This ties together the chapter. A 3 × 3 matrix sends î, ĵ, k̂ to its columns, so its output is exactly the span of the columns. Rank 3: the output is all of space, the volume scale is not zero, det ≠ 0, and the move can be undone. Rank 2 or less: space is flattened onto a plane or a line, det = 0, and some systems <i>A</i><b>x</b> = <b>b</b> have no solution (7.B.9). Row reduction counts the rank for you: it is the number of pivots.</p>
+</section>
+<section class="wide">
+  <div class="card" id="space">
+    <div class="card-h"><span class="tag">Explore</span><h3>Span in space</h3>
+      <span class="sub">Three vectors in 3D, shown in the four views from 7.B.10. The shaded patch is their span when it is a plane; a long line when it is a line. The rank counts the independent ones.</span></div>
+    <div class="row" id="sPresets"></div>
+    <div class="desc" id="sDesc"></div>
+    <div class="inputs" id="sIns"></div>
+    <div class="err" id="sErr"></div>
+    <div class="views" id="sV"></div>
+    <div><span class="verdict" id="sV1"></span><span class="verdict info" id="sV2"></span></div>
+    <div class="readout" id="sOut"></div>
+    <div class="legend">
+      <span><i class="sw mv" style="background:var(--c1)"></i><span><b>u</b></span></span>
+      <span><i class="sw mv" style="background:var(--c2)"></i><span><b>v</b></span></span>
+      <span><i class="sw mv" style="background:var(--c3)"></i><span><b>w</b></span></span>
+      <span><i class="sw" style="background:var(--cs);opacity:.5;border-radius:3px"></i><span>the span (a plane patch or a line)</span></span>
+      <span><i class="sw mv" style="background:var(--wrong)"></i><span>redundant</span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §4 ===================== -->
+<section class="prose">
+  <h2><span class="n">4</span>In the kitchen and on a screen</h2>
+  <p>A food can be described by a vector of nutrients: (protein, carbs, fat) per serving. A meal is a linear combination: so many servings of each. Which nutrient targets can you hit exactly with what’s in the pantry? Exactly the span of the food vectors. A snack bar made from 2 servings of oats and 1 of peanut butter is a redundant food: anything it can do, oats and peanut butter already do.</p>
+</section>
+<section class="wide">
+  <div class="card" id="food">
+    <div class="card-h"><span class="tag">Explore</span><h3>Foods as nutrient vectors</h3>
+      <span class="sub">Choose what’s in the pantry and a target (grams of protein, carbs and fat). The card finds servings that hit the target exactly, if any exist, and flags foods that add nothing new.</span></div>
+    <div class="foods" id="fFoods"></div>
+    <div class="row" id="fPresets" style="margin-top:10px"></div>
+    <div class="desc" id="fDesc"></div>
+    <div class="inputs">
+      <label class="field sm"><span>Protein g</span><input id="fP" type="text" inputmode="decimal" autocomplete="off"></label>
+      <label class="field sm"><span>Carbs g</span><input id="fC" type="text" inputmode="decimal" autocomplete="off"></label>
+      <label class="field sm"><span>Fat g</span><input id="fF" type="text" inputmode="decimal" autocomplete="off"></label>
+      <div class="row" style="margin:0"><button class="primary" id="fGo">Find servings</button></div>
+    </div>
+    <div class="err" id="fErr"></div>
+    <div id="fTab"></div>
+    <div><span class="verdict" id="fV1"></span><span class="verdict info" id="fV2"></span></div>
+    <div class="readout" id="fOut"></div>
+  </div>
+</section>
+<section class="prose">
+  <p>Every colour on a screen is a mix of red, green and blue light, three independent vectors: a basis for colour. Any other three independent lights would also be a basis (the coordinates change, and some colours would need a <i>negative</i> amount of light, which a real lamp can’t give). But red, green and yellow are dependent, since yellow light is red plus green, so they only reach colours with no blue at all: a plane, not the whole space.</p>
+</section>
+<section class="wide">
+  <div class="card" id="light">
+    <div class="card-h"><span class="tag">Explore</span><h3>Coloured lights</h3>
+      <span class="sub">Pick three lights and a target colour (red, green, blue amounts from 0 to 1). The card finds how much of each light to mix.</span></div>
+    <div class="row" id="lSets"></div>
+    <div class="row" id="lTargets"></div>
+    <div class="desc" id="lDesc"></div>
+    <div class="inputs">
+      <label class="field sm"><span class="kbad" style="color:#D8443A">R</span><input id="lR" type="text" inputmode="decimal" autocomplete="off"></label>
+      <label class="field sm"><span style="color:#1D9E75">G</span><input id="lG" type="text" inputmode="decimal" autocomplete="off"></label>
+      <label class="field sm"><span style="color:#2F6FDB">B</span><input id="lB" type="text" inputmode="decimal" autocomplete="off"></label>
+      <div class="row" style="margin:0"><button class="primary" id="lGo">Mix</button></div>
+    </div>
+    <div class="err" id="lErr"></div>
+    <div class="lights" id="lRow"></div>
+    <div><span class="verdict" id="lV1"></span></div>
+    <div class="readout" id="lOut"></div>
+  </div>
+</section>
+
+<!-- ===================== §5 ===================== -->
+<section class="prose">
+  <h2><span class="n">5</span>Traps and non-examples</h2>
+</section>
+<section class="wide">
+  <div class="card" id="traps">
+    <div class="card-h"><span class="tag">Compare</span><h3>Easy to get wrong</h3></div>
+    <div class="traps">
+      <div class="t"><h4 class="kbad">✕ No two parallel ≠ independent</h4><svg id="tr1" viewBox="0 0 300 210"></svg><p>(1, 0, 0), (0, 1, 0) and (1, 1, 0): no two are parallel, yet the third is the sum of the first two. All three lie in the floor plane. Dependence can involve the whole set.</p></div>
+      <div class="t"><h4 class="kbad">✕ More vectors ≠ more dimensions</h4><svg id="tr2" viewBox="0 0 300 210"></svg><p>Four arrows in the plane can never be independent: the plane only has room for two directions. Any third arrow is a mix of two independent ones.</p></div>
+      <div class="t"><h4 class="kbad">✕ The zero vector is never independent</h4><svg id="tr3" viewBox="0 0 300 210"></svg><p>0 = 0·<b>v</b>₁ is a mix of anything. Any set containing the zero vector is dependent: it adds no direction at all.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §6 ===================== -->
+<section class="prose">
+  <h2><span class="n">6</span>Now, in symbols</h2>
+  <div class="math">\[ \operatorname{span}\{\mathbf v_1,\dots,\mathbf v_k\} = \{\, c_1\mathbf v_1 + \dots + c_k\mathbf v_k \;:\; c_1,\dots,c_k \in \mathbb R \,\} \]<div class="cap">Everything you can build by stretching and adding.</div></div>
+  <div class="math">\[ \text{independent} \iff \Big( c_1\mathbf v_1 + \dots + c_k\mathbf v_k = \mathbf 0 \;\Rightarrow\; c_1 = \dots = c_k = 0 \Big) \]<div class="cap">The only way to mix them into zero is to use none of each. Otherwise one of them is a mix of the rest.</div></div>
+  <div class="math">\[ \mathbf p = a\,\mathbf b_1 + b\,\mathbf b_2 \;\Longleftrightarrow\; \begin{pmatrix} | & | \\ \mathbf b_1 & \mathbf b_2 \\ | & | \end{pmatrix}\begin{pmatrix} a \\ b\end{pmatrix} = \mathbf p \;\Longleftrightarrow\; \begin{pmatrix} a \\ b\end{pmatrix} = B^{-1}\mathbf p \]<div class="cap">Coordinates in a basis solve a system whose columns are the basis vectors; a basis makes <i>B</i> invertible (7.B.7).</div></div>
+  <div class="math">\[ \operatorname{rank} A = \dim \operatorname{span}(\text{columns of } A) = \text{number of pivots}, \qquad n\times n:\ \operatorname{rank} A = n \iff \det A \ne 0 \]</div>
+  <p>Counting pivots by hand is fine for 3 × 3; for real data a computer does it:</p>
+  <pre class="code"><code>import numpy as np                           # numerical arrays and linear algebra
+
+oats, milk, pb = [5, 27, 3], [8, 12, 8], [8, 6, 16]   # (protein, carbs, fat) per serving
+bar = [18, 60, 22]                           # a snack bar: 2 oats + 1 peanut butter
+F = np.array([oats, milk, pb, bar]).T        # foods as columns: a 3 × 4 matrix
+print(np.linalg.matrix_rank(F))              # 3: four foods, but only three independent directions
+print(np.linalg.matrix_rank(F[:, [0, 2, 3]])) # 2: oats, peanut butter and the bar span only a plane
+
+B = np.array([[2, -1], [1, 1]])              # basis vectors as columns: Main St (2, 1), Oak Ave (−1, 1)
+print(np.linalg.solve(B, [5, 4]))            # [3. 1.]: the point (5, 4) is 3 blocks along Main, 1 along Oak</code></pre>
+</section>
+
+<!-- ===================== §7 ===================== -->
+<section class="prose">
+  <h2><span class="n">7</span>Where this goes</h2>
+  <ul class="goes">
+    <li><b>Next:</b> this is the end of the Basics tier of linear algebra. The Undergraduate tier starts from here: vector spaces in general, the four subspaces of a matrix, and eigenvectors, the special directions a matrix only stretches.</li>
+    <li><b>Later in this book:</b> changing basis to make a problem simple is one of the most powerful ideas in mathematics, from diagonalising matrices to Fourier series, which write a sound as a mix of pure tones.</li>
+    <li><b>In the world:</b> RGB colour, compressing images and music by keeping only the most important directions, and spotting when columns in a data table carry the same information twice.</li>
+  </ul>
+</section>
+
+<!-- ===================== §8 ===================== -->
+<section class="prose">
+  <h2><span class="n">8</span>Words to know</h2>
+  <div class="vocab">
+    <div class="term"><b>Linear combination</b>A mix <i>c</i>₁<b>v</b>₁ + … + <i>c<sub>k</sub></i><b>v</b><sub><i>k</i></sub>: stretch each vector, then add.</div>
+    <div class="term"><b>Span</b>The set of all linear combinations of some vectors: everything they can reach.</div>
+    <div class="term"><b>Redundant vector</b>One that is already a mix of the others, so it adds nothing to the span.</div>
+    <div class="term"><b>Linearly dependent</b>Some vector in the set is a mix of the others (equivalently, a mix with not-all-zero amounts gives 0).</div>
+    <div class="term"><b>Linearly independent</b>No vector is a mix of the others; each adds a new direction.</div>
+    <div class="term"><b>Basis</b>An independent set whose span is the whole space. Every point is reached in exactly one way.</div>
+    <div class="term"><b>Coordinates (in a basis)</b>The amounts of each basis vector needed to reach a point.</div>
+    <div class="term"><b>Standard basis</b>î, ĵ (and k̂): the basis behind ordinary coordinates.</div>
+    <div class="term"><b>Dimension</b>The number of vectors in any basis: 1 for a line, 2 for a plane, 3 for space.</div>
+    <div class="term"><b>Rank</b>The number of independent columns of a matrix: the dimension of their span. Also the number of pivots.</div>
+    <div class="term"><b>Full rank</b>A square matrix whose columns are independent: rank <i>n</i>, det ≠ 0, invertible.</div>
+  </div>
+</section>
+
+<!-- ===================== Quiz ===================== -->
+<section class="prose"><h2><span class="n">9</span>Check yourself</h2>
+  <p>Four kinds of questions: independent or dependent, what the span is, coordinates in a basis, and rank.</p>
+</section>
+<section class="wide">
+  <div class="card" id="quiz">
+    <div class="card-h"><span class="tag">Quiz</span><h3 id="qTitle"></h3><span class="score" id="score">Score: 0 / 0</span></div>
+    <div class="qtext" id="qText"></div>
+    <div class="qmath" id="qMath"></div>
+    <div class="solo" id="qVisW" style="display:none;max-width:560px"><svg id="qSvg" viewBox="0 0 560 360"></svg></div>
+    <div class="choice" id="qChoice"></div>
+    <div class="inputs" id="qIn">
+      <div id="qBoxes" style="display:flex;gap:10px;align-items:flex-end"></div>
+      <div class="row" style="margin:0"><button class="primary" id="qCheck">Check</button></div>
+    </div>
+    <div class="row" style="margin:10px 0 0"><button id="qShow">Show answer</button><button id="qNew">New question</button></div>
+    <div class="err" id="qErr"></div>
+    <div class="feedback" id="qFb" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ===================== Pager (filled in by the shared navigation) ===================== -->
+<nav class="wide">
+  <div class="pager"></div>
+  <div class="meta">7.B.12 · Prerequisites: 7.B.6 (determinant), 7.B.9 (row reduction), 7.B.10 (3D) · Leads to: the Undergraduate tier of linear algebra (vector spaces, eigenvectors)</div>
+</nav>
+</main>
+
+<script>
+/* =====================================================================
+   1. HELPERS
+   ===================================================================== */
+const NS = 'http://www.w3.org/2000/svg';
+const $ = id => document.getElementById(id);
+function mk(tag, attrs, parent){ const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; }
+function txt(parent, x, y, s, cls, extra){
+  extra = Object.assign({}, extra || {});
+  if (extra['text-anchor']){ extra.style = (extra.style ? extra.style + ';' : '') + 'text-anchor:' + extra['text-anchor']; delete extra['text-anchor']; }
+  const t = mk('text', Object.assign({ x, y, class: cls || '' }, extra), parent); t.textContent = s; return t;
+}
+function num(x, d){ if (d === undefined) d = 2; const r = Math.round(x * Math.pow(10, d)) / Math.pow(10, d); return r === 0 ? '0' : (r < 0 ? '−' : '') + String(Math.abs(r)); }
+const pn = x => x < 0 ? `(${num(x)})` : num(x);
+const ri = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+const shuffle = a => { for (let i = a.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const ease = e => e < 0.5 ? 2 * e * e : 1 - Math.pow(-2 * e + 2, 2) / 2;
+function parseNum(s){
+  s = String(s).trim().replace(/[−–]/g, '-').replace(/\s+/g, '');
+  if (/^-?\d+(\.\d+)?$|^-?\.\d+$/.test(s)) return parseFloat(s);
+  const m = s.match(/^(-?\d+)\/(\d+)$/); if (m && +m[2] !== 0) return +m[1] / +m[2];
+  return NaN;
+}
+function readIds(ids, errId, msg){ const out = ids.map(id => parseNum($(id).value)); if (ids.some(id => $(id).value.trim() === '') || out.some(isNaN)){ $(errId).textContent = msg || 'Fill in every box with a number.'; return null; } $(errId).textContent = ''; return out; }
+function buttons(boxId, list, onPick){
+  list.forEach((p, i) => { const b = document.createElement('button'); b.className = 'preset'; b.innerHTML = p.n; b.onclick = () => onPick(i); $(boxId).appendChild(b); });
+  return i => [...$(boxId).children].forEach((b, j) => b.classList.toggle('on', j === i));
+}
+function svgPt(svg, ev){ const p = svg.createSVGPoint(); p.x = ev.clientX; p.y = ev.clientY; return p.matrixTransform(svg.getScreenCTM().inverse()); }
+const add = (a, b) => a.map((v, i) => v + b[i]);
+const sub = (a, b) => a.map((v, i) => v - b[i]);
+const scl = (k, a) => a.map(v => k * v);
+const dot = (a, b) => a.reduce((s, v, i) => s + v * b[i], 0);
+const len = a => Math.sqrt(dot(a, a));
+const cross = (a, b) => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
+const vstr = v => `(${v.map(x => num(x)).join(', ')})`;
+const EPS = 1e-9;
+// Row-reduce a copy of M (rows of numbers). Returns { R, piv } with R in reduced row echelon form.
+function rref(M){
+  const R = M.map(r => r.slice()), m = R.length, n = R[0].length, piv = [];
+  let row = 0;
+  for (let c = 0; c < n && row < m; c++){
+    let best = row; for (let i = row + 1; i < m; i++) if (Math.abs(R[i][c]) > Math.abs(R[best][c])) best = i;
+    if (Math.abs(R[best][c]) < 1e-9) continue;
+    [R[row], R[best]] = [R[best], R[row]];
+    const p = R[row][c]; R[row] = R[row].map(v => v / p);
+    for (let i = 0; i < m; i++) if (i !== row){ const f = R[i][c]; if (f) R[i] = R[i].map((v, j) => v - f * R[row][j]); }
+    piv.push(c); row++;
+  }
+  return { R, piv };
+}
+const colsToRows = cols => cols[0].map((_, i) => cols.map(c => c[i]));   // vectors as columns of a matrix
+const rankOf = cols => cols.length ? rref(colsToRows(cols)).piv.length : 0;
+// solve sum c_k cols_k = t; returns { ok, c } with free amounts set to 0
+function solveCols(cols, t){
+  const { R, piv } = rref(colsToRows(cols).map((r, i) => r.concat([t[i]])));
+  const k = cols.length;
+  if (piv.includes(k)) return { ok: false };
+  const c = Array(k).fill(0); piv.forEach((p, r) => c[p] = R[r][k]);
+  return { ok: true, c, free: k - piv.length };
+}
+// which vectors (in order) add nothing new; for each, its expression in the earlier independent ones
+function redundancy(cols){
+  const keep = [], red = [];
+  cols.forEach((v, i) => {
+    if (rankOf(keep.map(k => cols[k]).concat([v])) > keep.length) keep.push(i);
+    else { const s = keep.length ? solveCols(keep.map(k => cols[k]), v) : { ok: true, c: [] }; red.push({ i, using: keep.slice(), c: s.c || [] }); }
+  });
+  return { keep, red };
+}
+const NAMES2 = ['v₁', 'v₂', 'v₃'], CLS = ['k1', 'k2', 'k3'], COLV = ['var(--c1)', 'var(--c2)', 'var(--c3)'];
+function mixStr(r, names){                                  // "2·v₁ − 1·v₂"
+  if (!r.using.length) return '0 (the zero vector)';
+  const parts = r.using.map((k, j) => ({ k, c: r.c[j] })).filter(p => Math.abs(p.c) > 1e-9);
+  if (!parts.length) return '0';
+  return parts.map((p, j) => `${j ? (p.c < 0 ? ' − ' : ' + ') : (p.c < 0 ? '−' : '')}${num(Math.abs(p.c))}·<span class="${CLS[p.k]}">${names[p.k]}</span>`).join('');
+}
+// "2 × Red − 0.5 × Green": a sum of amount-times-name terms with tidy signs
+const signJoin = (terms, mul) => terms.map(([c, s], j) => `${j ? (c < 0 ? ' − ' : ' + ') : (c < 0 ? '−' : '')}${num(Math.abs(c))}${mul || '·'}${s}`).join('');
+const SPANW = ['just the origin (a point)', 'a line through the origin', 'the whole plane', 'all of 3D space'];
+const svgCss = document.createElement('style');
+svgCss.textContent = `
+  .grid{stroke:var(--line);stroke-width:1}
+  .axis{stroke:var(--ink);stroke-width:1.3;opacity:.55}
+  .tl{fill:var(--muted);font:500 10.5px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:3px}
+  .lab{font:700 14px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:4.5px}
+  .labS{font:600 12px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+  .cap{fill:var(--muted);font:600 11px var(--sans);letter-spacing:.07em;paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+`;
+document.head.appendChild(svgCss);
+/* ---------- a 2D plane with square units ---------- */
+function plane(svg, W, H, R, o){
+  o = o || {}; svg.innerHTML = '';
+  const u = Math.min((W - 20) / (2 * R), (H - 20) / (2 * R * (H / W > 1 ? 1 : H / W) * (W / H))) , cx = W / 2, cy = H / 2;
+  const U = Math.min((W - 20) / (2 * R * W / H), (H - 20) / (2 * R));
+  const X = x => cx + x * U, Y = y => cy - y * U;
+  const g = mk('g', {}, svg), m = mk('g', {}, svg), top = mk('g', {}, svg);
+  const xr = (W / 2) / U, yr = (H / 2) / U;
+  if (!o.noGrid){
+    for (let k = Math.ceil(-xr); k <= xr; k++) mk('line', { x1: X(k), y1: 0, x2: X(k), y2: H, class: 'grid' }, g);
+    for (let k = Math.ceil(-yr); k <= yr; k++) mk('line', { x1: 0, y1: Y(k), x2: W, y2: Y(k), class: 'grid' }, g);
+  }
+  mk('line', { x1: 0, y1: cy, x2: W, y2: cy, class: 'axis' }, g); mk('line', { x1: cx, y1: 0, x2: cx, y2: H, class: 'axis' }, g);
+  const step = U < 22 ? 2 : 1;
+  for (let k = Math.ceil(-xr); k <= xr; k++) if (k && k % step === 0 && Math.abs(X(k) - W) > 10 && X(k) > 10) txt(top, X(k), cy + 14, num(k), 'tl', { 'text-anchor': 'middle' });
+  for (let k = Math.ceil(-yr); k <= yr; k++) if (k && k % step === 0 && Y(k) > 10 && Y(k) < H - 6) txt(top, cx - 5, Y(k) + 4, num(k), 'tl', { 'text-anchor': 'end' });
+  return { X, Y, U, W, H, g, m, top, xr, yr, inv: (px, py) => [(px - cx) / U, (cy - py) / U] };
+}
+function arrow2(P, a, b, col, o){
+  o = o || {};
+  const x1 = P.X(a[0]), y1 = P.Y(a[1]), x2 = P.X(b[0]), y2 = P.Y(b[1]), L = Math.hypot(x2 - x1, y2 - y1), w = o.w || 3.5;
+  if (L < 3){ mk('circle', { cx: x2, cy: y2, r: 6, style: `fill:none;stroke:${col};stroke-width:2.5` }, o.layer || P.m); if (o.lab) txt(P.top, x2 + 10, y2 - 8, o.lab, 'lab', { style: `fill:${col}` }); return; }
+  const ux = (x2 - x1) / L, uy = (y2 - y1) / L, hs = Math.min(12, L * 0.45);
+  mk('line', { x1, y1, x2: x2 - ux * hs * .8, y2: y2 - uy * hs * .8, style: `stroke:${col};stroke-width:${w};opacity:${o.op ?? 1}${o.dash ? ';stroke-dasharray:' + o.dash : ''}` }, o.layer || P.m);
+  mk('polygon', { points: [[x2, y2], [x2 - hs * ux + hs * .5 * uy, y2 - hs * uy - hs * .5 * ux], [x2 - hs * ux - hs * .5 * uy, y2 - hs * uy + hs * .5 * ux]].map(p => p.join(',')).join(' '), style: `fill:${col};opacity:${o.op ?? 1}` }, o.layer || P.m);
+  if (o.lab) txt(P.top, x2 + ux * 14 + (o.ldx || 0), y2 + uy * 14 + 5 + (o.ldy || 0), o.lab, 'lab', { 'text-anchor': 'middle', style: `fill:${col}` });
+}
+
+/* =====================================================================
+   2. THE FOUR 3D VIEWS (shared with 7.B.10)
+   ===================================================================== */
+// each view turns a 3D point into flat (across, up) numbers; `toward` is the direction pointing at the viewer
+const VIEWS = {
+  C: { t: 'CORNER VIEW', p: q => [q[0] * 0.92 + q[1] * 0.42, q[2] + q[1] * 0.33 - q[0] * 0.24], toward: [-0.4, -0.7, 0.55] },
+  T: { t: 'TOP VIEW · looking down', hid: 'z points up at you', p: q => [q[0], q[1]], ax: [0, 1], toward: [0, 0, 1] },
+  F: { t: 'FRONT VIEW · looking north', hid: 'y points away from you', p: q => [q[0], q[2]], ax: [0, 2], toward: [0, -1, 0] },
+  S: { t: 'SIDE VIEW · looking west', hid: 'x points at you', p: q => [q[1], q[2]], ax: [1, 2], toward: [1, 0, 0] },
+};
+const AXC = ['var(--ci)', 'var(--cj)', 'var(--ck)'], AXN = ['x', 'y', 'z'];
+function mkViews(boxId, keys, W, H){                       // create the SVG panels inside a container
+  const box = $(boxId); box.innerHTML = '';
+  return keys.map(k => { const s = document.createElementNS(NS, 'svg'); s.setAttribute('viewBox', `0 0 ${W || 470} ${H || 300}`); box.appendChild(s); return { svg: s, key: k, W: W || 470, H: H || 300 }; });
+}
+// items: {k:'seg', a, b, c, w, dash, op} | {k:'arrow', a, b, c, w, lab, dash, op} | {k:'dot', p, c, r} | {k:'poly', pts, c, op} | {k:'text', p, s, c, dx, dy, anchor}
+// o.floor: draw a floor grid in the corner view; o.labels: tick labels on the flat views; o.pad
+function drawSet(panels, items, o){
+  o = o || {};
+  const pts = [[0, 0, 0]];
+  items.forEach(it => [it.a, it.b, it.p].concat(it.pts || []).forEach(q => { if (q) pts.push(q); }));
+  (o.extra || []).forEach(q => pts.push(q));
+  const lo = [0, 1, 2].map(i => Math.min(...pts.map(q => q[i]))), hi = [0, 1, 2].map(i => Math.max(...pts.map(q => q[i])));
+  const span = Math.max(1, ...[0, 1, 2].map(i => hi[i] - lo[i]));
+  const ext = o.ext !== undefined ? o.ext : span * 0.16;            // room for the axis labels past the content
+  const LO = lo.map(v => v - (v < 0 ? ext * 0.6 : ext * 0.25)), HI = hi.map(v => v + ext);
+  const box = [];                                                  // the 8 corners of the padded bounding box
+  for (const x of [LO[0], HI[0]]) for (const y of [LO[1], HI[1]]) for (const z of [LO[2], HI[2]]) box.push([x, y, z]);
+  const pad = o.pad || 22, top = 24;
+  // one scale for all panels, so lengths compare across views
+  const fits = panels.map(P => {
+    const V = VIEWS[P.key], pr = box.map(V.p);
+    const x0 = Math.min(...pr.map(p => p[0])), x1 = Math.max(...pr.map(p => p[0])), y0 = Math.min(...pr.map(p => p[1])), y1 = Math.max(...pr.map(p => p[1]));
+    return { x0, x1, y0, y1, u: Math.min((P.W - 2 * pad) / (x1 - x0 || 1), (P.H - pad - top) / (y1 - y0 || 1)) };
+  });
+  // the flat views share one scale, so lengths compare across them; the corner view gets its own
+  const flatU = fits.filter((f, n) => VIEWS[panels[n].key].ax).map(f => f.u), cornU = fits.filter((f, n) => !VIEWS[panels[n].key].ax).map(f => f.u);
+  const uF = Math.min(o.maxU || 90, ...flatU, 1e9), uC = Math.min(o.maxU || 90, ...cornU, 1e9);
+  let ret = Math.min(uF, uC);
+  panels.forEach((P, n) => {
+    const V = VIEWS[P.key], f = fits[n], svg = P.svg; svg.innerHTML = '';
+    const u = V.ax ? uF : uC;
+    const nice = px => [0.25, 0.5, 1, 2, 5, 10, 20, 50, 100].find(s => s * u >= px) || 200;
+    const g = o.grid || nice(15), gl = o.gridLab || nice(30);
+    const cx = P.W / 2 - u * (f.x0 + f.x1) / 2, cy = top + (P.H - top - pad) / 2 + u * (f.y0 + f.y1) / 2;
+    const S = q => { const p = V.p(q); return [cx + u * p[0], cy - u * p[1]]; };
+    const gg = mk('g', {}, svg), gi = mk('g', {}, svg), gt = mk('g', {}, svg);
+    if (V.ax){                                                     // flat view: square grid, two labelled axes
+      const a = V.ax, X0 = (0 - cx) / u, X1 = (P.W - cx) / u, Y0 = (cy - P.H) / u, Y1 = cy / u;
+      for (let v = Math.ceil(X0 / g) * g; v <= X1; v += g) mk('line', { x1: cx + u * v, y1: top - 4, x2: cx + u * v, y2: P.H, class: 'grid' }, gg);
+      for (let v = Math.ceil(Y0 / g) * g; v <= Y1; v += g) if (cy - u * v > top - 4) mk('line', { x1: 0, y1: cy - u * v, x2: P.W, y2: cy - u * v, class: 'grid' }, gg);
+      mk('line', { x1: 0, y1: cy, x2: P.W, y2: cy, class: 'axis' }, gg);
+      mk('line', { x1: cx, y1: top - 4, x2: cx, y2: P.H, class: 'axis' }, gg);
+      txt(gt, P.W - 8, cy - 7, AXN[a[0]], 'lab', { 'text-anchor': 'end', style: `fill:${AXC[a[0]]}` });
+      txt(gt, cx + 8, top + 12, AXN[a[1]], 'lab', { style: `fill:${AXC[a[1]]}` });
+      if (o.labels !== false){
+        for (let v = Math.ceil(X0 / gl) * gl; v <= X1; v += gl) if (Math.abs(v) > 1e-9 && cx + u * v > 14 && cx + u * v < P.W - 22) txt(gt, cx + u * v, cy + 14, num(v), 'tl', { 'text-anchor': 'middle' });
+        for (let v = Math.ceil(Y0 / gl) * gl; v <= Y1; v += gl) if (Math.abs(v) > 1e-9 && cy - u * v > top + 18 && cy - u * v < P.H - 6) txt(gt, cx - 5, cy - u * v + 4, num(v), 'tl', { 'text-anchor': 'end' });
+      }
+    } else {                                                       // corner view: floor grid and three axes
+      if (o.floor !== false){
+        const x0 = Math.floor(LO[0] / g) * g, x1 = Math.ceil(HI[0] / g) * g, y0 = Math.floor(LO[1] / g) * g, y1 = Math.ceil(HI[1] / g) * g;
+        for (let x = x0; x <= x1 + 1e-9; x += g){ const A = S([x, y0, 0]), B = S([x, y1, 0]); mk('line', { x1: A[0], y1: A[1], x2: B[0], y2: B[1], class: 'grid' }, gg); }
+        for (let y = y0; y <= y1 + 1e-9; y += g){ const A = S([x0, y, 0]), B = S([x1, y, 0]); mk('line', { x1: A[0], y1: A[1], x2: B[0], y2: B[1], class: 'grid' }, gg); }
+      }
+      [0, 1, 2].forEach(i => {
+        const a = [0, 0, 0], b = [0, 0, 0]; a[i] = Math.min(0, LO[i]); b[i] = HI[i];
+        const A = S(a), B = S(b);
+        mk('line', { x1: A[0], y1: A[1], x2: B[0], y2: B[1], class: 'axis' }, gg);
+        const d = Math.hypot(B[0] - A[0], B[1] - A[1]) || 1;
+        txt(gt, B[0] + 10 * (B[0] - A[0]) / d, B[1] + 10 * (B[1] - A[1]) / d + 5, AXN[i], 'lab', { 'text-anchor': 'middle', style: `fill:${AXC[i]}` });
+      });
+    }
+    // panel title (with what the view hides)
+    mk('rect', { x: 0, y: 0, width: P.W, height: top - 4, style: 'fill:var(--bg);opacity:.85' }, gt);
+    txt(gt, 10, 15, V.t + (V.hid && P.W >= 400 ? '  ·  ' + V.hid : ''), 'cap');
+    // the scene
+    items.forEach(it => {
+      if (it.k === 'poly'){ mk('polygon', { points: it.pts.map(q => S(q).join(',')).join(' '), style: `fill:${it.c};opacity:${it.op ?? .2};stroke:none` }, it.layer === 'top' ? gt : gi); return; }
+      if (it.k === 'seg'){ const A = S(it.a), B = S(it.b); mk('line', { x1: A[0], y1: A[1], x2: B[0], y2: B[1], style: `stroke:${it.c};stroke-width:${it.w || 2};opacity:${it.op ?? 1};stroke-linecap:round${it.dash ? ';stroke-dasharray:' + it.dash : ''}` }, gi); return; }
+      if (it.k === 'dot'){ const A = S(it.p); mk('circle', { cx: A[0], cy: A[1], r: it.r || 5, style: `fill:${it.c};stroke:var(--bg);stroke-width:1.5` }, gi); return; }
+      if (it.k === 'text'){ const A = S(it.p); txt(gt, A[0] + (it.dx || 0), A[1] + (it.dy || 0), it.s, it.cls || 'labS', { 'text-anchor': it.anchor || 'start', style: `fill:${it.c}` }); return; }
+      if (it.k === 'arrow'){
+        const A = S(it.a), B = S(it.b), L = Math.hypot(B[0] - A[0], B[1] - A[1]), w = it.w || 3, st = `stroke:${it.c};stroke-width:${w};opacity:${it.op ?? 1}${it.dash ? ';stroke-dasharray:' + it.dash : ''}`;
+        const v3 = sub(it.b, it.a);
+        if (len(v3) < 1e-9) return;
+        if (L < 6){                                                // pointing straight at or away from the viewer: ⊙ or ⊗
+          const at = dot(v3, V.toward) > 0;
+          mk('circle', { cx: B[0], cy: B[1], r: 7, style: `fill:var(--bg);stroke:${it.c};stroke-width:2;opacity:${it.op ?? 1}` }, gi);
+          if (at) mk('circle', { cx: B[0], cy: B[1], r: 2.2, style: `fill:${it.c}` }, gi);
+          else { mk('line', { x1: B[0] - 4, y1: B[1] - 4, x2: B[0] + 4, y2: B[1] + 4, style: `stroke:${it.c};stroke-width:2` }, gi); mk('line', { x1: B[0] - 4, y1: B[1] + 4, x2: B[0] + 4, y2: B[1] - 4, style: `stroke:${it.c};stroke-width:2` }, gi); }
+          if (it.lab) txt(gt, B[0] + 11, B[1] - 8, it.lab, 'lab', { style: `fill:${it.c}` });
+          return;
+        }
+        const ux = (B[0] - A[0]) / L, uy = (B[1] - A[1]) / L, hs = Math.min(11, L * 0.45);
+        mk('line', { x1: A[0], y1: A[1], x2: B[0] - ux * hs * 0.8, y2: B[1] - uy * hs * 0.8, style: st }, gi);
+        const p = [[B[0], B[1]], [B[0] - hs * ux + hs * 0.5 * uy, B[1] - hs * uy - hs * 0.5 * ux], [B[0] - hs * ux - hs * 0.5 * uy, B[1] - hs * uy + hs * 0.5 * ux]];
+        mk('polygon', { points: p.map(q => q.join(',')).join(' '), style: `fill:${it.c};opacity:${it.op ?? 1}` }, gi);
+        if (it.lab) txt(gt, B[0] + ux * 13 + (it.ldx || 0), B[1] + uy * 13 + 5 + (it.ldy || 0), it.lab, 'lab', { 'text-anchor': 'middle', style: `fill:${it.c}` });
+      }
+    });
+  });
+  return ret;
+}
+const CUBE_E = [[[0,0,0],[1,0,0]],[[0,0,0],[0,1,0]],[[0,0,0],[0,0,1]],[[1,0,0],[1,1,0]],[[1,0,0],[1,0,1]],[[0,1,0],[1,1,0]],[[0,1,0],[0,1,1]],[[0,0,1],[1,0,1]],[[0,0,1],[0,1,1]],[[1,1,0],[1,1,1]],[[1,0,1],[1,1,1]],[[0,1,1],[1,1,1]]];
+function boxEdges(a, b){ return CUBE_E.map(([p, q]) => [p.map((v, i) => v ? b[i] : a[i]), q.map((v, i) => v ? b[i] : a[i])]); }
+
+
+
+/* =====================================================================
+   3. MAIN: span builder and basis grid (2D)
+   ===================================================================== */
+const mPresets = [
+  { n: 'Standard î, ĵ', v: [[1, 0], [0, 1], null], c: [3, 2, 0], d: 'The usual basis. The mix 3î + 2ĵ is the point (3, 2): ordinary coordinates are coordinates in this basis.' },
+  { n: 'Slanted streets', v: [[2, 1], [-1, 1], null], c: [3, 1, 0], d: 'Main Street runs along v₁ = (2, 1), Oak Avenue along v₂ = (−1, 1). “3 blocks along Main, 1 along Oak” lands at (5, 4). Switch to the basis grid.' },
+  { n: 'Parallel pair', v: [[1, 2], [-2, -4], null], c: [1, 1, 0], d: 'v₂ = −2·v₁: both lie on one line. Together they still only reach that line.' },
+  { n: 'Three in the plane', v: [[2, 0], [0, 1], [2, 2]], c: [1, 1, 1], d: 'Two independent arrows already fill the plane, so a third is always a mix of them: here v₃ = 1·v₁ + 2·v₂.' },
+  { n: 'One vector', v: [[2, 1], null, null], c: [2, 0, 0], d: 'One arrow reaches a line: all its stretches, forwards and backwards.' },
+  { n: 'With the zero vector', v: [[1, 2], [0, 0], null], c: [1, 3, 0], d: 'v₂ is the zero vector. It adds nothing, so the set is dependent however v₁ looks.' },
+];
+const M = { v: [[1, 0], [0, 1], null], c: [3, 2, 0], mode: 1, e: 1, anim: null, P: [5, 4] };
+(function(){                                                  // vector input columns with an on/off toggle for v₂ and v₃
+  $('mVecs').innerHTML = [0, 1, 2].map(k => `<div class="vin" id="mvw${k}"><span class="h ${CLS[k]}">${NAMES2[k]}${k ? ` <input type="checkbox" id="mon${k}" style="width:auto;vertical-align:middle">` : ''}</span><div class="col" style="border-color:${COLV[k]}"><input id="mv${k}0" type="text" inputmode="decimal" autocomplete="off" style="border-color:${COLV[k]}"><input id="mv${k}1" type="text" inputmode="decimal" autocomplete="off" style="border-color:${COLV[k]}"></div></div>`).join('');
+  [0, 1, 2].forEach(k => ['0', '1'].forEach(j => $('mv' + k + j).addEventListener('focus', e => e.target.select())));
+  [1, 2].forEach(k => $('mon' + k).addEventListener('change', () => { const on = $('mon' + k).checked; M.v[k] = on ? (M.v[k] || [1, 1]) : null; mFill(); mDraw(); }));
+  [0, 1, 2].forEach(k => $('mc' + k).addEventListener('focus', e => e.target.select()));
+})();
+function mFill(){
+  [0, 1, 2].forEach(k => { const v = M.v[k]; $('mvw' + k).classList.toggle('off', !v); if (k) $('mon' + k).checked = !!v; ['0', '1'].forEach((j, t) => $('mv' + k + j).value = v ? num(v[t]).replace('−', '-') : ''); $('mc' + k).value = num(M.c[k]).replace('−', '-'); });
+}
+let MP = null;
+function mDraw(){
+  const svg = $('mSvg'), P = MP = plane(svg, 960, 470, 5);
+  const act = [0, 1, 2].filter(k => M.v[k]), vs = act.map(k => M.v[k]);
+  const R = rankOf(vs), red = redundancy(vs).red.map(r => ({ i: act[r.i], using: r.using.map(u => act[u]), c: r.c }));
+  const redSet = new Set(red.map(r => r.i));
+  const indep = act.filter(k => !redSet.has(k));
+  if (M.mode === 1){
+    // span shading
+    if (R === 2) mk('rect', { x: 0, y: 0, width: 960, height: 470, style: 'fill:var(--cs);opacity:.16' }, P.g);
+    if (R === 1){ const d = M.v[indep[0]], s = 30 / len(d); mk('line', { x1: P.X(-s * d[0]), y1: P.Y(-s * d[1]), x2: P.X(s * d[0]), y2: P.Y(s * d[1]), style: 'stroke:var(--cs);stroke-width:14;opacity:.45' }, P.g); }
+    // the mix, built head to tail
+    const e = ease(M.e); let p = [0, 0];
+    act.forEach((k, t) => {
+      const seg = Math.max(0, Math.min(1, e * act.length - t)), step = scl(M.c[k] * seg, M.v[k]);
+      if (seg > 0 && len(step) > 1e-9) arrow2(P, p, add(p, step), COLV[k], { w: 2.5, dash: '6 4', op: .9 });
+      p = add(p, step);
+    });
+    if (M.e > 0) mk('circle', { cx: P.X(p[0]), cy: P.Y(p[1]), r: 7, style: 'fill:var(--ct);stroke:var(--bg);stroke-width:2' }, P.m);
+    if (M.e >= 1) txt(P.top, P.X(p[0]) + 11, P.Y(p[1]) + 18, vstr(p), 'labS', { style: 'fill:var(--ct)' });
+    M.mix = p;
+  } else {
+    // basis grid along v₁, v₂ (only if they are independent)
+    const b1 = M.v[0], b2 = M.v[1];
+    if (b1 && b2 && Math.abs(b1[0] * b2[1] - b1[1] * b2[0]) > 1e-9){
+      for (let k = -14; k <= 14; k++){
+        const a = add(scl(k, b1), scl(-30, b2)), b = add(scl(k, b1), scl(30, b2));
+        mk('line', { x1: P.X(a[0]), y1: P.Y(a[1]), x2: P.X(b[0]), y2: P.Y(b[1]), style: `stroke:var(--c2);stroke-width:${k ? 1 : 2};opacity:${k ? .35 : .8}` }, P.g);
+        const c = add(scl(k, b2), scl(-30, b1)), d = add(scl(k, b2), scl(30, b1));
+        mk('line', { x1: P.X(c[0]), y1: P.Y(c[1]), x2: P.X(d[0]), y2: P.Y(d[1]), style: `stroke:var(--c1);stroke-width:${k ? 1 : 2};opacity:${k ? .35 : .8}` }, P.g);
+      }
+      const s = solveCols([b1, b2], M.P);
+      const [a, b] = s.c;
+      arrow2(P, [0, 0], scl(a, b1), 'var(--c1)', { w: 2.5, dash: '6 4' });
+      arrow2(P, scl(a, b1), M.P, 'var(--c2)', { w: 2.5, dash: '6 4' });
+      M.coords = [a, b];
+    } else M.coords = null;
+    mk('circle', { cx: P.X(M.P[0]), cy: P.Y(M.P[1]), r: 8, style: 'fill:var(--ct);stroke:var(--bg);stroke-width:2;cursor:grab' }, P.m);
+    txt(P.top, P.X(M.P[0]) + 12, P.Y(M.P[1]) - 10, 'P ' + vstr(M.P), 'lab', { style: 'fill:var(--ct)' });
+  }
+  // the vectors themselves, with draggable tips
+  act.forEach(k => arrow2(P, [0, 0], M.v[k], redSet.has(k) ? 'var(--wrong)' : COLV[k], { lab: NAMES2[k], w: 4 }));
+  act.forEach(k => mk('circle', { cx: P.X(M.v[k][0]), cy: P.Y(M.v[k][1]), r: 12, style: 'fill:transparent;cursor:grab', 'data-v': k }, P.top));
+  // verdicts and readout
+  $('mV1').className = 'verdict ' + (red.length ? 'bad' : 'ok');
+  $('mV1').textContent = red.length ? `✕ Dependent: ${red.map(r => NAMES2[r.i]).join(', ')} add${red.length > 1 ? '' : 's'} nothing new` : '✓ Independent';
+  $('mV2').textContent = `Span: ${SPANW[R]} · dimension ${R}`;
+  let s = '';
+  if (M.mode === 1){
+    s = `<b>The mix:</b> ${act.map(k => `${pn(M.c[k])}·<span class="${CLS[k]}">${NAMES2[k]}</span>`).join(' + ')} = <span class="kt">${vstr(M.mix)}</span>.<br>`;
+    s += `<b>Span:</b> ${SPANW[R]}. ` + (R === 2 ? 'Any point of the plane can be built from these arrows.' : R === 1 ? 'Every mix lands on the shaded line, no matter which amounts you choose.' : 'Only the origin.');
+    red.forEach(r => s += `<br><span class="kbad">${NAMES2[r.i]} is redundant:</span> ${NAMES2[r.i]} = ${mixStr(r, NAMES2)}, so it’s already in the span of ${r.using.length ? r.using.map(k => NAMES2[k]).join(' and ') : 'nothing (it is zero)'}.`);
+    if (act.length === 3 && R === 2) s += '<br>Three arrows in a plane are always dependent: the plane has room for only two directions.';
+    if (!red.length && R === 2 && act.length === 2) s += '<br>Two independent arrows in the plane: a <b>basis</b>. Switch to the basis grid to see coordinates.';
+  } else {
+    if (!M.coords) s = '<span class="kbad">v₁ and v₂ are not a basis</span> (one is missing, zero, or they’re parallel): the grid would collapse onto a line, and most points would have no coordinates at all.';
+    else { const [a, b] = M.coords; s = `<b>P = ${vstr(M.P)}</b> in ordinary coordinates. In the basis <span class="k1">v₁</span>, <span class="k2">v₂</span>: P = <span class="k1">${num(a)}</span>·v₁ + <span class="k2">${num(b)}</span>·v₂, so its coordinates are <b>(${num(a)}, ${num(b)})</b>` + (M.v[0][0] === 2 && M.v[0][1] === 1 && M.v[1][0] === -1 && M.v[1][1] === 1 ? `: ${num(a)} blocks along Main St, ${num(b)} along Oak Ave.` : '.') + ' Same point, different numbers: coordinates depend on the basis. Drag P to explore; whole-number coordinates sit on grid crossings.'; }
+    if (act.length === 3) s += '<br>(The grid uses v₁ and v₂; v₃ is ignored here.)';
+  }
+  $('mOut').innerHTML = s;
+}
+function mStop(){ if (M.anim){ cancelAnimationFrame(M.anim); M.anim = null; } $('mPlay').textContent = 'Play'; }
+function mPlay(){
+  if (M.anim){ mStop(); return; }
+  if (M.mode !== 1){ mMode(1); }
+  $('mPlay').textContent = 'Pause';
+  const t0 = performance.now(), from = M.e >= 1 ? 0 : M.e, dur = 2400 * (1 - from);
+  const step = now => { const t = Math.min(1, (now - t0) / dur); M.e = from + (1 - from) * t; mDraw(); if (t < 1) M.anim = requestAnimationFrame(step); else mStop(); };
+  M.anim = requestAnimationFrame(step);
+}
+function mMode(m){ M.mode = m; $('mM1').classList.toggle('on', m === 1); $('mM2').classList.toggle('on', m === 2); mDraw(); }
+$('mM1').onclick = () => { mStop(); mMode(1); };
+$('mM2').onclick = () => { mStop(); mMode(2); };
+const mMark = buttons('mPresets', mPresets, i => { mStop(); const p = mPresets[i]; M.v = p.v.map(v => v && v.slice()); M.c = p.c.slice(); M.P = i === 1 ? [5, 4] : [3, 2]; mMark(i); $('mDesc').textContent = p.d; $('mErr').textContent = ''; mFill(); M.e = 0; mDraw(); mPlay(); });
+$('mUse').onclick = () => {
+  const vs = [];
+  for (let k = 0; k < 3; k++){ if (k && !$('mon' + k).checked){ vs.push(null); continue; } const v = readIds(['mv' + k + '0', 'mv' + k + '1'], 'mErr'); if (!v) return; if (Math.abs(v[0]) > 8 || Math.abs(v[1]) > 4.5){ $('mErr').textContent = 'Keep vectors on the picture: x between −8 and 8, y between −4.5 and 4.5.'; return; } vs.push(v); }
+  const c = readIds(['mc0', 'mc1', 'mc2'], 'mErr'); if (!c) return;
+  if (c.some(t => Math.abs(t) > 6)){ $('mErr').textContent = 'Keep the amounts c between −6 and 6.'; return; }
+  mStop(); M.v = vs; M.c = c; mMark(-1); $('mDesc').textContent = 'Your own vectors.'; M.e = 0; mDraw(); mPlay();
+};
+$('mPlay').onclick = mPlay;
+(function(){                                                   // drag vector tips (or P in grid mode)
+  const svg = $('mSvg'); let drag = null;
+  svg.addEventListener('pointerdown', ev => {
+    const k = ev.target.getAttribute && ev.target.getAttribute('data-v');
+    const q = svgPt(svg, ev), [x, y] = MP.inv(q.x, q.y);
+    if (k !== null && k !== undefined && k !== '' && ev.target.getAttribute('data-v') !== null) drag = +k;
+    else if (M.mode === 2) drag = 'P';
+    else return;
+    mStop(); M.e = 1; svg.setPointerCapture(ev.pointerId);
+  });
+  svg.addEventListener('pointermove', ev => {
+    if (drag === null) return;
+    const q = svgPt(svg, ev), [x, y] = MP.inv(q.x, q.y);
+    const v = [Math.max(-8, Math.min(8, Math.round(x * 2) / 2)), Math.max(-4.5, Math.min(4.5, Math.round(y * 2) / 2))];
+    if (drag === 'P') M.P = v; else M.v[drag] = v;
+    mMark(-1); $('mDesc').textContent = drag === 'P' ? 'Drag P around the slanted grid.' : 'Your own vectors.'; mFill(); mDraw();
+  });
+  svg.addEventListener('pointerup', () => drag = null);
+})();
+
+/* =====================================================================
+   4. SPAN IN SPACE (3D)
+   ===================================================================== */
+const sPresets = [
+  { n: 'Three axes', v: [[1, 0, 0], [0, 1, 0], [0, 0, 1]], d: 'î, ĵ, k̂: independent, rank 3, the standard basis of space.' },
+  { n: 'Two in the floor', v: [[2, 0, 0], [0, 2, 0], [1, 1, 0]], d: 'All three have height 0, so they lie in the floor: rank 2, span = the floor plane. w = ½u + ½v.' },
+  { n: 'Tilted plane', v: [[1, 0, 1], [0, 1, 1], [1, 1, 2]], d: 'w = u + v. The span is a tilted plane through the origin (the “flat but tilted” matrix from 7.B.10).' },
+  { n: 'All on a line', v: [[1, 1, 1], [2, 2, 2], [-1, -1, -1]], d: 'All three are stretches of (1, 1, 1): rank 1, span = a line.' },
+  { n: 'General', v: [[2, 1, 0], [0, 1, 2], [1, 0, 1]], d: 'No obvious pattern, and in fact independent: rank 3, det = 4.' },
+];
+const SN = ['u', 'v', 'w'];
+(function(){
+  $('sIns').innerHTML = [0, 1, 2].map(k => `<div class="vin"><span class="h ${CLS[k]}">${SN[k]}</span><div class="col" style="border-color:${COLV[k]}">${[0, 1, 2].map(j => `<input id="s${k}${j}" type="text" inputmode="decimal" autocomplete="off" style="border-color:${COLV[k]}">`).join('')}</div></div>`).join('') + '<div class="row" style="margin:0;align-self:flex-end"><button class="primary" id="sGo">Use these</button></div>';
+  [0, 1, 2].forEach(k => [0, 1, 2].forEach(j => $('s' + k + j).addEventListener('focus', e => e.target.select())));
+})();
+const sViews = mkViews('sV', ['C', 'T', 'F', 'S']);
+let SV = sPresets[0].v;
+function sDraw(){
+  const vs = SV, R = rankOf(vs), rd = redundancy(vs), redSet = new Set(rd.red.map(r => r.i)), items = [];
+  const L = Math.max(2, ...vs.map(len)) * 1.3;
+  if (R === 2){                                                // a square patch of the plane, from two independent directions
+    const a = vs[rd.keep[0]], b0 = vs[rd.keep[1]];
+    const e1 = scl(1 / len(a), a), bb = sub(b0, scl(dot(b0, e1), e1)), e2 = scl(1 / len(bb), bb);
+    const c = [[-1, -1], [1, -1], [1, 1], [-1, 1]].map(([s, t]) => add(scl(s * L, e1), scl(t * L, e2)));
+    items.push({ k: 'poly', pts: c, c: 'var(--cs)', op: .3 });
+    for (let t = -2; t <= 2; t++){ items.push({ k: 'seg', a: add(scl(-L, e1), scl(t * L / 2, e2)), b: add(scl(L, e1), scl(t * L / 2, e2)), c: 'var(--cs)', w: 1, op: .7 }); items.push({ k: 'seg', a: add(scl(t * L / 2, e1), scl(-L, e2)), b: add(scl(t * L / 2, e1), scl(L, e2)), c: 'var(--cs)', w: 1, op: .7 }); }
+  }
+  if (R === 1){ const d = vs[rd.keep[0]], e = scl(L * 1.2 / len(d), d); items.push({ k: 'seg', a: scl(-1, e), b: e, c: 'var(--cs)', w: 8, op: .55 }); }
+  vs.forEach((v, k) => items.push({ k: 'arrow', a: [0, 0, 0], b: v, c: redSet.has(k) ? 'var(--wrong)' : COLV[k], w: 3.5, lab: SN[k] }));
+  drawSet(sViews, items, {});
+  const d3 = dot(vs[0], cross(vs[1], vs[2]));
+  $('sV1').className = 'verdict ' + (rd.red.length ? 'bad' : 'ok');
+  $('sV1').textContent = rd.red.length ? `✕ Dependent (${rd.red.map(r => SN[r.i]).join(', ')} redundant)` : '✓ Independent: a basis of space';
+  $('sV2').textContent = `Rank ${R} · span: ${SPANW[R === 2 ? 2 : R].replace('the whole plane', 'a plane through the origin')}`;
+  let s = `Put the vectors in as the columns of a 3 × 3 matrix: det = <b>${num(d3)}</b>. ` + (Math.abs(d3) > EPS ? 'Not zero, so the columns are independent: rank 3, and they reach all of space.' : `Zero, so the columns are dependent: rank ${R}, and they reach only ${R === 2 ? 'a plane' : R === 1 ? 'a line' : 'the origin'}.`);
+  rd.red.forEach(r => s += `<br><span class="kbad">${SN[r.i]} is redundant:</span> ${SN[r.i]} = ${mixStr(r, SN)}.`);
+  s += `<br>Row reduction finds the same count: ${R} pivot${R === 1 ? '' : 's'}.`;
+  $('sOut').innerHTML = s;
+  [0, 1, 2].forEach(k => [0, 1, 2].forEach(j => $('s' + k + j).value = num(vs[k][j]).replace('−', '-')));
+}
+const sMark = buttons('sPresets', sPresets, i => { SV = sPresets[i].v.map(v => v.slice()); sMark(i); $('sDesc').textContent = sPresets[i].d; $('sErr').textContent = ''; sDraw(); });
+$('sGo').onclick = () => { const ids = [0, 1, 2].flatMap(k => [0, 1, 2].map(j => 's' + k + j)), v = readIds(ids, 'sErr'); if (!v) return; if (v.some(t => Math.abs(t) > 8)){ $('sErr').textContent = 'Keep the entries between −8 and 8.'; return; } SV = [v.slice(0, 3), v.slice(3, 6), v.slice(6, 9)]; sMark(-1); $('sDesc').textContent = 'Your own vectors.'; sDraw(); };
+
+/* =====================================================================
+   5. FOODS AS NUTRIENT VECTORS
+   ===================================================================== */
+const FOODS = [
+  { n: 'Oats', v: [5, 27, 3] }, { n: 'Milk', v: [8, 12, 8] }, { n: 'Peanut butter', v: [8, 6, 16] },
+  { n: 'Oat-PB bar', v: [18, 60, 22], note: '2 oats + 1 peanut butter' }, { n: 'Eggs', v: [13, 1, 10] },
+];
+const fPresets = [
+  { n: 'Three basics', on: [0, 1, 2], t: [26, 72, 30], d: 'Oats, milk and peanut butter are independent: every target has exactly one answer (here 2 oats, 1 milk, 1 peanut butter).' },
+  { n: 'Add the bar', on: [0, 1, 2, 3], t: [26, 72, 30], d: 'The bar is 2 oats + 1 peanut butter: redundant. The same target can now be hit in endlessly many ways.' },
+  { n: 'Bar instead of milk', on: [0, 2, 3], t: [26, 72, 30], d: 'Oats, peanut butter and the bar: only two independent foods, so only a plane of targets. Without milk, this target is out of reach.' },
+  { n: 'Only two foods', on: [0, 4], t: [36, 56, 26], d: 'Oats and eggs span a plane of targets. This one happens to lie in it: 2 oats + 2 eggs.' },
+];
+const FS = { on: new Set([0, 1, 2]), t: [26, 72, 30] };
+(function(){ FOODS.forEach((f, i) => { const b = document.createElement('button'); b.textContent = f.n; b.onclick = () => { FS.on.has(i) ? FS.on.delete(i) : FS.on.add(i); fMark(-1); $('fDesc').textContent = 'Your own pantry.'; fDraw(); }; $('fFoods').appendChild(b); }); })();
+function fDraw(){
+  [...$('fFoods').children].forEach((b, i) => b.classList.toggle('on', FS.on.has(i)));
+  const idx = [...FS.on].sort((a, b) => a - b), cols = idx.map(i => FOODS[i].v), t = FS.t;
+  if (!idx.length){ $('fTab').innerHTML = ''; $('fOut').innerHTML = 'Pick at least one food.'; $('fV1').textContent = ''; $('fV2').textContent = ''; return; }
+  const R = rankOf(cols), rd = redundancy(cols), redSet = new Set(rd.red.map(r => idx[r.i])), sol = solveCols(cols, t);
+  $('fTab').innerHTML = `<table class="ftab"><tr><th>Food</th><th>Protein</th><th>Carbs</th><th>Fat</th><th>Servings</th></tr>` +
+    idx.map((i, k) => `<tr class="${redSet.has(i) ? 'red' : ''}"><td style="text-align:left">${FOODS[i].n}${redSet.has(i) ? ' (redundant)' : ''}</td>${FOODS[i].v.map(v => `<td>${v}</td>`).join('')}<td>${sol.ok ? num(sol.c[k]) : '—'}</td></tr>`).join('') +
+    `<tr><td style="text-align:left"><b>Target</b></td>${t.map(v => `<td><b>${num(v)}</b></td>`).join('')}<td></td></tr></table>`;
+  $('fV1').className = 'verdict ' + (rd.red.length ? 'bad' : 'ok'); $('fV1').textContent = rd.red.length ? '✕ Dependent foods' : '✓ Independent foods';
+  $('fV2').textContent = `Rank ${R}: targets reachable form ${R === 3 ? 'all of nutrient space' : R === 2 ? 'a plane' : 'a line'}`;
+  let s = '';
+  if (!sol.ok) s = `<span class="kbad">No exact mix hits this target.</span> These foods only span ${R === 2 ? 'a plane' : 'a line'} of nutrient vectors, and (${t.join(', ')}) isn’t on it.`;
+  else {
+    s = `Servings: ${idx.map((i, k) => `${num(sol.c[k])} ${FOODS[i].n}`).join(', ')}. Check: ${['protein', 'carbs', 'fat'].map((nm, r) => `${nm} ${idx.map((i, k) => `${num(sol.c[k])}·${FOODS[i].v[r]}`).join(' + ')} = ${num(t[r])}`).join('; ')}.`;
+    if (sol.c.some(c => c < -1e-9)) s += ' <span class="kbad">A negative serving: mathematically in the span, but not a meal you can eat.</span>';
+    if (sol.free) s += `<br>Because a food is redundant, this isn’t the only answer: there are infinitely many. For example, swap one bar for 2 oats + 1 peanut butter.`;
+  }
+  rd.red.forEach(r => s += `<br><span class="kbad">${FOODS[idx[r.i]].n} adds nothing new:</span> ${FOODS[idx[r.i]].n} = ${signJoin(r.using.map((u, j) => [r.c[j], FOODS[idx[u]].n]).filter(t => Math.abs(t[0]) > 1e-9), ' ')}.`);
+  $('fOut').innerHTML = s;
+  ['fP', 'fC', 'fF'].forEach((id, k) => $(id).value = num(t[k]));
+}
+const fMark = buttons('fPresets', fPresets, i => { FS.on = new Set(fPresets[i].on); FS.t = fPresets[i].t.slice(); fMark(i); $('fDesc').textContent = fPresets[i].d; $('fErr').textContent = ''; fDraw(); });
+$('fGo').onclick = () => { const v = readIds(['fP', 'fC', 'fF'], 'fErr'); if (!v) return; if (v.some(t => t < 0 || t > 500)){ $('fErr').textContent = 'Use targets from 0 to 500 grams.'; return; } FS.t = v; fMark(-1); $('fDesc').textContent = 'Your own target.'; fDraw(); };
+['fP', 'fC', 'fF'].forEach(id => $(id).addEventListener('focus', e => e.target.select()));
+
+/* =====================================================================
+   6. COLOURED LIGHTS
+   ===================================================================== */
+const lSets = [
+  { n: 'Red, Green, Blue', L: [['Red', [1, 0, 0]], ['Green', [0, 1, 0]], ['Blue', [0, 0, 1]]], d: 'The standard basis of colour: the amounts are just the colour’s own R, G, B numbers.' },
+  { n: 'Yellow, Cyan, Magenta', L: [['Yellow', [1, 1, 0]], ['Cyan', [0, 1, 1]], ['Magenta', [1, 0, 1]]], d: 'Also independent, so also a basis: every colour has exactly one recipe, but some recipes need negative light.' },
+  { n: 'Red, Green, Yellow', L: [['Red', [1, 0, 0]], ['Green', [0, 1, 0]], ['Yellow', [1, 1, 0]]], d: 'Yellow = Red + Green: dependent. These lights reach only colours with no blue.' },
+];
+const lTargets = [['Orange', [1, 0.5, 0]], ['Purple', [0.5, 0, 0.5]], ['White', [1, 1, 1]], ['Teal', [0, 0.5, 0.5]], ['Brown', [0.6, 0.3, 0.1]]];
+const LS = { s: 0, t: [1, 0.5, 0] };
+const css = v => `rgb(${v.map(x => Math.round(255 * Math.max(0, Math.min(1, x)))).join(',')})`;
+function lDraw(){
+  const set = lSets[LS.s].L, cols = set.map(l => l[1]), t = LS.t, sol = solveCols(cols, t), R = rankOf(cols), rd = redundancy(cols), redSet = new Set(rd.red.map(r => r.i));
+  let html = set.map(([n, v], k) => `<div class="lt ${redSet.has(k) ? 'red' : ''}"><div class="sw2" style="background:${css(v)}"></div>${n}<small>${sol.ok ? '× ' + num(sol.c[k]) : '—'}</small></div>`).join('<div class="lt"><span class="op">+</span></div>');
+  const mix = sol.ok ? cols.reduce((s, v, k) => add(s, scl(sol.c[k], v)), [0, 0, 0]) : null;
+  html += `<div class="lt"><span class="op">=</span></div><div class="lt"><div class="sw2" style="background:${mix ? css(mix) : 'repeating-linear-gradient(45deg,var(--line),var(--line) 6px,transparent 6px,transparent 12px)'}"></div>Mix<small>${mix ? vstr(mix) : 'none'}</small></div>`;
+  html += `<div class="lt" style="margin-left:24px"><div class="sw2" style="background:${css(t)}"></div>Target<small>${vstr(t)}</small></div>`;
+  $('lRow').innerHTML = html;
+  $('lV1').className = 'verdict ' + (rd.red.length ? 'bad' : 'ok'); $('lV1').textContent = rd.red.length ? `✕ Dependent: rank ${R}, not a basis` : '✓ Independent: a basis of colour';
+  let s = !sol.ok ? `<span class="kbad">These lights can’t make this colour.</span> They span only the colours with blue = 0 (a plane), and the target has blue ${num(t[2])}.`
+    : `Recipe: ${signJoin(set.map(([n], k) => [sol.c[k], n]), ' × ')} = ${vstr(t)}.` + (sol.c.some(c => c < -1e-9) ? ' <span class="kbad">A negative amount of light isn’t possible with real lamps</span>: the colour is in the span mathematically, but a screen built on these lights couldn’t show it.' : '') + (sol.free ? ' Other recipes work too, because one light is redundant.' : '');
+  rd.red.forEach(r => s += `<br><span class="kbad">${set[r.i][0]} is redundant:</span> ${set[r.i][0]} = ${signJoin(r.using.map((u, j) => [r.c[j], set[u][0]]).filter(t => Math.abs(t[0]) > 1e-9))}.`);
+  $('lOut').innerHTML = s;
+  ['lR', 'lG', 'lB'].forEach((id, k) => $(id).value = num(t[k]));
+}
+const lMark = buttons('lSets', lSets, i => { LS.s = i; lMark(i); $('lDesc').textContent = lSets[i].d; lDraw(); });
+const ltMark = buttons('lTargets', lTargets.map(t => ({ n: t[0] })), i => { LS.t = lTargets[i][1].slice(); ltMark(i); $('lErr').textContent = ''; lDraw(); });
+$('lGo').onclick = () => { const v = readIds(['lR', 'lG', 'lB'], 'lErr'); if (!v) return; if (v.some(t => t < 0 || t > 1)){ $('lErr').textContent = 'Use amounts from 0 to 1.'; return; } LS.t = v; ltMark(-1); lDraw(); };
+['lR', 'lG', 'lB'].forEach(id => $(id).addEventListener('focus', e => e.target.select()));
+
+/* =====================================================================
+   7. TRAPS
+   ===================================================================== */
+(function(){
+  drawSet([{ svg: $('tr1'), key: 'C', W: 300, H: 210 }], [
+    { k: 'poly', pts: [[-0.5, -0.5, 0], [1.6, -0.5, 0], [1.6, 1.6, 0], [-0.5, 1.6, 0]], c: 'var(--cs)', op: .3 },
+    { k: 'arrow', a: [0, 0, 0], b: [1, 0, 0], c: 'var(--c1)', w: 3, lab: 'u' }, { k: 'arrow', a: [0, 0, 0], b: [0, 1, 0], c: 'var(--c2)', w: 3, lab: 'v' }, { k: 'arrow', a: [0, 0, 0], b: [1, 1, 0], c: 'var(--wrong)', w: 3, lab: 'u+v' }], { ext: 0.4, floor: false });
+  let P = plane($('tr2'), 300, 210, 3.4);
+  [[2, 1], [-1, 2], [1, -2], [-2, -1]].forEach((v, k) => arrow2(P, [0, 0], v, k < 2 ? COLV[k] : 'var(--wrong)', { w: 3 }));
+  P = plane($('tr3'), 300, 210, 3.4);
+  arrow2(P, [0, 0], [2, 1], 'var(--c1)', { w: 3, lab: 'v₁' });
+  mk('circle', { cx: P.X(0), cy: P.Y(0), r: 7, style: 'fill:none;stroke:var(--wrong);stroke-width:2.5' }, P.m);
+  txt(P.top, P.X(0) - 10, P.Y(0) + 20, '0', 'lab', { 'text-anchor': 'end', style: 'fill:var(--wrong)' });
+})();
+
+/* =====================================================================
+   8. QUIZ
+   ===================================================================== */
+const Q = { right: 0, total: 0 };
+let qq = null;
+const qTitles = { ind: 'Independent or dependent?', span: 'What is the span?', coord: 'Coordinates in a basis', rank: 'Rank' };
+function qReset(){ ['qMath', 'qChoice', 'qBoxes'].forEach(id => $(id).innerHTML = ''); $('qVisW').style.display = 'none'; $('qFb').className = 'feedback'; $('qFb').innerHTML = ''; $('qErr').textContent = ''; $('qIn').style.display = ''; }
+function qScore(ok){ if (qq.counted) return; qq.counted = true; Q.total++; if (ok) Q.right++; $('score').textContent = `Score: ${Q.right} / ${Q.total}`; }
+function qFeedback(ok, html){ $('qFb').className = 'feedback ' + (ok ? 'ok' : 'bad'); $('qFb').innerHTML = (ok ? '<b>Right.</b> ' : '<b>Not quite.</b> ') + html; }
+function qBoxes(labels){ $('qBoxes').innerHTML = labels.map((l, k) => `<label class="field sm"><span>${l}</span><input id="qx${k}" type="text" inputmode="decimal" autocomplete="off"></label>`).join(''); labels.forEach((_, k) => { const i = $('qx' + k); i.addEventListener('focus', e => e.target.select()); i.addEventListener('input', () => $('qErr').textContent = ''); i.addEventListener('keydown', e => { if (e.key === 'Enter') $('qCheck').click(); }); }); }
+function qChoices(list, correctIdx, explain){
+  $('qIn').style.display = 'none'; qq.correctIdx = correctIdx; qq.explainFn = explain;
+  list.forEach((c, k) => { const b = document.createElement('button'); b.innerHTML = c; b.onclick = () => { const ok = k === correctIdx; qScore(ok); [...$('qChoice').children].forEach((x, j) => { x.classList.remove('right', 'wrong'); if (j === k) x.classList.add(ok ? 'right' : 'wrong'); }); qFeedback(ok, explain(k)); }; $('qChoice').appendChild(b); });
+}
+const colHtml = (v, k) => `<span class="mshow" style="grid-template-columns:auto;border-color:${COLV[k]}">${v.map(x => `<span class="${CLS[k]}">${num(x)}</span>`).join('')}</span>`;
+// a random set of vectors with a chosen rank: independent ones first, the rest as small whole-number mixes
+function makeSet(dim, k, r){
+  let base;
+  do { base = Array.from({ length: r }, () => Array.from({ length: dim }, () => ri(-3, 3))); } while (rankOf(base) < r || base.some(v => len(v) === 0));
+  const out = base.slice();
+  while (out.length < k){ const c = base.map(() => pick([-2, -1, 1, 2])); const v = base.reduce((s, b, j) => add(s, scl(c[j], b)), Array(dim).fill(0)); if (len(v) > 0 && Math.max(...v.map(Math.abs)) <= 8) out.push(v); }
+  return shuffle(out);
+}
+function qSetText(vs){ return vs.map((v, k) => `<b class="${CLS[k]}">${NAMES2[k]}</b> = ${colHtml(v, k)}`).join('&nbsp;&nbsp;&nbsp;'); }
+function qInd(){
+  const dim = pick([2, 3, 3]), k = dim === 2 ? 2 : pick([2, 3]), dep = Math.random() < 0.5;
+  const r = dep ? k - 1 : k, vs = makeSet(dim, k, r);
+  qq.vs = vs;
+  $('qText').innerHTML = `Are these vectors linearly independent?`;
+  $('qMath').innerHTML = qSetText(vs);
+  const rd = redundancy(vs);
+  const why = !rd.red.length ? (k === 2 ? 'Neither is a multiple of the other, so each adds a new direction.' : `det of the 3 × 3 matrix with these columns is ${num(dot(vs[0], cross(vs[1], vs[2])))}, not zero, so no vector is a mix of the others.`)
+    : `${NAMES2[rd.red[0].i]} = ${mixStr(rd.red[0], NAMES2)}: it’s a mix of the others, so the set is dependent.` + (k === 3 ? ` (Check: the determinant of the matrix with these columns is 0.)` : '');
+  qChoices(['Independent', 'Dependent'], rd.red.length ? 1 : 0, () => why);
+}
+function qSpan(){
+  const dim = pick([2, 3, 3]), k = dim === 2 ? pick([1, 2, 3]) : pick([2, 3]);
+  const r = dim === 2 ? (k === 1 ? 1 : pick([1, 2])) : pick([1, 2, 2, 3].filter(x => x <= k));
+  const vs = makeSet(dim, k, r);
+  $('qText').innerHTML = `What is the span of these vectors (in ${dim === 2 ? 'the plane' : '3D space'})?`;
+  $('qMath').innerHTML = qSetText(vs);
+  const opts = dim === 2 ? ['A single point', 'A line', 'The whole plane'] : ['A single point', 'A line', 'A plane', 'All of 3D space'];
+  const correct = r;
+  const rd = redundancy(vs);
+  const why = `Rank ${r}: ${r} independent direction${r > 1 ? 's' : ''}` + (rd.red.length ? `, because ${rd.red.map(x => `${NAMES2[x.i]} = ${mixStr(x, NAMES2)}`).join(' and ')}` : '') + `. So the span is ${dim === 2 && r === 2 ? 'the whole plane' : ['a point', 'a line', 'a plane', 'all of 3D space'][r]}.`;
+  qChoices(opts, correct, j => (j > correct ? 'Count only the independent vectors, not all of them. ' : '') + why);
+}
+function qCoord(){
+  let b1, b2, d; do { b1 = [ri(-2, 3), ri(-2, 3)]; b2 = [ri(-2, 3), ri(-2, 3)]; d = b1[0] * b2[1] - b1[1] * b2[0]; } while (Math.abs(d) < 1 || Math.abs(d) > 3 || len(b1) === 0 || len(b2) === 0 || (b1[0] === 1 && b1[1] === 0 && b2[0] === 0 && b2[1] === 1));
+  let a, b, p; do { a = ri(-3, 3); b = ri(-3, 3); p = add(scl(a, b1), scl(b, b2)); } while (a === 0 || b === 0 || Math.abs(p[0]) > 7 || Math.abs(p[1]) > 4.5);
+  qq.ans = [a, b]; qq.p = p; qq.b1 = b1; qq.b2 = b2;
+  $('qText').innerHTML = `In the basis <b class="k1">b₁</b>, <b class="k2">b₂</b>, find the coordinates of the point <b>p</b>: the amounts <i>a</i>, <i>b</i> with <b>p</b> = <i>a</i><b>b₁</b> + <i>b</i><b>b₂</b>.`;
+  $('qMath').innerHTML = `<b class="k1">b₁</b> = ${colHtml(b1, 0)} &nbsp; <b class="k2">b₂</b> = ${colHtml(b2, 1)} &nbsp; <b class="kt">p</b> = <span class="mshow" style="grid-template-columns:auto">${p.map(x => `<span class="kt">${num(x)}</span>`).join('')}</span>`;
+  // a slanted-grid picture
+  $('qVisW').style.display = '';
+  const P = plane($('qSvg'), 560, 360, 5);
+  for (let k = -12; k <= 12; k++){
+    const A1 = add(scl(k, b1), scl(-30, b2)), A2 = add(scl(k, b1), scl(30, b2)), B1 = add(scl(k, b2), scl(-30, b1)), B2 = add(scl(k, b2), scl(30, b1));
+    mk('line', { x1: P.X(A1[0]), y1: P.Y(A1[1]), x2: P.X(A2[0]), y2: P.Y(A2[1]), style: 'stroke:var(--c2);stroke-width:1;opacity:.3' }, P.g);
+    mk('line', { x1: P.X(B1[0]), y1: P.Y(B1[1]), x2: P.X(B2[0]), y2: P.Y(B2[1]), style: 'stroke:var(--c1);stroke-width:1;opacity:.3' }, P.g);
+  }
+  arrow2(P, [0, 0], b1, 'var(--c1)', { lab: 'b₁' }); arrow2(P, [0, 0], b2, 'var(--c2)', { lab: 'b₂' });
+  mk('circle', { cx: P.X(p[0]), cy: P.Y(p[1]), r: 7, style: 'fill:var(--ct);stroke:var(--bg);stroke-width:2' }, P.m);
+  txt(P.top, P.X(p[0]) + 10, P.Y(p[1]) - 10, 'p', 'lab', { style: 'fill:var(--ct)' });
+  qq.P = P;
+  qBoxes(['a (b₁)', 'b (b₂)']);
+  qq.explain = `p = ${pn(a)}·${vstr(b1)} + ${pn(b)}·${vstr(b2)} = ${vstr(p)}. Solve the system: ${num(b1[0])}a + ${pn(b2[0])}b = ${num(p[0])} and ${num(b1[1])}a + ${pn(b2[1])}b = ${num(p[1])}, or count steps along the slanted grid.`;
+}
+function qCoordCheck(x){
+  const ok = Math.abs(x[0] - qq.ans[0]) < 1e-6 && Math.abs(x[1] - qq.ans[1]) < 1e-6; let why = qq.explain;
+  if (!ok){
+    if (Math.abs(x[0] - qq.p[0]) < 1e-6 && Math.abs(x[1] - qq.p[1]) < 1e-6) why = 'Those are p’s ordinary coordinates (in î, ĵ). In this basis the numbers are different. ' + why;
+    else if (Math.abs(x[0] - qq.ans[1]) < 1e-6 && Math.abs(x[1] - qq.ans[0]) < 1e-6) why = 'Swapped: a goes with b₁, b with b₂. ' + why;
+    else { const got = add(scl(x[0], qq.b1), scl(x[1], qq.b2)); why = `Your amounts reach ${vstr(got)}, not ${vstr(qq.p)}. ` + why; }
+  }
+  return [ok, why];
+}
+function qRank(){
+  const m = 3, n = pick([3, 3, 4]), r = pick([1, 2, 2, 3]);
+  const cols = makeSet(m, n, r);
+  qq.ans = [r]; qq.cols = cols;
+  const rows = colsToRows(cols);
+  $('qText').innerHTML = 'What is the rank of this matrix (the number of independent columns)?';
+  $('qMath').innerHTML = `<span class="mshow" style="grid-template-columns:repeat(${n},auto)">${rows.map(row => row.map(v => `<span>${num(v)}</span>`).join('')).join('')}</span>`;
+  qBoxes(['rank =']);
+  const rd = redundancy(cols);
+  const ORD = ['1st', '2nd', '3rd', '4th'];
+  qq.explain = `Rank ${r}. ` + (rd.red.length ? rd.red.map(x => `Column ${x.i + 1} = ${signJoin(x.using.map((u, j) => [x.c[j], `(column ${u + 1})`]).filter(t => Math.abs(t[0]) > 1e-9))}`).join('; ') + `. That leaves ${r} independent column${r > 1 ? 's' : ''}; row reduction would show ${r} pivot${r > 1 ? 's' : ''}.` : 'All columns are independent; row reduction gives a pivot in every row.');
+}
+function qRankCheck(x){
+  const ok = Math.abs(x[0] - qq.ans[0]) < 1e-9; let why = qq.explain;
+  if (!ok && x[0] === qq.cols.length) why = 'That’s the number of columns. Columns that are mixes of others don’t count. ' + why;
+  else if (!ok && x[0] > 3) why = 'Rank can’t exceed 3 here: the columns live in 3D space, which has room for only 3 independent directions. ' + why;
+  return [ok, why];
+}
+let lastType = null;
+function qNew(){
+  qReset();
+  let t; do { t = pick(['ind', 'span', 'coord', 'rank']); } while (t === lastType);
+  lastType = t; qq = { type: t, counted: false };
+  $('qTitle').textContent = qTitles[t];
+  ({ ind: qInd, span: qSpan, coord: qCoord, rank: qRank })[t]();
+}
+$('qCheck').onclick = () => {
+  const ins = [...$('qBoxes').querySelectorAll('input')], x = ins.map(i => parseNum(i.value));
+  if (ins.some(i => i.value.trim() === '') || x.some(isNaN)){ $('qErr').textContent = 'Fill in every box with a number.'; return; }
+  const r = qq.type === 'coord' ? qCoordCheck(x) : qRankCheck(x);
+  qScore(r[0]); qFeedback(r[0], r[1]);
+  if (qq.type === 'coord' && r[0]){ const P = qq.P, a1 = scl(qq.ans[0], qq.b1); arrow2(P, [0, 0], a1, 'var(--c1)', { w: 2.5, dash: '6 4' }); arrow2(P, a1, qq.p, 'var(--c2)', { w: 2.5, dash: '6 4' }); }
+};
+$('qShow').onclick = () => {
+  qScore(false);
+  if (qq.correctIdx !== undefined){ [...$('qChoice').children].forEach((b, j) => { if (j === qq.correctIdx) b.classList.add('right'); }); qFeedback(false, qq.explainFn(qq.correctIdx)); return; }
+  [...$('qBoxes').querySelectorAll('input')].forEach((inp, k) => inp.value = num(qq.ans[k]).replace('−', '-'));
+  if (qq.type === 'coord'){ const P = qq.P, a1 = scl(qq.ans[0], qq.b1); arrow2(P, [0, 0], a1, 'var(--c1)', { w: 2.5, dash: '6 4' }); arrow2(P, a1, qq.p, 'var(--c2)', { w: 2.5, dash: '6 4' }); }
+  $('qFb').className = 'feedback bad'; $('qFb').innerHTML = '<b>Answer filled in.</b> ' + qq.explain;
+};
+$('qNew').onclick = qNew;
+
+/* =====================================================================
+   9. START
+   ===================================================================== */
+mMark(1); $('mDesc').textContent = mPresets[1].d; M.v = mPresets[1].v.map(v => v && v.slice()); M.c = mPresets[1].c.slice(); M.P = [5, 4]; mFill(); M.e = 1; mDraw();
+$('sPresets').children[2].click();
+$('fPresets').children[1].click();
+lMark(1); $('lDesc').textContent = lSets[1].d; ltMark(0); lDraw();
+qNew();
+</script>
+</body></html>

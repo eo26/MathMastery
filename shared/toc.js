@@ -50,7 +50,7 @@ window.MM_TOC = [
     { id: '7.B.9', title: 'Solving Systems by Row Reduction', url: 'https://claude.ai/artifact/8yhAHvXRAJ2SxwGiDAe9rh', built: true },
     { id: '7.B.10', title: 'Into 3D: Vectors and 3×3 Matrices', url: 'https://claude.ai/artifact/U8YcoeyAFMKjQ3r7mgxSib', built: true },
     { id: '7.B.11', title: 'Matrices of Any Size: Adding, Scaling and the Transpose', url: 'https://claude.ai/artifact/FnVPLrVpmFDcBMWfJfi6jh', built: true },
-    { id: '7.B.12', title: 'Independence, Basis and Dimension: A First Look' },
+    { id: '7.B.12', title: 'Independence, Basis and Dimension: A First Look', url: 'https://claude.ai/artifact/8UTdHpsth25zojKbs5W35u', built: true },
   ]},
   { ch: 8, title: 'Calculus', pages: [
     { id: '8.B.1', title: 'Limits' },
