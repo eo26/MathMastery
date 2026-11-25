@@ -18,7 +18,7 @@ window.MM_TOC = [
   { ch: 3, title: 'Algebra', pages: [
     { id: '3.B.1', title: 'Variables and Expressions', url: 'https://claude.ai/artifact/6fExFPeNF327tdXHEaVSTy', built: true },
     { id: '3.B.2', title: 'Solving Linear Equations', url: 'https://claude.ai/artifact/PGZB9tUZfzmZiNvFEYvvz1', built: true },
-    { id: '3.B.3', title: 'Inequalities and Absolute Value' },
+    { id: '3.B.3', title: 'Inequalities and Absolute Value', url: 'https://claude.ai/artifact/EcLW5Z8CSZcTXuhMcGaTBv', built: true },
     { id: '3.B.4', title: 'Functions', url: 'https://claude.ai/artifact/92mC3PVdh8myeadhnbZcmR', built: true },
     { id: '3.B.5', title: 'Lines: Slope and Linear Functions', url: 'https://claude.ai/artifact/Xk3rrnoAVSyi8jmMqVoSKK', built: true },
     { id: '3.B.6', title: 'Systems of Linear Equations', url: 'https://claude.ai/artifact/LrkSikg8hPYrZDCGphD4Wh', built: true },

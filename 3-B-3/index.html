@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Inequalities and Absolute Value</title>
+<!-- Fonts: a book serif for prose, a clean sans for UI, a mono for numbers -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<!-- MathJax renders the few formulas on the page (SVG output needs no external stylesheet) -->
+<script>
+  window.MathJax = { tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] }, svg: { fontCache: 'global' } };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<style>
+/* ===================== Theme ===================== */
+:root{
+  --bg:#f7f5ef; --paper:#ffffff; --ink:#1f1e1d; --muted:#6b6a66; --line:#e4e0d5; --line2:#c9c5b8;
+  --accent:#534AB7; --accent-bg:#EEEDFE;
+  --pos:#1D9E75; --neg:#D85A30; --pt:#7F77DD; --pt-soft:#AFA9EC; --pt-dark:#534AB7;
+  --pos-new:#9FE1CB; --neg-new:#F0997B; --ok:#3B6D11; --ok-bg:#EAF3DE; --bad:#A32D2D; --bad-bg:#FCEBEB; --note-bg:#FAF3E3; --note-line:#E7C98A;
+  --serif:"Source Serif 4", Georgia, "Times New Roman", serif;
+  --sans:"IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#191817; --paper:#232220; --ink:#ecebe6; --muted:#a3a29c; --line:#383733; --line2:#55534e;
+    --accent:#AFA9EC; --accent-bg:#2c2852; --pt-dark:#CECBF6; --pt-soft:#6f68b8; --pos-new:#5DCAA5; --neg-new:#F5C4B3;
+    --ok:#C0DD97; --ok-bg:#24400d; --bad:#F7C1C1; --bad-bg:#5a1c1c; --note-bg:#2b261b; --note-line:#6b5626;
+  }
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.7 var(--serif);-webkit-font-smoothing:antialiased}
+
+/* ===================== Layout ===================== */
+.topbar{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1000px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:14px;font:500 13px/1 var(--sans);color:var(--muted)}
+.brand{color:var(--ink);font-weight:600;letter-spacing:.02em}
+.brand b{color:var(--accent)}
+.crumbs{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pid{font-family:var(--mono);color:var(--accent);background:var(--accent-bg);padding:4px 8px;border-radius:6px}
+.prose{max-width:720px;margin:0 auto;padding:0 20px}
+.wide{max-width:1000px;margin:0 auto;padding:0 20px}
+
+/* ===================== Hero ===================== */
+.hero{padding:48px 0 12px}
+.kicker{font:600 13px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1{font:700 46px/1.1 var(--serif);margin:12px 0 14px;letter-spacing:-.01em}
+.dek{font-size:21px;color:var(--muted);margin:0 0 22px;font-style:italic}
+.tiers{display:flex;gap:6px;flex-wrap:wrap;font:500 13px/1 var(--sans);margin-bottom:8px}
+.tier{padding:7px 12px;border-radius:999px;border:1px solid var(--line2);color:var(--muted)}
+.tier.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.tier small{opacity:.7;margin-left:4px}
+
+/* ===================== Text elements ===================== */
+h2{font:700 28px/1.25 var(--serif);margin:56px 0 10px;display:flex;gap:12px;align-items:baseline}
+h2 .n{font:600 14px/1 var(--mono);color:var(--accent);min-width:28px}
+p{margin:0 0 16px}
+em.key{font-style:normal;background:linear-gradient(transparent 62%,var(--accent-bg) 62%);padding:0 2px}
+.goals{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:18px 22px;margin:22px 0 0;font:15.5px/1.6 var(--sans)}
+.goals h3{font:600 12px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
+.goals ul{margin:0;padding-left:20px}
+.note{background:var(--note-bg);border-left:4px solid var(--note-line);border-radius:0 10px 10px 0;padding:14px 18px;margin:20px 0;font:15.5px/1.6 var(--sans)}
+.note b{font-weight:600}
+.notice{list-style:none;padding:0;margin:8px 0 18px;counter-reset:n}
+.notice li{position:relative;padding:12px 0 12px 46px;border-top:1px solid var(--line)}
+.notice li:last-child{border-bottom:1px solid var(--line)}
+.notice li::before{counter-increment:n;content:counter(n);position:absolute;left:4px;top:13px;width:26px;height:26px;border-radius:50%;background:var(--accent-bg);color:var(--accent);font:600 13px/26px var(--mono);text-align:center}
+.goes{list-style:none;padding:0;margin:8px 0 18px}
+.goes li{padding:12px 0;border-top:1px solid var(--line)}
+.goes li:last-child{border-bottom:1px solid var(--line)}
+.math{overflow-x:auto;margin:12px 0 18px;padding:14px 18px;background:var(--paper);border:1px solid var(--line);border-radius:12px}
+.math .cap{font:14px/1.5 var(--sans);color:var(--muted);margin-top:4px}
+.mono{font-family:var(--mono);font-size:.92em;white-space:nowrap}
+.pos{color:var(--pos);font-weight:600}.neg{color:var(--neg);font-weight:600}.pt{color:var(--pt-dark);font-weight:600}
+
+/* ===================== Vocabulary ===================== */
+.vocab{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin:14px 0 8px}
+.term{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font:14.5px/1.5 var(--sans)}
+.term b{display:block;font:600 15px/1.3 var(--serif);margin-bottom:4px}
+
+/* ===================== Interactive cards ===================== */
+.card{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:18px 20px 20px;margin:26px 0;box-shadow:0 1px 0 var(--line),0 12px 32px -22px rgba(0,0,0,.25);font-family:var(--sans)}
+.card-h{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.card-h .tag{font:600 11px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--accent);background:var(--accent-bg);padding:5px 8px;border-radius:6px}
+.card-h h3{font:600 18px/1.3 var(--sans);margin:0}
+.card-h .sub{color:var(--muted);font-size:14.5px;flex-basis:100%}
+.panel-label{font:600 11px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:12px 0 4px;display:flex;justify-content:space-between}
+.panel-label span:last-child{letter-spacing:0;text-transform:none;font-weight:500}
+svg.nl{display:block;width:100%;height:auto;border:1px solid var(--line);border-radius:12px;background:var(--bg);touch-action:manipulation}
+svg.clickable{cursor:pointer}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:12px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0}
+button{font:500 14px/1 var(--sans);padding:9px 14px;border-radius:9px;border:1px solid var(--line2);background:var(--paper);color:var(--ink);cursor:pointer;transition:background .15s,border-color .15s}
+button:hover{border-color:var(--ink)}
+button.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+button.preset.on{background:var(--accent-bg);border-color:var(--accent);color:var(--accent)}
+button:disabled{opacity:.45;cursor:default}
+.desc{min-height:24px;color:var(--muted);font-size:14.5px;margin:2px 0 6px}
+.inputs{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;margin:12px 0 4px}
+.field{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.field input{width:92px;font:500 18px/1 var(--mono);padding:9px 10px;border-radius:9px;border:2px solid var(--line2);background:var(--bg);color:var(--ink);text-align:center}
+.field input:focus{outline:none;border-color:var(--accent)}
+.field i,.eq i,.sym{font:italic 600 1.15em var(--serif);text-transform:none;letter-spacing:0;color:var(--pt-dark)}
+.field.start input{border-color:var(--pt-soft)}
+.field.slide input{border-color:var(--pt)}
+.eq{font:500 20px/1 var(--mono);padding:10px 14px;background:var(--bg);border-radius:10px;border:1px solid var(--line)}
+.err{color:var(--bad);font-size:14px;min-height:20px;margin:2px 0}
+.readout{margin-top:12px;padding:12px 14px;background:var(--bg);border-radius:10px;border:1px solid var(--line);font-size:15px;line-height:1.55;min-height:48px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:12px;font-size:13px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{display:inline-block;width:14px;height:14px;border-radius:50%}
+.sw.pos{background:var(--pos)}.sw.neg{border:2.4px solid var(--neg)}
+.sw.x{position:relative;background:var(--pos);opacity:.45}.sw.x::after{content:'✕';position:absolute;inset:-1px 0 0 0;color:var(--neg);font:700 13px/1 var(--sans);text-align:center}
+.sw.posnew{background:var(--pos-new);border:1.5px solid var(--pos)}.sw.negnew{border:2.4px solid var(--neg-new)}.sw.pt{background:var(--pt)}
+.sw.mv{width:22px;height:4px;border-radius:2px;background:var(--pt-soft)}
+.sw.rl{width:22px;height:0;border-top:2px dashed var(--ink);border-radius:0;opacity:.7}
+.feedback{margin-top:10px;padding:12px 14px;border-radius:10px;font-size:15px;line-height:1.55;display:none}
+.feedback.ok{display:block;background:var(--ok-bg);color:var(--ok)}
+.feedback.bad{display:block;background:var(--bad-bg);color:var(--bad)}
+.feedback.info{display:block;background:var(--accent-bg);color:var(--accent)}
+.score{margin-left:auto;font:600 14px/1 var(--mono);color:var(--muted)}
+
+/* ===================== Footer nav ===================== */
+.pager{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:56px 0 18px;font-family:var(--sans)}
+.pager a,.pager div{display:block;padding:16px 18px;border:1px solid var(--line);border-radius:14px;background:var(--paper);color:var(--ink);text-decoration:none}
+.pager small{display:block;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.pager .next{text-align:right}
+.pager .soon{opacity:.6}
+.meta{font:13px/1.6 var(--sans);color:var(--muted);text-align:center;padding:10px 0 50px}
+
+@media (max-width:720px){
+  body{font-size:17px}
+  h1{font-size:34px}
+  .dek{font-size:18px}
+  h2{font-size:24px}
+  .card{padding:14px 12px 16px;border-radius:14px}
+  .crumbs{display:none}
+  svg.nl{min-width:640px}
+}
+</style>
+<meta name="mm-site" content="1">
+<link rel="stylesheet" href="../shared/nav.css">
+</head>
+<body>
+<style>
+/* ===================== Page-specific styles (3.B.3) ===================== */
+/* left side = purple, right side = orange, the solution set = teal, the test point = blue, wrong = red */
+:root{ --cl:#7F77DD; --cr:#E08A2E; --sol:#1D9E75; --tp:#2F6FDB; --no:#D8443A; --yes:#1D9E75; --ghost:#B4B2A9; --c2:#B86E00; }
+@media (prefers-color-scheme:dark){ :root{ --cl:#AFA9EC; --cr:#F2B266; --sol:#5DCAA5; --tp:#6EA2F5; --no:#F07B72; --yes:#5DCAA5; --ghost:#6b6a65; --c2:#FFB547; } }
+.kl{color:var(--cl);font-weight:700}.kr{color:var(--cr);font-weight:700}.ks{color:var(--sol);font-weight:700}.kt{color:var(--tp);font-weight:700}.kn{color:var(--no);font-weight:700}.ky{color:var(--yes);font-weight:700}
+svg{user-select:none;-webkit-user-select:none}
+.solo svg{width:100%;height:auto;display:block;background:var(--bg);border:1px solid var(--line);border-radius:10px;margin-top:10px}
+.inputs .grp{display:flex;gap:8px;align-items:flex-end;padding-right:12px;border-right:1px dashed var(--line);margin-right:4px}
+.inputs .grp:last-of-type{border-right:none}
+.field.sm input{width:62px}.field.fl input{border-color:var(--cl)}.field.fr input{border-color:var(--cr)}.field.ft input{border-color:var(--tp)}
+.syms{display:flex;gap:4px}.syms button{min-width:40px;font:600 17px var(--mono);padding:6px 8px}
+.syms button.on{background:var(--accent-bg);border-color:var(--accent);color:var(--accent)}
+.toggle button.on{background:var(--bad-bg);border-color:var(--bad);color:var(--bad)}
+.toggle2 button.on{background:var(--accent-bg);border-color:var(--accent);color:var(--accent)}
+.moves{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:8px}
+.moves .lab{font:600 12px var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.moves button{font-family:var(--mono)}
+.bigeq{font:600 28px var(--mono);text-align:center;margin:10px 0 0}
+.log{margin:8px 0 0;padding:0;list-style:none;font:15px var(--mono)}
+.log li{display:grid;grid-template-columns:120px 260px 1fr;gap:12px;padding:4px 10px;border-bottom:1px dashed var(--line)}
+.log li .why{font:14px var(--sans);color:var(--muted)}
+.log li.flip .why{color:var(--c2);font-weight:600}.log li.bad .why{color:var(--no);font-weight:600}
+.verdict{display:inline-block;font:600 15px var(--sans);padding:6px 12px;border-radius:8px;margin:8px 8px 0 0}
+.verdict.ok{background:var(--ok-bg);color:var(--ok)}.verdict.bad{background:var(--bad-bg);color:var(--bad)}
+.legend span span{display:inline}
+.traps{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:8px}
+.traps .t{border:1px solid var(--line);border-radius:10px;background:var(--bg);padding:10px}
+.traps .t h4{margin:0 0 4px;font:600 15px var(--sans)}
+.traps .t p{margin:6px 0 0;font-size:14.5px;line-height:1.5;color:var(--muted)}
+.traps svg{width:100%;height:auto;display:block}
+.qtext{font:17px/1.55 var(--serif);margin:4px 0 10px}
+.qexpr{font:600 24px var(--mono);margin:4px 0 10px}
+.qvis{display:flex;justify-content:center;margin:6px 0}
+.qvis svg{width:640px;height:auto;background:var(--bg);border:1px solid var(--line);border-radius:10px}
+.choice{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 0}.choice button{min-width:120px;font-family:var(--mono)}
+.choice button.right{border-color:var(--ok);background:var(--ok-bg);color:var(--ok)}.choice button.wrong{border-color:var(--bad);background:var(--bad-bg);color:var(--bad)}
+pre.code{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:12px 16px;overflow-x:auto;font:13.5px/1.6 var(--mono);margin:10px 0 16px}
+</style>
+
+<!-- ===================== Top bar ===================== -->
+<div class="topbar"><div class="topbar-in">
+  <span class="brand">Math<b>Mastery</b></span>
+  <span class="crumbs">Chapter 3 · Algebra › Basics</span>
+  <span class="pid">3.B.3</span>
+</div></div>
+
+<!-- ===================== Hero ===================== -->
+<header class="prose hero">
+  <div class="kicker">Chapter 3 · Algebra</div>
+  <h1>Inequalities and Absolute Value</h1>
+  <p class="dek">An equation is a balanced scale; an inequality is a tipped one. Most of the balancing moves still work, with one surprise: multiplying by a negative number flips the tip.</p>
+  <div class="tiers" aria-label="Tier">
+    <span class="tier on">Basics <small>you are here</small></span>
+    <span class="tier">Undergraduate</span>
+    <span class="tier">Masters</span>
+  </div>
+  <div class="goals">
+    <h3>On this page</h3>
+    <ul>
+      <li>Read and graph <b>inequalities</b> (&lt;, ≤, &gt;, ≥) on a number line, with <b>open</b> and <b>closed</b> dots and <b>interval notation</b>.</li>
+      <li><b>Solve linear inequalities</b> with the moves from 3.B.2, and <b>flip the sign</b> when multiplying or dividing by a negative.</li>
+      <li>Combine conditions into <b>compound inequalities</b> with “and” (between) and “or” (outside).</li>
+      <li>Read <b>absolute value</b> as distance, and solve <b>absolute value equations</b> and <b>inequalities</b>.</li>
+    </ul>
+  </div>
+</header>
+
+<main>
+<!-- ===================== §1 ===================== -->
+<section class="prose">
+  <h2><span class="n">1</span>Not equal, but which way?</h2>
+  <p>Rules are often limits, not exact values. “You must be at least 48 inches tall to ride.” “The speed limit is 65.” An <b>inequality</b> compares two amounts: <i>x</i> &lt; 5 (less than), <i>x</i> ≤ 5 (less than or equal to, “at most”), <i>x</i> &gt; 5 (greater than), <i>x</i> ≥ 5 (greater than or equal to, “at least”). The ride rule is <i>h</i> ≥ 48.</p>
+  <p>An equation like <i>x</i> + 3 = 8 usually has one <b>solution</b>. An inequality like <i>x</i> + 3 &lt; 8 has endlessly many: every number less than 5. We draw the <b>solution set</b> on a number line as a shaded ray. The dot at the boundary is <b>open</b> (hollow) when the boundary is left out (&lt;, &gt;) and <b>closed</b> (filled) when it’s included (≤, ≥). <b>Interval notation</b> writes the same thing with brackets: (−∞, 5) for <i>x</i> &lt; 5, and [48, ∞) for <i>h</i> ≥ 48. A round bracket means “not included”, a square one “included”, and ∞ always gets a round bracket because you can never reach it.</p>
+</section>
+
+<!-- ===================== §2 ===================== -->
+<section class="prose">
+  <h2><span class="n">2</span>Solving: the tipped balance</h2>
+  <p>Picture a balance that is tipped: the heavier side is the bigger side. Adding or subtracting the same amount on both sides doesn’t change which side is heavier, and neither does multiplying both sides by a positive number (doubling both weights keeps the heavier one heavier). So you solve an inequality with exactly the moves from 3.B.2.</p>
+  <p>Except one. Multiply both sides by −1: 3 &lt; 5 becomes −3 and −5, and now −3 is the <i>bigger</i> one. Multiplying or dividing by a negative number reverses the order, so <b>you must flip the inequality sign</b>. On the number line, multiplying by −1 is a mirror through 0, and a mirror swaps left and right. To check an answer, pick a <b>test point</b> in the shaded region and plug it into the original inequality; then try one outside.</p>
+</section>
+<section class="wide">
+  <div class="card" id="main">
+    <div class="card-h"><span class="tag">Explore</span><h3>Tipped balance and number line, linked</h3>
+      <span class="sub">Pick an inequality or build your own (<i>ax</i> + <i>b</i> ? <i>cx</i> + <i>d</i>), then solve it with moves done to both sides. The scale is weighed at the test point <i>x</i>, which you can drag along the number line. Switch on “forget to flip” to see what goes wrong.</span></div>
+    <div class="row" id="mPresets"></div>
+    <div class="desc" id="mDesc"></div>
+    <div class="inputs">
+      <div class="grp"><label class="field fl sm"><span><i>a</i></span><input id="ma" type="text" inputmode="decimal" autocomplete="off"></label><label class="field fl sm"><span><i>b</i></span><input id="mb" type="text" inputmode="decimal" autocomplete="off"></label></div>
+      <div class="grp"><div class="syms" id="mSym"></div></div>
+      <div class="grp"><label class="field fr sm"><span><i>c</i></span><input id="mc" type="text" inputmode="decimal" autocomplete="off"></label><label class="field fr sm"><span><i>d</i></span><input id="md" type="text" inputmode="decimal" autocomplete="off"></label></div>
+      <div class="row" style="margin:0"><button id="mLoad">Use this inequality</button></div>
+    </div>
+    <div class="err" id="mErr"></div>
+    <div class="bigeq" id="mEq"></div>
+    <div class="moves">
+      <span class="lab">Do to both sides, with k =</span>
+      <label class="field sm" style="flex-direction:row;align-items:center;gap:6px"><input id="mk" type="text" inputmode="decimal" autocomplete="off" aria-label="k"></label>
+      <button id="mvA">+ k</button><button id="mvS">− k</button><button id="mvAX">+ kx</button><button id="mvSX">− kx</button><button id="mvM">× k</button><button id="mvD">÷ k</button>
+      <span class="row toggle" style="margin:0 0 0 12px"><button id="mForget">Forget to flip: off</button></span>
+      <button id="mUndo">Undo</button><button id="mReset">Start over</button>
+    </div>
+    <div class="solo"><svg id="mBal" viewBox="0 0 960 230" role="img" aria-label="A tipped balance weighed at the test point"></svg></div>
+    <div class="solo"><svg id="mNL" viewBox="0 0 960 170" role="img" aria-label="Number line with the solution set and a draggable test point" style="touch-action:none;cursor:ew-resize"></svg></div>
+    <div><span class="verdict" id="mV"></span></div>
+    <div class="readout" id="mOut"></div>
+    <ol class="log" id="mLog"></ol>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--cl);border-radius:3px"></i><span>left side</span></span>
+      <span><i class="sw" style="background:var(--cr);border-radius:3px"></i><span>right side</span></span>
+      <span><i class="sw mv" style="background:var(--sol)"></i><span>solution set</span></span>
+      <span><i class="sw mv" style="background:var(--ghost)"></i><span>the original solution set, for comparison</span></span>
+      <span><i class="sw" style="border:2.4px solid var(--sol)"></i><span>open dot: boundary left out</span></span>
+      <span><i class="sw" style="background:var(--sol)"></i><span>closed dot: boundary included</span></span>
+      <span><i class="sw" style="background:var(--tp)"></i><span>test point</span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §3 ===================== -->
+<section class="prose">
+  <h2><span class="n">3</span>“And”, “or”, and absolute value</h2>
+  <p>Two conditions can be joined. <b>“And”</b> means both must hold: “older than 12 and younger than 18” is 12 &lt; <i>x</i> &lt; 18, the numbers <b>between</b>. On the number line it’s where the two shaded rays <b>overlap</b>. <b>“Or”</b> means at least one holds: <i>x</i> &lt; 0 or <i>x</i> &gt; 10 is everything <b>outside</b> the gap, where either ray is shaded. These are <b>compound inequalities</b>.</p>
+  <p>The <b>absolute value</b> |<i>x</i>| is the distance from <i>x</i> to 0, so it is never negative: |5| = 5 and |−5| = 5. More usefully, |<i>x</i> − <i>a</i>| is the <b>distance between <i>x</i> and <i>a</i></b>. That turns absolute value problems into distance questions:</p>
+  <ul>
+    <li>|<i>x</i> − 3| = 2: the points exactly 2 away from 3, so <i>x</i> = 1 or <i>x</i> = 5.</li>
+    <li>|<i>x</i> − 3| &lt; 2: closer than 2 to 3, so 1 &lt; <i>x</i> &lt; 5, an “and”.</li>
+    <li>|<i>x</i> − 3| &gt; 2: farther than 2 from 3, so <i>x</i> &lt; 1 or <i>x</i> &gt; 5, an “or”.</li>
+  </ul>
+  <p>And |<i>x</i> − 3| &lt; −1 has no solutions at all, since a distance can’t be negative.</p>
+</section>
+<section class="wide">
+  <div class="card" id="abs">
+    <div class="card-h"><span class="tag">Explore</span><h3>Between, outside, and distance</h3>
+      <span class="sub">Choose a kind of condition and set its numbers. For “and” and “or”, the two single conditions are drawn on their own rows and combined underneath. For absolute value, the centre <i>a</i> and the distance <i>r</i> are drawn as arrows. Drag the test point.</span></div>
+    <div class="row toggle2" id="aKinds"></div>
+    <div class="row" id="aPresets"></div>
+    <div class="desc" id="aDesc"></div>
+    <div class="inputs" id="aIns"></div>
+    <div class="err" id="aErr"></div>
+    <div class="solo"><svg id="aSvg" viewBox="0 0 960 260" role="img" aria-label="Number lines for compound and absolute value conditions" style="touch-action:none;cursor:ew-resize"></svg></div>
+    <div><span class="verdict" id="aV"></span></div>
+    <div class="readout" id="aOut"></div>
+    <div class="legend">
+      <span><i class="sw mv" style="background:var(--cl)"></i><span>first condition</span></span>
+      <span><i class="sw mv" style="background:var(--cr)"></i><span>second condition</span></span>
+      <span><i class="sw mv" style="background:var(--sol)"></i><span>combined solution set</span></span>
+      <span><i class="sw mv" style="background:var(--c2)"></i><span>distance <i>r</i> from the centre <i>a</i></span></span>
+      <span><i class="sw" style="background:var(--tp)"></i><span>test point</span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §4 ===================== -->
+<section class="prose">
+  <h2><span class="n">4</span>Rules, limits and tolerances</h2>
+  <p>Turning a rule into an inequality is mostly about the words. “At least” and “no less than” mean ≥. “At most”, “no more than” and “up to” mean ≤. “Between” is an “and”. “Give or take” and “within” are absolute value: a bolt that must be 10 mm long, give or take 0.2 mm, satisfies |<i>L</i> − 10| ≤ 0.2. And the situation decides what numbers count: you can invite 18 guests, but not 18.6.</p>
+</section>
+<section class="wide">
+  <div class="card" id="rules">
+    <div class="card-h"><span class="tag">Explore</span><h3>From words to an inequality</h3>
+      <span class="sub">Pick a rule. The card writes it as an inequality, solves it if needed, and shades the allowed values. Type a value to test it.</span></div>
+    <div class="row" id="rPresets"></div>
+    <div class="desc" id="rDesc"></div>
+    <div class="inputs">
+      <label class="field ft sm"><span id="rLab">Test value</span><input id="rX" type="text" inputmode="decimal" autocomplete="off"></label>
+      <div class="row" style="margin:0"><button class="primary" id="rGo">Test it</button></div>
+    </div>
+    <div class="err" id="rErr"></div>
+    <div class="solo"><svg id="rSvg" viewBox="0 0 960 150" role="img" aria-label="The allowed values on a number line"></svg></div>
+    <div><span class="verdict" id="rV"></span></div>
+    <div class="readout" id="rOut"></div>
+  </div>
+</section>
+
+<!-- ===================== §5 ===================== -->
+<section class="prose">
+  <h2><span class="n">5</span>Traps and non-examples</h2>
+</section>
+<section class="wide">
+  <div class="card" id="traps">
+    <div class="card-h"><span class="tag">Compare</span><h3>Easy to get wrong</h3></div>
+    <div class="traps">
+      <div class="t"><h4 class="kn">✕ Forgetting to flip</h4><svg id="tr1" viewBox="0 0 300 150"></svg><p>−2<i>x</i> &lt; 6. Dividing by −2 <b>must</b> flip: <i>x</i> &gt; −3. Keeping “&lt;” gives <i>x</i> &lt; −3, exactly the wrong half. Test <i>x</i> = 0: −2·0 = 0 &lt; 6 ✓, and 0 &gt; −3.</p></div>
+      <div class="t"><h4 class="kn">✕ “And” that can’t happen</h4><svg id="tr2" viewBox="0 0 300 150"></svg><p><i>x</i> &lt; 1 and <i>x</i> &gt; 4: the rays don’t overlap, so no number works. Written as 4 &lt; <i>x</i> &lt; 1 it looks fine but is empty. Joined with “or”, it would be a real solution set.</p></div>
+      <div class="t"><h4 class="kn">✕ |<i>x</i> − 3| &gt; 2 is not 1 &lt; <i>x</i> &lt; 5</h4><svg id="tr3" viewBox="0 0 300 150"></svg><p>“Farther than 2 from 3” is the outside: <i>x</i> &lt; 1 or <i>x</i> &gt; 5. “Less than” gives the inside, “greater than” the outside.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §6 ===================== -->
+<section class="prose">
+  <h2><span class="n">6</span>Now, in symbols</h2>
+  <div class="math">\[ a < b \;\Rightarrow\; a + c < b + c, \qquad a < b,\ k > 0 \;\Rightarrow\; ka < kb, \qquad a < b,\ k < 0 \;\Rightarrow\; ka > kb \]<div class="cap">Adding anything keeps the order. Multiplying by a positive keeps it; by a negative reverses it.</div></div>
+  <div class="math">\[ x < 5 \iff x \in (-\infty, 5), \qquad -2 < x \le 5 \iff x \in (-2, 5], \qquad x < 0 \text{ or } x > 10 \iff x \in (-\infty, 0) \cup (10, \infty) \]<div class="cap">Interval notation. ∪ (“union”) joins the pieces of an “or”.</div></div>
+  <div class="math">\[ |x| = \begin{cases} x & x \ge 0 \\ -x & x < 0 \end{cases} \qquad |x - a| = \text{distance from } x \text{ to } a \]</div>
+  <div class="math">\[ |x - a| = r \iff x = a \pm r, \qquad |x - a| < r \iff a - r < x < a + r, \qquad |x - a| > r \iff x < a - r \text{ or } x > a + r \quad (r > 0) \]</div>
+  <p>Checking a solution set by testing many points is exactly what a computer is good at:</p>
+  <pre class="code"><code>import numpy as np                        # numerical arrays
+
+x = np.linspace(-10, 10, 2001)            # 2001 test points from −10 to 10, 0.01 apart
+ok = -2 * x + 5 >= -1                     # True where the inequality holds, False elsewhere
+print(x[ok].min(), x[ok].max())           # -10.0 3.0: the solutions run up to 3, so x ≤ 3
+near = np.abs(x - 3) < 2                  # “closer than 2 to 3”
+print(x[near].min(), x[near].max())       # about 1.01 and 4.99: the open interval (1, 5)</code></pre>
+</section>
+
+<!-- ===================== §7 ===================== -->
+<section class="prose">
+  <h2><span class="n">7</span>Where this goes</h2>
+  <ul class="goes">
+    <li><b>Next (3.B.4):</b> functions, where the domain (the allowed inputs) is often described by inequalities like <i>x</i> ≥ 0.</li>
+    <li><b>Later in this book:</b> inequalities in two variables shade half a plane; linear programming finds the best point in a region cut out by many of them; and in calculus, “within ε” (|<i>x</i> − <i>a</i>| &lt; ε) is the heart of the definition of a limit (8.B.1).</li>
+    <li><b>In the world:</b> speed limits, age and height rules, budgets and weight limits, manufacturing tolerances, safe ranges for medicine, temperature and pressure, and error bars on any measurement.</li>
+  </ul>
+</section>
+
+<!-- ===================== §8 ===================== -->
+<section class="prose">
+  <h2><span class="n">8</span>Words to know</h2>
+  <div class="vocab">
+    <div class="term"><b>Inequality</b>A statement comparing two amounts with &lt;, ≤, &gt; or ≥.</div>
+    <div class="term"><b>Solution set</b>All the numbers that make an inequality true; usually a ray or an interval.</div>
+    <div class="term"><b>Open / closed dot</b>On a number line: the boundary is left out (open, for &lt; and &gt;) or included (closed, for ≤ and ≥).</div>
+    <div class="term"><b>Interval notation</b>Brackets for a range: [ ] includes the end, ( ) leaves it out; ∞ always gets ( ).</div>
+    <div class="term"><b>Flip the sign</b>Reverse the inequality when multiplying or dividing both sides by a negative number.</div>
+    <div class="term"><b>Test point</b>A number plugged into the original inequality to check whether it is a solution.</div>
+    <div class="term"><b>Compound inequality</b>Two conditions joined by “and” or “or”.</div>
+    <div class="term"><b>“And” (intersection)</b>Both must hold: the overlap, usually the numbers between.</div>
+    <div class="term"><b>“Or” (union, ∪)</b>At least one holds: everything shaded in either.</div>
+    <div class="term"><b>Absolute value</b>|<i>x</i>|: the distance from <i>x</i> to 0. Never negative.</div>
+    <div class="term"><b>Distance |<i>x</i> − <i>a</i>|</b>How far <i>x</i> is from <i>a</i> on the number line.</div>
+    <div class="term"><b>Absolute value equation</b>|<i>x</i> − <i>a</i>| = <i>r</i>: two solutions, <i>a</i> ± <i>r</i> (for <i>r</i> &gt; 0).</div>
+    <div class="term"><b>Absolute value inequality</b>|<i>x</i> − <i>a</i>| &lt; <i>r</i> (between) or &gt; <i>r</i> (outside).</div>
+    <div class="term"><b>Tolerance</b>How far a measurement may be from its target: “10 mm ± 0.2”.</div>
+  </div>
+</section>
+
+<!-- ===================== Quiz ===================== -->
+<section class="prose"><h2><span class="n">9</span>Check yourself</h2>
+  <p>Four kinds of questions: solve an inequality, read a number line, absolute value, and test whether a number is a solution.</p>
+</section>
+<section class="wide">
+  <div class="card" id="quiz">
+    <div class="card-h"><span class="tag">Quiz</span><h3 id="qTitle"></h3><span class="score" id="score">Score: 0 / 0</span></div>
+    <div class="qtext" id="qText"></div>
+    <div class="qexpr" id="qExpr"></div>
+    <div class="qvis" id="qVis"></div>
+    <div class="choice" id="qChoice"></div>
+    <div class="inputs" id="qIn">
+      <div id="qBoxes" style="display:flex;gap:10px;align-items:flex-end"></div>
+      <div class="row" style="margin:0"><button class="primary" id="qCheck">Check</button></div>
+    </div>
+    <div class="row" style="margin:10px 0 0"><button id="qShow">Show answer</button><button id="qNew">New question</button></div>
+    <div class="err" id="qErr"></div>
+    <div class="feedback" id="qFb" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ===================== Pager (filled in by the shared navigation) ===================== -->
+<nav class="wide">
+  <div class="pager"></div>
+  <div class="meta">3.B.3 · Prerequisites: 3.B.2 (solving linear equations), 1.B.1 (the number line) · Leads to: 3.B.4 (functions and domains), 8.B.1 (limits)</div>
+</nav>
+</main>
+
+<script>
+/* =====================================================================
+   1. HELPERS
+   ===================================================================== */
+const NS = 'http://www.w3.org/2000/svg';
+const $ = id => document.getElementById(id);
+function mk(tag, attrs, parent){                           // create an SVG element with attributes
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function txt(parent, x, y, s, cls, extra){                 // create an SVG text element
+  extra = Object.assign({}, extra || {});
+  if (extra['text-anchor']){ extra.style = (extra.style ? extra.style + ';' : '') + 'text-anchor:' + extra['text-anchor']; delete extra['text-anchor']; }
+  const t = mk('text', Object.assign({ x, y, class: cls || '' }, extra), parent);
+  t.textContent = s;
+  return t;
+}
+// round for display, use a true minus sign, never show −0
+function num(x, d){ if (d === undefined) d = 2; const r = Math.round(x * Math.pow(10, d)) / Math.pow(10, d); return r === 0 ? '0' : (r < 0 ? '−' : '') + String(Math.abs(r)); }
+const pn = x => x < 0 ? `(${num(x)})` : num(x);              // wrap negatives in brackets when substituting
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const ri = (a, b) => a + Math.floor(Math.random() * (b - a + 1));   // random whole number from a to b
+const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+function parseNum(s){                                     // integers, decimals, minus, simple fractions
+  s = String(s).trim().replace(/[−–]/g, '-').replace(/\s+/g, '');
+  if (/^-?\d+(\.\d+)?$|^-?\.\d+$/.test(s)) return parseFloat(s);
+  const m = s.match(/^(-?\d+)\/(\d+)$/);
+  if (m && +m[2] !== 0) return +m[1] / +m[2];
+  return NaN;
+}
+function selectOnFocus(ids){ ids.forEach(id => $(id).addEventListener('focus', e => e.target.select())); }
+function buttons(boxId, list, onPick){                    // a row of preset buttons; returns a function that marks one as on
+  list.forEach((p, i) => { const b = document.createElement('button'); b.className = 'preset'; b.textContent = p.n; b.onclick = () => onPick(i); $(boxId).appendChild(b); });
+  return i => [...$(boxId).children].forEach((b, j) => b.classList.toggle('on', j === i));
+}
+function svgPt(svg, ev){                                  // mouse position in the SVG's own coordinates
+  const p = svg.createSVGPoint(); p.x = ev.clientX; p.y = ev.clientY;
+  return p.matrixTransform(svg.getScreenCTM().inverse());
+}
+const svgCss = document.createElement('style');
+svgCss.textContent = `
+  .grid{stroke:var(--line);stroke-width:1}
+  .axis{stroke:var(--ink);stroke-width:1.4;opacity:.7}
+  .tl{fill:var(--muted);font:500 11.5px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:3px}
+  .lab{font:700 14px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:5px}
+  .labS{font:600 12.5px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+  .cap{fill:var(--muted);font:600 12px var(--sans);letter-spacing:.06em;paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+  .oval{fill:var(--paper);stroke:var(--line);stroke-width:1.5}
+`;
+document.head.appendChild(svgCss);
+let clipN = 0;                                            // unique clip-path ids
+
+/* ---------- axes: a coordinate grid inside an SVG, with separate x and y scales ---------- */
+function axes(svg, W, H, b, o){
+  o = o || {};
+  svg.innerHTML = '';
+  const L = o.padL ?? 44, R = o.padR ?? 16, T = o.padT ?? 16, B = o.padB ?? 30;
+  const sx = (W - L - R) / (b.x1 - b.x0), sy = (H - T - B) / (b.y1 - b.y0);   // pixels per unit
+  const X = x => L + (x - b.x0) * sx, Y = y => T + (b.y1 - y) * sy;
+  const step = (s, px) => (o.half ? [0.5, 1, 2, 5, 10, 20, 50, 100] : [1, 2, 5, 10, 20, 50, 100]).find(k => k * s >= px) || 200;   // a round step at least px pixels wide
+  const xg = o.xg || step(sx, 9), yg = o.yg || step(sy, 9);        // grid-line spacing
+  const xt = o.xt || step(sx, 34), yt = o.yt || step(sy, 26);      // tick-label spacing
+  const gGrid = mk('g', {}, svg), id = 'clp' + (++clipN);
+  const cp = mk('clipPath', { id }, svg); mk('rect', { x: L, y: T, width: W - L - R, height: H - T - B }, cp);
+  const cg = mk('g', { 'clip-path': `url(#${id})` }, svg);         // clipped layer for curves
+  const m = mk('g', {}, svg), top = mk('g', {}, svg);              // free layer, then labels on top
+  const near = (v, s) => Math.abs(v / s - Math.round(v / s)) < 1e-6;
+  for (let x = Math.ceil(b.x0 / xg) * xg; x <= b.x1 + 1e-9; x += xg) mk('line', { x1: X(x), y1: T, x2: X(x), y2: H - B, class: 'grid' }, gGrid);
+  for (let y = Math.ceil(b.y0 / yg) * yg; y <= b.y1 + 1e-9; y += yg) mk('line', { x1: L, y1: Y(y), x2: W - R, y2: Y(y), class: 'grid' }, gGrid);
+  const ay = (b.y0 <= 0 && b.y1 >= 0) ? Y(0) : H - B;              // where the x-axis is drawn
+  const ax = (b.x0 <= 0 && b.x1 >= 0) ? X(0) : L;                  // where the y-axis is drawn
+  mk('line', { x1: L, y1: ay, x2: W - R, y2: ay, class: 'axis' }, gGrid);
+  mk('line', { x1: ax, y1: T, x2: ax, y2: H - B, class: 'axis' }, gGrid);
+  const fx = o.fx || (v => num(v)), fy = o.fy || (v => num(v));
+  for (let x = Math.ceil(b.x0 / xt) * xt; x <= b.x1 + 1e-9; x += xt){
+    if (Math.abs(x) < 1e-9 && ax === X(0) && !o.zeroX) continue;
+    txt(top, X(x), ay + 16, fx(x), 'tl', { 'text-anchor': 'middle' });
+  }
+  for (let y = Math.ceil(b.y0 / yt) * yt; y <= b.y1 + 1e-9; y += yt){
+    if (Math.abs(y) < 1e-9 && ay === Y(0)) continue;
+    txt(top, ax - 6, Y(y) + 4, fy(y), 'tl', { 'text-anchor': 'end' });
+  }
+  if (o.xT) txt(top, W - R - 2, ay - 8, o.xT, 'cap', { 'text-anchor': 'end' });
+  if (o.yT) txt(top, ax + 8, T + 12, o.yT, 'cap');
+  return { svg, X, Y, sx, sy, cg, m, top, b, L, R, T, B, W, H, ay, ax,
+           inv: (px, py) => [b.x0 + (px - L) / sx, b.y1 - (py - T) / sy] };
+}
+function dPath(P, pts){ return pts.map((p, i) => (i ? 'L' : 'M') + P.X(p[0]).toFixed(1) + ' ' + P.Y(p[1]).toFixed(1)).join(''); }
+// sample y = f(x) from a to b, breaking the curve where f is undefined or jumps
+function sample(f, a, b, n, ok){
+  const out = []; let cur = [];
+  for (let i = 0; i <= n; i++){
+    const x = a + (b - a) * i / n, y = (ok && !ok(x)) ? NaN : f(x);
+    if (!isFinite(y)){ if (cur.length > 1) out.push(cur); cur = []; continue; }
+    if (cur.length && Math.abs(y - cur[cur.length - 1][1]) > 40){ if (cur.length > 1) out.push(cur); cur = []; }
+    cur.push([x, y]);
+  }
+  if (cur.length > 1) out.push(cur);
+  return out;
+}
+function dot(P, x, y, col, o){                              // a filled (or open) point
+  o = o || {};
+  return mk('circle', { cx: P.X(x), cy: P.Y(y), r: o.r || 6, style: o.open ? `fill:var(--bg);stroke:${col};stroke-width:2.6` : `fill:${col};stroke:var(--bg);stroke-width:1.5` }, o.layer || P.m);
+}
+function vline(P, x, col, o){ o = o || {}; return mk('line', { x1: P.X(x), y1: o.y0 !== undefined ? P.Y(o.y0) : P.T, x2: P.X(x), y2: o.y1 !== undefined ? P.Y(o.y1) : P.H - P.B, style: `stroke:${col};stroke-width:${o.w || 2.5};${o.dash ? 'stroke-dasharray:' + o.dash : ''}` }, o.layer || P.m); }
+function hline(P, y, col, o){ o = o || {}; return mk('line', { x1: o.x0 !== undefined ? P.X(o.x0) : P.L, y1: P.Y(y), x2: o.x1 !== undefined ? P.X(o.x1) : P.W - P.R, y2: P.Y(y), style: `stroke:${col};stroke-width:${o.w || 2.5};${o.dash ? 'stroke-dasharray:' + o.dash : ''}` }, o.layer || P.m); }
+function arrowHead(g, x1, y1, x2, y2, col, size){            // a small triangle at (x2, y2) pointing away from (x1, y1)
+  const a = Math.atan2(y2 - y1, x2 - x1), s = size || 9;
+  const p = [[x2, y2], [x2 - s * Math.cos(a - 0.4), y2 - s * Math.sin(a - 0.4)], [x2 - s * Math.cos(a + 0.4), y2 - s * Math.sin(a + 0.4)]];
+  mk('polygon', { points: p.map(q => q.join(',')).join(' '), style: `fill:${col}` }, g);
+}
+
+/* ---------- arrow diagram: inputs in a left oval, outputs in a right oval, one arrow per pair ---------- */
+// pairs: [[in, out], ...]; o.ins / o.outs give the order (defaults: sorted values); o.fmt formats a value;
+// o.hl = input to highlight (others fade); o.lit = [in, out] arrow drawn thick; o.dead = inputs shown crossed out
+function arrowDiagram(svg, W, H, pairs, o){
+  o = o || {};
+  svg.innerHTML = '';
+  const fmt = o.fmt || (v => typeof v === 'number' ? num(v) : v);
+  const key = v => String(v);
+  const uniq = arr => { const s = new Set(), r = []; arr.forEach(v => { if (!s.has(key(v))){ s.add(key(v)); r.push(v); } }); return r; };
+  const srt = arr => arr.every(v => typeof v === 'number') ? arr.slice().sort((a, b) => a - b) : arr;
+  const ins = o.ins || srt(uniq(pairs.map(p => p[0]))), outs = o.outs || srt(uniq(pairs.map(p => p[1])));
+  const top = o.top ?? 34, bot = H - (o.bottom ?? 14);
+  const lx = W * 0.25, rx = W * 0.75, ow = Math.min(W * 0.17, 90);
+  mk('ellipse', { cx: lx, cy: (top + bot) / 2, rx: ow, ry: (bot - top) / 2, class: 'oval' }, svg);
+  mk('ellipse', { cx: rx, cy: (top + bot) / 2, rx: ow, ry: (bot - top) / 2, class: 'oval' }, svg);
+  txt(svg, lx, 18, o.inLab || 'INPUTS x', 'cap', { 'text-anchor': 'middle', style: 'fill:var(--in)' });
+  txt(svg, rx, 18, o.outLab || 'OUTPUTS y', 'cap', { 'text-anchor': 'middle', style: 'fill:var(--out)' });
+  const ypos = (i, n) => n === 1 ? (top + bot) / 2 : top + 26 + (bot - top - 52) * i / (n - 1);
+  const iy = {}, oy = {};
+  ins.forEach((v, i) => iy[key(v)] = ypos(i, ins.length));
+  outs.forEach((v, i) => oy[key(v)] = ypos(i, outs.length));
+  const cnt = {}; pairs.forEach(p => cnt[key(p[0])] = (cnt[key(p[0])] || 0) + 1);   // how many outputs each input has
+  const dx = Math.min(ow * 0.45, 34), fs = ins.length > 9 || outs.length > 9 ? 'labS' : 'lab';
+  const ga = mk('g', {}, svg), gd = mk('g', {}, svg);
+  pairs.forEach(p => {                                     // arrows
+    const k = key(p[0]), bad = cnt[k] > 1, faded = o.hl !== undefined && o.hl !== null && key(o.hl) !== k;
+    const lit = o.lit && key(o.lit[0]) === k && key(o.lit[1]) === key(p[1]);
+    const col = bad ? 'var(--no)' : 'var(--pt)';
+    const x1 = lx + dx + 8, y1 = iy[k], x2 = rx - dx - 9, y2 = oy[key(p[1])];
+    mk('line', { x1, y1, x2, y2, style: `stroke:${col};stroke-width:${lit ? 4.5 : 2.4};opacity:${faded ? .18 : 1}` }, ga);
+    if (!faded) arrowHead(ga, x1, y1, x2, y2, col, lit ? 12 : 10);
+  });
+  ins.forEach(v => {                                       // input dots and labels
+    const k = key(v), dead = o.dead && o.dead.map(key).includes(k), bad = cnt[k] > 1;
+    const faded = o.hl !== undefined && o.hl !== null && key(o.hl) !== k;
+    const col = dead ? 'var(--muted)' : bad ? 'var(--no)' : 'var(--in)';
+    mk('circle', { cx: lx + dx, cy: iy[k], r: o.hl !== undefined && key(o.hl) === k ? 8 : 6, style: `fill:${col};opacity:${faded ? .35 : 1}` }, gd);
+    const t = txt(gd, lx + dx - 12, iy[k] + 5, fmt(v), fs, { 'text-anchor': 'end', style: `fill:${col};opacity:${faded ? .45 : 1}${dead ? ';text-decoration:line-through' : ''}` });
+  });
+  outs.forEach(v => {                                      // output dots and labels
+    const k = key(v);
+    mk('circle', { cx: rx - dx, cy: oy[k], r: 6, style: 'fill:var(--out)' }, gd);
+    txt(gd, rx - dx + 12, oy[k] + 5, fmt(v), fs, { style: 'fill:var(--out)' });
+  });
+  return { ins, outs };
+}
+// group pairs by input: Map from input to its list of distinct outputs
+function byInput(pairs){
+  const m = new Map();
+  pairs.forEach(([x, y]) => { const k = String(x); if (!m.has(k)) m.set(k, { x, ys: [] }); const e = m.get(k); if (!e.ys.some(v => String(v) === String(y))) e.ys.push(y); });
+  return m;
+}
+const setStr = arr => '{' + arr.map(v => num(v)).join(', ') + '}';
+
+
+/* ---------- extra helpers for this page ---------- */
+function fr(x){
+  if (!isFinite(x)) return x > 0 ? '∞' : '−∞';
+  if (Math.abs(x * 100 - Math.round(x * 100)) < 1e-9) return num(x);   // terminating decimals stay decimals
+  for (let d = 3; d <= 12; d++){ const n = x * d; if (Math.abs(n - Math.round(n)) < 1e-9) return (x < 0 ? '−' : '') + Math.abs(Math.round(n)) + '/' + d; }
+  return num(x);
+}
+const pf = x => x < 0 ? `(${fr(x)})` : fr(x);
+function lin(a, b){                                             // "3x + 5", "−x", "4"
+  const parts = [];
+  if (Math.abs(a) > 1e-12) parts.push((Math.abs(a - 1) < 1e-12 ? '' : Math.abs(a + 1) < 1e-12 ? '−' : fr(a) + (fr(a).includes('/') ? ' ' : '')) + 'x');
+  if (Math.abs(b) > 1e-12 || !parts.length) parts.push(parts.length ? (b < 0 ? '− ' + fr(-b) : '+ ' + fr(b)) : fr(b));
+  return parts.join(' ');
+}
+const FLIP = { '<': '>', '≤': '≥', '>': '<', '≥': '≤' };
+const holds = (l, op, r) => op === '<' ? l < r - 1e-12 : op === '≤' ? l <= r + 1e-12 : op === '>' ? l > r + 1e-12 : l >= r - 1e-12;
+// solution set of a·x op b, as a list of intervals [lo, hi, loIncluded, hiIncluded]
+function solveLin(a, op, b){
+  if (Math.abs(a) < 1e-12) return holds(0, op, b) ? [[-Infinity, Infinity, false, false]] : [];
+  const op2 = a > 0 ? op : FLIP[op], v = b / a, cl = op2 === '≤' || op2 === '≥';
+  return op2 === '<' || op2 === '≤' ? [[-Infinity, v, false, cl]] : [[v, Infinity, cl, false]];
+}
+function inSet(S, x){ return S.some(([a, b, ca, cb]) => (x > a || (ca && Math.abs(x - a) < 1e-9)) && (x < b || (cb && Math.abs(x - b) < 1e-9))); }
+function ivStr(S){                                              // interval notation
+  if (!S.length) return '∅ (no solutions)';
+  return S.map(([a, b, ca, cb]) => a === b ? `{${fr(a)}}` : `${ca ? '[' : '('}${fr(a)}, ${fr(b)}${cb ? ']' : ')'}`).join(' ∪ ');
+}
+function ineqStr(S, v){                                         // inequality words, e.g. "x ≤ 3"
+  v = v || 'x';
+  if (!S.length) return 'no number works';
+  return S.map(([a, b, ca, cb]) => {
+    if (a === b) return `${v} = ${fr(a)}`;
+    if (a === -Infinity && b === Infinity) return 'every number';
+    if (a === -Infinity) return `${v} ${cb ? '≤' : '<'} ${fr(b)}`;
+    if (b === Infinity) return `${v} ${ca ? '≥' : '>'} ${fr(a)}`;
+    return `${fr(a)} ${ca ? '≤' : '<'} ${v} ${cb ? '≤' : '<'} ${fr(b)}`;
+  }).join(' or ');
+}
+const sameSet = (S, T) => S.length === T.length && S.every((s, i) => s.every((v, j) => typeof v === 'boolean' ? v === T[i][j] : (v === T[i][j] || Math.abs(v - T[i][j]) < 1e-9)));
+/* ---------- number-line drawing ---------- */
+function nline(svg, W, lo, hi, y, o){                           // returns the x-mapping; draws ticks at y
+  o = o || {};
+  const L = o.L ?? 40, R = W - (o.R ?? 40), X = v => L + (v - lo) / (hi - lo) * (R - L);
+  const g = o.g || svg;
+  mk('line', { x1: L - 14, y1: y, x2: R + 14, y2: y, style: 'stroke:var(--ink);stroke-width:1.5;opacity:.7' }, g);
+  arrowHead(g, L, y, L - 18, y, 'var(--ink)', 8); arrowHead(g, R, y, R + 18, y, 'var(--ink)', 8);
+  const span = hi - lo, st = o.step || [0.1, 0.2, 0.5, 1, 2, 5, 10, 20, 50].find(s => span / s <= 24) || 100;
+  for (let v = Math.ceil(lo / st) * st; v <= hi + 1e-9; v += st){
+    const lab = Math.abs(v / (st * (span / st > 12 ? 2 : 1)) - Math.round(v / (st * (span / st > 12 ? 2 : 1)))) < 1e-6;
+    mk('line', { x1: X(v), y1: y - (lab ? 6 : 4), x2: X(v), y2: y + (lab ? 6 : 4), style: 'stroke:var(--ink);stroke-width:1;opacity:.6' }, g);
+    if (lab && o.labels !== false) txt(g, X(v), y + 20, num(v, 2), 'tl', { 'text-anchor': 'middle' });
+  }
+  return X;
+}
+function drawSet(g, X, S, y, col, o){                           // shade intervals on a row at height y
+  o = o || {};
+  const lo = o.lo, hi = o.hi, w = o.w || 7;
+  S.forEach(([a, b, ca, cb]) => {
+    if (a === b){ mk('circle', { cx: X(a), cy: y, r: 7, style: `fill:${col};stroke:var(--bg);stroke-width:1.5` }, g); return; }
+    const A = Math.max(a, lo), B = Math.min(b, hi);
+    if (A > B) return;
+    mk('line', { x1: X(A), y1: y, x2: X(B), y2: y, style: `stroke:${col};stroke-width:${w};stroke-linecap:butt;opacity:${o.op ?? .85}` }, g);
+    if (a === -Infinity) arrowHead(g, X(A) + 10, y, X(A) - 12, y, col, 14);
+    if (b === Infinity) arrowHead(g, X(B) - 10, y, X(B) + 12, y, col, 14);
+    [[a, ca], [b, cb]].forEach(([v, c]) => { if (isFinite(v) && v >= lo && v <= hi) mk('circle', { cx: X(v), cy: y, r: 7, style: c ? `fill:${col};stroke:var(--bg);stroke-width:1.5` : `fill:var(--bg);stroke:${col};stroke-width:2.6` }, g); });
+  });
+}
+const svgCss2 = document.createElement('style');
+svgCss2.textContent = `.rowlab{fill:var(--muted);font:600 12px var(--sans)} .pan{font:600 17px var(--mono);text-anchor:middle}`;
+document.head.appendChild(svgCss2);
+
+/* =====================================================================
+   2. MAIN: tipped balance and number line
+   ===================================================================== */
+const mPresets = [
+  { n: 'x + 3 < 8', e: [1, 3, '<', 0, 8], d: 'Subtract 3 from both sides: x < 5. No flip needed.' },
+  { n: '2x − 1 ≥ 7', e: [2, -1, '≥', 0, 7], d: 'Add 1, then divide by 2 (positive): x ≥ 4.' },
+  { n: '−2x < 6', e: [-2, 0, '<', 0, 6], d: 'Divide by −2: a negative, so the sign must flip. Try it with “forget to flip” on as well.' },
+  { n: '5 − x ≤ 2', e: [-1, 5, '≤', 0, 2], d: 'Subtract 5, then multiply by −1 (flip): x ≥ 3.' },
+  { n: 'x on both sides', e: [3, -2, '>', 1, 6], d: '3x − 2 > x + 6: subtract x, add 2, divide by 2: x > 4.' },
+  { n: 'Always true', e: [2, 1, '<', 2, 5], d: '2x + 1 < 2x + 5: subtract 2x and you get 1 < 5, true for every x.' },
+];
+const SYMS = ['<', '≤', '>', '≥'];
+const M = { e: null, orig: null, hist: [], log: [], x: 0, forget: false, sym: '<' };
+(function(){ SYMS.forEach(s => { const b = document.createElement('button'); b.textContent = s; b.onclick = () => { M.sym = s; [...$('mSym').children].forEach(x => x.classList.toggle('on', x.textContent === s)); }; $('mSym').appendChild(b); }); })();
+const lhs = (e, x) => e[0] * x + e[1], rhs = (e, x) => e[3] * x + e[4];
+const eSet = e => solveLin(e[0] - e[3], e[2], e[4] - e[1]);
+function mLoad(e, desc){ M.e = e.slice(); M.orig = e.slice(); M.hist = []; M.log = []; const S = eSet(e); M.x = S.length && isFinite(S[0][0]) ? S[0][0] + 2 : (S.length && isFinite(S[0][1]) ? S[0][1] - 2 : 0); if (desc !== undefined) $('mDesc').textContent = desc; mFill(); mDraw(); }
+function mFill(){ const e = M.orig; ['ma', 'mb'].forEach((id, k) => $(id).value = fr(e[k]).replace('−', '-')); ['mc', 'md'].forEach((id, k) => $(id).value = fr(e[3 + k]).replace('−', '-')); M.sym = e[2]; [...$('mSym').children].forEach(x => x.classList.toggle('on', x.textContent === e[2])); }
+function mMove(kind){
+  const k = parseNum($('mk').value);
+  if ($('mk').value.trim() === '' || isNaN(k)){ $('mErr').textContent = 'Type a number for k first.'; return; }
+  if ((kind === 'M' || kind === 'D') && k === 0){ $('mErr').textContent = kind === 'D' ? 'You can’t divide by 0.' : 'Multiplying both sides by 0 turns everything into 0 < 0 or 0 ≤ 0: all information is lost. Use another k.'; return; }
+  $('mErr').textContent = '';
+  const e = M.e.slice(); let op = e[2], name = '', why = '', cls = '';
+  if (kind === 'A'){ e[1] += k; e[4] += k; name = `+ ${fr(k)}`; why = 'adding keeps the order'; }
+  if (kind === 'S'){ e[1] -= k; e[4] -= k; name = `− ${fr(k)}`; why = 'subtracting keeps the order'; }
+  if (kind === 'AX'){ e[0] += k; e[3] += k; name = `+ ${fr(k)}x`; why = 'adding keeps the order'; }
+  if (kind === 'SX'){ e[0] -= k; e[3] -= k; name = `− ${fr(k)}x`; why = 'subtracting keeps the order'; }
+  if (kind === 'M' || kind === 'D'){
+    const f = kind === 'M' ? k : 1 / k; [0, 1, 3, 4].forEach(i => e[i] *= f); name = (kind === 'M' ? '× ' : '÷ ') + fr(k);
+    if (k < 0){ if (M.forget){ why = 'negative, but the sign was NOT flipped: wrong!'; cls = 'bad'; } else { op = FLIP[op]; why = `negative, so the sign flips: ${e[2]} becomes ${op}`; cls = 'flip'; } }
+    else why = 'positive, so the order is kept';
+  }
+  e[2] = op;
+  M.hist.push(M.e); M.e = e; M.log.push({ name, eq: `${lin(e[0], e[1])} ${op} ${lin(e[3], e[4])}`, why, cls }); mDraw();
+}
+function mDraw(){
+  const e = M.e, x = M.x, l = lhs(e, x), r = rhs(e, x), S = eSet(e), S0 = eSet(M.orig);
+  $('mEq').innerHTML = `<span class="kl">${lin(e[0], e[1])}</span> ${e[2]} <span class="kr">${lin(e[3], e[4])}</span>`;
+  // --- the balance, weighed at the test point ---
+  const svg = $('mBal'); svg.innerHTML = '';
+  const cx = 480, cy = 70, half = 300, diff = l - r, ang = Math.abs(diff) < 1e-9 ? 0 : (diff > 0 ? 1 : -1) * Math.min(12, 4 + Math.abs(diff) * 0.8);
+  const rad = ang * Math.PI / 180, lx = cx - half * Math.cos(rad), ly = cy + half * Math.sin(rad), rx = cx + half * Math.cos(rad), ry = cy - half * Math.sin(rad);
+  mk('polygon', { points: `${cx},${cy + 6} ${cx - 26},210 ${cx + 26},210`, style: 'fill:var(--line2)' }, svg);
+  mk('line', { x1: lx, y1: ly, x2: rx, y2: ry, style: 'stroke:var(--ink);stroke-width:5;stroke-linecap:round' }, svg);
+  [[lx, ly, 'var(--cl)', lin(e[0], e[1]), l], [rx, ry, 'var(--cr)', lin(e[3], e[4]), r]].forEach(([px, py, c, ex, v]) => {
+    mk('line', { x1: px, y1: py, x2: px, y2: py + 40, style: 'stroke:var(--ink);stroke-width:1.5' }, svg);
+    mk('path', { d: `M${px - 90} ${py + 40} H${px + 90} L${px + 70} ${py + 90} H${px - 70} Z`, style: `fill:${c};fill-opacity:.22;stroke:${c};stroke-width:2` }, svg);
+    txt(svg, px, py + 62, ex, 'pan', { style: `fill:${c}` });
+    txt(svg, px, py + 82, `= ${fr(v)}`, 'pan', { style: 'fill:var(--ink);font-size:15px' });
+  });
+  const trueHere = holds(l, e[2], r);
+  txt(svg, cx, 24, `weighed at x = ${fr(x)}:  ${fr(l)} ${e[2]} ${fr(r)}  ${trueHere ? '✓ true' : '✕ false'}`, 'pan', { style: `fill:${trueHere ? 'var(--yes)' : 'var(--no)'};font-size:16px` });
+  // --- number line: original set (ghost) and current set ---
+  const nl = $('mNL'); nl.innerHTML = '';
+  const bnds = [...S, ...S0].flatMap(s => [s[0], s[1]]).filter(isFinite);
+  const mid = bnds.length ? bnds.reduce((a, b) => a + b, 0) / bnds.length : 0, lo = Math.floor(Math.min(mid - 8, x - 2, ...bnds) - 1), hi = Math.ceil(Math.max(mid + 8, x + 2, ...bnds) + 1);
+  M.nl = { lo, hi };
+  const X = nline(nl, 960, lo, hi, 130, { L: 150 });
+  txt(nl, 140, 45, 'original', 'rowlab', { 'text-anchor': 'end' }); txt(nl, 140, 90, 'now', 'rowlab', { 'text-anchor': 'end' });
+  drawSet(nl, X, S0, 40, 'var(--ghost)', { lo, hi });
+  const differs = !sameSet(S, S0);
+  drawSet(nl, X, S, 85, differs ? 'var(--no)' : 'var(--sol)', { lo, hi });
+  if (!S.length) txt(nl, 555, 90, 'no solutions', 'rowlab');
+  mk('line', { x1: X(x), y1: 20, x2: X(x), y2: 140, style: 'stroke:var(--tp);stroke-width:2;stroke-dasharray:4 4' }, nl);
+  mk('circle', { cx: X(x), cy: 130, r: 9, style: 'fill:var(--tp);stroke:var(--bg);stroke-width:2' }, nl);
+  txt(nl, X(x), 162, 'x = ' + fr(x), 'labS', { 'text-anchor': 'middle', style: 'fill:var(--tp)' });
+  // --- verdict and readout ---
+  const origTrue = holds(lhs(M.orig, x), M.orig[2], rhs(M.orig, x));
+  $('mV').className = 'verdict ' + (differs ? 'bad' : 'ok');
+  $('mV').textContent = differs ? '✕ The solution set changed: a move broke the inequality' : '✓ Same solutions as the original';
+  let s = `<b>Solution set now:</b> <span class="${differs ? 'kn' : 'ks'}">${ineqStr(S)}</span>, in interval notation ${ivStr(S)}.`;
+  s += `<br><b>Test point x = ${fr(x)}</b> in the original: ${lin(M.orig[0], M.orig[1])} = ${fr(lhs(M.orig, x))}, ${lin(M.orig[3], M.orig[4])} = ${fr(rhs(M.orig, x))}, so ${fr(lhs(M.orig, x))} ${M.orig[2]} ${fr(rhs(M.orig, x))} is ${origTrue ? '<span class="ky">true</span>' : '<span class="kn">false</span>'}.` +
+    (differs && origTrue !== inSet(S, x) ? ` <span class="kn">But the current line says it ${inSet(S, x) ? 'is' : 'isn’t'} a solution: they disagree, so a step went wrong.</span>` : '');
+  if (Math.abs(e[0] - e[3]) < 1e-12) s += `<br>The x-terms are gone: ${fr(e[1])} ${e[2]} ${fr(e[4])} is ${holds(e[1], e[2], e[4]) ? 'always true, so every number is a solution' : 'never true, so there are no solutions'}.`;
+  $('mOut').innerHTML = s;
+  $('mLog').innerHTML = M.log.map(L => `<li class="${L.cls}"><span>${L.name}</span><span>${L.eq}</span><span class="why">${L.why}</span></li>`).join('');
+}
+const mMark = buttons('mPresets', mPresets, i => { mMark(i); $('mErr').textContent = ''; $('mk').value = ''; mLoad(mPresets[i].e, mPresets[i].d); });
+$('mLoad').onclick = () => { const v = ['ma', 'mb', 'mc', 'md'].map(id => parseNum($(id).value)); if (v.some(isNaN) || ['ma', 'mb', 'mc', 'md'].some(id => $(id).value.trim() === '')){ $('mErr').textContent = 'Fill in a, b, c and d with numbers.'; return; } if (v.some(t => Math.abs(t) > 50)){ $('mErr').textContent = 'Keep the numbers between −50 and 50.'; return; } $('mErr').textContent = ''; mMark(-1); mLoad([v[0], v[1], M.sym, v[2], v[3]], 'Your own inequality.'); };
+[['mvA', 'A'], ['mvS', 'S'], ['mvAX', 'AX'], ['mvSX', 'SX'], ['mvM', 'M'], ['mvD', 'D']].forEach(([id, k]) => $(id).onclick = () => mMove(k));
+$('mForget').onclick = () => { M.forget = !M.forget; $('mForget').classList.toggle('on', M.forget); $('mForget').textContent = 'Forget to flip: ' + (M.forget ? 'ON' : 'off'); };
+$('mUndo').onclick = () => { if (!M.hist.length) return; M.e = M.hist.pop(); M.log.pop(); mDraw(); };
+$('mReset').onclick = () => { M.e = M.orig.slice(); M.hist = []; M.log = []; mDraw(); };
+(function(){ const svg = $('mNL'); let drag = false;
+  const set = ev => { const q = svgPt(svg, ev), { lo, hi } = M.nl, v = lo + (q.x - 150) / (920 - 150) * (hi - lo); M.x = Math.round(clamp(v, lo, hi) * 2) / 2; mDraw(); };
+  svg.addEventListener('pointerdown', ev => { drag = true; svg.setPointerCapture(ev.pointerId); set(ev); });
+  svg.addEventListener('pointermove', ev => { if (drag) set(ev); });
+  svg.addEventListener('pointerup', () => drag = false); })();
+
+/* =====================================================================
+   3. AND / OR / ABSOLUTE VALUE
+   ===================================================================== */
+const aKinds = ['a < x < b (and)', 'x < a or x > b', '|x − a| = r', '|x − a| < r', '|x − a| > r'];
+const aPresets = [
+  { n: 'Teenager: 13 ≤ x ≤ 19', k: 0, v: [13, 19], cl: [true, true], d: 'x ≥ 13 and x ≤ 19: the overlap of two rays.' },
+  { n: 'Outside 0 to 10', k: 1, v: [0, 10], cl: [false, false], d: 'x < 0 or x > 10: everything not in the gap.' },
+  { n: '|x − 3| = 2', k: 2, v: [3, 2], d: 'Exactly 2 away from 3: two points, 1 and 5.' },
+  { n: '|x − 3| < 2', k: 3, v: [3, 2], d: 'Closer than 2 to 3: the numbers between 1 and 5.' },
+  { n: '|x + 1| ≥ 3', k: 4, v: [-1, 3], cl: [true, true], d: '|x + 1| = |x − (−1)|: distance from −1. At least 3 away: x ≤ −4 or x ≥ 2.' },
+  { n: 'Impossible “and”', k: 0, v: [4, 1], cl: [false, false], d: 'x > 4 and x < 1: the rays don’t overlap, so nothing works.' },
+];
+const A = { k: 0, v: [13, 19], cl: [true, true], x: 16 };
+(function(){ aKinds.forEach((t, i) => { const b = document.createElement('button'); b.textContent = t; b.onclick = () => { A.k = i; A.v = [[2, 6], [2, 6], [3, 2], [3, 2], [3, 2]][i]; A.cl = [false, false]; aMark(-1); $('aDesc').textContent = ''; aBuild(); aDraw(); }; $('aKinds').appendChild(b); }); })();
+function aBuild(){
+  const k = A.k, abs = k >= 2;
+  const labs = abs ? ['centre a', 'distance r'] : ['a', 'b'];
+  $('aIns').innerHTML = labs.map((l, j) => `<label class="field sm"><span>${l}</span><input id="av${j}" type="text" inputmode="decimal" autocomplete="off"></label>`).join('') +
+    (k === 2 ? '' : `<div class="row toggle2" style="margin:0"><button id="ac0">${abs ? 'include the boundary (≤ / ≥)' : 'include a'}</button>${abs ? '' : '<button id="ac1">include b</button>'}</div>`) +
+    '<div class="row" style="margin:0"><button class="primary" id="aGo">Use these</button></div>';
+  labs.forEach((_, j) => { $('av' + j).value = fr(A.v[j]).replace('−', '-'); $('av' + j).addEventListener('focus', e => e.target.select()); });
+  [0, 1].forEach(j => { const b = $('ac' + j); if (!b) return; b.classList.toggle('on', !!A.cl[j]); b.onclick = () => { A.cl[j] = !A.cl[j]; if (abs) A.cl[1] = A.cl[0]; b.classList.toggle('on', A.cl[j]); aDraw(); }; });
+  $('aGo').onclick = () => { const v = labs.map((_, j) => parseNum($('av' + j).value)); if (v.some(isNaN)){ $('aErr').textContent = 'Fill in both numbers.'; return; } if (v.some(t => Math.abs(t) > 100)){ $('aErr').textContent = 'Keep the numbers between −100 and 100.'; return; } $('aErr').textContent = ''; A.v = v; aMark(-1); $('aDesc').textContent = 'Your own numbers.'; aDraw(); };
+  [...$('aKinds').children].forEach((b, j) => b.classList.toggle('on', j === k));
+}
+function aSets(){
+  const [p, q] = A.v, [c0, c1] = A.cl, k = A.k;
+  if (k === 0){ const s1 = [[p, Infinity, c0, false]], s2 = [[-Infinity, q, false, c1]]; const lo = p, hi = q; const both = lo < hi || (lo === hi && c0 && c1) ? [[lo, hi, c0, c1]] : []; return { s1, s2, S: both, l1: `x ${c0 ? '≥' : '>'} ${fr(p)}`, l2: `x ${c1 ? '≤' : '<'} ${fr(q)}`, join: 'and' }; }
+  if (k === 1){ const s1 = [[-Infinity, p, false, c0]], s2 = [[q, Infinity, c1, false]]; const S = p >= q ? [[-Infinity, Infinity, false, false]] : [s1[0], s2[0]]; return { s1, s2, S, l1: `x ${c0 ? '≤' : '<'} ${fr(p)}`, l2: `x ${c1 ? '≥' : '>'} ${fr(q)}`, join: 'or' }; }
+  const a = p, r = q, cl = !!c0;
+  if (k === 2) return { S: r < 0 ? [] : r === 0 ? [[a, a, true, true]] : [[a - r, a - r, true, true], [a + r, a + r, true, true]] };
+  if (k === 3) return { S: r < 0 || (r === 0 && !cl) ? [] : [[a - r, a + r, cl, cl]] };
+  return { S: r < 0 ? [[-Infinity, Infinity, false, false]] : r === 0 && !cl ? [[-Infinity, a, false, false], [a, Infinity, false, false]] : [[-Infinity, a - r, false, cl], [a + r, Infinity, cl, false]] };
+}
+function aDraw(){
+  const svg = $('aSvg'); svg.innerHTML = '';
+  const { s1, s2, S, l1, l2, join } = aSets(), [p, q] = A.v, abs = A.k >= 2, x = A.x;
+  const pts = abs ? [p - Math.abs(q), p + Math.abs(q), p] : [p, q];
+  const lo = Math.floor(Math.min(...pts, x) - 4), hi = Math.ceil(Math.max(...pts, x) + 4);
+  A.nl = { lo, hi };
+  const X = nline(svg, 960, lo, hi, 215, { L: 170 });
+  if (!abs){
+    txt(svg, 160, 45, l1, 'rowlab', { 'text-anchor': 'end' }); drawSet(svg, X, s1, 40, 'var(--cl)', { lo, hi });
+    txt(svg, 160, 95, l2, 'rowlab', { 'text-anchor': 'end' }); drawSet(svg, X, s2, 90, 'var(--cr)', { lo, hi });
+    txt(svg, 160, 150, `${l1} ${join} ${l2}`, 'rowlab', { 'text-anchor': 'end', style: 'font-size:11px' }); drawSet(svg, X, S, 145, 'var(--sol)', { lo, hi });
+    if (!S.length) txt(svg, 560, 150, 'no number is in both: empty', 'rowlab', { style: 'fill:var(--no)' });
+  } else {
+    const a = p, r = q;
+    mk('circle', { cx: X(a), cy: 215, r: 5, style: 'fill:var(--c2)' }, svg); txt(svg, X(a), 204, 'a = ' + fr(a), 'labS', { 'text-anchor': 'middle', style: 'fill:var(--c2)' });
+    if (r > 0){ [[a, a - r], [a, a + r]].forEach(([s, t]) => { mk('line', { x1: X(s), y1: 70, x2: X(t), y2: 70, style: 'stroke:var(--c2);stroke-width:2' }, svg); arrowHead(svg, X(s), 70, X(t), 70, 'var(--c2)', 9); txt(svg, (X(s) + X(t)) / 2, 62, 'r = ' + fr(r), 'labS', { 'text-anchor': 'middle', style: 'fill:var(--c2)' }); }); [a - r, a + r].forEach(v => mk('line', { x1: X(v), y1: 70, x2: X(v), y2: 215, style: 'stroke:var(--c2);stroke-width:1;stroke-dasharray:3 4' }, svg)); }
+    txt(svg, 150, 125, ['', '', `|x − ${pf(a)}| = ${fr(r)}`, `|x − ${pf(a)}| ${A.cl[0] ? '≤' : '<'} ${fr(r)}`, `|x − ${pf(a)}| ${A.cl[0] ? '≥' : '>'} ${fr(r)}`][A.k], 'rowlab', { 'text-anchor': 'end' });
+    drawSet(svg, X, S, 120, 'var(--sol)', { lo, hi });
+    if (!S.length) txt(svg, 560, 125, 'a distance can’t be negative: no solutions', 'rowlab', { style: 'fill:var(--no)' });
+    // the test point's distance from a
+    mk('line', { x1: X(a), y1: 178, x2: X(x), y2: 178, style: 'stroke:var(--tp);stroke-width:2.5' }, svg);
+    txt(svg, (X(a) + X(x)) / 2, 172, `|${fr(x)} − ${pf(a)}| = ${fr(Math.abs(x - a))}`, 'labS', { 'text-anchor': 'middle', style: 'fill:var(--tp)' });
+  }
+  mk('line', { x1: X(x), y1: 20, x2: X(x), y2: 225, style: 'stroke:var(--tp);stroke-width:1.5;stroke-dasharray:4 4' }, svg);
+  mk('circle', { cx: X(x), cy: 215, r: 9, style: 'fill:var(--tp);stroke:var(--bg);stroke-width:2' }, svg);
+  const ok = inSet(S, x);
+  $('aV').className = 'verdict ' + (ok ? 'ok' : 'bad'); $('aV').textContent = `x = ${fr(x)}: ${ok ? '✓ a solution' : '✕ not a solution'}`;
+  let s = `<b>Solution set:</b> <span class="ks">${ineqStr(S)}</span>; interval notation ${ivStr(S)}.`;
+  if (!abs) s += join === 'and' ? '<br>“And” keeps only what is shaded in <b>both</b> rows: the overlap.' : '<br>“Or” keeps everything shaded in <b>either</b> row.';
+  else { const a = p, r = q; s += `<br>|x − ${pf(a)}| is the distance from x to ${fr(a)}. ` + (A.k === 2 ? `Exactly ${fr(r)} away: ${fr(a)} − ${fr(r)} and ${fr(a)} + ${fr(r)}.` : A.k === 3 ? `Closer than ${fr(r)}: between ${fr(a - r)} and ${fr(a + r)}, an “and”.` : `Farther than ${fr(r)}: outside ${fr(a - r)} to ${fr(a + r)}, an “or”.`) + ` The test point is ${fr(Math.abs(x - a))} away.`; }
+  $('aOut').innerHTML = s;
+}
+const aMark = buttons('aPresets', aPresets, i => { const P = aPresets[i]; A.k = P.k; A.v = P.v.slice(); A.cl = (P.cl || [false, false]).slice(); A.x = P.k >= 2 ? P.v[0] + 1 : (P.v[0] + P.v[1]) / 2; aMark(i); $('aDesc').textContent = P.d; $('aErr').textContent = ''; aBuild(); aDraw(); });
+(function(){ const svg = $('aSvg'); let drag = false;
+  const set = ev => { const q = svgPt(svg, ev), { lo, hi } = A.nl, v = lo + (q.x - 170) / (920 - 170) * (hi - lo); A.x = Math.round(clamp(v, lo, hi) * 2) / 2; aDraw(); };
+  svg.addEventListener('pointerdown', ev => { drag = true; svg.setPointerCapture(ev.pointerId); set(ev); });
+  svg.addEventListener('pointermove', ev => { if (drag) set(ev); });
+  svg.addEventListener('pointerup', () => drag = false); })();
+
+/* =====================================================================
+   4. RULES INTO INEQUALITIES
+   ===================================================================== */
+const rPresets = [
+  { n: 'Ride height', lab: 'Height (in)', words: '“You must be at least 48 inches tall to ride.”', ineq: 'h ≥ 48', S: [[48, Infinity, true, false]], lo: 30, hi: 70, x: 46, v: 'h', note: '“At least” includes 48 itself: a closed dot.' },
+  { n: 'Highway speed', lab: 'Speed (mph)', words: '“Minimum speed 45, maximum speed 70.”', ineq: '45 ≤ s ≤ 70', S: [[45, 70, true, true]], lo: 30, hi: 85, x: 72, v: 's', note: 'Two limits joined by “and”: a closed interval.' },
+  { n: 'Party budget', lab: 'Guests', words: '“The hall costs $120 plus $15 per guest, and we have $400.”', ineq: '120 + 15n ≤ 400', S: [[0, 18, true, true]], lo: -2, hi: 24, x: 19, v: 'n', whole: true,
+    note: 'Solve: 15n ≤ 280, so n ≤ 18.67. But guests come in whole numbers (and at least 0), so the allowed values are 0, 1, …, 18: dots, not a solid bar.' },
+  { n: 'Bolt tolerance', lab: 'Length (mm)', words: '“The bolt must be 10 mm long, give or take 0.2 mm.”', ineq: '|L − 10| ≤ 0.2', S: [[9.8, 10.2, true, true]], lo: 9.5, hi: 10.5, x: 10.25, v: 'L', note: '“Give or take 0.2” means within 0.2 of 10: the distance from 10 is at most 0.2, so 9.8 ≤ L ≤ 10.2.' },
+  { n: 'Fish tank', lab: 'Temperature (°F)', words: '“Keep the water between 75 °F and 80 °F.”', ineq: '75 ≤ T ≤ 80, or |T − 77.5| ≤ 2.5', S: [[75, 80, true, true]], lo: 68, hi: 86, x: 77, v: 'T', note: 'A range can always be written as an absolute value: the centre is halfway (77.5), and the allowed distance is half the width (2.5).' },
+];
+const RS = { i: 0, x: 46 };
+function rDraw(){
+  const P = rPresets[RS.i], svg = $('rSvg'); svg.innerHTML = '';
+  const X = nline(svg, 960, P.lo, P.hi, 100, { L: 50, R: 50 });
+  if (P.whole) for (let n = 0; n <= 18; n++) mk('circle', { cx: X(n), cy: 60, r: 6, style: 'fill:var(--sol)' }, svg);
+  else drawSet(svg, X, P.S, 60, 'var(--sol)', { lo: P.lo, hi: P.hi });
+  const x = RS.x, ok = inSet(P.S, x) && (!P.whole || Math.abs(x - Math.round(x)) < 1e-9);
+  mk('line', { x1: X(clamp(x, P.lo, P.hi)), y1: 30, x2: X(clamp(x, P.lo, P.hi)), y2: 110, style: 'stroke:var(--tp);stroke-width:2;stroke-dasharray:4 4' }, svg);
+  mk('circle', { cx: X(clamp(x, P.lo, P.hi)), cy: 100, r: 9, style: 'fill:var(--tp);stroke:var(--bg);stroke-width:2' }, svg);
+  txt(svg, X(clamp(x, P.lo, P.hi)), 24, `${P.v} = ${fr(x)}`, 'labS', { 'text-anchor': 'middle', style: 'fill:var(--tp)' });
+  $('rV').className = 'verdict ' + (ok ? 'ok' : 'bad'); $('rV').textContent = `${P.v} = ${fr(x)}: ${ok ? '✓ allowed' : '✕ not allowed'}`;
+  const why = P.whole && Math.abs(x - Math.round(x)) > 1e-9 ? ' (not a whole number of guests)' : '';
+  $('rOut').innerHTML = `${P.words}<br><b>As an inequality:</b> <span class="ks">${P.ineq}</span>. ${P.note}<br><b>Allowed:</b> ${P.whole ? 'n = 0, 1, 2, …, 18' : ineqStr(P.S, P.v) + ', ' + ivStr(P.S)}.${why}`;
+  $('rX').value = fr(x).replace('−', '-'); $('rLab').textContent = P.lab;
+}
+const rMark = buttons('rPresets', rPresets, i => { RS.i = i; RS.x = rPresets[i].x; rMark(i); $('rDesc').textContent = ''; $('rErr').textContent = ''; rDraw(); });
+$('rGo').onclick = () => { const v = parseNum($('rX').value); if (isNaN(v)){ $('rErr').textContent = 'Type a number to test.'; return; } $('rErr').textContent = ''; RS.x = v; rDraw(); };
+
+/* =====================================================================
+   5. TRAPS
+   ===================================================================== */
+(function(){
+  let s = $('tr1'), X = nline(s, 300, -7, 3, 120, { L: 20, R: 20, step: 1 });
+  txt(s, 10, 30, 'x > −3 ✓', 'labS', { style: 'fill:var(--yes)' }); drawSet(s, X, [[-3, Infinity, false, false]], 45, 'var(--sol)', { lo: -7, hi: 3 });
+  txt(s, 10, 78, 'x < −3 ✕', 'labS', { style: 'fill:var(--no)' }); drawSet(s, X, [[-Infinity, -3, false, false]], 92, 'var(--no)', { lo: -7, hi: 3 });
+  s = $('tr2'); X = nline(s, 300, -1, 6, 120, { L: 20, R: 20, step: 1 });
+  drawSet(s, X, [[-Infinity, 1, false, false]], 45, 'var(--cl)', { lo: -1, hi: 6 }); drawSet(s, X, [[4, Infinity, false, false]], 80, 'var(--cr)', { lo: -1, hi: 6 });
+  txt(s, 150, 30, 'no overlap', 'labS', { 'text-anchor': 'middle', style: 'fill:var(--no)' });
+  s = $('tr3'); X = nline(s, 300, -2, 8, 120, { L: 20, R: 20, step: 1 });
+  txt(s, 10, 30, '|x − 3| > 2 ✓', 'labS', { style: 'fill:var(--yes)' }); drawSet(s, X, [[-Infinity, 1, false, false], [5, Infinity, false, false]], 45, 'var(--sol)', { lo: -2, hi: 8 });
+  txt(s, 10, 78, '1 < x < 5 ✕', 'labS', { style: 'fill:var(--no)' }); drawSet(s, X, [[1, 5, false, false]], 92, 'var(--no)', { lo: -2, hi: 8 });
+})();
+
+/* =====================================================================
+   6. QUIZ
+   ===================================================================== */
+const Q = { right: 0, total: 0 };
+let qq = null;
+const qTitles = { solve: 'Solve the inequality', read: 'Read the number line', abs: 'Absolute value', check: 'Is it a solution?' };
+function qReset(){ ['qVis', 'qChoice', 'qBoxes', 'qExpr'].forEach(id => $(id).innerHTML = ''); $('qFb').className = 'feedback'; $('qFb').innerHTML = ''; $('qErr').textContent = ''; $('qIn').style.display = ''; }
+function qScore(ok){ if (qq.counted) return; qq.counted = true; Q.total++; if (ok) Q.right++; $('score').textContent = `Score: ${Q.right} / ${Q.total}`; }
+function qFeedback(ok, html){ $('qFb').className = 'feedback ' + (ok ? 'ok' : 'bad'); $('qFb').innerHTML = (ok ? '<b>Right.</b> ' : '<b>Not quite.</b> ') + html; }
+function qChoices(list, correctIdx, explain){ $('qIn').style.display = 'none'; qq.correctIdx = correctIdx; qq.explainFn = explain; list.forEach((c, k) => { const b = document.createElement('button'); b.innerHTML = c; b.onclick = () => { const ok = k === correctIdx; qScore(ok); [...$('qChoice').children].forEach((x, j) => { x.classList.remove('right', 'wrong'); if (j === k) x.classList.add(ok ? 'right' : 'wrong'); }); qFeedback(ok, explain(k)); }; $('qChoice').appendChild(b); }); }
+function qWire(id){ $(id).addEventListener('focus', e => e.target.select()); $(id).addEventListener('input', () => $('qErr').textContent = ''); $(id).addEventListener('keydown', e => { if (e.key === 'Enter') $('qCheck').click(); }); }
+function qSolve(){
+  let a, b, c; do { a = pick([2, 3, 4, 5, -2, -3, -4, -1]); b = ri(-9, 9); c = ri(-9, 12); } while ((c - b) % a !== 0 || b === 0);
+  const op = pick(SYMS), v = (c - b) / a, op2 = a > 0 ? op : FLIP[op];
+  Object.assign(qq, { a, b, c, op, ans: [op2, v] });
+  $('qText').innerHTML = 'Solve. Choose the sign and type the number: <i>x</i> ? ___.';
+  $('qExpr').textContent = `${lin(a, b)} ${op} ${c < 0 ? '−' + -c : c}`;
+  $('qBoxes').innerHTML = `<span style="font:600 22px var(--mono)">x</span><div class="syms" id="qSym">${SYMS.map(s => `<button>${s}</button>`).join('')}</div><label class="field sm"><span>number</span><input id="qx0" type="text" inputmode="decimal" autocomplete="off"></label>`;
+  [...$('qSym').children].forEach(b2 => b2.onclick = () => { qq.sym = b2.textContent; [...$('qSym').children].forEach(x => x.classList.toggle('on', x === b2)); $('qErr').textContent = ''; });
+  qWire('qx0');
+  qq.explain = `${b > 0 ? 'Subtract ' + b : 'Add ' + -b} on both sides: ${lin(a, 0)} ${op} ${fr(c - b)}. Divide by ${fr(a)}${a < 0 ? ', a negative, so flip the sign' : ''}: <b>x ${op2} ${fr(v)}</b>.`;
+}
+function qSolveCheck(){
+  const v = parseNum($('qx0').value);
+  if (!qq.sym || isNaN(v)){ $('qErr').textContent = 'Choose a sign and type a number.'; return null; }
+  const [op2, ans] = qq.ans, ok = qq.sym === op2 && Math.abs(v - ans) < 1e-9;
+  let why = qq.explain;
+  if (!ok){
+    if (Math.abs(v - ans) < 1e-9 && qq.sym === FLIP[op2]) why = 'Right number, wrong direction: ' + (qq.a < 0 ? 'you divided by a negative and didn’t flip. ' : 'no flip was needed here. ') + why;
+    else if (Math.abs(v - ans) < 1e-9) why = 'Right number; check whether the boundary is included (≤, ≥) or not (<, >). ' + why;
+    else if (Math.abs(v + ans) < 1e-9) why = 'Sign of the number is off. ' + why;
+  }
+  return [ok, why];
+}
+function nlQuiz(S, lo, hi){ const s = document.createElementNS(NS, 'svg'); s.setAttribute('viewBox', '0 0 640 130'); $('qVis').appendChild(s); const X = nline(s, 640, lo, hi, 95, { L: 30, R: 30, step: 1 }); drawSet(s, X, S, 50, 'var(--sol)', { lo, hi }); }
+function qRead(){
+  const a = ri(-6, 3), b = a + ri(2, 6), kind = pick(['left', 'right', 'between', 'outside']), ca = Math.random() < 0.5, cb = Math.random() < 0.5;
+  const S = { left: [[-Infinity, a, false, ca]], right: [[a, Infinity, ca, false]], between: [[a, b, ca, cb]], outside: [[-Infinity, a, false, ca], [b, Infinity, cb, false]] }[kind];
+  nlQuiz(S, -9, 9);
+  $('qText').innerHTML = 'Which inequality describes the shaded numbers?';
+  const correct = ineqStr(S);
+  const flipEnds = S.map(([p, q, cp, cq]) => [p, q, isFinite(p) ? !cp : cp, isFinite(q) ? !cq : cq]);
+  const opp = { left: [[a, Infinity, ca, false]], right: [[-Infinity, a, false, ca]], between: [[-Infinity, a, false, ca], [b, Infinity, cb, false]], outside: [[a, b, ca, cb]] }[kind];
+  let list = [...new Set([correct, ineqStr(flipEnds), ineqStr(opp), ineqStr(opp.map(([p, q, cp, cq]) => [p, q, isFinite(p) ? !cp : cp, isFinite(q) ? !cq : cq]))])];
+  list = list.sort(() => Math.random() - 0.5);
+  qChoices(list, list.indexOf(correct), k => (list[k] === ineqStr(flipEnds) && k !== list.indexOf(correct) ? 'Check the dots: filled means included (≤, ≥), hollow means left out (<, >). ' : list[k] === ineqStr(opp) ? 'That’s the unshaded part. ' : '') + `The shading is <b>${correct}</b>, interval notation ${ivStr(S)}.`);
+}
+function qAbs(){
+  const a = ri(-5, 5), r = ri(1, 5), kind = pick(['eq', 'lt', 'gt']), cl = Math.random() < 0.5;
+  const sa = a < 0 ? `x + ${num(-a)}` : a === 0 ? 'x' : `x − ${num(a)}`;
+  qq.kind = kind; qq.a = a; qq.r = r;
+  if (kind === 'eq'){
+    $('qText').innerHTML = 'Solve. Type both solutions (smaller first).';
+    $('qExpr').textContent = `|${sa}| = ${r}`;
+    $('qBoxes').innerHTML = '<label class="field sm"><span>x =</span><input id="qx0" type="text" inputmode="decimal" autocomplete="off"></label><label class="field sm"><span>or x =</span><input id="qx1" type="text" inputmode="decimal" autocomplete="off"></label>';
+    qWire('qx0'); qWire('qx1');
+    qq.ans = [a - r, a + r];
+    qq.explain = `|${sa}| is the distance from x to ${num(a)}. Exactly ${r} away: ${num(a)} − ${r} = ${num(a - r)} and ${num(a)} + ${r} = ${num(a + r)}.`;
+  } else {
+    const op = kind === 'lt' ? (cl ? '≤' : '<') : (cl ? '≥' : '>');
+    $('qText').innerHTML = 'Which describes the solutions?';
+    $('qExpr').textContent = `|${sa}| ${op} ${r}`;
+    const inside = `${num(a - r)} ${cl ? '≤' : '<'} x ${cl ? '≤' : '<'} ${num(a + r)}`, outside = `x ${cl ? '≤' : '<'} ${num(a - r)} or x ${cl ? '≥' : '>'} ${num(a + r)}`;
+    const wrongC = `${num(-r - a)} ${cl ? '≤' : '<'} x ${cl ? '≤' : '<'} ${num(r - a)}`, wrongD = `x ${cl ? '≤' : '<'} ${num(-r - a)} or x ${cl ? '≥' : '>'} ${num(r - a)}`;
+    let list = [...new Set([inside, outside, a !== 0 ? wrongC : `x ${op} ${r}`, a !== 0 ? wrongD : `x = ${r}`])].sort(() => Math.random() - 0.5);
+    const correct = kind === 'lt' ? inside : outside;
+    qChoices(list, list.indexOf(correct), k => (list[k] === wrongC || list[k] === wrongD ? `The centre is ${num(a)}, not ${num(-a)}${a < 0 ? `: |${sa}| = |x − ${pf(a)}|` : ''}. ` : list[k] === (kind === 'lt' ? outside : inside) ? `“${kind === 'lt' ? 'Less' : 'Greater'} than” means ${kind === 'lt' ? 'closer: the inside' : 'farther: the outside'}. ` : '') +
+      `|${sa}| is the distance from x to ${num(a)}. ${kind === 'lt' ? (cl ? 'At most' : 'Less than') : (cl ? 'At least' : 'More than')} ${r} away: <b>${correct}</b>.`);
+  }
+}
+function qAbsCheck(){
+  const v = [parseNum($('qx0').value), parseNum($('qx1').value)];
+  if (v.some(isNaN)){ $('qErr').textContent = 'Type both solutions.'; return null; }
+  v.sort((p, q) => p - q);
+  const ok = Math.abs(v[0] - qq.ans[0]) < 1e-9 && Math.abs(v[1] - qq.ans[1]) < 1e-9;
+  let why = qq.explain;
+  if (!ok && Math.abs(v[0] + qq.ans[1]) < 1e-9 && Math.abs(v[1] + qq.ans[0]) < 1e-9) why = `Watch the centre: |x − ${pf(qq.a)}| is centred at ${num(qq.a)}, not ${num(-qq.a)}. ` + why;
+  else if (!ok && v.some(t => Math.abs(t - qq.r) < 1e-9 || Math.abs(t + qq.r) < 1e-9)) why = `±${qq.r} is the distance, measured from ${num(qq.a)}. ` + why;
+  return [ok, why];
+}
+function qCheckSol(){
+  let a, b, c; do { a = pick([2, 3, -2, -3, 4, -1]); b = ri(-8, 8); c = ri(-8, 8); } while (b === 0);
+  const op = pick(SYMS), v0 = (c - b) / a;
+  let x = Math.random() < 0.3 && Number.isInteger(v0) ? v0 : ri(-6, 6);
+  const L = a * x + b, ok = holds(L, op, c);
+  $('qText').innerHTML = `Is <b>x = ${fr(x)}</b> a solution?`;
+  $('qExpr').textContent = `${lin(a, b)} ${op} ${c < 0 ? '−' + -c : c}`;
+  const why = `Plug it in: ${fr(a)}·${pf(x)} ${b < 0 ? '−' : '+'} ${Math.abs(b)} = ${fr(L)}, and ${fr(L)} ${op} ${fr(c)} is ${ok ? 'true' : 'false'}.` + (Math.abs(L - c) < 1e-9 ? ` It’s the boundary: included only with ${op === '≤' || op === '≥' ? 'this' : 'a ≤ or ≥'} sign.` : '');
+  qChoices(['Yes', 'No'], ok ? 0 : 1, () => why);
+}
+let lastType = null;
+function qNew(){
+  qReset();
+  let t; do { t = pick(['solve', 'read', 'abs', 'check']); } while (t === lastType);
+  lastType = t; qq = { type: t, counted: false };
+  $('qTitle').textContent = qTitles[t];
+  ({ solve: qSolve, read: qRead, abs: qAbs, check: qCheckSol })[t]();
+}
+$('qCheck').onclick = () => { const r = qq.type === 'solve' ? qSolveCheck() : qAbsCheck(); if (!r) return; qScore(r[0]); qFeedback(r[0], r[1]); };
+$('qShow').onclick = () => {
+  qScore(false);
+  if (qq.correctIdx !== undefined){ [...$('qChoice').children].forEach((b, j) => { if (j === qq.correctIdx) b.classList.add('right'); }); qFeedback(false, qq.explainFn(qq.correctIdx)); return; }
+  if (qq.type === 'solve'){ qq.sym = qq.ans[0]; [...$('qSym').children].forEach(x => x.classList.toggle('on', x.textContent === qq.ans[0])); $('qx0').value = fr(qq.ans[1]).replace('−', '-'); }
+  else { $('qx0').value = num(qq.ans[0]).replace('−', '-'); $('qx1').value = num(qq.ans[1]).replace('−', '-'); }
+  $('qFb').className = 'feedback bad'; $('qFb').innerHTML = '<b>Answer filled in.</b> ' + qq.explain;
+};
+$('qNew').onclick = qNew;
+
+/* =====================================================================
+   7. START
+   ===================================================================== */
+selectOnFocus(['ma', 'mb', 'mc', 'md', 'mk', 'rX']);
+$('mPresets').children[2].click(); $('mk').value = '-2';
+$('aPresets').children[3].click();
+$('rPresets').children[2].click();
+qNew();
+</script>
+<script src="../shared/toc.js"></script>
+<script src="../shared/nav.js"></script>
+</body></html>
