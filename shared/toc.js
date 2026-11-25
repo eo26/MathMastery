@@ -58,6 +58,6 @@ window.MM_TOC = [
     { id: '8.B.3', title: 'Integrals', url: 'https://claude.ai/artifact/JvwEgjNqHfuVvxDpxzNZH9', built: true },
     { id: '8.U.1', title: 'Infinite Series' },
     { id: '8.U.2', title: 'Power Series' },
-    { id: '8.U.3', title: 'Taylor Approximations (Taylor Explorer)', ext: true, url: 'https://claude.ai/artifact/NbkDNnFSAGmLb5UqG4MBiB' },
+    { id: '8.U.3', title: 'Taylor Approximations', url: 'https://claude.ai/artifact/3NrwDZET35q3HvkjCBMBMo', built: true },
   ]},
 ];
