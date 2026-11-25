@@ -53,7 +53,7 @@ window.MM_TOC = [
     { id: '7.B.12', title: 'Independence, Basis and Dimension: A First Look', url: 'https://claude.ai/artifact/8UTdHpsth25zojKbs5W35u', built: true },
   ]},
   { ch: 8, title: 'Calculus', pages: [
-    { id: '8.B.1', title: 'Limits' },
+    { id: '8.B.1', title: 'Limits', url: 'https://claude.ai/artifact/67LjZ2erNznVxsJjiuAyZa', built: true },
     { id: '8.B.2', title: 'Derivatives' },
     { id: '8.B.3', title: 'Integrals' },
     { id: '8.U.1', title: 'Infinite Series' },

@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Limits</title>
+<!-- Fonts: a book serif for prose, a clean sans for UI, a mono for numbers -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<!-- MathJax renders the few formulas on the page (SVG output needs no external stylesheet) -->
+<script>
+  window.MathJax = { tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] }, svg: { fontCache: 'global' } };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<style>
+/* ===================== Theme ===================== */
+:root{
+  --bg:#f7f5ef; --paper:#ffffff; --ink:#1f1e1d; --muted:#6b6a66; --line:#e4e0d5; --line2:#c9c5b8;
+  --accent:#534AB7; --accent-bg:#EEEDFE;
+  --pos:#1D9E75; --neg:#D85A30; --pt:#7F77DD; --pt-soft:#AFA9EC; --pt-dark:#534AB7;
+  --pos-new:#9FE1CB; --neg-new:#F0997B; --ok:#3B6D11; --ok-bg:#EAF3DE; --bad:#A32D2D; --bad-bg:#FCEBEB; --note-bg:#FAF3E3; --note-line:#E7C98A;
+  --serif:"Source Serif 4", Georgia, "Times New Roman", serif;
+  --sans:"IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#191817; --paper:#232220; --ink:#ecebe6; --muted:#a3a29c; --line:#383733; --line2:#55534e;
+    --accent:#AFA9EC; --accent-bg:#2c2852; --pt-dark:#CECBF6; --pt-soft:#6f68b8; --pos-new:#5DCAA5; --neg-new:#F5C4B3;
+    --ok:#C0DD97; --ok-bg:#24400d; --bad:#F7C1C1; --bad-bg:#5a1c1c; --note-bg:#2b261b; --note-line:#6b5626;
+  }
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.7 var(--serif);-webkit-font-smoothing:antialiased}
+
+/* ===================== Layout ===================== */
+.topbar{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1000px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:14px;font:500 13px/1 var(--sans);color:var(--muted)}
+.brand{color:var(--ink);font-weight:600;letter-spacing:.02em}
+.brand b{color:var(--accent)}
+.crumbs{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pid{font-family:var(--mono);color:var(--accent);background:var(--accent-bg);padding:4px 8px;border-radius:6px}
+.prose{max-width:720px;margin:0 auto;padding:0 20px}
+.wide{max-width:1000px;margin:0 auto;padding:0 20px}
+
+/* ===================== Hero ===================== */
+.hero{padding:48px 0 12px}
+.kicker{font:600 13px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1{font:700 46px/1.1 var(--serif);margin:12px 0 14px;letter-spacing:-.01em}
+.dek{font-size:21px;color:var(--muted);margin:0 0 22px;font-style:italic}
+.tiers{display:flex;gap:6px;flex-wrap:wrap;font:500 13px/1 var(--sans);margin-bottom:8px}
+.tier{padding:7px 12px;border-radius:999px;border:1px solid var(--line2);color:var(--muted)}
+.tier.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.tier small{opacity:.7;margin-left:4px}
+
+/* ===================== Text elements ===================== */
+h2{font:700 28px/1.25 var(--serif);margin:56px 0 10px;display:flex;gap:12px;align-items:baseline}
+h2 .n{font:600 14px/1 var(--mono);color:var(--accent);min-width:28px}
+p{margin:0 0 16px}
+em.key{font-style:normal;background:linear-gradient(transparent 62%,var(--accent-bg) 62%);padding:0 2px}
+.goals{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:18px 22px;margin:22px 0 0;font:15.5px/1.6 var(--sans)}
+.goals h3{font:600 12px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
+.goals ul{margin:0;padding-left:20px}
+.note{background:var(--note-bg);border-left:4px solid var(--note-line);border-radius:0 10px 10px 0;padding:14px 18px;margin:20px 0;font:15.5px/1.6 var(--sans)}
+.note b{font-weight:600}
+.notice{list-style:none;padding:0;margin:8px 0 18px;counter-reset:n}
+.notice li{position:relative;padding:12px 0 12px 46px;border-top:1px solid var(--line)}
+.notice li:last-child{border-bottom:1px solid var(--line)}
+.notice li::before{counter-increment:n;content:counter(n);position:absolute;left:4px;top:13px;width:26px;height:26px;border-radius:50%;background:var(--accent-bg);color:var(--accent);font:600 13px/26px var(--mono);text-align:center}
+.goes{list-style:none;padding:0;margin:8px 0 18px}
+.goes li{padding:12px 0;border-top:1px solid var(--line)}
+.goes li:last-child{border-bottom:1px solid var(--line)}
+.math{overflow-x:auto;margin:12px 0 18px;padding:14px 18px;background:var(--paper);border:1px solid var(--line);border-radius:12px}
+.math .cap{font:14px/1.5 var(--sans);color:var(--muted);margin-top:4px}
+.mono{font-family:var(--mono);font-size:.92em;white-space:nowrap}
+.pos{color:var(--pos);font-weight:600}.neg{color:var(--neg);font-weight:600}.pt{color:var(--pt-dark);font-weight:600}
+
+/* ===================== Vocabulary ===================== */
+.vocab{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin:14px 0 8px}
+.term{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font:14.5px/1.5 var(--sans)}
+.term b{display:block;font:600 15px/1.3 var(--serif);margin-bottom:4px}
+
+/* ===================== Interactive cards ===================== */
+.card{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:18px 20px 20px;margin:26px 0;box-shadow:0 1px 0 var(--line),0 12px 32px -22px rgba(0,0,0,.25);font-family:var(--sans)}
+.card-h{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.card-h .tag{font:600 11px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--accent);background:var(--accent-bg);padding:5px 8px;border-radius:6px}
+.card-h h3{font:600 18px/1.3 var(--sans);margin:0}
+.card-h .sub{color:var(--muted);font-size:14.5px;flex-basis:100%}
+.panel-label{font:600 11px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:12px 0 4px;display:flex;justify-content:space-between}
+.panel-label span:last-child{letter-spacing:0;text-transform:none;font-weight:500}
+svg.nl{display:block;width:100%;height:auto;border:1px solid var(--line);border-radius:12px;background:var(--bg);touch-action:manipulation}
+svg.clickable{cursor:pointer}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:12px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0}
+button{font:500 14px/1 var(--sans);padding:9px 14px;border-radius:9px;border:1px solid var(--line2);background:var(--paper);color:var(--ink);cursor:pointer;transition:background .15s,border-color .15s}
+button:hover{border-color:var(--ink)}
+button.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+button.preset.on{background:var(--accent-bg);border-color:var(--accent);color:var(--accent)}
+button:disabled{opacity:.45;cursor:default}
+.desc{min-height:24px;color:var(--muted);font-size:14.5px;margin:2px 0 6px}
+.inputs{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;margin:12px 0 4px}
+.field{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.field input{width:92px;font:500 18px/1 var(--mono);padding:9px 10px;border-radius:9px;border:2px solid var(--line2);background:var(--bg);color:var(--ink);text-align:center}
+.field input:focus{outline:none;border-color:var(--accent)}
+.field i,.eq i,.sym{font:italic 600 1.15em var(--serif);text-transform:none;letter-spacing:0;color:var(--pt-dark)}
+.field.start input{border-color:var(--pt-soft)}
+.field.slide input{border-color:var(--pt)}
+.eq{font:500 20px/1 var(--mono);padding:10px 14px;background:var(--bg);border-radius:10px;border:1px solid var(--line)}
+.err{color:var(--bad);font-size:14px;min-height:20px;margin:2px 0}
+.readout{margin-top:12px;padding:12px 14px;background:var(--bg);border-radius:10px;border:1px solid var(--line);font-size:15px;line-height:1.55;min-height:48px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:12px;font-size:13px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{display:inline-block;width:14px;height:14px;border-radius:50%}
+.sw.pos{background:var(--pos)}.sw.neg{border:2.4px solid var(--neg)}
+.sw.x{position:relative;background:var(--pos);opacity:.45}.sw.x::after{content:'✕';position:absolute;inset:-1px 0 0 0;color:var(--neg);font:700 13px/1 var(--sans);text-align:center}
+.sw.posnew{background:var(--pos-new);border:1.5px solid var(--pos)}.sw.negnew{border:2.4px solid var(--neg-new)}.sw.pt{background:var(--pt)}
+.sw.mv{width:22px;height:4px;border-radius:2px;background:var(--pt-soft)}
+.sw.rl{width:22px;height:0;border-top:2px dashed var(--ink);border-radius:0;opacity:.7}
+.feedback{margin-top:10px;padding:12px 14px;border-radius:10px;font-size:15px;line-height:1.55;display:none}
+.feedback.ok{display:block;background:var(--ok-bg);color:var(--ok)}
+.feedback.bad{display:block;background:var(--bad-bg);color:var(--bad)}
+.feedback.info{display:block;background:var(--accent-bg);color:var(--accent)}
+.score{margin-left:auto;font:600 14px/1 var(--mono);color:var(--muted)}
+
+/* ===================== Footer nav ===================== */
+.pager{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:56px 0 18px;font-family:var(--sans)}
+.pager a,.pager div{display:block;padding:16px 18px;border:1px solid var(--line);border-radius:14px;background:var(--paper);color:var(--ink);text-decoration:none}
+.pager small{display:block;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.pager .next{text-align:right}
+.pager .soon{opacity:.6}
+.meta{font:13px/1.6 var(--sans);color:var(--muted);text-align:center;padding:10px 0 50px}
+
+@media (max-width:720px){
+  body{font-size:17px}
+  h1{font-size:34px}
+  .dek{font-size:18px}
+  h2{font-size:24px}
+  .card{padding:14px 12px 16px;border-radius:14px}
+  .crumbs{display:none}
+  svg.nl{min-width:640px}
+}
+</style>
+<meta name="mm-site" content="1">
+<link rel="stylesheet" href="../shared/nav.css">
+</head>
+<body>
+<style>
+/* ===================== Page-specific styles (8.B.1) ===================== */
+/* the curve = purple, x approaching from the left = blue, from the right = orange, the limit L = green,
+   the ε band (outputs) = gold, the δ window (inputs) = blue tint, trouble = red */
+:root{ --cv:#7F77DD; --cvs:#AFA9EC; --lf:#2F6FDB; --rt:#E08A2E; --L:#1D9E75; --eps:#E9B200; --no:#D8443A; --yes:#1D9E75; --sec:#C2417D; }
+@media (prefers-color-scheme:dark){ :root{ --cv:#AFA9EC; --cvs:#6F67C9; --lf:#6EA2F5; --rt:#F2B266; --L:#5DCAA5; --eps:#FFD44D; --no:#F07B72; --yes:#5DCAA5; --sec:#EE7FB0; } }
+.kv{color:var(--cv);font-weight:700}.kl{color:var(--lf);font-weight:700}.kr{color:var(--rt);font-weight:700}.kL{color:var(--L);font-weight:700}.ke{color:#B8860B;font-weight:700}.kn{color:var(--no);font-weight:700}.ky{color:var(--yes);font-weight:700}.ks{color:var(--sec);font-weight:700}
+@media (prefers-color-scheme:dark){ .ke{color:var(--eps)} }
+svg{user-select:none;-webkit-user-select:none}
+.solo svg{width:100%;height:auto;display:block;background:var(--bg);border:1px solid var(--line);border-radius:10px;margin-top:10px}
+.split{display:grid;grid-template-columns:600px 1fr;gap:14px;margin-top:10px;align-items:start}
+.split svg{width:100%;height:auto;display:block;background:var(--bg);border:1px solid var(--line);border-radius:10px}
+.field.sm input{width:70px}
+.ltab{border-collapse:collapse;font:14px var(--mono);width:100%}
+.ltab th,.ltab td{border-bottom:1px dashed var(--line);padding:4px 8px;text-align:right}
+.ltab th{font:600 11.5px var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.ltab tr.new td{background:var(--accent-bg)}
+.steps{margin:8px 0 0;padding:0;list-style:none}
+.steps li{padding:6px 12px;font:17px var(--mono);border-left:3px solid var(--line);margin:4px 0}
+.steps li small{display:block;font:13px var(--sans);color:var(--muted)}
+.steps li.hide{display:none}
+.verdict{display:inline-block;font:600 15px var(--sans);padding:6px 12px;border-radius:8px;margin:8px 8px 0 0}
+.verdict.ok{background:var(--ok-bg);color:var(--ok)}.verdict.bad{background:var(--bad-bg);color:var(--bad)}.verdict.info{background:var(--accent-bg);color:var(--accent)}
+.legend span span{display:inline}
+.traps{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:8px}
+.traps .t{border:1px solid var(--line);border-radius:10px;background:var(--bg);padding:10px}
+.traps .t h4{margin:0 0 4px;font:600 15px var(--sans)}
+.traps .t p{margin:6px 0 0;font-size:14.5px;line-height:1.5;color:var(--muted)}
+.traps svg{width:100%;height:auto;display:block}
+.qtext{font:17px/1.55 var(--serif);margin:4px 0 10px}
+.qexpr{font:600 22px var(--mono);margin:4px 0 10px}
+.qvis{display:flex;justify-content:center;margin:6px 0}
+.qvis svg{width:480px;height:auto;background:var(--bg);border:1px solid var(--line);border-radius:10px}
+.choice{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 0}.choice button{min-width:140px}
+.choice button.right{border-color:var(--ok);background:var(--ok-bg);color:var(--ok)}.choice button.wrong{border-color:var(--bad);background:var(--bad-bg);color:var(--bad)}
+pre.code{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:12px 16px;overflow-x:auto;font:13.5px/1.6 var(--mono);margin:10px 0 16px}
+</style>
+
+<!-- ===================== Top bar ===================== -->
+<div class="topbar"><div class="topbar-in">
+  <span class="brand">Math<b>Mastery</b></span>
+  <span class="crumbs">Chapter 8 · Calculus › Basics</span>
+  <span class="pid">8.B.1</span>
+</div></div>
+
+<!-- ===================== Hero ===================== -->
+<header class="prose hero">
+  <div class="kicker">Chapter 8 · Calculus</div>
+  <h1>Limits</h1>
+  <p class="dek">A limit asks where a function is heading, not where it is. It’s the idea that lets calculus talk about an instant of time, a single point on a curve, or what happens in the long run.</p>
+  <div class="tiers" aria-label="Tier">
+    <span class="tier on">Basics <small>you are here</small></span>
+    <span class="tier">Undergraduate</span>
+    <span class="tier">Masters</span>
+  </div>
+  <div class="goals">
+    <h3>On this page</h3>
+    <ul>
+      <li>Read lim<sub><i>x</i>→<i>a</i></sub> <i>f</i>(<i>x</i>) = <i>L</i> as “<i>f</i>(<i>x</i>) gets as close as you like to <i>L</i> when <i>x</i> is close enough to <i>a</i>”, and see the precise <b>ε–δ</b> version.</li>
+      <li>Use <b>one-sided limits</b>, and recognise when a limit <b>does not exist</b>: jumps, blow-ups to infinity, and endless wiggling.</li>
+      <li>Compute limits by plugging in, and by <b>factoring and cancelling</b> when you get 0/0.</li>
+      <li>Find <b>limits at infinity</b> (horizontal asymptotes) and define <b>continuity</b>: the limit equals the value.</li>
+    </ul>
+  </div>
+</header>
+
+<main>
+<!-- ===================== §1 ===================== -->
+<section class="prose">
+  <h2><span class="n">1</span>Where is it heading?</h2>
+  <p>Take <i>f</i>(<i>x</i>) = (<i>x</i>² − 1)/(<i>x</i> − 1). At <i>x</i> = 1 it is 0/0, which means nothing: the function has a <b>hole</b> there. But try numbers near 1: <i>f</i>(0.9) = 1.9, <i>f</i>(0.99) = 1.99, <i>f</i>(1.01) = 2.01, <i>f</i>(1.001) = 2.001. As <i>x</i> closes in on 1 from either side, <i>f</i>(<i>x</i>) closes in on 2. We say the <b>limit</b> of <i>f</i>(<i>x</i>) as <i>x</i> approaches 1 is 2, and write lim<sub><i>x</i>→1</sub> <i>f</i>(<i>x</i>) = 2.</p>
+  <p>The key point: the limit doesn’t care what happens <i>at</i> <i>a</i>, only <i>near</i> it. The function might be undefined at <i>a</i> (a hole), or defined but with a value that doesn’t fit (a point moved off the curve), and the limit is the same. If you zoom in far enough around <i>x</i> = <i>a</i>, the graph squeezes toward a single height <i>L</i>: that height is the limit.</p>
+  <p>How close is “close”? The precise version is a challenge game. Someone names a tolerance <b>ε</b> (epsilon) around <i>L</i>, as tiny as they like. You must answer with a window <b>δ</b> (delta) around <i>a</i> so that every <i>x</i> in the window (except possibly <i>a</i> itself) gives <i>f</i>(<i>x</i>) within ε of <i>L</i>. If you can always win, however small ε is, the limit is <i>L</i>.</p>
+</section>
+<section class="wide">
+  <div class="card" id="main">
+    <div class="card-h"><span class="tag">Explore</span><h3>Approach, zoom, and the ε–δ game</h3>
+      <span class="sub">Pick a function. Press Approach: <i>x</i> walks toward <i>a</i> from both sides, the table fills in, and the view zooms to keep up. Then type a tolerance ε and press Find δ: the gold band is “within ε of <i>L</i>”, the blue window is “within δ of <i>a</i>”.</span></div>
+    <div class="row" id="mPresets"></div>
+    <div class="desc" id="mDesc"></div>
+    <div class="inputs">
+      <div class="row" style="margin:0"><button class="primary" id="mPlay">Approach</button><button id="mZin">Zoom in ×10</button><button id="mZout">Zoom out</button><button id="mReset">Reset</button></div>
+      <label class="field sm"><span>ε (tolerance)</span><input id="mEps" type="text" inputmode="decimal" autocomplete="off" style="border-color:var(--eps)"></label>
+      <div class="row" style="margin:0"><button id="mFind">Find δ</button></div>
+    </div>
+    <div class="err" id="mErr"></div>
+    <div class="split">
+      <svg id="mSvg" viewBox="0 0 600 440" role="img" aria-label="The function near a, with approach points and the epsilon-delta bands"></svg>
+      <table class="ltab" id="mTab"></table>
+    </div>
+    <div><span class="verdict" id="mV"></span><span class="verdict info" id="mV2"></span></div>
+    <div class="readout" id="mOut"></div>
+    <div class="legend">
+      <span><i class="sw mv" style="background:var(--cv)"></i><span>the function</span></span>
+      <span><i class="sw" style="background:var(--lf)"></i><span><i>x</i> from the left of <i>a</i></span></span>
+      <span><i class="sw" style="background:var(--rt)"></i><span><i>x</i> from the right</span></span>
+      <span><i class="sw" style="border:2.4px solid var(--L)"></i><span>the limit <i>L</i> (open: not the value at <i>a</i>)</span></span>
+      <span><i class="sw" style="background:var(--cv)"></i><span>the actual value <i>f</i>(<i>a</i>), if any</span></span>
+      <span><i class="sw" style="background:var(--eps);opacity:.4;border-radius:3px"></i><span>ε band around <i>L</i></span></span>
+      <span><i class="sw" style="background:var(--lf);opacity:.25;border-radius:3px"></i><span>δ window around <i>a</i></span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §2 ===================== -->
+<section class="prose">
+  <h2><span class="n">2</span>One-sided limits, and when limits fail</h2>
+  <p>Sometimes the left and the right disagree. The <b>left-hand limit</b> lim<sub><i>x</i>→<i>a</i>⁻</sub> <i>f</i>(<i>x</i>) only uses <i>x</i> &lt; <i>a</i>; the <b>right-hand limit</b> lim<sub><i>x</i>→<i>a</i>⁺</sub> only uses <i>x</i> &gt; <i>a</i>. The two-sided limit exists exactly when both one-sided limits exist and are equal. Try the presets in the explorer above; there are three classic ways for a limit to <b>not exist</b>:</p>
+  <ul>
+    <li><b>A jump.</b> A parking fee that jumps from $2 to $3 at the one-hour mark: from the left it heads to 2, from the right to 3. No single <i>L</i> works.</li>
+    <li><b>A blow-up.</b> 1/(<i>x</i> − 1)² grows without bound near 1. We write lim = ∞ to say <i>how</i> it fails, but ∞ isn’t a number, so the limit still doesn’t exist. The line <i>x</i> = 1 is a <b>vertical asymptote</b>.</li>
+    <li><b>Endless wiggling.</b> sin(1/<i>x</i>) swings between −1 and 1 faster and faster as <i>x</i> → 0 and never settles. Zoom in all you like: it never squeezes to one height.</li>
+  </ul>
+</section>
+
+<!-- ===================== §3 ===================== -->
+<section class="prose">
+  <h2><span class="n">3</span>Computing limits</h2>
+  <p>For most functions you meet (polynomials, and fractions of them where the bottom isn’t 0) the graph has no gaps, so the limit is just the value: <b>plug in</b>. The <b>limit laws</b> say limits behave well with arithmetic: the limit of a sum is the sum of the limits, likewise for differences, products, constant multiples, and quotients (as long as the bottom’s limit isn’t 0).</p>
+  <p>The interesting case is when plugging in gives <b>0/0</b>. That isn’t an answer; it’s a signal that something cancels. Factor the top and bottom, cancel the common factor (allowed, because <i>x</i> ≠ <i>a</i> while we approach), then plug in. The cancelled factor is exactly what made the hole.</p>
+</section>
+<section class="wide">
+  <div class="card" id="calc">
+    <div class="card-h"><span class="tag">Explore</span><h3>Factor, cancel, plug in</h3>
+      <span class="sub">Pick a limit and reveal the steps one at a time. The graph shows the hole that the cancelled factor leaves behind.</span></div>
+    <div class="row" id="cPresets"></div>
+    <div class="desc" id="cDesc"></div>
+    <div class="row"><button class="primary" id="cNext">Next step</button><button id="cAll">Show all</button><button id="cReset">Hide steps</button></div>
+    <div class="split">
+      <svg id="cSvg" viewBox="0 0 600 380" role="img" aria-label="The function with its hole"></svg>
+      <ol class="steps" id="cSteps"></ol>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §4 ===================== -->
+<section class="prose">
+  <h2><span class="n">4</span>Limits at infinity, and continuity</h2>
+  <p>We can also ask where a function heads as <i>x</i> grows without bound: lim<sub><i>x</i>→∞</sub> <i>f</i>(<i>x</i>). Hot coffee cools toward room temperature; the graph flattens out along a <b>horizontal asymptote</b>. For a fraction of polynomials, only the <b>leading terms</b> (highest powers) matter when <i>x</i> is huge: (3<i>x</i>² + 1)/(<i>x</i>² + 5) behaves like 3<i>x</i>²/<i>x</i>² = 3. If the bottom’s power is bigger, the limit is 0; if the top’s is bigger, it grows without bound.</p>
+  <p>Finally, <b>continuity</b>. A function is <b>continuous</b> at <i>a</i> when three things hold: <i>f</i>(<i>a</i>) exists, the limit at <i>a</i> exists, and they are equal. In pictures: you can draw through <i>a</i> without lifting your pen. Holes, moved points, jumps and blow-ups are all <b>discontinuities</b>. Polynomials are continuous everywhere, which is why plugging in works for them.</p>
+</section>
+<section class="wide">
+  <div class="card" id="inf">
+    <div class="card-h"><span class="tag">Explore</span><h3>Zoom out: where does it settle?</h3>
+      <span class="sub">Pick a function and widen the view. The table jumps by factors of 10 in <i>x</i>; the dashed line is the horizontal asymptote, when there is one.</span></div>
+    <div class="row" id="iPresets"></div>
+    <div class="desc" id="iDesc"></div>
+    <div class="row"><span style="font:600 12px var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)">show x up to</span><button id="iX1">10</button><button id="iX2">100</button><button id="iX3">1000</button></div>
+    <div class="split">
+      <svg id="iSvg" viewBox="0 0 600 360" role="img" aria-label="The function over a wide range of x"></svg>
+      <div><table class="ltab" id="iTab"></table><div class="readout" id="iOut" style="margin-top:10px"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §5 ===================== -->
+<section class="prose">
+  <h2><span class="n">5</span>Why calculus needs limits</h2>
+  <p>A speedometer shows your speed <i>right now</i>. But speed is distance ÷ time, and in a single instant you travel 0 distance in 0 time: 0/0 again. The way out is a limit: measure the average speed over a short interval, then a shorter one, then shorter still, and see where the answers head. On the graph of distance against time, each average speed is the slope of a <b>secant line</b> through two points, and as the interval shrinks the secant turns into the <b>tangent line</b>. Zoom in far enough on a smooth curve and it looks straight: its slope there is the instantaneous speed. That limit is the <b>derivative</b>, the subject of 8.B.2.</p>
+</section>
+<section class="wide">
+  <div class="card" id="speed">
+    <div class="card-h"><span class="tag">Explore</span><h3>The speedometer: average speed over shorter and shorter times</h3>
+      <span class="sub">A ball is dropped: after <i>t</i> seconds it has fallen <i>s</i>(<i>t</i>) = 5<i>t</i>² metres. Press Shrink to cut the time interval after <i>t</i>₀ = 2 down step by step. Switch on Zoom to follow the shrinking interval: the curve straightens out.</span></div>
+    <div class="row"><button class="primary" id="sPlay">Shrink</button><button id="sReset">Reset</button><span class="row toggle" style="margin:0"><button id="sZoom">Zoom: off</button></span></div>
+    <div class="split">
+      <svg id="sSvg" viewBox="0 0 600 380" role="img" aria-label="Distance fallen against time with secant lines"></svg>
+      <div><table class="ltab" id="sTab"></table><div class="readout" id="sOut" style="margin-top:10px"></div></div>
+    </div>
+    <div class="legend">
+      <span><i class="sw mv" style="background:var(--cv)"></i><span>distance fallen <i>s</i>(<i>t</i>)</span></span>
+      <span><i class="sw mv" style="background:var(--sec)"></i><span>secant: average speed over [2, 2 + <i>h</i>]</span></span>
+      <span><i class="sw mv" style="background:var(--L)"></i><span>tangent: the limit, the speed at <i>t</i> = 2</span></span>
+    </div>
+  </div>
+</section>
+<section class="prose">
+  <p>Limits also settle an old puzzle. To reach a wall, first walk half the way, then half of what’s left, then half again. That’s infinitely many steps. Do you ever arrive? The distances walked, ½ + ¼ + ⅛ + …, get as close as you like to the whole distance: their limit is exactly the full length. Infinitely many steps can add up to something finite, which is the idea behind infinite series (8.U.1).</p>
+</section>
+<section class="wide">
+  <div class="card" id="zeno">
+    <div class="card-h"><span class="tag">Explore</span><h3>Walking halfway to the wall</h3>
+      <span class="sub">The wall is 4 m away. Each step covers half the remaining gap. Press Step (or Play), and set a tolerance to see how many steps it takes to get that close.</span></div>
+    <div class="inputs">
+      <div class="row" style="margin:0"><button class="primary" id="zPlay">Play</button><button id="zStep">Step</button><button id="zReset">Reset</button></div>
+      <label class="field sm"><span>Within (m)</span><input id="zEps" type="text" inputmode="decimal" autocomplete="off" style="border-color:var(--eps)"></label>
+      <div class="row" style="margin:0"><button id="zGo">How many steps?</button></div>
+    </div>
+    <div class="err" id="zErr"></div>
+    <div class="solo"><svg id="zSvg" viewBox="0 0 960 190" role="img" aria-label="Steps of half the remaining distance toward a wall"></svg></div>
+    <div class="readout" id="zOut"></div>
+  </div>
+</section>
+
+<!-- ===================== §6 ===================== -->
+<section class="prose">
+  <h2><span class="n">6</span>Traps and non-examples</h2>
+</section>
+<section class="wide">
+  <div class="card" id="traps">
+    <div class="card-h"><span class="tag">Compare</span><h3>Easy to get wrong</h3></div>
+    <div class="traps">
+      <div class="t"><h4 class="kn">✕ The limit is not “the value at a”</h4><svg id="tr1" viewBox="0 0 300 200"></svg><p><i>g</i>(<i>x</i>) = <i>x</i>² except <i>g</i>(2) = 1. Near 2 the graph heads to 4, so the limit is 4, though <i>g</i>(2) = 1. Plugging in only works where the function is continuous.</p></div>
+      <div class="t"><h4 class="kn">✕ 0/0 doesn’t mean “no limit”</h4><svg id="tr2" viewBox="0 0 300 200"></svg><p>(<i>x</i>² − 9)/(<i>x</i> − 3) is 0/0 at 3, but it equals <i>x</i> + 3 everywhere else, so the limit is 6. 0/0 means “simplify first”, not “undefined forever”.</p></div>
+      <div class="t"><h4 class="ky">✓ Wiggling can still settle</h4><svg id="tr3" viewBox="0 0 300 200"></svg><p>sin(1/<i>x</i>) has no limit at 0, but <i>x</i>·sin(1/<i>x</i>) does: the wiggles are squeezed between −|<i>x</i>| and |<i>x</i>|, which both head to 0. Its limit is 0.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §7 ===================== -->
+<section class="prose">
+  <h2><span class="n">7</span>Now, in symbols</h2>
+  <div class="math">\[ \lim_{x\to a} f(x) = L \iff \text{for every } \varepsilon > 0 \text{ there is a } \delta > 0 \text{ such that } 0 < |x - a| < \delta \Rightarrow |f(x) - L| < \varepsilon \]<div class="cap">The ε–δ definition: any output tolerance ε can be met by some input window δ. “0 &lt; |<i>x</i> − <i>a</i>|” leaves out <i>x</i> = <i>a</i> itself.</div></div>
+  <div class="math">\[ \lim_{x\to a} f(x) = L \iff \lim_{x\to a^-} f(x) = L = \lim_{x\to a^+} f(x) \]</div>
+  <div class="math">\[ \lim (f \pm g) = \lim f \pm \lim g, \quad \lim (fg) = \lim f \cdot \lim g, \quad \lim \frac{f}{g} = \frac{\lim f}{\lim g} \ \ (\lim g \ne 0) \]<div class="cap">The limit laws, when the limits on the right exist.</div></div>
+  <div class="math">\[ \lim_{x\to 3}\frac{x^2 - 9}{x - 3} = \lim_{x\to 3}\frac{(x-3)(x+3)}{x - 3} = \lim_{x\to 3}(x + 3) = 6, \qquad \lim_{x\to 0}\frac{\sin x}{x} = 1 \]</div>
+  <div class="math">\[ \lim_{x\to\infty}\frac{a_n x^n + \dots}{b_m x^m + \dots} = \begin{cases} a_n/b_m & n = m \\ 0 & n < m \\ \pm\infty & n > m \end{cases} \qquad f \text{ continuous at } a \iff \lim_{x\to a} f(x) = f(a) \]</div>
+  <p>A computer can do the tables for you, and a symbolic package can find limits exactly:</p>
+  <pre class="code"><code>import sympy as sp                                  # symbolic maths: exact answers, not decimals
+
+x = sp.symbols('x')                                 # the variable
+print(sp.limit((x**2 - 9) / (x - 3), x, 3))        # 6: the 0/0 at x = 3 cancels
+print(sp.limit(sp.sin(x) / x, x, 0))                # 1: the famous one
+print(sp.limit((3*x**2 + 1) / (x**2 + 5), x, sp.oo)) # 3: ratio of the leading terms
+print(sp.limit(1 / (x - 1), x, 1, '+'), sp.limit(1 / (x - 1), x, 1, '-'))   # oo -oo: one-sided blow-ups</code></pre>
+</section>
+
+<!-- ===================== §8 ===================== -->
+<section class="prose">
+  <h2><span class="n">8</span>Where this goes</h2>
+  <ul class="goes">
+    <li><b>Next (8.B.2):</b> the derivative, the limit of average rates of change: the slope of a curve at a single point, and the speed at a single instant.</li>
+    <li><b>Later in this book:</b> integrals (8.B.3) are limits of sums of thinner and thinner slices; infinite series (8.U.1) are limits of partial sums like Zeno’s walk; and every theorem of real analysis rests on the ε–δ definition.</li>
+    <li><b>In the world:</b> instantaneous speed and acceleration, long-run behaviour (cooling, saturation, steady states), and every measurement that gets “as precise as you need” by taking more care.</li>
+  </ul>
+</section>
+
+<!-- ===================== §9 ===================== -->
+<section class="prose">
+  <h2><span class="n">9</span>Words to know</h2>
+  <div class="vocab">
+    <div class="term"><b>Limit</b>lim<sub><i>x</i>→<i>a</i></sub> <i>f</i>(<i>x</i>) = <i>L</i>: <i>f</i>(<i>x</i>) gets as close as you like to <i>L</i> for all <i>x</i> close enough to <i>a</i> (but not equal).</div>
+    <div class="term"><b>Approach</b>Get closer and closer to a value without needing to reach it; written →.</div>
+    <div class="term"><b>Hole</b>A single missing point in a graph, often from a factor that cancels.</div>
+    <div class="term"><b>ε–δ definition</b>The precise meaning of a limit: every tolerance ε on outputs can be met by some window δ on inputs.</div>
+    <div class="term"><b>One-sided limit</b>The limit from the left (<i>x</i> → <i>a</i>⁻) or from the right (<i>x</i> → <i>a</i>⁺) only.</div>
+    <div class="term"><b>Does not exist (DNE)</b>No single <i>L</i> works: one-sided limits differ, the function blows up, or it never settles.</div>
+    <div class="term"><b>Infinite limit</b>lim = ∞: the function grows without bound. A way of not existing, with a description.</div>
+    <div class="term"><b>Vertical asymptote</b>A line <i>x</i> = <i>a</i> where the function blows up.</div>
+    <div class="term"><b>Indeterminate form 0/0</b>What plugging in gives when top and bottom both head to 0; a sign to simplify.</div>
+    <div class="term"><b>Limit laws</b>Limits of sums, products and quotients are the sums, products and quotients of the limits.</div>
+    <div class="term"><b>Limit at infinity</b>lim<sub><i>x</i>→∞</sub> <i>f</i>(<i>x</i>): where the function heads as <i>x</i> grows without bound.</div>
+    <div class="term"><b>Horizontal asymptote</b>A line <i>y</i> = <i>L</i> that the graph settles toward far out.</div>
+    <div class="term"><b>Continuous</b><i>f</i> is continuous at <i>a</i> when lim<sub><i>x</i>→<i>a</i></sub> <i>f</i>(<i>x</i>) = <i>f</i>(<i>a</i>): no hole, jump or blow-up.</div>
+    <div class="term"><b>Discontinuity</b>A point where a function isn’t continuous: a hole, a moved point, a jump or an asymptote.</div>
+    <div class="term"><b>Secant / tangent line</b>A secant joins two points of a curve; the tangent is its limit as the points merge.</div>
+  </div>
+</section>
+
+<!-- ===================== Quiz ===================== -->
+<section class="prose"><h2><span class="n">10</span>Check yourself</h2>
+  <p>Four kinds of questions: read a limit from a graph, compute one, decide whether one exists, and limits at infinity. Type “DNE” when a limit does not exist, and “inf” or “-inf” for ±∞.</p>
+</section>
+<section class="wide">
+  <div class="card" id="quiz">
+    <div class="card-h"><span class="tag">Quiz</span><h3 id="qTitle"></h3><span class="score" id="score">Score: 0 / 0</span></div>
+    <div class="qtext" id="qText"></div>
+    <div class="qexpr" id="qExpr"></div>
+    <div class="qvis" id="qVis"></div>
+    <div class="choice" id="qChoice"></div>
+    <div class="inputs" id="qIn">
+      <label class="field"><span id="qLab">Answer</span><input id="q1" type="text" autocomplete="off" style="width:160px"></label>
+      <div class="row" style="margin:0"><button class="primary" id="qCheck">Check</button></div>
+    </div>
+    <div class="row" style="margin:10px 0 0"><button id="qShow">Show answer</button><button id="qNew">New question</button></div>
+    <div class="err" id="qErr"></div>
+    <div class="feedback" id="qFb" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ===================== Pager (filled in by the shared navigation) ===================== -->
+<nav class="wide">
+  <div class="pager"></div>
+  <div class="meta">8.B.1 · Prerequisites: 3.B.3 (inequalities and absolute value), 3.B.4 (functions), 3.B.8 (factoring) · Leads to: 8.B.2 (derivatives), 8.U.1 (infinite series)</div>
+</nav>
+</main>
+
+<script>
+/* =====================================================================
+   1. HELPERS
+   ===================================================================== */
+const NS = 'http://www.w3.org/2000/svg';
+const $ = id => document.getElementById(id);
+function mk(tag, attrs, parent){                           // create an SVG element with attributes
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function txt(parent, x, y, s, cls, extra){                 // create an SVG text element
+  extra = Object.assign({}, extra || {});
+  if (extra['text-anchor']){ extra.style = (extra.style ? extra.style + ';' : '') + 'text-anchor:' + extra['text-anchor']; delete extra['text-anchor']; }
+  const t = mk('text', Object.assign({ x, y, class: cls || '' }, extra), parent);
+  t.textContent = s;
+  return t;
+}
+// round for display, use a true minus sign, never show −0
+function num(x, d){ if (d === undefined) d = 2; const r = Math.round(x * Math.pow(10, d)) / Math.pow(10, d); return r === 0 ? '0' : (r < 0 ? '−' : '') + String(Math.abs(r)); }
+const pn = x => x < 0 ? `(${num(x)})` : num(x);              // wrap negatives in brackets when substituting
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const ri = (a, b) => a + Math.floor(Math.random() * (b - a + 1));   // random whole number from a to b
+const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+function parseNum(s){                                     // integers, decimals, minus, simple fractions
+  s = String(s).trim().replace(/[−–]/g, '-').replace(/\s+/g, '');
+  if (/^-?\d+(\.\d+)?$|^-?\.\d+$/.test(s)) return parseFloat(s);
+  const m = s.match(/^(-?\d+)\/(\d+)$/);
+  if (m && +m[2] !== 0) return +m[1] / +m[2];
+  return NaN;
+}
+function selectOnFocus(ids){ ids.forEach(id => $(id).addEventListener('focus', e => e.target.select())); }
+function buttons(boxId, list, onPick){                    // a row of preset buttons; returns a function that marks one as on
+  list.forEach((p, i) => { const b = document.createElement('button'); b.className = 'preset'; b.textContent = p.n; b.onclick = () => onPick(i); $(boxId).appendChild(b); });
+  return i => [...$(boxId).children].forEach((b, j) => b.classList.toggle('on', j === i));
+}
+function svgPt(svg, ev){                                  // mouse position in the SVG's own coordinates
+  const p = svg.createSVGPoint(); p.x = ev.clientX; p.y = ev.clientY;
+  return p.matrixTransform(svg.getScreenCTM().inverse());
+}
+const svgCss = document.createElement('style');
+svgCss.textContent = `
+  .grid{stroke:var(--line);stroke-width:1}
+  .axis{stroke:var(--ink);stroke-width:1.4;opacity:.7}
+  .tl{fill:var(--muted);font:500 11.5px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:3px}
+  .lab{font:700 14px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:5px}
+  .labS{font:600 12.5px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+  .cap{fill:var(--muted);font:600 12px var(--sans);letter-spacing:.06em;paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+  .oval{fill:var(--paper);stroke:var(--line);stroke-width:1.5}
+`;
+document.head.appendChild(svgCss);
+let clipN = 0;                                            // unique clip-path ids
+
+/* ---------- axes: a coordinate grid inside an SVG, with separate x and y scales ---------- */
+function axes(svg, W, H, b, o){
+  o = o || {};
+  svg.innerHTML = '';
+  const L = o.padL ?? 44, R = o.padR ?? 16, T = o.padT ?? 16, B = o.padB ?? 30;
+  const sx = (W - L - R) / (b.x1 - b.x0), sy = (H - T - B) / (b.y1 - b.y0);   // pixels per unit
+  const X = x => L + (x - b.x0) * sx, Y = y => T + (b.y1 - y) * sy;
+  const step = (s, px) => (o.half ? [0.5, 1, 2, 5, 10, 20, 50, 100] : [1, 2, 5, 10, 20, 50, 100]).find(k => k * s >= px) || 200;   // a round step at least px pixels wide
+  const xg = o.xg || step(sx, 9), yg = o.yg || step(sy, 9);        // grid-line spacing
+  const xt = o.xt || step(sx, 34), yt = o.yt || step(sy, 26);      // tick-label spacing
+  const gGrid = mk('g', {}, svg), id = 'clp' + (++clipN);
+  const cp = mk('clipPath', { id }, svg); mk('rect', { x: L, y: T, width: W - L - R, height: H - T - B }, cp);
+  const cg = mk('g', { 'clip-path': `url(#${id})` }, svg);         // clipped layer for curves
+  const m = mk('g', {}, svg), top = mk('g', {}, svg);              // free layer, then labels on top
+  const near = (v, s) => Math.abs(v / s - Math.round(v / s)) < 1e-6;
+  for (let x = Math.ceil(b.x0 / xg) * xg; x <= b.x1 + 1e-9; x += xg) mk('line', { x1: X(x), y1: T, x2: X(x), y2: H - B, class: 'grid' }, gGrid);
+  for (let y = Math.ceil(b.y0 / yg) * yg; y <= b.y1 + 1e-9; y += yg) mk('line', { x1: L, y1: Y(y), x2: W - R, y2: Y(y), class: 'grid' }, gGrid);
+  const ay = (b.y0 <= 0 && b.y1 >= 0) ? Y(0) : H - B;              // where the x-axis is drawn
+  const ax = (b.x0 <= 0 && b.x1 >= 0) ? X(0) : L;                  // where the y-axis is drawn
+  mk('line', { x1: L, y1: ay, x2: W - R, y2: ay, class: 'axis' }, gGrid);
+  mk('line', { x1: ax, y1: T, x2: ax, y2: H - B, class: 'axis' }, gGrid);
+  const fx = o.fx || (v => num(v)), fy = o.fy || (v => num(v));
+  for (let x = Math.ceil(b.x0 / xt) * xt; x <= b.x1 + 1e-9; x += xt){
+    if (Math.abs(x) < 1e-9 && ax === X(0) && !o.zeroX) continue;
+    txt(top, X(x), ay + 16, fx(x), 'tl', { 'text-anchor': 'middle' });
+  }
+  for (let y = Math.ceil(b.y0 / yt) * yt; y <= b.y1 + 1e-9; y += yt){
+    if (Math.abs(y) < 1e-9 && ay === Y(0)) continue;
+    txt(top, ax - 6, Y(y) + 4, fy(y), 'tl', { 'text-anchor': 'end' });
+  }
+  if (o.xT) txt(top, W - R - 2, ay - 8, o.xT, 'cap', { 'text-anchor': 'end' });
+  if (o.yT) txt(top, ax + 8, T + 12, o.yT, 'cap');
+  return { svg, X, Y, sx, sy, cg, m, top, b, L, R, T, B, W, H, ay, ax,
+           inv: (px, py) => [b.x0 + (px - L) / sx, b.y1 - (py - T) / sy] };
+}
+function dPath(P, pts){ return pts.map((p, i) => (i ? 'L' : 'M') + P.X(p[0]).toFixed(1) + ' ' + P.Y(p[1]).toFixed(1)).join(''); }
+// sample y = f(x) from a to b, breaking the curve where f is undefined or jumps
+function sample(f, a, b, n, ok){
+  const out = []; let cur = [];
+  for (let i = 0; i <= n; i++){
+    const x = a + (b - a) * i / n, y = (ok && !ok(x)) ? NaN : f(x);
+    if (!isFinite(y)){ if (cur.length > 1) out.push(cur); cur = []; continue; }
+    if (cur.length && Math.abs(y - cur[cur.length - 1][1]) > 40){ if (cur.length > 1) out.push(cur); cur = []; }
+    cur.push([x, y]);
+  }
+  if (cur.length > 1) out.push(cur);
+  return out;
+}
+function dot(P, x, y, col, o){                              // a filled (or open) point
+  o = o || {};
+  return mk('circle', { cx: P.X(x), cy: P.Y(y), r: o.r || 6, style: o.open ? `fill:var(--bg);stroke:${col};stroke-width:2.6` : `fill:${col};stroke:var(--bg);stroke-width:1.5` }, o.layer || P.m);
+}
+function vline(P, x, col, o){ o = o || {}; return mk('line', { x1: P.X(x), y1: o.y0 !== undefined ? P.Y(o.y0) : P.T, x2: P.X(x), y2: o.y1 !== undefined ? P.Y(o.y1) : P.H - P.B, style: `stroke:${col};stroke-width:${o.w || 2.5};${o.dash ? 'stroke-dasharray:' + o.dash : ''}` }, o.layer || P.m); }
+function hline(P, y, col, o){ o = o || {}; return mk('line', { x1: o.x0 !== undefined ? P.X(o.x0) : P.L, y1: P.Y(y), x2: o.x1 !== undefined ? P.X(o.x1) : P.W - P.R, y2: P.Y(y), style: `stroke:${col};stroke-width:${o.w || 2.5};${o.dash ? 'stroke-dasharray:' + o.dash : ''}` }, o.layer || P.m); }
+function arrowHead(g, x1, y1, x2, y2, col, size){            // a small triangle at (x2, y2) pointing away from (x1, y1)
+  const a = Math.atan2(y2 - y1, x2 - x1), s = size || 9;
+  const p = [[x2, y2], [x2 - s * Math.cos(a - 0.4), y2 - s * Math.sin(a - 0.4)], [x2 - s * Math.cos(a + 0.4), y2 - s * Math.sin(a + 0.4)]];
+  mk('polygon', { points: p.map(q => q.join(',')).join(' '), style: `fill:${col}` }, g);
+}
+
+/* ---------- arrow diagram: inputs in a left oval, outputs in a right oval, one arrow per pair ---------- */
+// pairs: [[in, out], ...]; o.ins / o.outs give the order (defaults: sorted values); o.fmt formats a value;
+// o.hl = input to highlight (others fade); o.lit = [in, out] arrow drawn thick; o.dead = inputs shown crossed out
+function arrowDiagram(svg, W, H, pairs, o){
+  o = o || {};
+  svg.innerHTML = '';
+  const fmt = o.fmt || (v => typeof v === 'number' ? num(v) : v);
+  const key = v => String(v);
+  const uniq = arr => { const s = new Set(), r = []; arr.forEach(v => { if (!s.has(key(v))){ s.add(key(v)); r.push(v); } }); return r; };
+  const srt = arr => arr.every(v => typeof v === 'number') ? arr.slice().sort((a, b) => a - b) : arr;
+  const ins = o.ins || srt(uniq(pairs.map(p => p[0]))), outs = o.outs || srt(uniq(pairs.map(p => p[1])));
+  const top = o.top ?? 34, bot = H - (o.bottom ?? 14);
+  const lx = W * 0.25, rx = W * 0.75, ow = Math.min(W * 0.17, 90);
+  mk('ellipse', { cx: lx, cy: (top + bot) / 2, rx: ow, ry: (bot - top) / 2, class: 'oval' }, svg);
+  mk('ellipse', { cx: rx, cy: (top + bot) / 2, rx: ow, ry: (bot - top) / 2, class: 'oval' }, svg);
+  txt(svg, lx, 18, o.inLab || 'INPUTS x', 'cap', { 'text-anchor': 'middle', style: 'fill:var(--in)' });
+  txt(svg, rx, 18, o.outLab || 'OUTPUTS y', 'cap', { 'text-anchor': 'middle', style: 'fill:var(--out)' });
+  const ypos = (i, n) => n === 1 ? (top + bot) / 2 : top + 26 + (bot - top - 52) * i / (n - 1);
+  const iy = {}, oy = {};
+  ins.forEach((v, i) => iy[key(v)] = ypos(i, ins.length));
+  outs.forEach((v, i) => oy[key(v)] = ypos(i, outs.length));
+  const cnt = {}; pairs.forEach(p => cnt[key(p[0])] = (cnt[key(p[0])] || 0) + 1);   // how many outputs each input has
+  const dx = Math.min(ow * 0.45, 34), fs = ins.length > 9 || outs.length > 9 ? 'labS' : 'lab';
+  const ga = mk('g', {}, svg), gd = mk('g', {}, svg);
+  pairs.forEach(p => {                                     // arrows
+    const k = key(p[0]), bad = cnt[k] > 1, faded = o.hl !== undefined && o.hl !== null && key(o.hl) !== k;
+    const lit = o.lit && key(o.lit[0]) === k && key(o.lit[1]) === key(p[1]);
+    const col = bad ? 'var(--no)' : 'var(--pt)';
+    const x1 = lx + dx + 8, y1 = iy[k], x2 = rx - dx - 9, y2 = oy[key(p[1])];
+    mk('line', { x1, y1, x2, y2, style: `stroke:${col};stroke-width:${lit ? 4.5 : 2.4};opacity:${faded ? .18 : 1}` }, ga);
+    if (!faded) arrowHead(ga, x1, y1, x2, y2, col, lit ? 12 : 10);
+  });
+  ins.forEach(v => {                                       // input dots and labels
+    const k = key(v), dead = o.dead && o.dead.map(key).includes(k), bad = cnt[k] > 1;
+    const faded = o.hl !== undefined && o.hl !== null && key(o.hl) !== k;
+    const col = dead ? 'var(--muted)' : bad ? 'var(--no)' : 'var(--in)';
+    mk('circle', { cx: lx + dx, cy: iy[k], r: o.hl !== undefined && key(o.hl) === k ? 8 : 6, style: `fill:${col};opacity:${faded ? .35 : 1}` }, gd);
+    const t = txt(gd, lx + dx - 12, iy[k] + 5, fmt(v), fs, { 'text-anchor': 'end', style: `fill:${col};opacity:${faded ? .45 : 1}${dead ? ';text-decoration:line-through' : ''}` });
+  });
+  outs.forEach(v => {                                      // output dots and labels
+    const k = key(v);
+    mk('circle', { cx: rx - dx, cy: oy[k], r: 6, style: 'fill:var(--out)' }, gd);
+    txt(gd, rx - dx + 12, oy[k] + 5, fmt(v), fs, { style: 'fill:var(--out)' });
+  });
+  return { ins, outs };
+}
+// group pairs by input: Map from input to its list of distinct outputs
+function byInput(pairs){
+  const m = new Map();
+  pairs.forEach(([x, y]) => { const k = String(x); if (!m.has(k)) m.set(k, { x, ys: [] }); const e = m.get(k); if (!e.ys.some(v => String(v) === String(y))) e.ys.push(y); });
+  return m;
+}
+const setStr = arr => '{' + arr.map(v => num(v)).join(', ') + '}';
+
+
+/* ---------- helpers for zoomable graphs (any scale) ---------- */
+const niceStep = raw => { const p = Math.pow(10, Math.floor(Math.log10(raw))), m = raw / p; return (m <= 1 ? 1 : m <= 2 ? 2 : m <= 5 ? 5 : 10) * p; };
+const decs = st => Math.max(0, -Math.floor(Math.log10(st) + 1e-9));
+function fmt(v, st){ const d = decs(st); const r = Number(v.toFixed(d)); return r === 0 ? '0' : (r < 0 ? '−' : '') + Math.abs(r).toFixed(d); }
+// a coordinate system with any box (tiny or huge), labelled ticks, a clipped layer for curves
+function ax2(svg, W, H, b, o){
+  o = o || {}; svg.innerHTML = '';
+  const L = o.padL ?? 52, R = o.padR ?? 14, T = o.padT ?? 14, B = o.padB ?? 28;
+  const sx = (W - L - R) / (b.x1 - b.x0), sy = (H - T - B) / (b.y1 - b.y0), X = x => L + (x - b.x0) * sx, Y = y => T + (b.y1 - y) * sy;
+  const gx = niceStep((b.x1 - b.x0) / 8), gy = niceStep((b.y1 - b.y0) / 7);
+  const g = mk('g', {}, svg), id = 'c' + Math.random().toString(36).slice(2);
+  const cp = mk('clipPath', { id }, svg); mk('rect', { x: L, y: T, width: W - L - R, height: H - T - B }, cp);
+  const cg = mk('g', { 'clip-path': `url(#${id})` }, svg), m = mk('g', {}, svg), top = mk('g', {}, svg);
+  for (let v = Math.ceil(b.x0 / gx) * gx; v <= b.x1 + gx * 1e-6; v += gx){ mk('line', { x1: X(v), y1: T, x2: X(v), y2: H - B, class: 'grid' }, g); txt(top, X(v), H - B + 16, o.fx ? o.fx(v) : fmt(v, gx), 'tl', { 'text-anchor': 'middle' }); }
+  for (let v = Math.ceil(b.y0 / gy) * gy; v <= b.y1 + gy * 1e-6; v += gy){ mk('line', { x1: L, y1: Y(v), x2: W - R, y2: Y(v), class: 'grid' }, g); txt(top, L - 6, Y(v) + 4, fmt(v, gy), 'tl', { 'text-anchor': 'end' }); }
+  if (b.y0 < 0 && b.y1 > 0) mk('line', { x1: L, y1: Y(0), x2: W - R, y2: Y(0), class: 'axis' }, g);
+  if (b.x0 < 0 && b.x1 > 0) mk('line', { x1: X(0), y1: T, x2: X(0), y2: H - B, class: 'axis' }, g);
+  mk('rect', { x: L, y: T, width: W - L - R, height: H - T - B, style: 'fill:none;stroke:var(--line2)' }, g);
+  if (o.xT) txt(top, W - R - 4, H - B - 6, o.xT, 'cap', { 'text-anchor': 'end' });
+  if (o.yT) txt(top, L + 6, T + 14, o.yT, 'cap');
+  return { X, Y, sx, sy, cg, m, top, b, L, R, T, B, W, H, inv: (px, py) => [b.x0 + (px - L) / sx, b.y1 - (py - T) / sy] };
+}
+// sample a curve across the box, breaking at undefined points, at listed jumps, and at big leaps
+function curve(P, f, o){
+  o = o || {}; const b = P.b, n = o.n || 900, brk = o.breaks || [], polys = []; let cur = [];
+  const lim = (b.y1 - b.y0) * 3;
+  for (let i = 0; i <= n; i++){
+    const x = b.x0 + (b.x1 - b.x0) * i / n, y = f(x);
+    const crossed = cur.length && brk.some(c => (cur[cur.length - 1][0] - c) * (x - c) <= 0);
+    if (!isFinite(y) || crossed || (cur.length && Math.abs(y - cur[cur.length - 1][1]) > lim)){ if (cur.length > 1) polys.push(cur); cur = []; if (!isFinite(y)) continue; }
+    cur.push([x, Math.max(b.y0 - lim, Math.min(b.y1 + lim, y))]);
+  }
+  if (cur.length > 1) polys.push(cur);
+  polys.forEach(p => mk('path', { d: dPath(P, p), style: `fill:none;stroke:${o.col || 'var(--cv)'};stroke-width:${o.w || 3};${o.dash ? 'stroke-dasharray:' + o.dash : ''}` }, P.cg));
+}
+const holeAt = (P, x, y, col) => mk('circle', { cx: P.X(x), cy: P.Y(y), r: 6, style: `fill:var(--bg);stroke:${col || 'var(--cv)'};stroke-width:2.5` }, P.m);
+const dotAt = (P, x, y, col, r) => mk('circle', { cx: P.X(x), cy: P.Y(y), r: r || 6, style: `fill:${col || 'var(--cv)'};stroke:var(--bg);stroke-width:1.5` }, P.m);
+const sig = v => !isFinite(v) ? (v > 0 ? '∞' : v < 0 ? '−∞' : 'undefined') : Math.abs(v) >= 1e5 ? v.toExponential(2).replace('-', '−') : num(v, 6);
+function parseLim(s){
+  const t = String(s).trim().toLowerCase().replace(/\s+/g, '').replace(/[−–]/g, '-');
+  if (/^(dne|none|doesnotexist|noLimit|nolimit|no)$/i.test(t)) return 'DNE';
+  if (/^\+?(inf|infinity|∞|oo)$/.test(t)) return Infinity;
+  if (/^-(inf|infinity|∞|oo)$/.test(t)) return -Infinity;
+  return parseNum(s);
+}
+const limStr = v => v === 'DNE' ? 'does not exist' : sig(v);
+
+/* =====================================================================
+   2. MAIN: approach, zoom, ε–δ
+   ===================================================================== */
+const mPresets = [
+  { n: 'A hole', f: x => Math.abs(x - 1) < 1e-12 ? NaN : (x * x - 1) / (x - 1), a: 1, L: 2, lm: 2, rp: 2, fa: undefined, H: 4, rule: 'f(x) = (x² − 1)/(x − 1)', d: 'At x = 1 it’s 0/0: undefined. But near 1 it equals x + 1, so it heads to 2.' },
+  { n: 'A moved point', f: x => x * x, a: 2, L: 4, lm: 4, rp: 4, fa: 1, H: 6, rule: 'g(x) = x², except g(2) = 1', d: 'The value at 2 has been moved to 1. The limit doesn’t care: near 2 the graph heads to 4.' },
+  { n: 'sin(x)/x', f: x => Math.abs(x) < 1e-12 ? NaN : Math.sin(x) / x, a: 0, L: 1, lm: 1, rp: 1, fa: undefined, H: 2.4, rule: 'f(x) = sin(x)/x', d: 'Undefined at 0, but it heads to 1: one of the most important limits in calculus (it makes the derivative of sin x work).' },
+  { n: 'A jump', f: x => x < 1 ? x + 1 : x + 2, a: 1, L: null, lm: 2, rp: 3, fa: 3, H: 4, breaks: [1], rule: 'f(x) = x + 1 for x < 1, x + 2 for x ≥ 1', d: 'From the left it heads to 2, from the right to 3. The one-sided limits differ, so the limit does not exist.' },
+  { n: 'A blow-up', f: x => 1 / ((x - 1) * (x - 1)), a: 1, L: Infinity, lm: Infinity, rp: Infinity, fa: undefined, H: 16, Lc: 8, breaks: [1], rule: 'f(x) = 1/(x − 1)²', d: 'It grows without bound near 1: lim = ∞, a vertical asymptote. No number L works.' },
+  { n: 'Endless wiggle', f: x => Math.abs(x) < 1e-12 ? NaN : Math.sin(1 / x), a: 0, L: null, lm: null, rp: null, fa: undefined, H: 3, Lc: 0, rule: 'f(x) = sin(1/x)', d: 'Swings between −1 and 1 ever faster near 0. Zooming in never helps: no limit, not even one-sided.' },
+  { n: 'Continuous', f: x => x * x / 2 + 1, a: 1, L: 1.5, lm: 1.5, rp: 1.5, fa: 1.5, H: 4, rule: 'f(x) = x²/2 + 1', d: 'No surprises: the limit equals the value, so f is continuous at 1. Here you can just plug in.' },
+];
+const HS = [1, 0.5, 0.1, 0.05, 0.01, 0.001];
+const M = { i: 0, zoom: 1, k: 0, anim: null, eps: null, delta: null, epsFail: null };
+function mBox(){
+  const p = mPresets[M.i], w = 4 / M.zoom, h = p.H / M.zoom, yc = p.Lc !== undefined ? p.Lc : (p.L !== null && isFinite(p.L) ? p.L : (p.lm + p.rp) / 2);
+  return { x0: p.a - w / 2, x1: p.a + w / 2, y0: yc - h / 2, y1: yc + h / 2 };
+}
+function mDraw(){
+  const p = mPresets[M.i], P = ax2($('mSvg'), 600, 440, mBox(), { yT: 'f(x)', xT: 'x' });
+  // ε band and δ window
+  if (M.eps !== null){
+    const Lt = M.epsL;
+    mk('rect', { x: P.L, y: P.Y(Lt + M.eps), width: P.W - P.L - P.R, height: Math.max(0, P.Y(Lt - M.eps) - P.Y(Lt + M.eps)), style: 'fill:var(--eps);opacity:.22' }, P.cg);
+    if (M.delta) mk('rect', { x: P.X(p.a - M.delta), y: P.T, width: P.X(p.a + M.delta) - P.X(p.a - M.delta), height: P.H - P.T - P.B, style: 'fill:var(--lf);opacity:.12' }, P.cg);
+  }
+  mk('line', { x1: P.X(p.a), y1: P.T, x2: P.X(p.a), y2: P.H - P.B, style: 'stroke:var(--muted);stroke-width:1;stroke-dasharray:3 4' }, P.cg);
+  curve(P, p.f, { breaks: p.breaks, n: M.i === 5 ? 4000 : 900 });
+  if (M.eps !== null && M.delta){                             // the part of the curve inside the δ window, coloured by whether it stays in the band
+    const d = M.delta;
+    for (const side of [-1, 1]){ const pts = []; for (let k = 1; k <= 200; k++){ const x = p.a + side * d * k / 200, y = p.f(x); if (isFinite(y)) pts.push([x, y]); } if (pts.length > 1) mk('path', { d: dPath(P, pts.sort((u, v) => u[0] - v[0])), style: `fill:none;stroke:${M.epsFail ? 'var(--no)' : 'var(--yes)'};stroke-width:4.5;opacity:.7` }, P.cg); }
+  }
+  // the limit (open) and the value at a (filled)
+  if (p.lm !== null && isFinite(p.lm)) holeAt(P, p.a, p.lm, 'var(--L)');
+  if (p.rp !== null && isFinite(p.rp) && p.rp !== p.lm) holeAt(P, p.a, p.rp, 'var(--L)');
+  if (p.fa !== undefined) dotAt(P, p.a, p.fa, 'var(--cv)', 6);
+  // approach points
+  for (let k = 0; k < M.k; k++){ const h = HS[k]; [[-1, 'var(--lf)'], [1, 'var(--rt)']].forEach(([s, c]) => { const x = p.a + s * h, y = p.f(x); if (isFinite(y)) dotAt(P, x, y, c, k === M.k - 1 ? 6 : 4); }); }
+  txt(P.top, P.X(p.a) + 4, P.T + 28, 'a = ' + num(p.a), 'labS', { style: 'fill:var(--muted)' });
+  txt(P.top, P.W - P.R - 6, P.T + 14, `zoom ×${M.zoom}`, 'labS', { 'text-anchor': 'end', style: 'fill:var(--muted)' });
+  // table
+  $('mTab').innerHTML = '<tr><th>distance h</th><th class="kl">f(a − h)</th><th class="kr">f(a + h)</th></tr>' +
+    HS.map((h, k) => k < M.k ? `<tr class="${k === M.k - 1 ? 'new' : ''}"><td>${h}</td><td>${sig(p.f(p.a - h))}</td><td>${sig(p.f(p.a + h))}</td></tr>` : `<tr><td>${h}</td><td style="color:var(--muted)">…</td><td style="color:var(--muted)">…</td></tr>`).join('') +
+    `<tr><td><b>h → 0</b></td><td><b>${p.lm === null ? 'none' : sig(p.lm)}</b></td><td><b>${p.rp === null ? 'none' : sig(p.rp)}</b></td></tr>`;
+  // verdict and readout
+  const exists = p.L !== null && isFinite(p.L);
+  $('mV').className = 'verdict ' + (exists ? 'ok' : 'bad');
+  $('mV').textContent = exists ? `lim = ${sig(p.L)}` : p.L === Infinity ? 'lim = ∞: does not exist (blows up)' : 'The limit does not exist';
+  const cont = exists && p.fa !== undefined && Math.abs(p.fa - p.L) < 1e-12;
+  $('mV2').textContent = cont ? 'Continuous at a: limit = value' : `Not continuous at a (${p.fa === undefined ? 'f(a) undefined' : exists ? 'f(a) ≠ limit' : 'no limit'})`;
+  let s = `<b>${p.rule}</b>, near a = ${num(p.a)}. Left-hand limit: <span class="kl">${p.lm === null ? 'none (keeps wiggling)' : sig(p.lm)}</span>. Right-hand limit: <span class="kr">${p.rp === null ? 'none' : sig(p.rp)}</span>. Value at a: ${p.fa === undefined ? 'undefined' : sig(p.fa)}.`;
+  if (M.eps !== null) s += '<br>' + M.epsMsg;
+  $('mOut').innerHTML = s;
+}
+function mFindDelta(){
+  const p = mPresets[M.i], e = parseNum($('mEps').value);
+  if (isNaN(e) || e <= 0 || $('mEps').value.trim() === ''){ $('mErr').textContent = 'Type a positive tolerance ε, like 0.5 or 0.01.'; return; }
+  $('mErr').textContent = '';
+  const Lt = p.L !== null && isFinite(p.L) ? p.L : p.L === Infinity ? 10 : (p.lm !== null ? p.lm : 0);
+  M.eps = e; M.epsL = Lt;
+  const ok = d => { for (let k = 1; k <= 400; k++){ const t = Math.pow(k / 400, 2); for (const s of [-1, 1]){ const y = p.f(p.a + s * d * t); if (isFinite(y) && Math.abs(y - Lt) >= e) return false; if (!isFinite(y) && p.L === Infinity) return false; } } return true; };
+  let lo = 0, hi = 2;
+  if (ok(hi)) lo = hi; else { for (let it = 0; it < 50; it++){ const mid = (lo + hi) / 2; if (mid < 1e-7) break; if (ok(mid)) lo = mid; else hi = mid; } }
+  if (lo > 1e-6 && (p.L !== null && isFinite(p.L))){
+    M.delta = lo * 0.98; M.epsFail = false;
+    M.epsMsg = `<span class="ke">ε = ${e}</span>: every x within <span class="kl">δ ≈ ${Number(M.delta.toPrecision(3))}</span> of ${num(p.a)} (except a itself) gives f(x) within ε of ${sig(Lt)}. The curve inside the window stays in the band (green). Make ε smaller and δ shrinks, but some δ always works: that’s what “the limit is ${sig(Lt)}” means.`;
+    M.zoom = Math.max(1, Math.min(10000, Math.pow(10, Math.floor(Math.log10(1 / (M.delta * 1.2)))) || 1));
+  } else {
+    M.delta = Math.min(0.5, 0.25 / M.zoom); M.epsFail = true;
+    M.epsMsg = p.L === Infinity ? `No number can be the limit: whatever L you try (here ${Lt}), right next to 1 the function shoots past L + ε. No δ works.`
+      : p.lm !== null && p.rp !== null ? `Try L = ${sig(Lt)} with <span class="ke">ε = ${e}</span>: ${e < Math.abs(p.rp - p.lm) ? `however small δ is, the points just right of a sit near ${sig(p.rp)}, outside the band (red). No δ works, and no other L would fix both sides.` : `this ε is wide enough to cover both sides, but a smaller ε (below ${sig(Math.abs(p.rp - p.lm))}) defeats every δ.`}`
+      : `Try L = ${sig(Lt)} with <span class="ke">ε = ${e}</span>: in any window around 0, however tiny, sin(1/x) still swings all the way to ±1, out of the band (red). No δ works, for any L.`;
+  }
+  mDraw();
+}
+function mStop(){ if (M.anim){ clearTimeout(M.anim); M.anim = null; } $('mPlay').textContent = 'Approach'; }
+function mPlay(){
+  if (M.anim){ mStop(); return; }
+  if (M.k >= HS.length){ M.k = 0; M.zoom = 1; }
+  $('mPlay').textContent = 'Pause'; M.eps = null; M.delta = null;
+  const step = () => { M.k++; const h = HS[M.k - 1]; M.zoom = Math.max(1, Math.min(1000, Math.pow(10, Math.floor(Math.log10(1 / (h * 1.6)))))); if (M.i === 4) M.zoom = 1; mDraw(); if (M.k < HS.length) M.anim = setTimeout(step, 900); else mStop(); };
+  step();
+}
+const mMark = buttons('mPresets', mPresets, i => { mStop(); Object.assign(M, { i, zoom: 1, k: 0, eps: null, delta: null }); mMark(i); $('mDesc').textContent = mPresets[i].d; $('mErr').textContent = ''; mDraw(); });
+$('mPlay').onclick = mPlay;
+$('mZin').onclick = () => { mStop(); M.zoom = Math.min(100000, M.zoom * 10); mDraw(); };
+$('mZout').onclick = () => { mStop(); M.zoom = Math.max(1, M.zoom / 10); mDraw(); };
+$('mReset').onclick = () => { mStop(); Object.assign(M, { zoom: 1, k: 0, eps: null, delta: null }); mDraw(); };
+$('mFind').onclick = () => { mStop(); mFindDelta(); };
+$('mEps').addEventListener('keydown', e => { if (e.key === 'Enter') mFindDelta(); });
+
+/* =====================================================================
+   3. FACTOR, CANCEL, PLUG IN
+   ===================================================================== */
+const cPresets = [
+  { n: '(x² − 9)/(x − 3), x → 3', f: x => (x * x - 9) / (x - 3), a: 3, L: 6, box: { x0: -1, x1: 7, y0: 0, y1: 10 }, steps: [
+    ['Plug in x = 3', '(9 − 9)/(3 − 3) = 0/0', 'Not an answer: a signal to simplify.'], ['Factor the top', '(x − 3)(x + 3) / (x − 3)', 'a difference of squares'],
+    ['Cancel x − 3', 'x + 3', 'allowed: while approaching, x ≠ 3, so x − 3 ≠ 0'], ['Plug in now', '3 + 3 = 6', 'lim = 6. The cancelled factor x − 3 made the hole at (3, 6).'] ] },
+  { n: '(x² + x − 6)/(x − 2), x → 2', f: x => (x * x + x - 6) / (x - 2), a: 2, L: 5, box: { x0: -2, x1: 6, y0: 0, y1: 9 }, steps: [
+    ['Plug in x = 2', '(4 + 2 − 6)/(2 − 2) = 0/0', 'So x − 2 must be a factor of the top.'], ['Factor the top', '(x − 2)(x + 3) / (x − 2)', 'two numbers that multiply to −6 and add to 1'],
+    ['Cancel x − 2', 'x + 3', ''], ['Plug in now', '2 + 3 = 5', 'lim = 5.'] ] },
+  { n: '(x³ − 8)/(x − 2), x → 2', f: x => (x * x * x - 8) / (x - 2), a: 2, L: 12, box: { x0: -1, x1: 4, y0: 0, y1: 20 }, steps: [
+    ['Plug in x = 2', '(8 − 8)/(2 − 2) = 0/0', ''], ['Factor the top', '(x − 2)(x² + 2x + 4) / (x − 2)', 'a difference of cubes'],
+    ['Cancel x − 2', 'x² + 2x + 4', ''], ['Plug in now', '4 + 4 + 4 = 12', 'lim = 12.'] ] },
+  { n: '(√x − 2)/(x − 4), x → 4', f: x => (Math.sqrt(x) - 2) / (x - 4), a: 4, L: 0.25, box: { x0: 0, x1: 9, y0: 0, y1: 0.6 }, steps: [
+    ['Plug in x = 4', '(2 − 2)/(4 − 4) = 0/0', ''], ['Factor the bottom as a difference of squares', '(√x − 2) / ((√x − 2)(√x + 2))', 'x − 4 = (√x)² − 2²'],
+    ['Cancel √x − 2', '1 / (√x + 2)', ''], ['Plug in now', '1/(2 + 2) = 1/4', 'lim = 0.25.'] ] },
+  { n: '(x² + 1)/(x + 1), x → 2', f: x => (x * x + 1) / (x + 1), a: 2, L: 5 / 3, box: { x0: -0.5, x1: 5, y0: 0, y1: 5 }, noHole: true, steps: [
+    ['Plug in x = 2', '(4 + 1)/(2 + 1) = 5/3', 'A real number, with a nonzero bottom: done. No hole here; the function is continuous at 2.'] ] },
+];
+const C = { i: 0, shown: 1 };
+function cDraw(){
+  const p = cPresets[C.i], P = ax2($('cSvg'), 600, 380, p.box, { xT: 'x' });
+  curve(P, p.f, { breaks: [-1] });
+  mk('line', { x1: P.X(p.a), y1: P.T, x2: P.X(p.a), y2: P.H - P.B, style: 'stroke:var(--muted);stroke-width:1;stroke-dasharray:3 4' }, P.cg);
+  if (C.shown >= p.steps.length || p.noHole){ p.noHole ? dotAt(P, p.a, p.L, 'var(--L)', 7) : holeAt(P, p.a, p.L, 'var(--L)'); txt(P.top, P.X(p.a) + 10, P.Y(p.L) - 10, `(${num(p.a)}, ${num(p.L, 3)})`, 'labS', { style: 'fill:var(--L)' }); }
+  else holeAt(P, p.a, p.L, 'var(--cv)');
+  $('cSteps').innerHTML = p.steps.map((s, k) => `<li class="${k < C.shown ? '' : 'hide'}"><small>${k + 1}. ${s[0]}</small>${s[1]}${s[2] ? `<small>${s[2]}</small>` : ''}</li>`).join('');
+}
+const cMark = buttons('cPresets', cPresets, i => { C.i = i; C.shown = 1; cMark(i); $('cDesc').textContent = ''; cDraw(); });
+$('cNext').onclick = () => { C.shown = Math.min(cPresets[C.i].steps.length, C.shown + 1); cDraw(); };
+$('cAll').onclick = () => { C.shown = cPresets[C.i].steps.length; cDraw(); };
+$('cReset').onclick = () => { C.shown = 1; cDraw(); };
+
+/* =====================================================================
+   4. LIMITS AT INFINITY
+   ===================================================================== */
+const iPresets = [
+  { n: '(3x² + 1)/(x² + 5)', f: x => (3 * x * x + 1) / (x * x + 5), L: 3, lead: 'Same top and bottom power: the ratio of leading terms 3x²/x² = 3.' },
+  { n: '(2x + 1)/(x² + 1)', f: x => (2 * x + 1) / (x * x + 1), L: 0, lead: 'Bottom power is bigger: leading terms 2x/x² = 2/x → 0.' },
+  { n: 'x²/(x + 1)', f: x => x * x / (x + 1), L: Infinity, lead: 'Top power is bigger: leading terms x²/x = x → ∞. No horizontal asymptote.' },
+  { n: 'Cooling coffee', f: x => 20 + 70 * Math.exp(-0.1 * x), L: 20, lead: 'T(t) = 20 + 70·e^(−0.1t) °C: the 70-degree gap shrinks by a constant factor each minute, so T → 20, room temperature.', xT: 't (minutes)', yT: 'T (°C)' },
+  { n: 'sin(x)/x', f: x => Math.abs(x) < 1e-12 ? 1 : Math.sin(x) / x, L: 0, lead: 'The top stays between −1 and 1 while the bottom grows: squeezed to 0, wiggling as it goes.' },
+];
+const I = { i: 0, X: 10 };
+function iDraw(){
+  const p = iPresets[I.i], X = I.X;
+  const ys = []; for (let k = 0; k <= 400; k++){ const v = p.f(X * k / 400); if (isFinite(v)) ys.push(v); }
+  let y0 = Math.min(0, ...ys), y1 = Math.max(...ys, isFinite(p.L) ? p.L : 0); if (y1 - y0 < 1) y1 = y0 + 1; const pad = (y1 - y0) * 0.08;
+  const P = ax2($('iSvg'), 600, 360, { x0: 0, x1: X, y0: y0 - pad, y1: y1 + pad }, { xT: p.xT || 'x', yT: p.yT || 'f(x)' });
+  if (isFinite(p.L)){ mk('line', { x1: P.L, y1: P.Y(p.L), x2: P.W - P.R, y2: P.Y(p.L), style: 'stroke:var(--L);stroke-width:2;stroke-dasharray:7 6' }, P.cg); txt(P.top, P.W - P.R - 6, P.Y(p.L) - 7, `y = ${num(p.L)}`, 'labS', { 'text-anchor': 'end', style: 'fill:var(--L)' }); }
+  curve(P, p.f, { n: 1200 });
+  $('iTab').innerHTML = '<tr><th>x</th><th>f(x)</th></tr>' + [10, 100, 1000, 10000, 100000].map(x => `<tr><td>${x.toLocaleString('en-US')}</td><td>${sig(p.f(x))}</td></tr>`).join('') + `<tr><td><b>x → ∞</b></td><td><b>${sig(p.L)}</b></td></tr>`;
+  $('iOut').innerHTML = `<b>lim<sub>x→∞</sub> = ${sig(p.L)}</b>. ${p.lead}` + (isFinite(p.L) ? ` The line y = ${num(p.L)} is a horizontal asymptote.` : '');
+  ['iX1', 'iX2', 'iX3'].forEach((id, k) => $(id).classList.toggle('preset', true));
+  ['iX1', 'iX2', 'iX3'].forEach((id, k) => $(id).classList.toggle('on', [10, 100, 1000][k] === X));
+}
+const iMark = buttons('iPresets', iPresets, i => { I.i = i; iMark(i); $('iDesc').textContent = ''; iDraw(); });
+[['iX1', 10], ['iX2', 100], ['iX3', 1000]].forEach(([id, v]) => $(id).onclick = () => { I.X = v; iDraw(); });
+
+/* =====================================================================
+   5. THE SPEEDOMETER (secant to tangent)
+   ===================================================================== */
+const s5 = t => 5 * t * t, T0 = 2, SH = [1, 0.5, 0.25, 0.1, 0.01, 0.001];
+const S = { k: 1, zoom: false, anim: null };
+function sDraw(){
+  const h = SH[S.k - 1], t1 = T0 + h, v = (s5(t1) - s5(T0)) / h;
+  const box = S.zoom ? (() => { const w = Math.max(h * 2.4, 0.004); return { x0: T0 - w * 0.3, x1: T0 + w, y0: s5(T0) - 10 * w * 0.5, y1: s5(T0) + 10 * w * 1.6 }; })() : { x0: 0, x1: 3.5, y0: 0, y1: 50 };
+  const P = ax2($('sSvg'), 600, 380, box, { xT: 't (s)', yT: 's (m)' });
+  // tangent (slope 20) and secant
+  mk('path', { d: dPath(P, [[box.x0, s5(T0) + 20 * (box.x0 - T0)], [box.x1, s5(T0) + 20 * (box.x1 - T0)]]), style: 'fill:none;stroke:var(--L);stroke-width:2;stroke-dasharray:7 6' }, P.cg);
+  mk('path', { d: dPath(P, [[box.x0, s5(T0) + v * (box.x0 - T0)], [box.x1, s5(T0) + v * (box.x1 - T0)]]), style: 'fill:none;stroke:var(--sec);stroke-width:2.5' }, P.cg);
+  curve(P, s5, { n: 600 });
+  // the run and rise of the secant
+  mk('line', { x1: P.X(T0), y1: P.Y(s5(T0)), x2: P.X(t1), y2: P.Y(s5(T0)), style: 'stroke:var(--lf);stroke-width:2.5' }, P.m);
+  mk('line', { x1: P.X(t1), y1: P.Y(s5(T0)), x2: P.X(t1), y2: P.Y(s5(t1)), style: 'stroke:var(--rt);stroke-width:2.5' }, P.m);
+  dotAt(P, T0, s5(T0), 'var(--cv)', 6); dotAt(P, t1, s5(t1), 'var(--sec)', 6);
+  $('sTab').innerHTML = '<tr><th>h (s)</th><th>distance in [2, 2+h]</th><th>average speed</th></tr>' + SH.map((hh, k) => k < S.k ? `<tr class="${k === S.k - 1 ? 'new' : ''}"><td>${hh}</td><td>${sig(s5(T0 + hh) - s5(T0))}</td><td>${sig((s5(T0 + hh) - s5(T0)) / hh)}</td></tr>` : '').join('') + '<tr><td><b>h → 0</b></td><td>→ 0</td><td><b>20</b></td></tr>';
+  $('sOut').innerHTML = `Average speed over [2, ${sig(t1)}]: (s(${sig(t1)}) − s(2)) / ${h} = ${sig(s5(t1) - s5(T0))} / ${h} = <span class="ks">${sig(v)} m/s</span>. Algebra: (5(2 + h)² − 20)/h = (20h + 5h²)/h = 20 + 5h, which heads to <span class="kL">20 m/s</span> as h → 0: the speed at the instant t = 2.` + (S.zoom ? ' Zoomed in, the curve is almost indistinguishable from its tangent line.' : '');
+}
+function sStop(){ if (S.anim){ clearTimeout(S.anim); S.anim = null; } $('sPlay').textContent = 'Shrink'; }
+$('sPlay').onclick = () => { if (S.anim){ sStop(); return; } if (S.k >= SH.length) S.k = 0; $('sPlay').textContent = 'Pause'; const step = () => { S.k++; sDraw(); if (S.k < SH.length) S.anim = setTimeout(step, 1000); else sStop(); }; step(); };
+$('sReset').onclick = () => { sStop(); S.k = 1; sDraw(); };
+$('sZoom').onclick = () => { S.zoom = !S.zoom; $('sZoom').classList.toggle('on', S.zoom); $('sZoom').textContent = 'Zoom: ' + (S.zoom ? 'on' : 'off'); sDraw(); };
+
+/* =====================================================================
+   6. ZENO: walking halfway
+   ===================================================================== */
+const Z = { n: 0, anim: null, eps: null };
+function zDraw(){
+  const svg = $('zSvg'); svg.innerHTML = '';
+  const x0 = 60, x1 = 900, D = 4, X = d => x0 + (x1 - x0) * d / D;
+  mk('rect', { x: x1, y: 30, width: 14, height: 120, style: 'fill:var(--ink);opacity:.75' }, svg); txt(svg, x1 + 7, 168, 'wall', 'labS', { 'text-anchor': 'middle' });
+  mk('line', { x1: x0, y1: 120, x2: x1, y2: 120, style: 'stroke:var(--ink);stroke-width:1.5;opacity:.6' }, svg);
+  for (let m = 0; m <= 4; m++){ mk('line', { x1: X(m), y1: 115, x2: X(m), y2: 125, style: 'stroke:var(--ink)' }, svg); txt(svg, X(m), 142, m + ' m', 'tl', { 'text-anchor': 'middle' }); }
+  let pos = 0;
+  for (let k = 1; k <= Z.n; k++){
+    const step = D / Math.pow(2, k);
+    mk('rect', { x: X(pos), y: 84, width: Math.max(0.6, X(pos + step) - X(pos)), height: 26, style: `fill:${k % 2 ? 'var(--cv)' : 'var(--rt)'};opacity:.75` }, svg);
+    if (X(pos + step) - X(pos) > 34) txt(svg, (X(pos) + X(pos + step)) / 2, 102, k === 1 ? '2 m' : `${D}/${Math.pow(2, k)}`, 'labS', { 'text-anchor': 'middle', style: 'fill:#fff;stroke:none' });
+    pos += step;
+  }
+  mk('circle', { cx: X(pos), cy: 64, r: 10, style: 'fill:var(--lf)' }, svg);
+  txt(svg, X(pos) - 14, 60, `you (${sig(pos)} m)`, 'labS', { 'text-anchor': 'end', style: 'fill:var(--lf)' });
+  if (Z.eps) mk('rect', { x: X(D - Z.eps), y: 30, width: Math.max(1, X(D) - X(D - Z.eps)), height: 90, style: 'fill:var(--eps);opacity:.35' }, svg);
+  const gap = D / Math.pow(2, Z.n);
+  let s = `After <b>${Z.n}</b> step${Z.n === 1 ? '' : 's'}: walked 2 + 1 + ½ + … = <span class="kv">${sig(D - gap)} m</span>, gap left <span class="kn">${sig(gap)} m</span> = 4/2<sup>${Z.n}</sup>. The gap halves every step, so it heads to 0: the total walked has <b>limit 4 m</b>, the full distance, even though no single step finishes the job.`;
+  if (Z.eps) s += `<br>To get within <span class="ke">${Z.eps} m</span> you need 4/2<sup>n</sup> &lt; ${Z.eps}, so 2<sup>n</sup> &gt; ${sig(4 / Z.eps)}: <b>${Math.max(0, Math.floor(Math.log2(4 / Z.eps)) + 1)} steps</b>. Any tolerance, however small, is met after enough steps: that’s the ε version of “the limit is 4”.`;
+  $('zOut').innerHTML = s;
+}
+function zStop(){ if (Z.anim){ clearTimeout(Z.anim); Z.anim = null; } $('zPlay').textContent = 'Play'; }
+$('zPlay').onclick = () => { if (Z.anim){ zStop(); return; } if (Z.n >= 20) Z.n = 0; $('zPlay').textContent = 'Pause'; const step = () => { Z.n++; zDraw(); if (Z.n < 20) Z.anim = setTimeout(step, 600); else zStop(); }; step(); };
+$('zStep').onclick = () => { zStop(); Z.n = Math.min(40, Z.n + 1); zDraw(); };
+$('zReset').onclick = () => { zStop(); Z.n = 0; Z.eps = null; zDraw(); };
+$('zGo').onclick = () => { const e = parseNum($('zEps').value); if (isNaN(e) || e <= 0 || e >= 4){ $('zErr').textContent = 'Type a distance between 0 and 4, like 0.001 (1 mm).'; return; } $('zErr').textContent = ''; Z.eps = e; Z.n = Math.min(40, Math.floor(Math.log2(4 / e)) + 1); zDraw(); };
+
+/* =====================================================================
+   7. TRAPS
+   ===================================================================== */
+(function(){
+  let P = ax2($('tr1'), 300, 200, { x0: 0, x1: 3.2, y0: 0, y1: 7 }, { padL: 30, padB: 22, padT: 8, padR: 8 });
+  curve(P, x => x * x); holeAt(P, 2, 4, 'var(--L)'); dotAt(P, 2, 1, 'var(--no)', 6);
+  txt(P.top, P.X(2) - 8, P.Y(4) - 6, 'limit 4', 'labS', { 'text-anchor': 'end', style: 'fill:var(--L)' }); txt(P.top, P.X(2) + 8, P.Y(1) + 4, 'g(2) = 1', 'labS', { style: 'fill:var(--no)' });
+  P = ax2($('tr2'), 300, 200, { x0: 0, x1: 6, y0: 0, y1: 10 }, { padL: 30, padB: 22, padT: 8, padR: 8 });
+  curve(P, x => Math.abs(x - 3) < 1e-9 ? NaN : (x * x - 9) / (x - 3)); holeAt(P, 3, 6, 'var(--L)'); txt(P.top, P.X(3) + 9, P.Y(6) + 16, '(3, 6)', 'labS', { style: 'fill:var(--L)' });
+  P = ax2($('tr3'), 300, 200, { x0: -0.4, x1: 0.4, y0: -0.4, y1: 0.4 }, { padL: 36, padB: 22, padT: 8, padR: 8 });
+  curve(P, x => Math.abs(x), { col: 'var(--muted)', w: 1.5, dash: '4 4' }); curve(P, x => -Math.abs(x), { col: 'var(--muted)', w: 1.5, dash: '4 4' });
+  curve(P, x => Math.abs(x) < 1e-9 ? NaN : x * Math.sin(1 / x), { n: 3000, w: 2 }); holeAt(P, 0, 0, 'var(--L)');
+})();
+
+/* =====================================================================
+   8. QUIZ
+   ===================================================================== */
+const Q = { right: 0, total: 0 };
+let qq = null;
+const qTitles = { graph: 'Read the limit from the graph', comp: 'Compute the limit', exist: 'Does the limit exist?', inf: 'Limit at infinity' };
+function qReset(){ ['qVis', 'qChoice', 'qExpr'].forEach(id => $(id).innerHTML = ''); $('qFb').className = 'feedback'; $('qFb').innerHTML = ''; $('qErr').textContent = ''; $('qIn').style.display = ''; $('q1').value = ''; }
+function qScore(ok){ if (qq.counted) return; qq.counted = true; Q.total++; if (ok) Q.right++; $('score').textContent = `Score: ${Q.right} / ${Q.total}`; }
+const minus = s => String(s).replace(/(^|[\s(,=>→\/·])-(\d)/g, '$1−$2');   // ASCII hyphen before a digit → true minus sign
+function qFeedback(ok, html){ $('qFb').className = 'feedback ' + (ok ? 'ok' : 'bad'); $('qFb').innerHTML = (ok ? '<b>Right.</b> ' : '<b>Not quite.</b> ') + minus(html); }
+function qChoices(list, correctIdx, explain){ $('qIn').style.display = 'none'; qq.correctIdx = correctIdx; qq.explainFn = explain; list.forEach((c, k) => { const b = document.createElement('button'); b.innerHTML = c; b.onclick = () => { const ok = k === correctIdx; qScore(ok); [...$('qChoice').children].forEach((x, j) => { x.classList.remove('right', 'wrong'); if (j === k) x.classList.add(ok ? 'right' : 'wrong'); }); qFeedback(ok, explain(k)); }; $('qChoice').appendChild(b); }); }
+function qSvg(){ const s = document.createElementNS(NS, 'svg'); s.setAttribute('viewBox', '0 0 480 340'); $('qVis').appendChild(s); return s; }
+function qGraph(){
+  const a = ri(-2, 2), lm = ri(-3, 3), same = Math.random() < 0.55, rp = same ? lm : (() => { let v; do { v = ri(-3, 3); } while (v === lm); return v; })();
+  const sl = pick([-1, -0.5, 0.5, 1]), sr = pick([-1, -0.5, 0.5, 1]);
+  const faKind = pick(['hole', 'left', 'right', 'other']);
+  const fa = faKind === 'hole' ? undefined : faKind === 'left' ? lm : faKind === 'right' ? rp : (() => { let v; do { v = ri(-3, 3); } while (v === lm || v === rp); return v; })();
+  const ask = pick(['left', 'right', 'two', 'two', 'value']);
+  Object.assign(qq, { a, lm, rp, fa, ask });
+  const P = ax2(qSvg(), 480, 340, { x0: a - 4, x1: a + 4, y0: -5, y1: 5 }, { padL: 34 });
+  mk('path', { d: dPath(P, [[a - 4, lm - 4 * sl], [a, lm]]), style: 'fill:none;stroke:var(--cv);stroke-width:3' }, P.cg);
+  mk('path', { d: dPath(P, [[a, rp], [a + 4, rp + 4 * sr]]), style: 'fill:none;stroke:var(--cv);stroke-width:3' }, P.cg);
+  [lm, rp].forEach(v => { if (fa !== v) holeAt(P, a, v); });
+  if (fa !== undefined) dotAt(P, a, fa);
+  const q = { left: `lim<sub>x→${a}⁻</sub> f(x)`, right: `lim<sub>x→${a}⁺</sub> f(x)`, two: `lim<sub>x→${a}</sub> f(x)`, value: `f(${a})` }[ask];
+  $('qText').innerHTML = `Using the graph, find <b>${q}</b>. (Open circle: not included. Filled dot: the actual value. Type DNE if it doesn’t exist.)`;
+  qq.ans = ask === 'left' ? lm : ask === 'right' ? rp : ask === 'two' ? (lm === rp ? lm : 'DNE') : (fa === undefined ? 'DNE' : fa);
+  qq.explain = `From the left the graph heads to ${lm}; from the right to ${rp}. ` + (lm === rp ? `They agree, so the limit is ${lm}.` : 'They differ, so the two-sided limit does not exist.') + ` The value f(${a}) is ${fa === undefined ? 'undefined (there’s only a hole)' : fa}.`;
+  $('qLab').textContent = 'Answer';
+}
+function qComp(){
+  const kind = pick(['sq', 'tri', 'plug', 'sq2']), r = pick([1, 2, 3, 4, -1, -2, -3]);
+  if (kind === 'sq'){ Object.assign(qq, { ans: 2 * r, expr: `lim<sub>x→${r}</sub> (x² − ${r * r}) / (x ${r < 0 ? '+ ' + -r : '− ' + r})`, explain: `0/0 at x = ${r}. Factor: (x − ${pn(r)})(x + ${pn(r)})/(x − ${pn(r)}) = x + ${pn(r)}. Plug in: ${r} + ${pn(r)} = ${2 * r}.`, trap: 0 }); }
+  else if (kind === 'sq2'){ Object.assign(qq, { ans: -2 * r, expr: `lim<sub>x→${-r}</sub> (x² − ${r * r}) / (x ${r < 0 ? '− ' + -r : '+ ' + r})`, explain: `0/0 at x = ${-r}. Factor: (x − ${pn(r)})(x + ${pn(r)})/(x + ${pn(r)}) = x − ${pn(r)}. Plug in: ${-r} − ${pn(r)} = ${-2 * r}.`, trap: 0 }); }
+  else if (kind === 'tri'){ let b; do { b = ri(-4, 5); } while (b === -r || b === 0); const B = b - r, Cc = -b * r;
+    Object.assign(qq, { ans: r + b, expr: `lim<sub>x→${r}</sub> (x² ${B < 0 ? '− ' + (B === -1 ? '' : -B) : B === 0 ? '' : '+ ' + (B === 1 ? '' : B)}${B ? 'x ' : ''}${Cc < 0 ? '− ' + -Cc : '+ ' + Cc}) / (x ${r < 0 ? '+ ' + -r : '− ' + r})`, explain: `0/0 at x = ${r}, so x − ${pn(r)} is a factor of the top: x² ${B < 0 ? '−' : '+'} ${Math.abs(B)}x ${Cc < 0 ? '−' : '+'} ${Math.abs(Cc)} = (x − ${pn(r)})(x ${b < 0 ? '−' : '+'} ${Math.abs(b)}). Cancel and plug in: ${r} ${b < 0 ? '−' : '+'} ${Math.abs(b)} = ${r + b}.`, trap: 0 }); }
+  else { const b = ri(-4, 4), c = ri(-5, 5), a = ri(-3, 3); Object.assign(qq, { ans: a * a + b * a + c, expr: `lim<sub>x→${a}</sub> (x² ${b < 0 ? '− ' + -b : '+ ' + b}x ${c < 0 ? '− ' + -c : '+ ' + c})`, explain: `A polynomial is continuous, so just plug in: ${pn(a)}² ${b < 0 ? '−' : '+'} ${Math.abs(b)}·${pn(a)} ${c < 0 ? '−' : '+'} ${Math.abs(c)} = ${a * a + b * a + c}.` }); }
+  $('qText').innerHTML = 'Compute the limit.';
+  $('qExpr').innerHTML = qq.expr;
+  $('qLab').textContent = 'limit =';
+}
+const EXIST = [
+  { e: 'lim<sub>x→0</sub> |x|/x', f: x => x === 0 ? NaN : Math.abs(x) / x, box: [-2, 2, -2, 2], br: [0], ans: 1, why: '|x|/x is −1 for x < 0 and 1 for x > 0: a jump. The one-sided limits differ.' },
+  { e: 'lim<sub>x→0</sub> 1/x²', f: x => 1 / (x * x), box: [-2, 2, -1, 10], br: [0], ans: 2, why: '1/x² grows without bound from both sides: lim = ∞, which means it does not exist as a number.' },
+  { e: 'lim<sub>x→0</sub> sin(1/x)', f: x => x === 0 ? NaN : Math.sin(1 / x), box: [-0.5, 0.5, -1.5, 1.5], ans: 3, samples: 4000, why: 'It keeps oscillating between −1 and 1 ever faster: it never settles on one value.' },
+  { e: 'lim<sub>x→0</sub> x·sin(1/x)', f: x => x === 0 ? NaN : x * Math.sin(1 / x), box: [-0.5, 0.5, -0.5, 0.5], ans: 0, samples: 4000, why: 'It wiggles, but the wiggles are squeezed between −|x| and |x|, which both go to 0. The limit exists: 0.' },
+  { e: 'lim<sub>x→2</sub> (x² − 4)/(x − 2)', f: x => Math.abs(x - 2) < 1e-9 ? NaN : (x * x - 4) / (x - 2), box: [0, 4, 0, 7], ans: 0, why: 'A hole, not a failure: it equals x + 2 near 2, so the limit is 4.' },
+  { e: 'lim<sub>x→1</sub> 1/(x − 1)', f: x => 1 / (x - 1), box: [-1, 3, -8, 8], br: [1], ans: 2, why: 'From the right it shoots to +∞, from the left to −∞: it blows up (and the sides don’t even agree).' },
+  { e: 'lim<sub>x→3</sub> ⌊x⌋ (round down)', f: x => Math.floor(x), box: [1, 5, 0, 5], br: [2, 3, 4], ans: 1, why: 'Rounding down jumps from 2 to 3 at x = 3: left limit 2, right limit 3.' },
+];
+function qExist(){
+  const E = pick(EXIST); qq.E = E;
+  $('qText').innerHTML = 'Does this limit exist? If not, why not?';
+  $('qExpr').innerHTML = E.e;
+  const P = ax2(qSvg(), 480, 340, { x0: E.box[0], x1: E.box[1], y0: E.box[2], y1: E.box[3] }, { padL: 34 });
+  curve(P, E.f, { breaks: E.br, n: E.samples || 900 });
+  const opts = ['Yes, it exists', 'No: a jump (sides disagree)', 'No: it blows up to ∞', 'No: it oscillates forever'];
+  qChoices(opts, E.ans, k => (k !== E.ans && E.ans === 0 && k === 3 ? 'Wiggling alone doesn’t rule out a limit. ' : k !== E.ans && E.ans === 0 && E.e.includes('x² − 4') ? '0/0 isn’t a failure, just a hole. ' : '') + E.why);
+}
+function qInf(){
+  const kind = pick(['same', 'bottom', 'top']), p = pick([1, 2, 3, 4, -2, 5]), s = pick([1, 2, 3, 4]);
+  const term = (c, pw) => `${c === 1 ? '' : c === -1 ? '−' : c}x${pw > 1 ? '²' : ''}`;
+  let expr, ans, why;
+  if (kind === 'same'){ const q = ri(-5, 5), t = ri(1, 7); expr = `(${term(p, 2)} ${q < 0 ? '− ' + -q : '+ ' + q}x + 1) / (${term(s, 2)} + ${t})`; ans = p / s; why = `Same power on top and bottom: only the leading terms matter, ${term(p, 2)}/${term(s, 2)} = ${fr2(p, s)}.`; }
+  else if (kind === 'bottom'){ expr = `(${term(p, 1)} + ${ri(1, 9)}) / (${term(s, 2)} + 1)`; ans = 0; why = `The bottom has the higher power: ${term(p, 1)}/${term(s, 2)} = ${p}/${s === 1 ? 'x' : '(' + s + 'x)'} → 0.`; }
+  else { expr = `(${term(p, 2)} + 1) / (${term(s, 1)} + ${ri(1, 9)})`; ans = p > 0 ? Infinity : -Infinity; why = `The top has the higher power: ${term(p, 2)}/${term(s, 1)} = ${fr2(p, s)}·x, which heads to ${p > 0 ? '+∞' : '−∞'}. No horizontal asymptote.`; }
+  Object.assign(qq, { ans, explain: why, kind });
+  $('qText').innerHTML = 'Find the limit as x → ∞. (Type a number, or inf / -inf.)';
+  $('qExpr').innerHTML = `lim<sub>x→∞</sub> ${expr}`;
+  $('qLab').textContent = 'limit =';
+}
+function fr2(p, s){ const g = (a, b) => b ? g(b, a % b) : Math.abs(a); const d = g(p, s); const n = p / d, m = s / d; return m === 1 ? String(n).replace('-', '−') : `${String(n).replace('-', '−')}/${m}`; }
+let lastType = null;
+function qNew(){
+  qReset();
+  let t; do { t = pick(['graph', 'comp', 'exist', 'inf']); } while (t === lastType);
+  lastType = t; qq = { type: t, counted: false };
+  $('qTitle').textContent = qTitles[t];
+  ({ graph: qGraph, comp: qComp, exist: qExist, inf: qInf })[t]();
+  $('qText').innerHTML = minus($('qText').innerHTML); $('qExpr').innerHTML = minus($('qExpr').innerHTML);
+}
+$('qCheck').onclick = () => {
+  const v = parseLim($('q1').value);
+  if ($('q1').value.trim() === '' || (v !== 'DNE' && isNaN(v))){ $('qErr').textContent = 'Type a number, DNE, or inf / -inf.'; return; }
+  const A = qq.ans, ok = (v === 'DNE' && A === 'DNE') || (typeof v === 'number' && typeof A === 'number' && (v === A || Math.abs(v - A) < 1e-6));
+  let why = qq.explain;
+  if (!ok){
+    if (qq.type === 'graph'){
+      if (qq.ask === 'two' && A === 'DNE' && (v === qq.lm || v === qq.rp)) why = 'That’s only one side. For the two-sided limit both sides must agree. ' + why;
+      else if (qq.ask !== 'value' && v === qq.fa && qq.fa !== qq.lm) why = 'That’s the value at the point (the filled dot). The limit is about where the graph heads, not where it is. ' + why;
+      else if (qq.ask === 'value' && (v === qq.lm || v === qq.rp)) why = 'That’s where the graph heads (a limit). The value f(a) is the filled dot. ' + why;
+      else if ((qq.ask === 'left' && v === qq.rp) || (qq.ask === 'right' && v === qq.lm)) why = 'Other side: ⁻ means from the left (x < a), ⁺ from the right. ' + why;
+    } else if (qq.type === 'comp' && v === 'DNE') why = 'Getting 0/0 doesn’t mean the limit doesn’t exist; simplify first. ' + why;
+    else if (qq.type === 'inf' && qq.kind === 'same' && typeof v === 'number' && isFinite(v) && v !== A) why = 'Look only at the leading terms (the highest powers). ' + why;
+  }
+  qScore(ok); qFeedback(ok, why);
+};
+$('q1').addEventListener('keydown', e => { if (e.key === 'Enter') $('qCheck').click(); });
+$('q1').addEventListener('input', () => $('qErr').textContent = '');
+$('qShow').onclick = () => {
+  qScore(false);
+  if (qq.correctIdx !== undefined){ [...$('qChoice').children].forEach((b, j) => { if (j === qq.correctIdx) b.classList.add('right'); }); qFeedback(false, qq.explainFn(qq.correctIdx)); return; }
+  $('q1').value = qq.ans === 'DNE' ? 'DNE' : qq.ans === Infinity ? 'inf' : qq.ans === -Infinity ? '-inf' : String(Math.round(qq.ans * 1000) / 1000);
+  $('qFb').className = 'feedback bad'; $('qFb').innerHTML = '<b>Answer filled in.</b> ' + minus(qq.explain);
+};
+$('qNew').onclick = qNew;
+
+/* =====================================================================
+   9. START
+   ===================================================================== */
+selectOnFocus(['mEps', 'zEps', 'q1']);
+$('mPresets').children[0].click(); $('mEps').value = '0.5';
+$('cPresets').children[0].click();
+$('iPresets').children[0].click();
+sDraw(); zDraw();
+qNew();
+</script>
+<script src="../shared/toc.js"></script>
+<script src="../shared/nav.js"></script>
+</body></html>
