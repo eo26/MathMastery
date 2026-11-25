@@ -1,0 +1,871 @@
+<style>
+/* ===================== Page-specific styles (3.B.7) ===================== */
+/* exponential (multiply each step) = purple, linear (add each step) = orange, the base / factor b = blue, the start a = green, cancelled = red */
+:root{ --cv:#7F77DD; --cvs:#C9C5F2; --tp:#E08A2E; --pa:#2F6FDB; --st:#1D9E75; --rad:#B86E00; --err:#D8443A; --no:#D8443A; }
+@media (prefers-color-scheme:dark){ :root{ --cv:#AFA9EC; --cvs:#4a4580; --tp:#F2B266; --pa:#6EA2F5; --st:#5DCAA5; --rad:#FFB547; --err:#F07B72; --no:#F07B72; } }
+.kv{color:var(--cv);font-weight:700}.kt{color:var(--tp);font-weight:700}.ka{color:var(--pa);font-weight:700}.ks{color:var(--st);font-weight:700}.kr{color:var(--rad);font-weight:700}.kn{color:var(--no);font-weight:700}
+svg{user-select:none;-webkit-user-select:none}
+.stack svg{width:100%;height:auto;display:block;background:var(--bg);border:1px solid var(--line);border-radius:10px;margin-top:6px}
+.split{display:grid;grid-template-columns:600px 1fr;gap:14px;margin-top:10px;align-items:start}
+.split svg{width:100%;height:auto;display:block;background:var(--bg);border:1px solid var(--line);border-radius:10px}
+.field.sm input{width:76px}
+.toggle button.on{background:var(--accent-bg);border-color:var(--accent);color:var(--accent)}
+.ctab{border-collapse:collapse;font:13.5px var(--mono);width:100%}
+.ctab th,.ctab td{border-bottom:1px dashed var(--line);padding:3px 8px;text-align:right}
+.ctab th{font:600 12px var(--sans);color:var(--muted)}
+.bigpoly{font:600 16px var(--mono);margin:10px 0 0;padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);overflow-x:auto;white-space:nowrap}
+.verdict{display:inline-block;font:600 15px var(--sans);padding:6px 12px;border-radius:8px;margin:8px 8px 0 0;background:var(--accent-bg);color:var(--accent)}
+.legend span span{display:inline}
+.traps{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:8px}
+.traps .t{border:1px solid var(--line);border-radius:10px;background:var(--bg);padding:10px}
+.traps .t h4{margin:0 0 4px;font:600 15px var(--sans)}
+.traps .t p{margin:6px 0 0;font-size:14.5px;line-height:1.5;color:var(--muted)}
+.traps svg{width:100%;height:auto;display:block}
+.qtext{font:17px/1.55 var(--serif);margin:4px 0 10px}
+.qexpr{font:600 22px var(--mono);margin:4px 0 10px}
+.qtab{border-collapse:collapse;font:15px var(--mono);margin:6px 0 4px}
+.qtab td,.qtab th{border:1px solid var(--line);padding:4px 12px;text-align:center}
+.choice{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 0}.choice button{min-width:120px;font-family:var(--mono)}
+.choice button.right{border-color:var(--ok);background:var(--ok-bg);color:var(--ok)}.choice button.wrong{border-color:var(--bad);background:var(--bad-bg);color:var(--bad)}
+pre.code{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:12px 16px;overflow-x:auto;font:13.5px/1.6 var(--mono);margin:10px 0 16px}
+</style>
+
+<!-- ===================== Top bar ===================== -->
+<div class="topbar"><div class="topbar-in">
+  <span class="brand">Math<b>Mastery</b></span>
+  <span class="crumbs">Chapter 3 · Algebra › Basics</span>
+  <span class="pid">3.B.7</span>
+</div></div>
+
+<!-- ===================== Hero ===================== -->
+<header class="prose hero">
+  <div class="kicker">Chapter 3 · Algebra</div>
+  <h1>Exponents and Exponential Growth</h1>
+  <p class="dek">Adding the same amount again and again gives a straight line. Multiplying by the same amount again and again gives something that starts slowly and then explodes, or shrinks towards zero without ever reaching it.</p>
+  <div class="tiers" aria-label="Tier">
+    <span class="tier on">Basics <small>you are here</small></span>
+    <span class="tier">Undergraduate</span>
+    <span class="tier">Masters</span>
+  </div>
+  <div class="goals">
+    <h3>On this page</h3>
+    <ul>
+      <li>Read a <b>power</b> <i>b<sup>n</sup></i> as repeated multiplication: the <b>base</b> <i>b</i> multiplied by itself <i>n</i> times, where <i>n</i> is the <b>exponent</b>.</li>
+      <li>Use the <b>exponent rules</b> (product, quotient, power of a power) by counting factors.</li>
+      <li>Explain why <i>b</i>⁰ = 1 and <i>b</i><sup>−<i>n</i></sup> = 1/<i>b<sup>n</sup></i>, and write numbers in <b>scientific notation</b>.</li>
+      <li>Tell <b>linear</b> change (add the same) from <b>exponential</b> change (multiply by the same).</li>
+      <li>Build <b>exponential growth</b> and <b>decay</b> models <i>y</i> = <i>a</i>·<i>b<sup>x</sup></i>, with percent change, <b>doubling time</b> and <b>half-life</b>.</li>
+    </ul>
+  </div>
+</header>
+
+<main>
+<!-- ===================== §1 ===================== -->
+<section class="prose">
+  <h2><span class="n">1</span>Multiplying by the same number, again and again</h2>
+  <p>A bacterium splits into 2. Each of those splits again: 4. Then 8, 16, 32…. After 5 splits there are 2 × 2 × 2 × 2 × 2 = 32 cells. Writing out all the 2s gets tiring, so we write <b>2⁵</b>: the <b>base</b> 2 is the number being multiplied, and the <b>exponent</b> 5 says how many times. The whole thing, 2⁵ = 32, is called a <b>power</b> of 2. Read it as “2 to the 5th”. Two powers have their own names: <i>b</i>² is “<i>b</i> <b>squared</b>” (the area of a square of side <i>b</i>), and <i>b</i>³ is “<i>b</i> <b>cubed</b>” (the volume of a cube).</p>
+  <p>Careful: 2⁵ is not 2 × 5 = 10. The exponent counts how many 2s are multiplied together, and that grows far faster. Start with <i>a</i> things and multiply by <i>b</i> at every step: after <i>n</i> steps you have <i>a</i>·<i>b<sup>n</sup></i>. The number <i>b</i> is the <b>growth factor</b> (if it’s bigger than 1) or <b>decay factor</b> (if it’s between 0 and 1).</p>
+</section>
+<section class="wide">
+  <div class="card" id="main">
+    <div class="card-h"><span class="tag">Explore</span><h3>Multiply each step, or add each step?</h3>
+      <span class="sub">Each purple bar is the previous one times <i>b</i>. The dashed orange bars start the same and take the same first step, but then keep <i>adding</i> that amount instead of multiplying. Below, the same story as a graph. Press Play to watch it step by step.</span></div>
+    <div class="row" id="mPresets"></div>
+    <div class="desc" id="mDesc"></div>
+    <div class="inputs">
+      <label class="field sm"><span>start <i>a</i></span><input id="mA" type="text" inputmode="decimal" autocomplete="off" style="border-color:var(--st)"></label>
+      <label class="field sm"><span>factor <i>b</i></span><input id="mB" type="text" inputmode="decimal" autocomplete="off" style="border-color:var(--pa)"></label>
+      <label class="field sm"><span>steps <i>n</i></span><input id="mN" type="text" inputmode="numeric" autocomplete="off"></label>
+      <div class="row" style="margin:0"><button id="mUse">Use these</button><button class="primary" id="mPlay">Play</button><button id="mReset">Reset</button></div>
+      <div class="row toggle" style="margin:0"><button id="mCmp" class="on">Compare with adding: on</button></div>
+    </div>
+    <div class="err" id="mErr"></div>
+    <div class="bigpoly" id="mEq"></div>
+    <div class="stack"><svg id="mBars" viewBox="0 0 960 300" role="img" aria-label="Bars, each one the previous times b"></svg><svg id="mG" viewBox="0 0 960 260" role="img" aria-label="Graph of a times b to the x, with the line"></svg></div>
+    <div class="readout" id="mOut"></div>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--cv)"></i><span>multiply by <i>b</i> each step: <i>a</i>·<i>b<sup>n</sup></i></span></span>
+      <span><i class="sw" style="background:none;border:2px dashed var(--tp)"></i><span>add the same amount each step: a straight line</span></span>
+      <span><i class="sw" style="background:var(--st)"></i><span>start <i>a</i></span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §2 ===================== -->
+<section class="prose">
+  <h2><span class="n">2</span>The exponent rules are just counting</h2>
+  <p>You never need to memorise the exponent rules if you remember what an exponent counts. Write <i>x</i>³ as <i>x</i>·<i>x</i>·<i>x</i> and <i>x</i>² as <i>x</i>·<i>x</i>:</p>
+  <ul>
+    <li><b>Product rule.</b> <i>x</i>³·<i>x</i>² = (<i>x</i>·<i>x</i>·<i>x</i>)·(<i>x</i>·<i>x</i>): five <i>x</i>’s in a row, so <i>x</i>⁵. Multiplying powers of the same base <b>adds</b> the exponents.</li>
+    <li><b>Quotient rule.</b> <i>x</i>⁵/<i>x</i>² = (<i>x</i>·<i>x</i>·<i>x</i>·<i>x</i>·<i>x</i>)/(<i>x</i>·<i>x</i>): two <i>x</i>’s cancel top and bottom, leaving <i>x</i>³. Dividing <b>subtracts</b> the exponents.</li>
+    <li><b>Power rule.</b> (<i>x</i>³)² = <i>x</i>³·<i>x</i>³: two groups of three <i>x</i>’s, six in all, so <i>x</i>⁶. A power of a power <b>multiplies</b> the exponents.</li>
+  </ul>
+  <p>Each rule works only when the bases are the same: <i>x</i>³·<i>y</i>² has nothing to combine. And (<i>xy</i>)³ = <i>x</i>³<i>y</i>³, because three copies of <i>xy</i> contain three <i>x</i>’s and three <i>y</i>’s.</p>
+</section>
+<section class="wide">
+  <div class="card" id="rules">
+    <div class="card-h"><span class="tag">Explore</span><h3>Count the factors</h3>
+      <span class="sub">Pick a rule and two exponents. Each tile is one factor of <i>x</i>. For division, matching tiles on top and bottom cancel (red ✕), because <i>x</i>/<i>x</i> = 1. Try the quotient with the bottom bigger than the top.</span></div>
+    <div class="row toggle" id="rRule"><button class="on">Product xᵐ · xⁿ</button><button>Quotient xᵐ / xⁿ</button><button>Power (xᵐ)ⁿ</button></div>
+    <div class="inputs">
+      <label class="field sm"><span><i>m</i></span><input id="rM" type="text" inputmode="numeric" autocomplete="off" style="border-color:var(--cv)"></label>
+      <label class="field sm"><span><i>n</i></span><input id="rN" type="text" inputmode="numeric" autocomplete="off" style="border-color:var(--tp)"></label>
+      <div class="row" style="margin:0"><button class="primary" id="rGo">Show</button></div>
+    </div>
+    <div class="err" id="rErr"></div>
+    <div class="stack"><svg id="rSvg" viewBox="0 0 960 230" role="img" aria-label="Factor tiles"></svg></div>
+    <div class="readout" id="rOut"></div>
+  </div>
+</section>
+
+<!-- ===================== §3 ===================== -->
+<section class="prose">
+  <h2><span class="n">3</span>Zero and negative exponents</h2>
+  <p>What could 2⁰ or 2<sup>−3</sup> mean? You can’t multiply zero 2s, or minus three 2s. Instead, follow the pattern: 2³ = 8, 2² = 4, 2¹ = 2. Each step to the left <b>divides by 2</b>. Keep going: 2⁰ = 1, 2<sup>−1</sup> = ½, 2<sup>−2</sup> = ¼, 2<sup>−3</sup> = ⅛. So</p>
+  <div class="math">\[ b^0 = 1, \qquad b^{-n} = \frac{1}{b^n} \qquad (b \ne 0). \]</div>
+  <p>The quotient rule agrees: <i>x</i>³/<i>x</i>³ = 1, and also <i>x</i><sup>3−3</sup> = <i>x</i>⁰. And <i>x</i>²/<i>x</i>⁵ leaves three <i>x</i>’s on the bottom: 1/<i>x</i>³ = <i>x</i><sup>−3</sup>. A negative exponent means “this many factors in the denominator”, so 1/<i>b<sup>n</sup></i> is the <b>reciprocal</b> of <i>b<sup>n</sup></i>. It does <i>not</i> make the number negative: 2<sup>−3</sup> = ⅛ is positive.</p>
+  <p>Powers of 10 give <b>scientific notation</b>, a short way to write very big and very small numbers: a number from 1 up to (not including) 10, times a power of 10. The distance to the Sun, 150,000,000 km, is 1.5 × 10⁸ km; a bacterium 0.000002 m long is 2 × 10<sup>−6</sup> m. The exponent counts how many places the decimal point moves.</p>
+</section>
+<section class="wide">
+  <div class="card" id="ladder">
+    <div class="card-h"><span class="tag">Explore</span><h3>Walk the pattern down</h3>
+      <span class="sub">Each box is the one to its right divided by the base. Pick a base and watch the pattern pass through 1 at exponent 0 and continue into fractions. Underneath, type any number to see it in scientific notation.</span></div>
+    <div class="row" id="lPresets"></div>
+    <div class="stack"><svg id="lSvg" viewBox="0 0 960 170" role="img" aria-label="Powers of the base from exponent −4 to 5"></svg></div>
+    <div class="inputs" style="margin-top:12px">
+      <label class="field"><span>a number</span><input id="sN" type="text" inputmode="decimal" autocomplete="off" style="width:180px"></label>
+      <div class="row" style="margin:0"><button class="primary" id="sGo">Convert</button></div>
+      <div class="row" id="sPresets" style="margin:0"></div>
+    </div>
+    <div class="err" id="sErr"></div>
+    <div class="readout" id="sOut"></div>
+  </div>
+</section>
+
+<!-- ===================== §4 ===================== -->
+<section class="prose">
+  <h2><span class="n">4</span>Adding versus multiplying</h2>
+  <p>A <b>linear</b> pattern adds the same amount each step: 5, 8, 11, 14… (+3 each time). Its graph is a straight line (3.B.5). An <b>exponential</b> pattern multiplies by the same amount each step: 5, 10, 20, 40… (×2 each time). To tell them apart from a table, look at the <b>differences</b> (next − previous) and the <b>ratios</b> (next ÷ previous). Constant differences mean linear; constant ratios mean exponential.</p>
+  <p>Exponential growth always wins in the end. Even 1.01<sup><i>n</i></sup> (growing 1% a step) eventually passes any straight line, however steep, because each step adds 1% of an ever-bigger amount. Doubling shows this most dramatically. Fold a 0.1 mm sheet of paper in half 42 times and, if you could, it would be thick enough to reach the Moon. An old story says a king offered a reward of rice: 1 grain on the first square of a chessboard, 2 on the second, 4 on the third, doubling each time. The 64th square alone needs 2⁶³ grains, more rice than the world grows in centuries.</p>
+</section>
+<section class="wide">
+  <div class="card" id="huge">
+    <div class="card-h"><span class="tag">Explore</span><h3>Doubling gets huge</h3>
+      <span class="sub">Paper: each fold doubles the thickness, plotted on a scale where each gridline is 10 times the last, so it can fit a sheet of paper and the Moon. Chessboard: each square has twice the grains of the one before; darker means more.</span></div>
+    <div class="row toggle" id="hTab"><button class="on">Folding paper</button><button>Chessboard rice</button></div>
+    <div class="inputs"><label class="field sm"><span id="hLab">folds</span><input id="hN" type="text" inputmode="numeric" autocomplete="off"></label><div class="row" style="margin:0"><button id="hMinus">−1</button><button class="primary" id="hPlus">+1</button><button id="hGo">Use</button></div><div class="row" id="hPresets" style="margin:0"></div></div>
+    <div class="err" id="hErr"></div>
+    <div class="stack"><svg id="hSvg" viewBox="0 0 960 300" role="img" aria-label="Doubling picture"></svg></div>
+    <div class="readout" id="hOut"></div>
+  </div>
+</section>
+
+<!-- ===================== §5 ===================== -->
+<section class="prose">
+  <h2><span class="n">5</span>Growth and decay models</h2>
+  <p>An <b>exponential function</b> has the form <i>y</i> = <i>a</i>·<i>b<sup>x</sup></i>, where <i>a</i> is the <b>initial value</b> (at <i>x</i> = 0) and <i>b</i> is the factor per step. Percent changes turn into factors:</p>
+  <ul>
+    <li>Growing by <i>r</i>% each step multiplies by <i>b</i> = 1 + <i>r</i>/100. A video whose views rise 50% a day is multiplied by 1.5 each day.</li>
+    <li>Shrinking by <i>r</i>% each step multiplies by <i>b</i> = 1 − <i>r</i>/100. Losing 20% each step means keeping 80%: <i>b</i> = 0.8.</li>
+  </ul>
+  <p>The time it takes to double is the <b>doubling time</b>; for decay, the time to halve is the <b>half-life</b>. They stay the same however much you start with: bacteria that double every 20 minutes go 100 → 200 → 400, and also 1,000,000 → 2,000,000, in each 20 minutes. Then <i>y</i> = <i>a</i>·2<sup><i>t</i>/<i>D</i></sup> for doubling time <i>D</i>, and <i>y</i> = <i>a</i>·(½)<sup><i>t</i>/<i>H</i></sup> for half-life <i>H</i>. Carbon-14 has a half-life of about 5,730 years, which is how archaeologists date old bones and wood. A hot cup of tea cools the same way, except it is the <i>gap</i> between the tea and the room that halves, so the tea approaches room temperature, not zero.</p>
+  <p>Not everything that shrinks is exponential. A phone battery in steady use drops by about the same number of percentage points each hour: that’s linear, and it really does hit zero.</p>
+</section>
+<section class="wide">
+  <div class="card" id="lab">
+    <div class="card-h"><span class="tag">Explore</span><h3>Model lab</h3>
+      <span class="sub">Pick a situation. The table shows differences and ratios, the test from §4. Edit the start or the factor to make your own, and predict the value at any time.</span></div>
+    <div class="row" id="xPresets"></div>
+    <div class="desc" id="xDesc"></div>
+    <div class="inputs">
+      <label class="field sm"><span>start <i>a</i></span><input id="xA" type="text" inputmode="decimal" autocomplete="off" style="border-color:var(--st)"></label>
+      <label class="field sm"><span id="xBLab">factor <i>b</i> per step</span><input id="xB" type="text" inputmode="decimal" autocomplete="off" style="border-color:var(--pa)"></label>
+      <label class="field sm"><span>predict at time</span><input id="xT" type="text" inputmode="decimal" autocomplete="off"></label>
+      <div class="row" style="margin:0"><button class="primary" id="xGo">Use these</button></div>
+    </div>
+    <div class="err" id="xErr"></div>
+    <div class="bigpoly" id="xEq"></div>
+    <div class="split"><svg id="xSvg" viewBox="0 0 600 320" role="img" aria-label="The model over time"></svg><table class="ctab" id="xTab"></table></div>
+    <div class="readout" id="xOut"></div>
+  </div>
+</section>
+
+<!-- ===================== §6 ===================== -->
+<section class="prose">
+  <h2><span class="n">6</span>Traps and non-examples</h2>
+</section>
+<section class="wide">
+  <div class="card" id="traps">
+    <div class="card-h"><span class="tag">Compare</span><h3>Easy to get wrong</h3></div>
+    <div class="traps">
+      <div class="t"><h4 class="kn">✕ 2⁵ = 2 × 5</h4><svg id="tr1" viewBox="0 0 300 170"></svg><p>2 × 5 adds five 2s: 10. 2⁵ <i>multiplies</i> five 2s: 32. The gap explodes: 2 × 20 = 40, but 2²⁰ is over a million.</p></div>
+      <div class="t"><h4 class="kn">✕ x³ · x⁴ = x¹²</h4><svg id="tr2" viewBox="0 0 300 170"></svg><p>Count the tiles: three <i>x</i>’s next to four <i>x</i>’s make seven, so <i>x</i>⁷. Multiplying exponents is the rule for a power of a power, (<i>x</i>³)⁴ = <i>x</i>¹².</p></div>
+      <div class="t"><h4 class="kn">✕ −50% then +50% gets you back</h4><svg id="tr3" viewBox="0 0 300 170"></svg><p>100 × 0.5 = 50, then 50 × 1.5 = 75. Percent changes multiply: 0.5 × 1.5 = 0.75, a 25% loss overall. Also watch −3² = −9 but (−3)² = 9: the exponent applies only to what it touches.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §7 ===================== -->
+<section class="prose">
+  <h2><span class="n">7</span>Now, in symbols</h2>
+  <div class="math">\[ b^n = \underbrace{b \cdot b \cdots b}_{n \text{ factors}}, \qquad b^m b^n = b^{m+n}, \qquad \frac{b^m}{b^n} = b^{m-n}, \qquad (b^m)^n = b^{mn}, \qquad (ab)^n = a^n b^n \]</div>
+  <div class="math">\[ b^0 = 1, \qquad b^{-n} = \frac{1}{b^n}, \qquad \text{scientific notation: } c \times 10^k,\ 1 \le c < 10 \]</div>
+  <div class="math">\[ y = a\,b^{x}, \qquad b = 1 + \frac{r}{100} \text{ (growth)},\quad b = 1 - \frac{r}{100} \text{ (decay)}, \qquad y = a\cdot 2^{t/D}, \quad y = a\cdot\left(\tfrac12\right)^{t/H} \]</div>
+  <p>Python works with whole numbers of any size exactly, which makes the chessboard easy to check:</p>
+  <pre class="code"><code>total = 0                                   # running total of grains
+for square in range(1, 65):                 # squares 1 to 64
+    total += 2 ** (square - 1)              # square n holds 2^(n-1) grains
+print(total)                                # 18446744073709551615
+print(total == 2 ** 64 - 1)                 # True: the total is one less than the next power of 2
+
+folds = 0                                   # how many folds so far
+thickness = 0.1                             # millimetres
+while thickness < 384_400 * 1_000_000:      # Earth–Moon distance in millimetres
+    thickness *= 2                          # each fold doubles the thickness
+    folds += 1                              # count the fold
+print(folds)                                # 42</code></pre>
+</section>
+
+<!-- ===================== §8 ===================== -->
+<section class="prose">
+  <h2><span class="n">8</span>Where this goes</h2>
+  <ul class="goes">
+    <li><b>Next:</b> 3.B.8, polynomials, are sums of powers like 3<i>x</i>² + 2<i>x</i> + 1. Later, 3.B.10 gives meaning to fractional exponents such as 4<sup>1/2</sup> = 2, and 3.B.14 (logarithms) answers the question “what exponent?”, such as how many doublings it takes to pass a million.</li>
+    <li><b>Later in this book:</b> the special base <i>e</i> ≈ 2.718 and continuous growth in calculus (8.B.2), and powers of matrices in linear algebra, which describe processes repeated step after step.</li>
+    <li><b>In the world:</b> population and epidemic growth, radioactive dating, medicine leaving the body, computer memory sizes (powers of 2), the decibel and Richter scales, and why a small percentage growth rate adds up enormously over decades.</li>
+  </ul>
+</section>
+
+<!-- ===================== §9 ===================== -->
+<section class="prose">
+  <h2><span class="n">9</span>Words to know</h2>
+  <div class="vocab">
+    <div class="term"><b>Power</b>A number written as <i>b<sup>n</sup></i>, such as 2⁵ = 32.</div>
+    <div class="term"><b>Base</b>The number being multiplied, <i>b</i>.</div>
+    <div class="term"><b>Exponent</b>How many times the base is multiplied, <i>n</i>.</div>
+    <div class="term"><b>Squared / cubed</b><i>b</i>² and <i>b</i>³: the area of a square and the volume of a cube with side <i>b</i>.</div>
+    <div class="term"><b>Exponent rules</b>Product: add exponents. Quotient: subtract. Power of a power: multiply.</div>
+    <div class="term"><b>Zero exponent</b><i>b</i>⁰ = 1 for any <i>b</i> ≠ 0.</div>
+    <div class="term"><b>Negative exponent</b><i>b</i><sup>−<i>n</i></sup> = 1/<i>b<sup>n</sup></i>: factors in the denominator, not a negative number.</div>
+    <div class="term"><b>Reciprocal</b>1 divided by a number; the reciprocal of 8 is ⅛.</div>
+    <div class="term"><b>Scientific notation</b><i>c</i> × 10<sup><i>k</i></sup> with 1 ≤ <i>c</i> &lt; 10, such as 1.5 × 10⁸.</div>
+    <div class="term"><b>Linear change</b>Adding the same amount each step: constant differences, a straight-line graph.</div>
+    <div class="term"><b>Exponential change</b>Multiplying by the same factor each step: constant ratios.</div>
+    <div class="term"><b>Exponential function</b><i>y</i> = <i>a</i>·<i>b<sup>x</sup></i>.</div>
+    <div class="term"><b>Initial value</b><i>a</i>, the amount at the start (<i>x</i> = 0).</div>
+    <div class="term"><b>Growth factor</b><i>b</i> &gt; 1: the multiplier each step. Growing <i>r</i>% means <i>b</i> = 1 + <i>r</i>/100.</div>
+    <div class="term"><b>Decay factor</b>0 &lt; <i>b</i> &lt; 1. Shrinking <i>r</i>% means <i>b</i> = 1 − <i>r</i>/100.</div>
+    <div class="term"><b>Exponential growth / decay</b>Repeated multiplication by a factor above 1 / between 0 and 1.</div>
+    <div class="term"><b>Doubling time</b>How long exponential growth takes to double; the same at any size.</div>
+    <div class="term"><b>Half-life</b>How long exponential decay takes to halve; about 5,730 years for carbon-14.</div>
+  </div>
+</section>
+
+<!-- ===================== Quiz ===================== -->
+<section class="prose"><h2><span class="n">10</span>Check yourself</h2>
+  <p>Four kinds of questions: simplify with the exponent rules, linear or exponential from a table, build the model from a story, and predict a value. Fractions like 1/8 are fine.</p>
+</section>
+<section class="wide">
+  <div class="card" id="quiz">
+    <div class="card-h"><span class="tag">Quiz</span><h3 id="qTitle"></h3><span class="score" id="score">Score: 0 / 0</span></div>
+    <div class="qtext" id="qText"></div>
+    <div class="qexpr" id="qExpr"></div>
+    <div class="choice" id="qChoice"></div>
+    <div class="inputs" id="qIn">
+      <label class="field"><span id="qLab">Answer</span><input id="q1" type="text" autocomplete="off" style="width:160px"></label>
+      <div class="row" style="margin:0"><button class="primary" id="qCheck">Check</button></div>
+    </div>
+    <div class="row" style="margin:10px 0 0"><button id="qShow">Show answer</button><button id="qNew">New question</button></div>
+    <div class="err" id="qErr"></div>
+    <div class="feedback" id="qFb" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ===================== Pager (filled in by the shared navigation) ===================== -->
+<nav class="wide">
+  <div class="pager"></div>
+  <div class="meta">3.B.7 · Prerequisites: 1.B (multiplication and fractions), 3.B.4 (functions), 3.B.5 (lines) · Leads to: 3.B.8 (polynomials), 3.B.10 (radicals and rational exponents), 3.B.14 (logarithms)</div>
+</nav>
+</main>
+
+<script>
+/* =====================================================================
+   1. HELPERS
+   ===================================================================== */
+const NS = 'http://www.w3.org/2000/svg';
+const $ = id => document.getElementById(id);
+function mk(tag, attrs, parent){                           // create an SVG element with attributes
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function txt(parent, x, y, s, cls, extra){                 // create an SVG text element
+  extra = Object.assign({}, extra || {});
+  if (extra['text-anchor']){ extra.style = (extra.style ? extra.style + ';' : '') + 'text-anchor:' + extra['text-anchor']; delete extra['text-anchor']; }
+  const t = mk('text', Object.assign({ x, y, class: cls || '' }, extra), parent);
+  t.textContent = s;
+  return t;
+}
+// round for display, use a true minus sign, never show −0
+function num(x, d){ if (d === undefined) d = 2; const r = Math.round(x * Math.pow(10, d)) / Math.pow(10, d); return r === 0 ? '0' : (r < 0 ? '−' : '') + String(Math.abs(r)); }
+const pn = x => x < 0 ? `(${num(x)})` : num(x);              // wrap negatives in brackets when substituting
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const ri = (a, b) => a + Math.floor(Math.random() * (b - a + 1));   // random whole number from a to b
+const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+function parseNum(s){                                     // integers, decimals, minus, simple fractions
+  s = String(s).trim().replace(/[−–]/g, '-').replace(/\s+/g, '');
+  if (/^-?\d+(\.\d+)?$|^-?\.\d+$/.test(s)) return parseFloat(s);
+  const m = s.match(/^(-?\d+)\/(\d+)$/);
+  if (m && +m[2] !== 0) return +m[1] / +m[2];
+  return NaN;
+}
+function selectOnFocus(ids){ ids.forEach(id => $(id).addEventListener('focus', e => e.target.select())); }
+function buttons(boxId, list, onPick){                    // a row of preset buttons; returns a function that marks one as on
+  list.forEach((p, i) => { const b = document.createElement('button'); b.className = 'preset'; b.textContent = p.n; b.onclick = () => onPick(i); $(boxId).appendChild(b); });
+  return i => [...$(boxId).children].forEach((b, j) => b.classList.toggle('on', j === i));
+}
+function svgPt(svg, ev){                                  // mouse position in the SVG's own coordinates
+  const p = svg.createSVGPoint(); p.x = ev.clientX; p.y = ev.clientY;
+  return p.matrixTransform(svg.getScreenCTM().inverse());
+}
+const svgCss = document.createElement('style');
+svgCss.textContent = `
+  .grid{stroke:var(--line);stroke-width:1}
+  .axis{stroke:var(--ink);stroke-width:1.4;opacity:.7}
+  .tl{fill:var(--muted);font:500 11.5px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:3px}
+  .lab{font:700 14px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:5px}
+  .labS{font:600 12.5px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+  .cap{fill:var(--muted);font:600 12px var(--sans);letter-spacing:.06em;paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+  .oval{fill:var(--paper);stroke:var(--line);stroke-width:1.5}
+`;
+document.head.appendChild(svgCss);
+let clipN = 0;                                            // unique clip-path ids
+
+/* ---------- axes: a coordinate grid inside an SVG, with separate x and y scales ---------- */
+function axes(svg, W, H, b, o){
+  o = o || {};
+  svg.innerHTML = '';
+  const L = o.padL ?? 44, R = o.padR ?? 16, T = o.padT ?? 16, B = o.padB ?? 30;
+  const sx = (W - L - R) / (b.x1 - b.x0), sy = (H - T - B) / (b.y1 - b.y0);   // pixels per unit
+  const X = x => L + (x - b.x0) * sx, Y = y => T + (b.y1 - y) * sy;
+  const step = (s, px) => (o.half ? [0.5, 1, 2, 5, 10, 20, 50, 100] : [1, 2, 5, 10, 20, 50, 100]).find(k => k * s >= px) || 200;   // a round step at least px pixels wide
+  const xg = o.xg || step(sx, 9), yg = o.yg || step(sy, 9);        // grid-line spacing
+  const xt = o.xt || step(sx, 34), yt = o.yt || step(sy, 26);      // tick-label spacing
+  const gGrid = mk('g', {}, svg), id = 'clp' + (++clipN);
+  const cp = mk('clipPath', { id }, svg); mk('rect', { x: L, y: T, width: W - L - R, height: H - T - B }, cp);
+  const cg = mk('g', { 'clip-path': `url(#${id})` }, svg);         // clipped layer for curves
+  const m = mk('g', {}, svg), top = mk('g', {}, svg);              // free layer, then labels on top
+  const near = (v, s) => Math.abs(v / s - Math.round(v / s)) < 1e-6;
+  for (let x = Math.ceil(b.x0 / xg) * xg; x <= b.x1 + 1e-9; x += xg) mk('line', { x1: X(x), y1: T, x2: X(x), y2: H - B, class: 'grid' }, gGrid);
+  for (let y = Math.ceil(b.y0 / yg) * yg; y <= b.y1 + 1e-9; y += yg) mk('line', { x1: L, y1: Y(y), x2: W - R, y2: Y(y), class: 'grid' }, gGrid);
+  const ay = (b.y0 <= 0 && b.y1 >= 0) ? Y(0) : H - B;              // where the x-axis is drawn
+  const ax = (b.x0 <= 0 && b.x1 >= 0) ? X(0) : L;                  // where the y-axis is drawn
+  mk('line', { x1: L, y1: ay, x2: W - R, y2: ay, class: 'axis' }, gGrid);
+  mk('line', { x1: ax, y1: T, x2: ax, y2: H - B, class: 'axis' }, gGrid);
+  const fx = o.fx || (v => num(v)), fy = o.fy || (v => num(v));
+  for (let x = Math.ceil(b.x0 / xt) * xt; x <= b.x1 + 1e-9; x += xt){
+    if (Math.abs(x) < 1e-9 && ax === X(0) && !o.zeroX) continue;
+    txt(top, X(x), ay + 16, fx(x), 'tl', { 'text-anchor': 'middle' });
+  }
+  for (let y = Math.ceil(b.y0 / yt) * yt; y <= b.y1 + 1e-9; y += yt){
+    if (Math.abs(y) < 1e-9 && ay === Y(0)) continue;
+    txt(top, ax - 6, Y(y) + 4, fy(y), 'tl', { 'text-anchor': 'end' });
+  }
+  if (o.xT) txt(top, W - R - 2, ay - 8, o.xT, 'cap', { 'text-anchor': 'end' });
+  if (o.yT) txt(top, ax + 8, T + 12, o.yT, 'cap');
+  return { svg, X, Y, sx, sy, cg, m, top, b, L, R, T, B, W, H, ay, ax,
+           inv: (px, py) => [b.x0 + (px - L) / sx, b.y1 - (py - T) / sy] };
+}
+function dPath(P, pts){ return pts.map((p, i) => (i ? 'L' : 'M') + P.X(p[0]).toFixed(1) + ' ' + P.Y(p[1]).toFixed(1)).join(''); }
+// sample y = f(x) from a to b, breaking the curve where f is undefined or jumps
+function sample(f, a, b, n, ok){
+  const out = []; let cur = [];
+  for (let i = 0; i <= n; i++){
+    const x = a + (b - a) * i / n, y = (ok && !ok(x)) ? NaN : f(x);
+    if (!isFinite(y)){ if (cur.length > 1) out.push(cur); cur = []; continue; }
+    if (cur.length && Math.abs(y - cur[cur.length - 1][1]) > 40){ if (cur.length > 1) out.push(cur); cur = []; }
+    cur.push([x, y]);
+  }
+  if (cur.length > 1) out.push(cur);
+  return out;
+}
+function dot(P, x, y, col, o){                              // a filled (or open) point
+  o = o || {};
+  return mk('circle', { cx: P.X(x), cy: P.Y(y), r: o.r || 6, style: o.open ? `fill:var(--bg);stroke:${col};stroke-width:2.6` : `fill:${col};stroke:var(--bg);stroke-width:1.5` }, o.layer || P.m);
+}
+function vline(P, x, col, o){ o = o || {}; return mk('line', { x1: P.X(x), y1: o.y0 !== undefined ? P.Y(o.y0) : P.T, x2: P.X(x), y2: o.y1 !== undefined ? P.Y(o.y1) : P.H - P.B, style: `stroke:${col};stroke-width:${o.w || 2.5};${o.dash ? 'stroke-dasharray:' + o.dash : ''}` }, o.layer || P.m); }
+function hline(P, y, col, o){ o = o || {}; return mk('line', { x1: o.x0 !== undefined ? P.X(o.x0) : P.L, y1: P.Y(y), x2: o.x1 !== undefined ? P.X(o.x1) : P.W - P.R, y2: P.Y(y), style: `stroke:${col};stroke-width:${o.w || 2.5};${o.dash ? 'stroke-dasharray:' + o.dash : ''}` }, o.layer || P.m); }
+function arrowHead(g, x1, y1, x2, y2, col, size){            // a small triangle at (x2, y2) pointing away from (x1, y1)
+  const a = Math.atan2(y2 - y1, x2 - x1), s = size || 9;
+  const p = [[x2, y2], [x2 - s * Math.cos(a - 0.4), y2 - s * Math.sin(a - 0.4)], [x2 - s * Math.cos(a + 0.4), y2 - s * Math.sin(a + 0.4)]];
+  mk('polygon', { points: p.map(q => q.join(',')).join(' '), style: `fill:${col}` }, g);
+}
+
+/* ---------- arrow diagram: inputs in a left oval, outputs in a right oval, one arrow per pair ---------- */
+// pairs: [[in, out], ...]; o.ins / o.outs give the order (defaults: sorted values); o.fmt formats a value;
+// o.hl = input to highlight (others fade); o.lit = [in, out] arrow drawn thick; o.dead = inputs shown crossed out
+function arrowDiagram(svg, W, H, pairs, o){
+  o = o || {};
+  svg.innerHTML = '';
+  const fmt = o.fmt || (v => typeof v === 'number' ? num(v) : v);
+  const key = v => String(v);
+  const uniq = arr => { const s = new Set(), r = []; arr.forEach(v => { if (!s.has(key(v))){ s.add(key(v)); r.push(v); } }); return r; };
+  const srt = arr => arr.every(v => typeof v === 'number') ? arr.slice().sort((a, b) => a - b) : arr;
+  const ins = o.ins || srt(uniq(pairs.map(p => p[0]))), outs = o.outs || srt(uniq(pairs.map(p => p[1])));
+  const top = o.top ?? 34, bot = H - (o.bottom ?? 14);
+  const lx = W * 0.25, rx = W * 0.75, ow = Math.min(W * 0.17, 90);
+  mk('ellipse', { cx: lx, cy: (top + bot) / 2, rx: ow, ry: (bot - top) / 2, class: 'oval' }, svg);
+  mk('ellipse', { cx: rx, cy: (top + bot) / 2, rx: ow, ry: (bot - top) / 2, class: 'oval' }, svg);
+  txt(svg, lx, 18, o.inLab || 'INPUTS x', 'cap', { 'text-anchor': 'middle', style: 'fill:var(--in)' });
+  txt(svg, rx, 18, o.outLab || 'OUTPUTS y', 'cap', { 'text-anchor': 'middle', style: 'fill:var(--out)' });
+  const ypos = (i, n) => n === 1 ? (top + bot) / 2 : top + 26 + (bot - top - 52) * i / (n - 1);
+  const iy = {}, oy = {};
+  ins.forEach((v, i) => iy[key(v)] = ypos(i, ins.length));
+  outs.forEach((v, i) => oy[key(v)] = ypos(i, outs.length));
+  const cnt = {}; pairs.forEach(p => cnt[key(p[0])] = (cnt[key(p[0])] || 0) + 1);   // how many outputs each input has
+  const dx = Math.min(ow * 0.45, 34), fs = ins.length > 9 || outs.length > 9 ? 'labS' : 'lab';
+  const ga = mk('g', {}, svg), gd = mk('g', {}, svg);
+  pairs.forEach(p => {                                     // arrows
+    const k = key(p[0]), bad = cnt[k] > 1, faded = o.hl !== undefined && o.hl !== null && key(o.hl) !== k;
+    const lit = o.lit && key(o.lit[0]) === k && key(o.lit[1]) === key(p[1]);
+    const col = bad ? 'var(--no)' : 'var(--pt)';
+    const x1 = lx + dx + 8, y1 = iy[k], x2 = rx - dx - 9, y2 = oy[key(p[1])];
+    mk('line', { x1, y1, x2, y2, style: `stroke:${col};stroke-width:${lit ? 4.5 : 2.4};opacity:${faded ? .18 : 1}` }, ga);
+    if (!faded) arrowHead(ga, x1, y1, x2, y2, col, lit ? 12 : 10);
+  });
+  ins.forEach(v => {                                       // input dots and labels
+    const k = key(v), dead = o.dead && o.dead.map(key).includes(k), bad = cnt[k] > 1;
+    const faded = o.hl !== undefined && o.hl !== null && key(o.hl) !== k;
+    const col = dead ? 'var(--muted)' : bad ? 'var(--no)' : 'var(--in)';
+    mk('circle', { cx: lx + dx, cy: iy[k], r: o.hl !== undefined && key(o.hl) === k ? 8 : 6, style: `fill:${col};opacity:${faded ? .35 : 1}` }, gd);
+    const t = txt(gd, lx + dx - 12, iy[k] + 5, fmt(v), fs, { 'text-anchor': 'end', style: `fill:${col};opacity:${faded ? .45 : 1}${dead ? ';text-decoration:line-through' : ''}` });
+  });
+  outs.forEach(v => {                                      // output dots and labels
+    const k = key(v);
+    mk('circle', { cx: rx - dx, cy: oy[k], r: 6, style: 'fill:var(--out)' }, gd);
+    txt(gd, rx - dx + 12, oy[k] + 5, fmt(v), fs, { style: 'fill:var(--out)' });
+  });
+  return { ins, outs };
+}
+// group pairs by input: Map from input to its list of distinct outputs
+function byInput(pairs){
+  const m = new Map();
+  pairs.forEach(([x, y]) => { const k = String(x); if (!m.has(k)) m.set(k, { x, ys: [] }); const e = m.get(k); if (!e.ys.some(v => String(v) === String(y))) e.ys.push(y); });
+  return m;
+}
+const setStr = arr => '{' + arr.map(v => num(v)).join(', ') + '}';
+
+
+/* ---------- helpers for zoomable graphs (any scale) ---------- */
+const niceStep = raw => { const p = Math.pow(10, Math.floor(Math.log10(raw))), m = raw / p; return (m <= 1 ? 1 : m <= 2 ? 2 : m <= 5 ? 5 : 10) * p; };
+const decs = st => Math.max(0, -Math.floor(Math.log10(st) + 1e-9));
+function fmt(v, st){ const d = decs(st); const r = Number(v.toFixed(d)); return r === 0 ? '0' : (r < 0 ? '−' : '') + Math.abs(r).toFixed(d); }
+// a coordinate system with any box (tiny or huge), labelled ticks, a clipped layer for curves
+function ax2(svg, W, H, b, o){
+  o = o || {}; svg.innerHTML = '';
+  const L = o.padL ?? 52, R = o.padR ?? 14, T = o.padT ?? 14, B = o.padB ?? 28;
+  const sx = (W - L - R) / (b.x1 - b.x0), sy = (H - T - B) / (b.y1 - b.y0), X = x => L + (x - b.x0) * sx, Y = y => T + (b.y1 - y) * sy;
+  const gx = niceStep((b.x1 - b.x0) / 8), gy = niceStep((b.y1 - b.y0) / 7);
+  const g = mk('g', {}, svg), id = 'c' + Math.random().toString(36).slice(2);
+  const cp = mk('clipPath', { id }, svg); mk('rect', { x: L, y: T, width: W - L - R, height: H - T - B }, cp);
+  const cg = mk('g', { 'clip-path': `url(#${id})` }, svg), m = mk('g', {}, svg), top = mk('g', {}, svg);
+  for (let v = Math.ceil(b.x0 / gx) * gx; v <= b.x1 + gx * 1e-6; v += gx){ mk('line', { x1: X(v), y1: T, x2: X(v), y2: H - B, class: 'grid' }, g); txt(top, X(v), H - B + 16, o.fx ? o.fx(v) : fmt(v, gx), 'tl', { 'text-anchor': 'middle' }); }
+  for (let v = Math.ceil(b.y0 / gy) * gy; v <= b.y1 + gy * 1e-6; v += gy){ mk('line', { x1: L, y1: Y(v), x2: W - R, y2: Y(v), class: 'grid' }, g); txt(top, L - 6, Y(v) + 4, fmt(v, gy), 'tl', { 'text-anchor': 'end' }); }
+  if (b.y0 < 0 && b.y1 > 0) mk('line', { x1: L, y1: Y(0), x2: W - R, y2: Y(0), class: 'axis' }, g);
+  if (b.x0 < 0 && b.x1 > 0) mk('line', { x1: X(0), y1: T, x2: X(0), y2: H - B, class: 'axis' }, g);
+  mk('rect', { x: L, y: T, width: W - L - R, height: H - T - B, style: 'fill:none;stroke:var(--line2)' }, g);
+  if (o.xT) txt(top, W - R - 4, H - B - 6, o.xT, 'cap', { 'text-anchor': 'end' });
+  if (o.yT) txt(top, L + 6, T + 14, o.yT, 'cap');
+  return { X, Y, sx, sy, cg, m, top, b, L, R, T, B, W, H, inv: (px, py) => [b.x0 + (px - L) / sx, b.y1 - (py - T) / sy] };
+}
+// sample a curve across the box, breaking at undefined points, at listed jumps, and at big leaps
+function curve(P, f, o){
+  o = o || {}; const b = P.b, n = o.n || 900, brk = o.breaks || [], polys = []; let cur = [];
+  const lim = (b.y1 - b.y0) * 3;
+  for (let i = 0; i <= n; i++){
+    const x = b.x0 + (b.x1 - b.x0) * i / n, y = f(x);
+    const crossed = cur.length && brk.some(c => (cur[cur.length - 1][0] - c) * (x - c) <= 0);
+    if (!isFinite(y) || crossed || (cur.length && Math.abs(y - cur[cur.length - 1][1]) > lim)){ if (cur.length > 1) polys.push(cur); cur = []; if (!isFinite(y)) continue; }
+    cur.push([x, Math.max(b.y0 - lim, Math.min(b.y1 + lim, y))]);
+  }
+  if (cur.length > 1) polys.push(cur);
+  polys.forEach(p => mk('path', { d: dPath(P, p), style: `fill:none;stroke:${o.col || 'var(--cv)'};stroke-width:${o.w || 3};${o.dash ? 'stroke-dasharray:' + o.dash : ''}` }, P.cg));
+}
+const holeAt = (P, x, y, col) => mk('circle', { cx: P.X(x), cy: P.Y(y), r: 6, style: `fill:var(--bg);stroke:${col || 'var(--cv)'};stroke-width:2.5` }, P.m);
+const dotAt = (P, x, y, col, r) => mk('circle', { cx: P.X(x), cy: P.Y(y), r: r || 6, style: `fill:${col || 'var(--cv)'};stroke:var(--bg);stroke-width:1.5` }, P.m);
+const sig = v => !isFinite(v) ? (v > 0 ? '∞' : v < 0 ? '−∞' : 'undefined') : Math.abs(v) >= 1e5 ? v.toExponential(2).replace('-', '−') : num(v, 6);
+function parseLim(s){
+  const t = String(s).trim().toLowerCase().replace(/\s+/g, '').replace(/[−–]/g, '-');
+  if (/^(dne|none|doesnotexist|noLimit|nolimit|no)$/i.test(t)) return 'DNE';
+  if (/^\+?(inf|infinity|∞|oo)$/.test(t)) return Infinity;
+  if (/^-(inf|infinity|∞|oo)$/.test(t)) return -Infinity;
+  return parseNum(s);
+}
+
+const minus = s => String(s).replace(/(^|[\s(,=>→\/·+×])-(\d)/g, '$1−$2');
+const r4 = v => Number((Math.abs(v) < 1e-300 ? 0 : v).toPrecision(5));
+const SUP = k => String(k).replace(/-/g, '⁻').replace(/\d/g, d => '⁰¹²³⁴⁵⁶⁷⁸⁹'[d]);
+const sci = v => { if (v === 0) return '0'; const a = Math.abs(v); if (a >= 1e-3 && a < 1e7) return minus(String(r4(v))); let e = Math.floor(Math.log10(a)); if (Math.abs(v / Math.pow(10, e)) >= 9.995) e++; const m = v / Math.pow(10, e); return minus(`${m.toFixed(2)}×10${SUP(e)}`); };
+const gcd = (a, b) => b ? gcd(b, a % b) : Math.abs(a);
+function frc(x){ if (Math.abs(x - Math.round(x)) < 1e-9) return num(Math.round(x)); for (let d = 2; d <= 10000; d++){ const n = x * d; if (Math.abs(n - Math.round(n)) < 1e-9 * d && gcd(Math.round(n), d) === 1) return (x < 0 ? '−' : '') + Math.abs(Math.round(n)) + '/' + d; } return sci(x); }
+// a readable value: whole numbers with commas, otherwise 4–5 significant figures
+const big = v => Math.abs(v) >= 1e7 ? sci(v) : Math.abs(v - Math.round(v)) < 1e-9 ? Math.round(v).toLocaleString().replace('-', '−') : minus(String(r4(v)));
+
+/* =====================================================================
+   1. MAIN: multiply each step vs add each step
+   ===================================================================== */
+const MP = [
+  { n: 'Doubling ×2', a: 1, b: 2, N: 6, d: 'One cell splits into 2, then 4, 8, 16…. Adding instead would give 1, 2, 3, 4…: the same first step, then left far behind.' },
+  { n: 'Tripling ×3', a: 1, b: 3, N: 5, d: 'Each step makes three times as many: 1, 3, 9, 27, 81, 243. That’s 3ⁿ.' },
+  { n: 'Viral +50% (×1.5)', a: 100, b: 1.5, N: 10, d: 'A video with 100 views that gets 50% more each day. At first adding 50 a day keeps up; then multiplying pulls away.' },
+  { n: '+10% (×1.1)', a: 100, b: 1.1, N: 12, d: 'Growing 10% a step looks almost like a straight line at first: the difference only shows after many steps.' },
+  { n: 'Halving ×½', a: 64, b: 0.5, N: 8, d: '64, 32, 16, 8, … each step keeps half. Subtracting 32 a step instead would hit zero after 2 steps and go negative.' },
+  { n: '−20% (×0.8)', a: 100, b: 0.8, N: 10, d: 'Keep 80% each step. Decay slows down as the amount gets smaller, but never quite reaches 0.' },
+  { n: 'No change ×1', a: 5, b: 1, N: 6, d: 'Multiplying by 1 changes nothing: a flat line. Exponential growth needs b > 1, decay needs 0 < b < 1.' },
+];
+const MS = { a: 1, b: 2, N: 6, k: 6, cmp: true, anim: null };
+function mDraw(){
+  const { a, b, N, k, cmp } = MS, d = a * (b - 1);
+  const E = Array.from({ length: N + 1 }, (_, j) => a * b ** j), L = Array.from({ length: N + 1 }, (_, j) => a + d * j);
+  // ---------- bars ----------
+  const svg = $('mBars'); svg.innerHTML = '';
+  const W = 960, H = 300, Lp = 40, Rp = 20, T = 40, B = 38;
+  const vmax = Math.max(...E, ...(cmp ? L : [])), vmin = Math.min(0, ...(cmp ? L : []));
+  const Y = v => T + (vmax - v) / (vmax - vmin) * (H - T - B), slot = (W - Lp - Rp) / (N + 1), bw = Math.min(56, slot * (cmp ? 0.42 : 0.62));
+  mk('line', { x1: Lp, y1: Y(0), x2: W - Rp, y2: Y(0), class: 'axis' }, svg);
+  for (let j = 0; j <= N; j++){
+    const cx = Lp + slot * (j + 0.5), vis = j <= k;
+    txt(svg, cx, H - 12, 'step ' + j, 'tl', { 'text-anchor': 'middle' });
+    if (!vis) continue;
+    const xe = cmp ? cx - bw - 2 : cx - bw / 2;
+    mk('rect', { x: xe, y: Math.min(Y(E[j]), Y(0)), width: bw, height: Math.max(1, Math.abs(Y(0) - Y(E[j]))), rx: 3, style: `fill:${j === 0 ? 'var(--st)' : 'var(--cv)'};opacity:.85` }, svg);
+    if (slot > 34) txt(svg, xe + bw / 2, Y(E[j]) - 6, big(E[j]), 'labS', { 'text-anchor': 'middle', style: 'fill:var(--cv)' });
+    if (cmp && j > 0){
+      mk('rect', { x: cx + 2, y: Math.min(Y(L[j]), Y(0)), width: bw, height: Math.max(1, Math.abs(Y(0) - Y(L[j]))), rx: 3, style: 'fill:none;stroke:var(--tp);stroke-width:2;stroke-dasharray:5 3' }, svg);
+      if (slot > 34) txt(svg, cx + 2 + bw / 2, L[j] < 0 ? Y(L[j]) + 14 : Y(L[j]) - 6, big(L[j]), 'labS', { 'text-anchor': 'middle', style: 'fill:var(--tp)' });
+    }
+    if (j > 0 && slot > 40){ const xa = Lp + slot * j; txt(svg, xa, T - 18, '×' + r4(b), 'labS', { 'text-anchor': 'middle', style: 'fill:var(--pa)' }); }
+  }
+  // ---------- graph ----------
+  const ylo = Math.min(0, ...(cmp ? L : [])), yhi = Math.max(...E, ...(cmp ? L : []));
+  const P = ax2($('mG'), 960, 260, { x0: 0, x1: N, y0: ylo, y1: yhi * 1.08 || 1 }, { xT: 'step n', yT: 'amount' });
+  if (cmp) curve(P, x => a + d * x, { col: 'var(--tp)', w: 2.2, dash: '7 5' });
+  curve(P, x => x <= k ? a * b ** x : NaN, { w: 3 });
+  for (let j = 0; j <= k; j++) dotAt(P, j, E[j], j === 0 ? 'var(--st)' : 'var(--cv)', 5);
+  let cross = null;
+  if (cmp && b > 1){ for (let x = 0.01; x <= N; x += 0.01) if (a * b ** x > a + d * x + 1e-9 * a && x > 1.001){ cross = x; break; } }
+  // ---------- equation and readout ----------
+  const facs = k <= 6 ? Array(k).fill(r4(b)).join(' × ') : `${r4(b)} × ${r4(b)} × … × ${r4(b)} (${k} times)`;
+  $('mEq').textContent = minus(`step ${k}: ${big(a)}${k ? ' × ' + facs : ''} = ${big(a)}·${r4(b)}${SUP(k)} = ${big(E[k])}`);
+  let s = `Start <span class="ks">a = ${big(a)}</span>, multiply by <span class="ka">b = ${r4(b)}</span> each step`;
+  s += b > 1 ? `: that’s a ${r4((b - 1) * 100)}% increase each step.` : b < 1 ? `: that keeps ${r4(b * 100)}%, a ${r4((1 - b) * 100)}% decrease each step.` : ': no change at all.';
+  if (b > 1){ const dt = Math.log(2) / Math.log(b); s += Math.abs(dt - 1) < 1e-9 ? ' It doubles every step.' : ` It doubles about every <b>${r4(dt)}</b> steps.`; }
+  if (b < 1){ const ht = Math.log(0.5) / Math.log(b); s += Math.abs(ht - 1) < 1e-9 ? ' It halves every step.' : ` It halves about every <b>${r4(ht)}</b> steps.`; }
+  if (cmp && b !== 1){
+    s += `<br>Adding instead: ${big(a)} ${d < 0 ? '−' : '+'} ${big(Math.abs(d))} each step gives <span class="kt">${big(L[k])}</span> at step ${k}, against <span class="kv">${big(E[k])}</span> by multiplying.`;
+    if (b > 1) s += ` They agree at steps 0 and 1; from step 2 on, multiplying is ahead and the gap keeps widening: at step ${N} it’s ${big(E[N])} vs ${big(L[N])}.`;
+    else s += ` Adding hits zero at step ${r4(-a / d)} and goes negative; multiplying gets closer and closer to 0 but never reaches it.`;
+  }
+  $('mOut').innerHTML = minus(s);
+  $('mA').value = String(a); $('mB').value = String(b); $('mN').value = String(N);
+}
+function mStop(){ if (MS.anim){ clearTimeout(MS.anim); MS.anim = null; } $('mPlay').textContent = 'Play'; }
+const mMark = buttons('mPresets', MP, i => { mStop(); const p = MP[i]; Object.assign(MS, { a: p.a, b: p.b, N: p.N, k: p.N }); mMark(i); $('mDesc').textContent = p.d; $('mErr').textContent = ''; mDraw(); });
+$('mPlay').onclick = () => { if (MS.anim){ mStop(); return; } MS.k = 0; $('mPlay').textContent = 'Pause'; const step = () => { mDraw(); if (MS.k < MS.N){ MS.k++; MS.anim = setTimeout(step, 650); } else mStop(); }; step(); };
+$('mReset').onclick = () => { mStop(); MS.k = 0; mDraw(); };
+$('mCmp').onclick = () => { MS.cmp = !MS.cmp; $('mCmp').classList.toggle('on', MS.cmp); $('mCmp').textContent = 'Compare with adding: ' + (MS.cmp ? 'on' : 'off'); mDraw(); };
+$('mUse').onclick = () => {
+  const a = parseNum($('mA').value), b = parseNum($('mB').value), n = parseNum($('mN').value);
+  if ([a, b, n].some(isNaN)){ $('mErr').textContent = 'Fill in every box with a number.'; return; }
+  if (a <= 0 || a > 10000){ $('mErr').textContent = 'Use a start between 0 and 10,000 (not 0).'; return; }
+  if (b <= 0 || b > 5){ $('mErr').textContent = 'Use a factor b between 0 and 5 (not 0). Fractions like 1/2 are fine.'; return; }
+  if (!Number.isInteger(n) || n < 1 || n > 15){ $('mErr').textContent = 'Use a whole number of steps from 1 to 15.'; return; }
+  $('mErr').textContent = ''; mStop(); mMark(-1); $('mDesc').textContent = 'Your own numbers.'; Object.assign(MS, { a, b, N: n, k: n }); mDraw();
+};
+
+/* =====================================================================
+   2. COUNT THE FACTORS
+   ===================================================================== */
+const RS = { rule: 0, m: 3, n: 2 };
+function tile(svg, x, y, s, col, label, ghost){
+  mk('rect', { x, y, width: s, height: s, rx: 6, style: `fill:${col};opacity:${ghost ? .22 : .85}` }, svg);
+  txt(svg, x + s / 2, y + s / 2 + 7, label, 'lab', { 'text-anchor': 'middle', style: `fill:${ghost ? 'var(--muted)' : '#fff'};stroke:none;font-family:var(--serif);font-size:${Math.round(s * 0.55)}px;font-style:italic;font-weight:600` });
+  if (ghost){ mk('line', { x1: x + 6, y1: y + 6, x2: x + s - 6, y2: y + s - 6, style: 'stroke:var(--err);stroke-width:3' }, svg); mk('line', { x1: x + s - 6, y1: y + 6, x2: x + 6, y2: y + s - 6, style: 'stroke:var(--err);stroke-width:3' }, svg); }
+}
+function rDraw(){
+  const { rule, m, n } = RS, svg = $('rSvg'); svg.innerHTML = '';
+  const s = 40, g = 6;
+  let out = '';
+  if (rule === 0){
+    const tot = m + n, w = tot * (s + g) + 60, x0 = (960 - w) / 2;
+    for (let j = 0; j < m; j++) tile(svg, x0 + j * (s + g), 70, s, 'var(--cv)', 'x');
+    txt(svg, x0 + m * (s + g) + 14, 98, '·', 'lab', { 'text-anchor': 'middle', style: 'font-size:28px' });
+    for (let j = 0; j < n; j++) tile(svg, x0 + m * (s + g) + 30 + j * (s + g), 70, s, 'var(--tp)', 'x');
+    txt(svg, x0 + (m * (s + g)) / 2, 56, `x${SUP(m)}`, 'lab', { 'text-anchor': 'middle', style: 'fill:var(--cv)' });
+    txt(svg, x0 + m * (s + g) + 30 + (n * (s + g)) / 2, 56, `x${SUP(n)}`, 'lab', { 'text-anchor': 'middle', style: 'fill:var(--tp)' });
+    mk('path', { d: `M${x0} 124 v10 H${x0 + w - 36} v-10`, style: 'fill:none;stroke:var(--ink);stroke-width:1.5' }, svg);
+    txt(svg, x0 + (w - 36) / 2, 160, `${tot} factors of x in a row: x${SUP(tot)}`, 'lab', { 'text-anchor': 'middle' });
+    out = `x${SUP(m)} · x${SUP(n)} = x${SUP(m)}⁺${SUP(n)} = <b>x${SUP(tot)}</b>. Count the tiles: ${m} + ${n} = ${tot}. (Not x${SUP(m * n)}: that would need ${m * n} tiles.) Check with x = 2: ${2 ** m} × ${2 ** n} = ${2 ** tot} = 2${SUP(tot)}.`;
+  } else if (rule === 1){
+    const c = Math.min(m, n), wmax = Math.max(m, n) * (s + g), x0 = (960 - wmax) / 2 - 120;
+    for (let j = 0; j < m; j++) tile(svg, x0 + j * (s + g), 30, s, 'var(--cv)', 'x', j < c);
+    mk('line', { x1: x0 - 10, y1: 86, x2: x0 + Math.max(wmax, s) + 4, y2: 86, style: 'stroke:var(--ink);stroke-width:2' }, svg);
+    for (let j = 0; j < n; j++) tile(svg, x0 + j * (s + g), 96, s, 'var(--tp)', 'x', j < c);
+    if (m === 0) txt(svg, x0 + s / 2, 58, '1', 'lab', { 'text-anchor': 'middle' });
+    if (n === 0) txt(svg, x0 + s / 2, 124, '1', 'lab', { 'text-anchor': 'middle' });
+    const res = m - n, rx = x0 + Math.max(wmax, s) + 60;
+    txt(svg, rx, 92, '=', 'lab', { style: 'font-size:24px' });
+    const rtxt = res === 1 ? 'x' : res > 0 ? `x${SUP(res)}` : res === 0 ? '1 = x⁰' : `1/x${SUP(-res)} = x${SUP(res)}`;
+    txt(svg, rx + 30, 93, rtxt, 'lab', { style: 'font-size:22px;fill:var(--pa)' });
+    txt(svg, 480, 190, c ? `${c} matching pair${c === 1 ? '' : 's'} cancel (x/x = 1)` : 'nothing to cancel', 'tl', { 'text-anchor': 'middle', style: 'fill:var(--err)' });
+    out = `x${SUP(m)} / x${SUP(n)}: ${c} pair${c === 1 ? '' : 's'} cancel, leaving ${res > 0 ? res + ' on top' : res < 0 ? -res + ' on the bottom' : 'nothing but 1'}. So x${SUP(m)} / x${SUP(n)} = x${SUP(m)}⁻${SUP(n)} = <b>${rtxt}</b>.` + (res < 0 ? ' A negative exponent means factors in the denominator.' : res === 0 ? ' Anything (except 0) divided by itself is 1: that is why x⁰ = 1.' : '') + ` Check with x = 2: ${2 ** m}/${2 ** n} = ${frc(2 ** (m - n))}.`;
+  } else {
+    const tot = m * n, gw = m * (s + g) + 36, w = n * gw, x0 = (960 - w) / 2;
+    for (let q = 0; q < n; q++){ const gx = x0 + q * gw; txt(svg, gx + 4, 100, '(', 'lab', { style: 'font-size:44px;fill:var(--muted)' }); for (let j = 0; j < m; j++) tile(svg, gx + 18 + j * (s + g), 70, s, q % 2 ? 'var(--tp)' : 'var(--cv)', 'x'); txt(svg, gx + 18 + m * (s + g) - 2, 100, ')', 'lab', { style: 'font-size:44px;fill:var(--muted)' }); txt(svg, gx + gw / 2, 56, `copy ${q + 1}`, 'tl', { 'text-anchor': 'middle' }); }
+    txt(svg, 480, 160, `${n} groups of ${m}: ${tot} factors in all, x${SUP(tot)}`, 'lab', { 'text-anchor': 'middle' });
+    out = `(x${SUP(m)})${SUP(n)} means ${n} copies of x${SUP(m)} multiplied together: ${n} × ${m} = ${tot} tiles, so <b>x${SUP(tot)}</b>. (Not x${SUP(m + n)}: adding is for x${SUP(m)} · x${SUP(n)}.) Check with x = 2: ${2 ** m}${SUP(n)} = ${(2 ** tot).toLocaleString()}.`;
+  }
+  $('rOut').innerHTML = out;
+  $('rM').value = String(m); $('rN').value = String(n);
+}
+[...$('rRule').children].forEach((b, k) => b.onclick = () => { RS.rule = k; [...$('rRule').children].forEach((x, j) => x.classList.toggle('on', j === k)); if (k === 2){ RS.m = Math.min(RS.m, 4) || 1; RS.n = Math.min(RS.n, 3) || 1; } $('rErr').textContent = ''; rDraw(); });
+$('rGo').onclick = () => {
+  const m = parseNum($('rM').value), n = parseNum($('rN').value);
+  if (isNaN(m) || isNaN(n) || !Number.isInteger(m) || !Number.isInteger(n)){ $('rErr').textContent = 'Type whole numbers for m and n.'; return; }
+  const lim = RS.rule === 2 ? [1, 4, 1, 4] : RS.rule === 1 ? [0, 8, 0, 8] : [1, 8, 1, 8];
+  if (m < lim[0] || m > lim[1] || n < lim[2] || n > lim[3] || (RS.rule === 0 && m + n > 16)){ $('rErr').textContent = `Use m and n from ${lim[0]} to ${lim[1]}${RS.rule === 2 ? ' (so the picture fits)' : ''}.`; return; }
+  $('rErr').textContent = ''; RS.m = m; RS.n = n; rDraw();
+};
+
+/* =====================================================================
+   3. LADDER AND SCIENTIFIC NOTATION
+   ===================================================================== */
+const LS = { b: 2 };
+function lDraw(){
+  const b = LS.b, svg = $('lSvg'); svg.innerHTML = '';
+  const ks = [-4, -3, -2, -1, 0, 1, 2, 3, 4, 5], w = 84, g = 10, x0 = (960 - ks.length * (w + g) + g) / 2;
+  ks.forEach((k, j) => {
+    const x = x0 + j * (w + g), v = b ** k, z = k === 0;
+    mk('rect', { x, y: 24, width: w, height: 74, rx: 8, style: `fill:${z ? 'var(--accent-bg)' : 'var(--paper)'};stroke:${z ? 'var(--accent)' : k < 0 ? 'var(--tp)' : 'var(--cv)'};stroke-width:${z ? 2.5 : 1.5}` }, svg);
+    txt(svg, x + w / 2, 50, `${b}${SUP(k)}`, 'lab', { 'text-anchor': 'middle', style: `fill:${k < 0 ? 'var(--tp)' : 'var(--cv)'}` });
+    txt(svg, x + w / 2, 80, k >= 0 ? v.toLocaleString() : (b === 10 ? String(v) : '1/' + (b ** -k)), 'labS', { 'text-anchor': 'middle' });
+    if (j) { const ax = x - g / 2; mk('path', { d: `M${ax + 30} 122 Q${ax} 140 ${ax - 30} 122`, style: 'fill:none;stroke:var(--pa);stroke-width:1.5' }, svg); lArrow(svg, ax - 30, 122); txt(svg, ax, 152, '÷' + b, 'labS', { 'text-anchor': 'middle', style: 'fill:var(--pa)' }); }
+  });
+}
+function lArrow(svg, x, y){ mk('path', { d: `M${x} ${y} l7 -5 l-1 7 z`, style: 'fill:var(--pa)' }, svg); }
+const lMark = buttons('lPresets', [{ n: 'base 2' }, { n: 'base 3' }, { n: 'base 10' }], i => { LS.b = [2, 3, 10][i]; lMark(i); lDraw(); });
+function sDraw(v){
+  if (v === 0){ $('sOut').innerHTML = '0 has no scientific notation form: there is no first nonzero digit.'; return; }
+  let e = Math.floor(Math.log10(Math.abs(v))), c = v / 10 ** e; if (Math.abs(c) >= 9.9999999) { e++; c /= 10; }
+  const cs = String(Number(c.toPrecision(8)));
+  $('sOut').innerHTML = minus(`${String(v).includes('e') ? sci(v) : Number(v).toLocaleString(undefined, { maximumFractionDigits: 12 })} = <b>${cs} × 10${SUP(e)}</b>. ` + (e > 0 ? `The decimal point moved ${e} place${e === 1 ? '' : 's'} left, so we multiply by 10${SUP(e)} to put it back.` : e < 0 ? `The decimal point moved ${-e} place${e === -1 ? '' : 's'} right, so we multiply by 10${SUP(e)} = 1/${(10 ** -e).toLocaleString()} to put it back.` : 'Already between 1 and 10, so the power is 10⁰ = 1.'));
+}
+const sP = [['150000000', 'Sun distance (km)'], ['0.000002', 'bacterium (m)'], ['602200000000000000000000', 'atoms in 12 g of carbon'], ['0.0000000001', 'an atom (m)']];
+buttons('sPresets', sP.map(p => ({ n: p[1] })), i => { $('sN').value = sP[i][0]; $('sGo').click(); });
+$('sGo').onclick = () => { const raw = $('sN').value.trim().replace(/,/g, ''); const v = /^-?\d*\.?\d+(e-?\d+)?$/i.test(raw) ? parseFloat(raw) : parseNum(raw); if (isNaN(v)){ $('sErr').textContent = 'Type a number, like 45000 or 0.0032.'; return; } $('sErr').textContent = ''; sDraw(v); };
+
+/* =====================================================================
+   4. DOUBLING GETS HUGE
+   ===================================================================== */
+const HS = { tab: 0, n: [10, 10] };
+const MARKS = [[0.1, 'a sheet of paper', 'one sheet'], [30, 'a thick book', 'a thick book'], [1700, 'a person', 'a person’s height'], [3.3e5, 'Eiffel Tower', 'the Eiffel Tower'], [8.85e6, 'Mount Everest', 'Mount Everest'], [4e8, 'space station orbit', 'the space station’s orbit'], [3.844e11, 'the Moon', 'the distance to the Moon'], [1.5e14, 'the Sun', 'the distance to the Sun']];
+const lenStr = mm => mm < 10 ? r4(mm) + ' mm' : mm < 1000 ? r4(mm / 10) + ' cm' : mm < 1e6 ? r4(mm / 1000) + ' m' : big(Math.round(mm / 1e6)) + ' km';
+function hDraw(){
+  const svg = $('hSvg'); svg.innerHTML = '';
+  if (HS.tab === 0){
+    const n = HS.n[0], t = 0.1 * 2 ** n;
+    const W = 960, L = 40, R = 30, lo = -2, hi = 15, X = e => L + (e - lo) / (hi - lo) * (W - L - R);
+    for (let e = lo; e <= hi; e++){ mk('line', { x1: X(e), y1: 40, x2: X(e), y2: 240, class: 'grid' }, svg); if ([-1, 0, 3, 6, 9, 12, 15].includes(e)) txt(svg, X(e), 262, ['0.1 mm', '1 mm', '', '', '1 m', '', '', '1 km', '', '', '1000 km', '', '', '1 million km'][e + 1] || '', 'tl', { 'text-anchor': 'middle' }); }
+    MARKS.forEach(([mm, name], j) => { const x = X(Math.log10(mm)); mk('line', { x1: x, y1: 60, x2: x, y2: 240, style: 'stroke:var(--rad);stroke-width:1.2;stroke-dasharray:3 4' }, svg); txt(svg, x, j % 2 ? 54 : 34, name, 'labS', { 'text-anchor': j === 0 ? 'start' : j === MARKS.length - 1 ? 'end' : 'middle', style: 'fill:var(--rad)' }); });
+    const xt = X(Math.log10(t));
+    mk('rect', { x: X(lo), y: 130, width: xt - X(lo), height: 40, rx: 4, style: 'fill:var(--cv);opacity:.8' }, svg);
+    mk('circle', { cx: xt, cy: 150, r: 8, style: 'fill:var(--pa)' }, svg);
+    txt(svg, Math.min(xt + 12, W - 200), 196, `${n} folds: ${lenStr(t)}`, 'lab', { style: 'fill:var(--pa)' });
+    const passed = MARKS.filter(([mm]) => mm <= t + 1e-9).pop(), next = MARKS.find(([mm]) => mm > t + 1e-9);
+    const fNext = next ? Math.ceil(Math.log2(next[0] / 0.1)) : null;
+    $('hOut').innerHTML = minus(`After <b>${n}</b> fold${n === 1 ? '' : 's'}: 0.1 mm × 2${SUP(n)} = 0.1 × ${big(2 ** n)} mm = <span class="ka">${lenStr(t)}</span>${passed && passed[0] > 0.1 ? `, already past ${passed[2]}` : ''}.` + (next ? ` It passes ${next[2]} at fold ${fNext}.` : '') + `<br>Each fold only doubles, but ${n} doublings multiply by ${big(2 ** n)}. (Real paper can only be folded about 7 times by hand: each fold also halves the area, and the stack gets too short and thick to bend.)`);
+    $('hLab').textContent = 'folds'; $('hN').value = String(n);
+  } else {
+    const n = HS.n[1], s = 34, x0 = 40, y0 = 14;
+    for (let q = 1; q <= 64; q++){
+      const r = Math.floor((q - 1) / 8), c = (q - 1) % 8, row = 7 - r, col = r % 2 ? 7 - c : c;     // snake up the board from the bottom-left
+      const on = q <= n, op = on ? 0.15 + 0.85 * (q - 1) / 63 : 0;
+      mk('rect', { x: x0 + col * s, y: y0 + row * s, width: s, height: s, style: `fill:${(row + col) % 2 ? 'var(--paper)' : 'var(--line)'};stroke:var(--line)` }, svg);
+      if (on) mk('rect', { x: x0 + col * s, y: y0 + row * s, width: s, height: s, style: `fill:var(--cv);opacity:${op}` }, svg);
+      if (q === n) mk('rect', { x: x0 + col * s + 1.5, y: y0 + row * s + 1.5, width: s - 3, height: s - 3, style: 'fill:none;stroke:var(--pa);stroke-width:3' }, svg);
+      txt(svg, x0 + col * s + s / 2, y0 + row * s + s / 2 + 4, String(q), 'tl', { 'text-anchor': 'middle', style: 'font-size:10px;stroke:none;fill:var(--ink)' });
+    }
+    const on = 2n ** BigInt(n - 1), tot = 2n ** BigInt(n) - 1n, grams = Number(tot) * 0.025;
+    const lines = [[`square ${n}`, `2${SUP(n - 1)} = ${on.toLocaleString()} grains`], [`squares 1–${n} together`, `2${SUP(n)} − 1 = ${tot.toLocaleString()} grains`], ['weight (25 mg a grain)', grams < 1000 ? r4(grams) + ' g' : grams < 1e6 ? r4(grams / 1000) + ' kg' : big(grams / 1e6) + ' tonnes']];
+    lines.forEach(([a, b], j) => { txt(svg, 340, 60 + j * 52, a, 'tl'); txt(svg, 340, 82 + j * 52, b, 'lab', { style: `fill:${j ? 'var(--ink)' : 'var(--pa)'}` }); });
+    $('hOut').innerHTML = `Square <b>${n}</b> holds 2${SUP(n - 1)} grains, and all the squares so far add up to one less than the next power of 2: 1 + 2 + 4 + … + 2${SUP(n - 1)} = 2${SUP(n)} − 1.` + (n === 64 ? ' The whole board needs about 18 quintillion grains, roughly 460 billion tonnes: hundreds of years of the world’s entire rice harvest.' : n >= 20 ? ` That’s already ${big(grams / 1e6)} tonnes.` : ' Keep going: by square 64 the numbers become astronomical.');
+    $('hLab').textContent = 'square'; $('hN').value = String(n);
+  }
+}
+let hMark = null;
+function hPresets(){ $('hPresets').innerHTML = ''; const p = HS.tab === 0 ? [7, 23, 42] : [8, 32, 64]; hMark = buttons('hPresets', p.map(v => ({ n: (HS.tab ? 'square ' : '') + v + (HS.tab ? '' : ' folds') })), i => { HS.n[HS.tab] = p[i]; hMark(i); $('hErr').textContent = ''; hDraw(); }); }
+[...$('hTab').children].forEach((b, k) => b.onclick = () => { HS.tab = k; [...$('hTab').children].forEach((x, j) => x.classList.toggle('on', j === k)); $('hErr').textContent = ''; hPresets(); hDraw(); });
+const hLim = () => HS.tab === 0 ? [0, 50] : [1, 64];
+$('hPlus').onclick = () => { if (HS.n[HS.tab] < hLim()[1]){ HS.n[HS.tab]++; hMark(-1); hDraw(); } };
+$('hMinus').onclick = () => { if (HS.n[HS.tab] > hLim()[0]){ HS.n[HS.tab]--; hMark(-1); hDraw(); } };
+$('hGo').onclick = () => { const v = parseNum($('hN').value), [a, b] = hLim(); if (isNaN(v) || !Number.isInteger(v) || v < a || v > b){ $('hErr').textContent = `Use a whole number from ${a} to ${b}.`; return; } $('hErr').textContent = ''; HS.n[HS.tab] = v; hMark(-1); hDraw(); };
+
+/* =====================================================================
+   5. MODEL LAB
+   ===================================================================== */
+// kind 'exp': value = c + a·b^(t/h); kind 'lin': value = a + d·(t/h)
+const XP = [
+  { n: 'Bacteria', kind: 'exp', a: 100, b: 2, h: 20, c: 0, unit: 'minutes', what: 'cells', tmax: 120, tp: 90, d: '100 bacteria that double every 20 minutes. One step = 20 minutes, factor 2.' },
+  { n: 'Viral video', kind: 'exp', a: 500, b: 1.5, h: 1, c: 0, unit: 'days', what: 'views', tmax: 7, tp: 10, d: 'A video with 500 views whose views grow 50% every day: factor 1.5 per day.' },
+  { n: 'Cooling tea', kind: 'exp', a: 70, b: 0.5, h: 10, c: 20, unit: 'minutes', what: '°C', tmax: 60, tp: 25, d: 'Tea at 90 °C in a 20 °C room. The gap above room temperature (70 °C at the start) halves every 10 minutes, so the tea heads to 20 °C, not to 0.' },
+  { n: 'Carbon-14', kind: 'exp', a: 100, b: 0.5, h: 5730, c: 0, unit: 'years', what: '% left', tmax: 28650, tp: 10000, d: 'Percent of carbon-14 left in a bone. Half-life about 5,730 years: one step = 5,730 years, factor ½.' },
+  { n: 'Phone battery (linear)', kind: 'lin', a: 100, b: -12, h: 1, c: 0, unit: 'hours', what: '%', tmax: 8, tp: 5, d: 'A battery dropping about 12 percentage points every hour of use. That’s subtracting, not multiplying: linear, a non-example. It really does reach 0.' },
+];
+const XS = { i: 0, a: 100, b: 2, tp: 90 };
+function xDraw(){
+  const p = XP[XS.i], { a, b } = XS, lin = p.kind === 'lin';
+  const f = t => lin ? a + b * t / p.h : p.c + a * b ** (t / p.h);
+  const ts = []; for (let t = 0; t <= p.tmax + 1e-9; t += p.h) ts.push(t);
+  const vals = ts.map(f);
+  const yhi = Math.max(...vals, f(Math.min(XS.tp, p.tmax * 1.5))) * 1.1;
+  const P = ax2($('xSvg'), 600, 320, { x0: 0, x1: p.tmax, y0: 0, y1: yhi }, { xT: 'time (' + p.unit + ')', yT: p.what, padL: 52 });
+  if (p.c) { mk('line', { x1: P.L, y1: P.Y(p.c), x2: P.W - P.R, y2: P.Y(p.c), style: 'stroke:var(--rad);stroke-width:1.8;stroke-dasharray:6 4' }, P.cg); txt(P.top, P.L + 8, P.Y(p.c) + 16, 'room temperature', 'labS', { style: 'fill:var(--rad)' }); }
+  curve(P, t => { const v = f(t); return lin && v < 0 ? NaN : v; }, { n: 400, col: lin ? 'var(--tp)' : 'var(--cv)' });
+  ts.forEach((t, j) => { if (!lin || vals[j] >= 0) dotAt(P, t, vals[j], j ? (lin ? 'var(--tp)' : 'var(--cv)') : 'var(--st)', 5); });
+  if (XS.tp <= p.tmax){ const v = f(XS.tp); if (!lin || v >= 0){ mk('line', { x1: P.X(XS.tp), y1: P.T, x2: P.X(XS.tp), y2: P.H - P.B, style: 'stroke:var(--pa);stroke-width:1.5;stroke-dasharray:4 4' }, P.cg); dotAt(P, XS.tp, v, 'var(--pa)', 6); } }
+  // table: differences and ratios (for the tea, ratios of the gap above room temperature)
+  const q = v => v - p.c;
+  $('xTab').innerHTML = `<tr><th>time</th><th>${p.what}</th><th>difference</th><th>ratio${p.c ? ' of (T − 20)' : ''}</th></tr>` + ts.map((t, j) => `<tr><td>${big(t)}</td><td>${big(vals[j])}</td><td>${j ? minus(big(vals[j] - vals[j - 1])) : ''}</td><td>${j && q(vals[j - 1]) ? r4(q(vals[j]) / q(vals[j - 1])) : ''}</td></tr>`).join('');
+  const sh = p.h === 1 ? 't' : `(t/${big(p.h)})`;
+  $('xEq').textContent = minus(lin ? `${p.what} = ${big(a)} ${b < 0 ? '−' : '+'} ${big(Math.abs(b))}·t   (t in ${p.unit})` : `${p.c ? 'T = ' + p.c + ' + ' : p.what + ' = '}${big(a)}·${r4(b)}^${sh}   (t in ${p.unit})`);
+  const v = f(XS.tp);
+  let s = lin ? `The <b>differences</b> are all ${minus(big(b))}: constant, so this is <span class="kt">linear</span>. The ratios change. It hits 0 after ${r4(-a / b * p.h)} ${p.unit}.` : `The <b>ratios</b> are all ${r4(b)}: constant, so this is <span class="kv">exponential</span> (${b > 1 ? r4((b - 1) * 100) + '% growth' : r4((1 - b) * 100) + '% decay'} per ${p.h === 1 ? p.unit.replace(/s$/, '') : big(p.h) + ' ' + p.unit}). The differences keep changing.`;
+  if (!lin) s += b > 1 ? ` Doubling time: <b>${big(p.h * Math.log(2) / Math.log(b))} ${p.unit}</b>.` : ` Half-life: <b>${big(p.h * Math.log(0.5) / Math.log(b))} ${p.unit}</b>.`;
+  s += `<br>Prediction at t = ${big(XS.tp)} ${p.unit}: <span class="ka">${lin && v < 0 ? '0 (the battery is empty; the formula would give ' + big(v) + ')' : big(v) + ' ' + p.what}</span>.`;
+  if (!lin && p.h !== 1) s += ` That’s ${r4(XS.tp / p.h)} steps of ${big(p.h)} ${p.unit}.`;
+  $('xOut').innerHTML = minus(s);
+  $('xA').value = String(a); $('xB').value = String(b); $('xT').value = String(XS.tp);
+  $('xBLab').innerHTML = lin ? 'change per hour' : 'factor <i>b</i> per step';
+}
+const xMark = buttons('xPresets', XP, i => { const p = XP[i]; Object.assign(XS, { i, a: p.a, b: p.b, tp: p.tp }); xMark(i); $('xDesc').textContent = p.d; $('xErr').textContent = ''; xDraw(); });
+$('xGo').onclick = () => {
+  const p = XP[XS.i], a = parseNum($('xA').value), b = parseNum($('xB').value), t = parseNum($('xT').value);
+  if ([a, b, t].some(isNaN)){ $('xErr').textContent = 'Fill in every box with a number.'; return; }
+  if (a <= 0 || a > 1e6){ $('xErr').textContent = 'Use a start between 0 and 1,000,000.'; return; }
+  if (p.kind === 'exp' && (b <= 0 || b > 4)){ $('xErr').textContent = 'Use a factor between 0 and 4 (not 0): above 1 grows, below 1 decays.'; return; }
+  if (p.kind === 'lin' && (b >= 0 || b < -50)){ $('xErr').textContent = 'Use a drop per hour between −50 and 0, like −12.'; return; }
+  if (t < 0 || t > p.tmax * 2){ $('xErr').textContent = `Predict at a time between 0 and ${big(p.tmax * 2)} ${p.unit}.`; return; }
+  $('xErr').textContent = ''; Object.assign(XS, { a, b, tp: t }); xDraw();
+};
+
+/* =====================================================================
+   6. TRAPS
+   ===================================================================== */
+(function(){
+  let P = ax2($('tr1'), 300, 170, { x0: 0, x1: 8, y0: 0, y1: 260 }, { padL: 34, padB: 22, padT: 8, padR: 8, xT: 'n' });
+  curve(P, x => 2 * x, { col: 'var(--tp)', w: 2.5 }); curve(P, x => 2 ** x, { w: 2.5 });
+  txt(P.top, P.X(7.6), P.Y(2 ** 7.6) + 4, '2ⁿ', 'labS', { 'text-anchor': 'end', style: 'fill:var(--cv)' }); txt(P.top, P.X(7.6), P.Y(16) - 8, '2 × n', 'labS', { 'text-anchor': 'end', style: 'fill:var(--tp)' });
+  const svg = $('tr2'); svg.innerHTML = '';
+  for (let j = 0; j < 7; j++) tile(svg, 22 + j * 38, 50, 32, j < 3 ? 'var(--cv)' : 'var(--tp)', 'x');
+  txt(svg, 150, 30, 'x³ · x⁴', 'lab', { 'text-anchor': 'middle' }); txt(svg, 150, 120, '7 tiles: x⁷', 'lab', { 'text-anchor': 'middle', style: 'fill:var(--pa)' }); txt(svg, 150, 150, 'not 12', 'labS', { 'text-anchor': 'middle', style: 'fill:var(--err)' });
+  const s3 = $('tr3'); s3.innerHTML = '';
+  const Y = v => 150 - v * 1.2; [[100, 'start'], [50, '× 0.5'], [75, '× 1.5']].forEach(([v, l], j) => { mk('rect', { x: 30 + j * 90, y: Y(v), width: 60, height: 150 - Y(v), rx: 4, style: `fill:${j === 2 ? 'var(--err)' : 'var(--cv)'};opacity:.75` }, s3); txt(s3, 60 + j * 90, Y(v) - 6, String(v), 'labS', { 'text-anchor': 'middle' }); txt(s3, 60 + j * 90, 166, l, 'tl', { 'text-anchor': 'middle' }); });
+  mk('line', { x1: 20, y1: Y(100), x2: 280, y2: Y(100), style: 'stroke:var(--rad);stroke-width:1.5;stroke-dasharray:5 4' }, s3);
+})();
+
+/* =====================================================================
+   7. QUIZ
+   ===================================================================== */
+const Q = { right: 0, total: 0 };
+let qq = null;
+const qTitles = { simp: 'Simplify with exponent rules', lin: 'Linear or exponential?', model: 'Build the model', pred: 'Predict a value' };
+function qReset(){ ['qChoice', 'qExpr'].forEach(id => $(id).innerHTML = ''); $('qFb').className = 'feedback'; $('qFb').innerHTML = ''; $('qErr').textContent = ''; $('qIn').style.display = ''; $('q1').value = ''; }
+function qScore(ok){ if (qq.counted) return; qq.counted = true; Q.total++; if (ok) Q.right++; $('score').textContent = `Score: ${Q.right} / ${Q.total}`; }
+function qFeedback(ok, html){ $('qFb').className = 'feedback ' + (ok ? 'ok' : 'bad'); $('qFb').innerHTML = (ok ? '<b>Right.</b> ' : '<b>Not quite.</b> ') + minus(html); }
+function qChoices(list, correctIdx, explain){ $('qIn').style.display = 'none'; qq.correctIdx = correctIdx; qq.explainFn = explain; list.forEach((c, k) => { const b = document.createElement('button'); b.innerHTML = minus(c); b.onclick = () => { const ok = k === correctIdx; qScore(ok); [...$('qChoice').children].forEach((x, j) => { x.classList.remove('right', 'wrong'); if (j === k) x.classList.add(ok ? 'right' : 'wrong'); }); qFeedback(ok, explain(k)); }; $('qChoice').appendChild(b); }); }
+function shuffle(a){ for (let i = a.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+function qSimp(){
+  const c = pick([
+    () => { const m = ri(2, 6), n = ri(2, 6), v = pick(['x', 'y', 'a']); return { e: `${v}${SUP(m)} · ${v}${SUP(n)} = ${v}^?`, lab: 'exponent =', ans: m + n, traps: [[m * n, 'You multiplied the exponents; multiplying powers adds them (count the factors).']], why: `${m} factors times ${n} factors = ${m + n} factors: ${v}${SUP(m + n)}.` }; },
+    () => { const n = ri(2, 4), m = n + ri(1, 4); return { e: `x${SUP(m)} / x${SUP(n)} = x^?`, lab: 'exponent =', ans: m - n, traps: [[m / n, 'You divided the exponents; dividing powers subtracts them.'], [m + n, 'Dividing subtracts the exponents, it doesn’t add them.']], why: `${n} pairs cancel, leaving ${m - n} factors: x${SUP(m - n)}.` }; },
+    () => { const m = ri(2, 5), n = ri(2, 4); return { e: `(x${SUP(m)})${SUP(n)} = x^?`, lab: 'exponent =', ans: m * n, traps: [[m + n, 'You added; a power of a power multiplies the exponents.']], why: `${n} copies of ${m} factors: ${m * n} factors, x${SUP(m * n)}.` }; },
+    () => { const b = pick([2, 3, 4, 5, 10]), n = b === 10 ? ri(1, 3) : ri(1, 3); return { e: `${b}${SUP(-n)} = ?`, lab: 'value =', ans: 1 / b ** n, traps: [[-(b ** n), 'A negative exponent doesn’t make the number negative: it means 1 over the power.'], [-b * n, 'A negative exponent means 1 over the power, not multiplying by −n.']], why: `${b}${SUP(-n)} = 1/${b}${SUP(n)} = 1/${b ** n}.` }; },
+    () => { const b = pick(['7', '(−5)', '1,000,000', '(3/4)']); return { e: `${b}⁰ = ?`, lab: 'value =', ans: 1, traps: [[0, 'Any nonzero number to the power 0 is 1, not 0: the pattern divides down to 1.']], why: `Any nonzero base to the power 0 is 1 (for example x³/x³ = x⁰ = 1).` }; },
+    () => { const m = ri(1, 4), n = ri(1, 3); return { e: `2${SUP(m)} · 2${SUP(n)} = ?`, lab: 'value =', ans: 2 ** (m + n), traps: [[2 ** (m * n), 'You multiplied the exponents; add them: 2^(m+n).'], [4 ** (m + n), 'The base stays 2; don’t multiply the bases.']], why: `Add the exponents: 2${SUP(m + n)} = ${2 ** (m + n)}.` }; },
+  ])();
+  Object.assign(qq, c);
+  $('qText').innerHTML = 'Use the exponent rules.'; $('qExpr').innerHTML = minus(c.e); $('qLab').textContent = c.lab;
+}
+function qLin(){
+  const kind = pick(['lin', 'exp', 'exp', 'nei']); let vals, why;
+  if (kind === 'lin'){ const a = ri(2, 20), d = pick([3, 4, 5, 7, -2, -3]); vals = [0, 1, 2, 3, 4].map(k => a + d * k); why = `Differences are all ${d}: adding ${d} each step, so linear.`; if (d < 0) vals = vals.map(v => v + 20); }
+  else if (kind === 'exp'){ const [a, b] = pick([[3, 2], [2, 3], [5, 2], [81, 1 / 3], [64, 1 / 2], [16, 1.5]]); vals = [0, 1, 2, 3, 4].map(k => a * b ** k); why = `Ratios are all ${frc(b)} (each value is ${frc(b)} times the one before), while the differences change: exponential.`; }
+  else { const c = ri(1, 5); vals = [0, 1, 2, 3, 4].map(k => k * k + c); why = 'Differences are 1, 3, 5, 7 (not constant) and the ratios change too: neither linear nor exponential (this one is k² + ' + c + ', a quadratic).'; }
+  $('qText').innerHTML = 'Is this pattern linear, exponential, or neither?';
+  $('qExpr').innerHTML = `<table class="qtab"><tr><th>x</th>${[0, 1, 2, 3, 4].map(k => `<td>${k}</td>`).join('')}</tr><tr><th>y</th>${vals.map(v => `<td>${minus(frc(v))}</td>`).join('')}</tr></table>`;
+  const idx = { lin: 0, exp: 1, nei: 2 }[kind];
+  qChoices(['Linear', 'Exponential', 'Neither'], idx, k => (k === idx ? '' : 'Check differences and ratios. ') + why);
+}
+function qModel(){
+  const c = pick([
+    () => { const a = pick([2000, 5000, 8000]), r = pick([3, 4, 6]); return { s: `A town of ${a.toLocaleString()} people grows by ${r}% each year. Population after t years:`, ok: `${a.toLocaleString()}·${1 + r / 100}ᵗ`, bad: [`${a.toLocaleString()}·${r / 100}ᵗ`, `${a.toLocaleString()} + ${r}t`, `${a.toLocaleString()}·${1 + r / 10}ᵗ`], why: `Growing ${r}% means keeping 100% and adding ${r}%: factor 1 + ${r}/100 = ${1 + r / 100}.` }; },
+    () => { const a = pick([200, 300, 400]), r = pick([20, 25, 30]); return { s: `A ${a} mg dose of medicine; ${r}% of what’s left leaves the body each hour. Amount after t hours:`, ok: `${a}·${1 - r / 100}ᵗ`, bad: [`${a}·${r / 100}ᵗ`, `${a}·${1 + r / 100}ᵗ`, `${a} − ${a * r / 100}t`], why: `Losing ${r}% means keeping ${100 - r}%: factor ${1 - r / 100}. (${a} − ${a * r / 100}t would remove the same amount every hour: linear.)` }; },
+    () => { const a = pick([50, 80, 120]), h = pick([2, 3, 4]); return { s: `${a} bacteria double every ${h} hours. Number after t hours:`, ok: `${a}·2^(t/${h})`, bad: [`${a}·2^(${h}t)`, `${a}·${h}ᵗ`, `${a} + 2t`], why: `t hours contain t/${h} doubling periods, so multiply by 2 that many times: ${a}·2^(t/${h}).` }; },
+    () => { const a = pick([5, 4, 3]), r = pick([60, 50, 70]); return { s: `A ball dropped from ${a} m bounces back to ${r}% of its height each time. Height after n bounces:`, ok: `${a}·${r / 100}ⁿ`, bad: [`${a}·${1 - r / 100}ⁿ`, `${a}·${1 + r / 100}ⁿ`, `${a} − ${r / 100}n`], why: `Each bounce keeps ${r}% of the height: factor ${r / 100}.` }; },
+    () => { const a = pick([200, 300, 1000]); return { s: `A video has ${a} views and the views triple every day. Views after t days:`, ok: `${a}·3ᵗ`, bad: [`3·${a}ᵗ`, `${a} + 3t`, `${a}·3t`], why: `Start ${a}, multiply by 3 each day: ${a}·3ᵗ. (${a}·3t only grows linearly.)` }; },
+  ])();
+  const opts = shuffle([c.ok, ...c.bad]), idx = opts.indexOf(c.ok);
+  $('qText').innerHTML = c.s; $('qExpr').innerHTML = '';
+  qChoices(opts, idx, k => (k === idx ? '' : `It’s ${c.ok}. `) + c.why);
+}
+function qPred(){
+  const c = pick([
+    () => { const a = pick([100, 200, 50]), h = pick([20, 30]), k = ri(2, 4); return { s: `${a} bacteria double every ${h} minutes. How many after ${h * k} minutes?`, ans: a * 2 ** k, why: `${h * k} minutes is ${k} doublings: ${a} × 2${SUP(k)} = ${(a * 2 ** k).toLocaleString()}.`, traps: [[a * 2 * k, `That adds ${a} each time; doubling multiplies: ${a} × 2 × 2 …`]] }; },
+    () => { const k = ri(2, 4), a = 2 ** k * pick([5, 10, 3]), h = pick([5, 8, 12]); return { s: `A ${a} g sample has a half-life of ${h} days. How much is left after ${h * k} days?`, ans: a / 2 ** k, why: `${h * k} days is ${k} half-lives: ${a} × (½)${SUP(k)} = ${a}/${2 ** k} = ${a / 2 ** k} g.`, traps: [[a - a / 2 * k, 'That subtracts half the start each time; each half-life halves what is left.'], [0, 'Exponential decay never reaches exactly 0.']] }; },
+    () => { const a = pick([1000, 500, 2000]), r = pick([10, 20]), n = 2; const ans = a * (1 + r / 100) ** n; return { s: `A plant colony of ${a} cells grows ${r}% per day. How many after ${n} days?`, ans, why: `Factor ${1 + r / 100} each day: ${a} × ${1 + r / 100}² = ${r4(ans)}.`, traps: [[a * (1 + n * r / 100), `${r}% each day compounds: the second day’s ${r}% is of the bigger amount.`]] }; },
+    () => { const n = ri(5, 10); return { s: `A 0.1 mm sheet of paper is folded in half ${n} times. How thick is it, in mm?`, ans: 0.1 * 2 ** n, why: `0.1 × 2${SUP(n)} = 0.1 × ${2 ** n} = ${r4(0.1 * 2 ** n)} mm.`, traps: [[0.1 * 2 * n, 'Each fold doubles: multiply by 2, n times.']] }; },
+    () => { const n = ri(3, 10); return { s: `On the chessboard, how many grains are on square ${n} (square 1 has 1, each square doubles)?`, ans: 2 ** (n - 1), why: `Square ${n} has 2${SUP(n - 1)} = ${2 ** (n - 1)} grains (square 1 is 2⁰).`, traps: [[2 ** n, `One doubling too many: square 1 is 2⁰, so square ${n} is 2${SUP(n - 1)}.`]] }; },
+  ])();
+  Object.assign(qq, c);
+  $('qText').innerHTML = c.s; $('qExpr').innerHTML = ''; $('qLab').textContent = 'answer =';
+}
+let lastType = null;
+function qNew(){
+  qReset();
+  let t; do { t = pick(['simp', 'lin', 'model', 'pred']); } while (t === lastType);
+  lastType = t; qq = { type: t, counted: false };
+  $('qTitle').textContent = qTitles[t];
+  ({ simp: qSimp, lin: qLin, model: qModel, pred: qPred })[t]();
+}
+$('qCheck').onclick = () => {
+  const v = parseNum($('q1').value.replace(/,/g, ''));
+  if ($('q1').value.trim() === '' || isNaN(v)){ $('qErr').textContent = 'Type a number (fractions like 1/8 are fine).'; return; }
+  const close = (x, y) => Math.abs(x - y) < 1e-6 * Math.max(1, Math.abs(y));
+  const ok = close(v, qq.ans); let why = qq.why;
+  if (!ok){ const t = (qq.traps || []).find(([x]) => close(v, x)); if (t) why = t[1] + ' ' + why; }
+  $('qErr').textContent = ''; qScore(ok); qFeedback(ok, why);
+};
+$('q1').addEventListener('keydown', e => { if (e.key === 'Enter') $('qCheck').click(); });
+$('q1').addEventListener('input', () => $('qErr').textContent = '');
+$('qShow').onclick = () => {
+  qScore(false);
+  if (qq.correctIdx !== undefined){ [...$('qChoice').children].forEach((b, j) => { if (j === qq.correctIdx) b.classList.add('right'); }); qFeedback(false, qq.explainFn(qq.correctIdx)); return; }
+  $('q1').value = frc(qq.ans).replace('−', '-');
+  $('qFb').className = 'feedback bad'; $('qFb').innerHTML = '<b>Answer filled in.</b> ' + minus(qq.why);
+};
+$('qNew').onclick = qNew;
+
+/* =====================================================================
+   8. START
+   ===================================================================== */
+selectOnFocus(['mA', 'mB', 'mN', 'rM', 'rN', 'sN', 'hN', 'xA', 'xB', 'xT', 'q1']);
+$('mPresets').children[0].click();
+rDraw();
+$('lPresets').children[0].click();
+$('sN').value = '150000000'; sDraw(150000000);
+hPresets(); hDraw();
+$('xPresets').children[0].click();
+qNew();
+</script>
+</body></html>

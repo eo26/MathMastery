@@ -22,7 +22,7 @@ window.MM_TOC = [
     { id: '3.B.4', title: 'Functions', url: 'https://claude.ai/artifact/92mC3PVdh8myeadhnbZcmR', built: true },
     { id: '3.B.5', title: 'Lines: Slope and Linear Functions', url: 'https://claude.ai/artifact/Xk3rrnoAVSyi8jmMqVoSKK', built: true },
     { id: '3.B.6', title: 'Systems of Linear Equations', url: 'https://claude.ai/artifact/LrkSikg8hPYrZDCGphD4Wh', built: true },
-    { id: '3.B.7', title: 'Exponents and Exponential Growth' },
+    { id: '3.B.7', title: 'Exponents and Exponential Growth', url: 'https://claude.ai/artifact/6zoYiDVWjL9WvCq4rtnFL3', built: true },
     { id: '3.B.8', title: 'Polynomials and Factoring' },
     { id: '3.B.9', title: 'Quadratics and Parabolas' },
     { id: '3.B.10', title: 'Radicals and Rational Exponents' },
