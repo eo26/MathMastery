@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Matrices of Any Size: Adding, Scaling and the Transpose</title>
+<!-- Fonts: a book serif for prose, a clean sans for UI, a mono for numbers -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<!-- MathJax renders the few formulas on the page (SVG output needs no external stylesheet) -->
+<script>
+  window.MathJax = { tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] }, svg: { fontCache: 'global' } };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<style>
+/* ===================== Theme ===================== */
+:root{
+  --bg:#f7f5ef; --paper:#ffffff; --ink:#1f1e1d; --muted:#6b6a66; --line:#e4e0d5; --line2:#c9c5b8;
+  --accent:#534AB7; --accent-bg:#EEEDFE;
+  --pos:#1D9E75; --neg:#D85A30; --pt:#7F77DD; --pt-soft:#AFA9EC; --pt-dark:#534AB7;
+  --pos-new:#9FE1CB; --neg-new:#F0997B; --ok:#3B6D11; --ok-bg:#EAF3DE; --bad:#A32D2D; --bad-bg:#FCEBEB; --note-bg:#FAF3E3; --note-line:#E7C98A;
+  --serif:"Source Serif 4", Georgia, "Times New Roman", serif;
+  --sans:"IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#191817; --paper:#232220; --ink:#ecebe6; --muted:#a3a29c; --line:#383733; --line2:#55534e;
+    --accent:#AFA9EC; --accent-bg:#2c2852; --pt-dark:#CECBF6; --pt-soft:#6f68b8; --pos-new:#5DCAA5; --neg-new:#F5C4B3;
+    --ok:#C0DD97; --ok-bg:#24400d; --bad:#F7C1C1; --bad-bg:#5a1c1c; --note-bg:#2b261b; --note-line:#6b5626;
+  }
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.7 var(--serif);-webkit-font-smoothing:antialiased}
+
+/* ===================== Layout ===================== */
+.topbar{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1000px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:14px;font:500 13px/1 var(--sans);color:var(--muted)}
+.brand{color:var(--ink);font-weight:600;letter-spacing:.02em}
+.brand b{color:var(--accent)}
+.crumbs{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pid{font-family:var(--mono);color:var(--accent);background:var(--accent-bg);padding:4px 8px;border-radius:6px}
+.prose{max-width:720px;margin:0 auto;padding:0 20px}
+.wide{max-width:1000px;margin:0 auto;padding:0 20px}
+
+/* ===================== Hero ===================== */
+.hero{padding:48px 0 12px}
+.kicker{font:600 13px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1{font:700 46px/1.1 var(--serif);margin:12px 0 14px;letter-spacing:-.01em}
+.dek{font-size:21px;color:var(--muted);margin:0 0 22px;font-style:italic}
+.tiers{display:flex;gap:6px;flex-wrap:wrap;font:500 13px/1 var(--sans);margin-bottom:8px}
+.tier{padding:7px 12px;border-radius:999px;border:1px solid var(--line2);color:var(--muted)}
+.tier.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.tier small{opacity:.7;margin-left:4px}
+
+/* ===================== Text elements ===================== */
+h2{font:700 28px/1.25 var(--serif);margin:56px 0 10px;display:flex;gap:12px;align-items:baseline}
+h2 .n{font:600 14px/1 var(--mono);color:var(--accent);min-width:28px}
+p{margin:0 0 16px}
+em.key{font-style:normal;background:linear-gradient(transparent 62%,var(--accent-bg) 62%);padding:0 2px}
+.goals{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:18px 22px;margin:22px 0 0;font:15.5px/1.6 var(--sans)}
+.goals h3{font:600 12px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
+.goals ul{margin:0;padding-left:20px}
+.note{background:var(--note-bg);border-left:4px solid var(--note-line);border-radius:0 10px 10px 0;padding:14px 18px;margin:20px 0;font:15.5px/1.6 var(--sans)}
+.note b{font-weight:600}
+.notice{list-style:none;padding:0;margin:8px 0 18px;counter-reset:n}
+.notice li{position:relative;padding:12px 0 12px 46px;border-top:1px solid var(--line)}
+.notice li:last-child{border-bottom:1px solid var(--line)}
+.notice li::before{counter-increment:n;content:counter(n);position:absolute;left:4px;top:13px;width:26px;height:26px;border-radius:50%;background:var(--accent-bg);color:var(--accent);font:600 13px/26px var(--mono);text-align:center}
+.goes{list-style:none;padding:0;margin:8px 0 18px}
+.goes li{padding:12px 0;border-top:1px solid var(--line)}
+.goes li:last-child{border-bottom:1px solid var(--line)}
+.math{overflow-x:auto;margin:12px 0 18px;padding:14px 18px;background:var(--paper);border:1px solid var(--line);border-radius:12px}
+.math .cap{font:14px/1.5 var(--sans);color:var(--muted);margin-top:4px}
+.mono{font-family:var(--mono);font-size:.92em;white-space:nowrap}
+.pos{color:var(--pos);font-weight:600}.neg{color:var(--neg);font-weight:600}.pt{color:var(--pt-dark);font-weight:600}
+
+/* ===================== Vocabulary ===================== */
+.vocab{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin:14px 0 8px}
+.term{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font:14.5px/1.5 var(--sans)}
+.term b{display:block;font:600 15px/1.3 var(--serif);margin-bottom:4px}
+
+/* ===================== Interactive cards ===================== */
+.card{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:18px 20px 20px;margin:26px 0;box-shadow:0 1px 0 var(--line),0 12px 32px -22px rgba(0,0,0,.25);font-family:var(--sans)}
+.card-h{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.card-h .tag{font:600 11px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--accent);background:var(--accent-bg);padding:5px 8px;border-radius:6px}
+.card-h h3{font:600 18px/1.3 var(--sans);margin:0}
+.card-h .sub{color:var(--muted);font-size:14.5px;flex-basis:100%}
+.panel-label{font:600 11px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:12px 0 4px;display:flex;justify-content:space-between}
+.panel-label span:last-child{letter-spacing:0;text-transform:none;font-weight:500}
+svg.nl{display:block;width:100%;height:auto;border:1px solid var(--line);border-radius:12px;background:var(--bg);touch-action:manipulation}
+svg.clickable{cursor:pointer}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:12px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0}
+button{font:500 14px/1 var(--sans);padding:9px 14px;border-radius:9px;border:1px solid var(--line2);background:var(--paper);color:var(--ink);cursor:pointer;transition:background .15s,border-color .15s}
+button:hover{border-color:var(--ink)}
+button.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+button.preset.on{background:var(--accent-bg);border-color:var(--accent);color:var(--accent)}
+button:disabled{opacity:.45;cursor:default}
+.desc{min-height:24px;color:var(--muted);font-size:14.5px;margin:2px 0 6px}
+.inputs{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;margin:12px 0 4px}
+.field{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.field input{width:92px;font:500 18px/1 var(--mono);padding:9px 10px;border-radius:9px;border:2px solid var(--line2);background:var(--bg);color:var(--ink);text-align:center}
+.field input:focus{outline:none;border-color:var(--accent)}
+.field i,.eq i,.sym{font:italic 600 1.15em var(--serif);text-transform:none;letter-spacing:0;color:var(--pt-dark)}
+.field.start input{border-color:var(--pt-soft)}
+.field.slide input{border-color:var(--pt)}
+.eq{font:500 20px/1 var(--mono);padding:10px 14px;background:var(--bg);border-radius:10px;border:1px solid var(--line)}
+.err{color:var(--bad);font-size:14px;min-height:20px;margin:2px 0}
+.readout{margin-top:12px;padding:12px 14px;background:var(--bg);border-radius:10px;border:1px solid var(--line);font-size:15px;line-height:1.55;min-height:48px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:12px;font-size:13px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{display:inline-block;width:14px;height:14px;border-radius:50%}
+.sw.pos{background:var(--pos)}.sw.neg{border:2.4px solid var(--neg)}
+.sw.x{position:relative;background:var(--pos);opacity:.45}.sw.x::after{content:'✕';position:absolute;inset:-1px 0 0 0;color:var(--neg);font:700 13px/1 var(--sans);text-align:center}
+.sw.posnew{background:var(--pos-new);border:1.5px solid var(--pos)}.sw.negnew{border:2.4px solid var(--neg-new)}.sw.pt{background:var(--pt)}
+.sw.mv{width:22px;height:4px;border-radius:2px;background:var(--pt-soft)}
+.sw.rl{width:22px;height:0;border-top:2px dashed var(--ink);border-radius:0;opacity:.7}
+.feedback{margin-top:10px;padding:12px 14px;border-radius:10px;font-size:15px;line-height:1.55;display:none}
+.feedback.ok{display:block;background:var(--ok-bg);color:var(--ok)}
+.feedback.bad{display:block;background:var(--bad-bg);color:var(--bad)}
+.feedback.info{display:block;background:var(--accent-bg);color:var(--accent)}
+.score{margin-left:auto;font:600 14px/1 var(--mono);color:var(--muted)}
+
+/* ===================== Footer nav ===================== */
+.pager{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:56px 0 18px;font-family:var(--sans)}
+.pager a,.pager div{display:block;padding:16px 18px;border:1px solid var(--line);border-radius:14px;background:var(--paper);color:var(--ink);text-decoration:none}
+.pager small{display:block;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.pager .next{text-align:right}
+.pager .soon{opacity:.6}
+.meta{font:13px/1.6 var(--sans);color:var(--muted);text-align:center;padding:10px 0 50px}
+
+@media (max-width:720px){
+  body{font-size:17px}
+  h1{font-size:34px}
+  .dek{font-size:18px}
+  h2{font-size:24px}
+  .card{padding:14px 12px 16px;border-radius:14px}
+  .crumbs{display:none}
+  svg.nl{min-width:640px}
+}
+</style>
+<meta name="mm-site" content="1">
+<link rel="stylesheet" href="../shared/nav.css">
+</head>
+<body>
+<style>
+/* ===================== Page-specific styles (7.B.11) ===================== */
+/* row index = blue, column index = orange; A = purple, B = gold, the result = teal; mismatches = red */
+:root{ --cr:#2F6FDB; --cc:#D85A30; --ca:#7F77DD; --cb:#B86E00; --cres:#1D9E75; --wrong:#D8443A; --good:#1D9E75; --cs:#AFA9EC; }
+@media (prefers-color-scheme:dark){ :root{ --cr:#6EA2F5; --cc:#F0997B; --ca:#AFA9EC; --cb:#FFB547; --cres:#5DCAA5; --wrong:#F07B72; --good:#5DCAA5; --cs:#6F67C9; } }
+.kr{color:var(--cr);font-weight:700}.kc{color:var(--cc);font-weight:700}.ka{color:var(--ca);font-weight:700}.kb{color:var(--cb);font-weight:700}.kres{color:var(--cres);font-weight:700}.kbad{color:var(--wrong);font-weight:700}.kgood{color:var(--good);font-weight:700}
+svg{user-select:none;-webkit-user-select:none}
+.solo svg{width:100%;height:auto;display:block;background:var(--bg);border:1px solid var(--line);border-radius:10px;margin-top:10px}
+.field.sm input{width:70px}.field.wide input{width:330px}.field.fa input{border-color:var(--ca)}.field.fb input{border-color:var(--cb)}
+.toggle button.on{background:var(--accent-bg);border-color:var(--accent);color:var(--accent)}
+.ops{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:10px}
+.ops button{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;padding:8px 12px}
+.ops button b{font:600 16px var(--mono)}
+.ops button small{font:500 12.5px var(--sans);color:var(--muted)}
+.ops button.yes small{color:var(--good)}.ops button.no small{color:var(--wrong)}
+.ops button.on{background:var(--accent-bg);border-color:var(--accent)}
+.mshow{display:inline-grid;gap:1px 12px;padding:3px 9px;border-left:2px solid var(--ink);border-right:2px solid var(--ink);border-radius:6px;font:600 15px var(--mono);vertical-align:middle;text-align:right}
+.traps{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:8px}
+.traps .t{border:1px solid var(--line);border-radius:10px;background:var(--bg);padding:10px}
+.traps .t h4{margin:0 0 4px;font:600 15px var(--sans)}
+.traps .t p{margin:6px 0 0;font-size:14.5px;line-height:1.5;color:var(--muted)}
+.traps svg{width:100%;height:auto;display:block}
+.legend span span{display:inline}
+.qtext{font:17px/1.55 var(--serif);margin:4px 0 10px}
+.qmath{font:600 18px var(--mono);margin:6px 0 10px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.qgrid{display:inline-grid;gap:6px;padding:6px 10px;border-left:2.5px solid var(--ink);border-right:2.5px solid var(--ink);border-radius:7px}
+.qgrid input{width:58px;font:500 16px/1 var(--mono);padding:8px 2px;text-align:center;border-radius:9px;border:2px solid var(--cres);background:var(--bg);color:var(--ink)}
+.choice{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 0}.choice button{min-width:120px;font-family:var(--mono)}
+.choice button.right{border-color:var(--ok);background:var(--ok-bg);color:var(--ok)}.choice button.wrong{border-color:var(--bad);background:var(--bad-bg);color:var(--bad)}
+pre.code{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:12px 16px;overflow-x:auto;font:13.5px/1.6 var(--mono);margin:10px 0 16px}
+</style>
+
+<!-- ===================== Top bar ===================== -->
+<div class="topbar"><div class="topbar-in">
+  <span class="brand">Math<b>Mastery</b></span>
+  <span class="crumbs">Chapter 7 · Linear Algebra › Basics</span>
+  <span class="pid">7.B.11</span>
+</div></div>
+
+<!-- ===================== Hero ===================== -->
+<header class="prose hero">
+  <div class="kicker">Chapter 7 · Linear Algebra</div>
+  <h1>Matrices of Any Size: Adding, Scaling and the Transpose</h1>
+  <p class="dek">A matrix doesn’t have to be square. Any table of numbers is one, and three simple operations, adding, scaling and flipping, work on all of them.</p>
+  <div class="tiers" aria-label="Tier">
+    <span class="tier on">Basics <small>you are here</small></span>
+    <span class="tier">Undergraduate</span>
+    <span class="tier">Masters</span>
+  </div>
+  <div class="goals">
+    <h3>On this page</h3>
+    <ul>
+      <li>Read a matrix’s <b>size</b> (<i>m</i> × <i>n</i>: rows by columns) and name any <b>entry</b> <i>a<sub>ij</sub></i>.</li>
+      <li><b>Add</b> and <b>scale</b> matrices entry by entry, and know when adding is impossible.</li>
+      <li>Flip a matrix with the <b>transpose</b>, and spot <b>symmetric</b> matrices.</li>
+      <li>Tell when a product <i>AB</i> of non-square matrices is defined, and what size it is.</li>
+    </ul>
+  </div>
+</header>
+
+<main>
+<!-- ===================== §1 ===================== -->
+<section class="prose">
+  <h2><span class="n">1</span>Any table is a matrix</h2>
+  <p>A shop chain’s weekly sales report is a grid: one row per store, one column per product. Strip off the labels and you have a <b>matrix</b>: a rectangle of numbers. Until now our matrices were square (2×2, 3×3) because they were moves of the plane or of space. In general a matrix can have any number of rows and any number of columns.</p>
+  <p>Its <b>size</b> is written <i>m</i> × <i>n</i>, “<i>m</i> by <i>n</i>”: <b>rows first, then columns</b>. Three stores and four products make a 3 × 4 matrix. Each number is an <b>entry</b>, named by its row and column: <i>a</i><sub>23</sub> is the entry in <span class="kr">row 2</span>, <span class="kc">column 3</span> (the same order again: row, then column). A matrix with one row is a <b>row vector</b>; one with a single column is a <b>column vector</b>, the kind we have been using all along.</p>
+  <p>Two matrices of the <b>same size</b> can be <b>added</b>: add the entries in matching spots. Week 1 plus week 2 is the two-week total, store by store and product by product. Any matrix can be <b>scaled</b>: <i>k</i><i>A</i> multiplies every entry by <i>k</i>. And any matrix can be <b>transposed</b>: <i>A</i><sup>T</sup> turns rows into columns, so the report sorted by store becomes a report sorted by product. Entry <i>a<sub>ij</sub></i> moves to position (<i>j</i>, <i>i</i>), and an <i>m</i> × <i>n</i> matrix becomes <i>n</i> × <i>m</i>.</p>
+</section>
+<section class="wide">
+  <div class="card" id="main">
+    <div class="card-h"><span class="tag">Explore</span><h3>A sales table is a matrix</h3>
+      <span class="sub">Pick an operation and press Play: watch the entries move into the result. Click any cell to see its name and where it came from. You can also type your own tables (rows separated by semicolons).</span></div>
+    <div class="row" id="mOps"></div>
+    <div class="desc" id="mDesc"></div>
+    <div class="inputs">
+      <label class="field wide fa"><span>A (week 1)</span><input id="mA" type="text" autocomplete="off"></label>
+      <label class="field wide fb"><span>B (week 2)</span><input id="mB" type="text" autocomplete="off"></label>
+      <label class="field sm"><span><i>k</i></span><input id="mK" type="text" inputmode="decimal" autocomplete="off"></label>
+      <div class="row" style="margin:0"><button id="mUse">Use these</button><button class="primary" id="mPlay">Play</button><button id="mReset">Reset</button></div>
+    </div>
+    <div class="err" id="mErr"></div>
+    <div class="solo"><svg id="mSvg" viewBox="0 0 960 270" role="img" aria-label="Matrices and the result of an operation"></svg></div>
+    <div class="readout" id="mOut"></div>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--ca);border-radius:3px"></i><span>A</span></span>
+      <span><i class="sw" style="background:var(--cb);border-radius:3px"></i><span>B</span></span>
+      <span><i class="sw" style="background:var(--cres);border-radius:3px"></i><span>result</span></span>
+      <span><i class="sw" style="background:var(--cr)"></i><span>row number <i>i</i></span></span>
+      <span><i class="sw" style="background:var(--cc)"></i><span>column number <i>j</i></span></span>
+      <span><i class="sw" style="border:2.4px solid var(--ink);border-radius:3px"></i><span>the clicked entry and the ones it came from</span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §2 ===================== -->
+<section class="prose">
+  <h2><span class="n">2</span>Shapes decide what’s allowed</h2>
+  <p>Adding needs <b>exactly the same size</b>: a 3 × 4 table and a 3 × 3 table have spots with nothing to pair with, so <i>A</i> + <i>B</i> is simply <b>undefined</b>. Scaling and transposing always work.</p>
+  <p>Multiplying is pickier, and different. In 7.B.5, the entry in row <i>i</i>, column <i>j</i> of <i>AB</i> was row <i>i</i> of <i>A</i> dotted with column <i>j</i> of <i>B</i>. A dot product needs the two lists to be the same length, so the number of <b>columns of <i>A</i></b> must equal the number of <b>rows of <i>B</i></b>. Write the sizes side by side: (<i>m</i> × <i>n</i>)(<i>n</i> × <i>p</i>). The <b>inner</b> numbers must match, and the <b>outer</b> numbers give the size of the answer, <i>m</i> × <i>p</i>. That is also why <i>AB</i> can exist while <i>BA</i> doesn’t.</p>
+</section>
+<section class="wide">
+  <div class="card" id="shape">
+    <div class="card-h"><span class="tag">Explore</span><h3>Shape playground</h3>
+      <span class="sub">Drag the round handle at the bottom-right corner of <i>A</i> or <i>B</i> to change its size (up to 5 × 5). The buttons show which operations are allowed. Pick one to see the result; for a product, click a result cell to see the row and column it comes from.</span></div>
+    <div class="row" id="pPresets"></div>
+    <div class="desc" id="pDesc"></div>
+    <div class="ops" id="pOps"></div>
+    <div class="solo"><svg id="pSvg" viewBox="0 0 960 360" role="img" aria-label="Two resizable matrices and the result of an operation"></svg></div>
+    <div class="readout" id="pOut"></div>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--ca);border-radius:3px"></i><span>A</span></span>
+      <span><i class="sw" style="background:var(--cb);border-radius:3px"></i><span>B</span></span>
+      <span><i class="sw" style="background:var(--cres);border-radius:3px"></i><span>result</span></span>
+      <span><i class="sw" style="background:var(--good)"></i><span>sizes that must match, and do</span></span>
+      <span><i class="sw" style="background:var(--wrong)"></i><span>sizes that must match, and don’t</span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §3 ===================== -->
+<section class="prose">
+  <h2><span class="n">3</span>Symmetric matrices</h2>
+  <p>A road atlas has a mileage table: the distance from town <i>i</i> to town <i>j</i>, for every pair. The distance from Ashford to Easton is the same as from Easton to Ashford, so entry (<i>i</i>, <i>j</i>) equals entry (<i>j</i>, <i>i</i>), and flipping the table changes nothing. A matrix with <i>A</i><sup>T</sup> = <i>A</i> is called <b>symmetric</b>: it is a mirror image of itself across its <b>main diagonal</b>, the entries <i>a</i><sub>11</sub>, <i>a</i><sub>22</sub>, … running from top-left to bottom-right. Only square matrices can be symmetric. Travel <i>times</i> with one-way streets or uphill roads aren’t symmetric, and the transpose shows exactly where.</p>
+</section>
+<section class="wide">
+  <div class="card" id="dist">
+    <div class="card-h"><span class="tag">Explore</span><h3>Mileage tables and the transpose</h3>
+      <span class="sub">Press Flip to transpose the table: each entry swaps with its mirror across the diagonal. Entries that change are marked in red.</span></div>
+    <div class="row" id="sPresets"></div>
+    <div class="desc" id="sDesc"></div>
+    <div class="row"><button class="primary" id="sPlay">Flip (transpose)</button><button id="sReset">Reset</button></div>
+    <div class="solo"><svg id="sSvg" viewBox="0 0 960 330" role="img" aria-label="A table of distances and its transpose"></svg></div>
+    <div class="verdict" id="sVerdict" style="display:inline-block;font:600 15px var(--sans);padding:6px 12px;border-radius:8px;margin-top:8px"></div>
+    <div class="readout" id="sOut"></div>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--cs);border-radius:3px"></i><span>main diagonal (stays put)</span></span>
+      <span><i class="sw" style="background:var(--wrong);border-radius:3px;opacity:.5"></i><span>an entry that differs from its mirror</span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §4 ===================== -->
+<section class="prose">
+  <h2><span class="n">4</span>A picture is a matrix</h2>
+  <p>A black-and-white digital photo is a grid of pixels, each a number for its brightness. So a photo <i>is</i> a matrix, and matrix operations are photo edits. Scaling by 1.5 brightens it. Adding half of one photo to half of another blends them. Subtracting every entry from the maximum makes a negative. The transpose flips the picture across its diagonal, which is <b>not</b> the same as rotating it.</p>
+</section>
+<section class="wide">
+  <div class="card" id="pix">
+    <div class="card-h"><span class="tag">Explore</span><h3>Photo edits as matrix operations</h3>
+      <span class="sub">Each picture is a 10 × 10 matrix of brightness values from 0 (black) to 9 (white). Pick an edit; switch on the numbers to see the matrix behind the picture.</span></div>
+    <div class="row" id="xOps"></div>
+    <div class="desc" id="xDesc"></div>
+    <div class="inputs">
+      <label class="field sm"><span>Brighten by <i>k</i></span><input id="xK" type="text" inputmode="decimal" autocomplete="off"></label>
+      <div class="row" style="margin:0"><button id="xGo">Apply</button></div>
+      <div class="row toggle" style="margin:0"><button id="xNum">Show numbers</button></div>
+    </div>
+    <div class="err" id="xErr"></div>
+    <div class="solo"><svg id="xSvg" viewBox="0 0 960 320" role="img" aria-label="Pixel pictures before and after an edit"></svg></div>
+    <div class="readout" id="xOut"></div>
+  </div>
+</section>
+
+<!-- ===================== §5 ===================== -->
+<section class="prose">
+  <h2><span class="n">5</span>Traps and non-examples</h2>
+</section>
+<section class="wide">
+  <div class="card" id="traps">
+    <div class="card-h"><span class="tag">Compare</span><h3>Easy to get wrong</h3></div>
+    <div class="traps">
+      <div class="t"><h4 class="kbad">✕ Different sizes don’t add</h4><svg id="tr1" viewBox="0 0 300 170"></svg><p>A 2 × 3 and a 3 × 2 matrix hold six numbers each, but the spots don’t line up. <i>A</i> + <i>B</i> is undefined (though <i>A</i> + <i>B</i><sup>T</sup> works).</p></div>
+      <div class="t"><h4 class="kbad">✕ <i>AB</i> existing doesn’t mean <i>BA</i> does</h4><svg id="tr2" viewBox="0 0 300 170"></svg><p>(2 × 3)(3 × 4) works and gives 2 × 4. Turned around, (3 × 4)(2 × 3) has inner sizes 4 and 2: undefined.</p></div>
+      <div class="t"><h4 class="kbad">✕ Transpose isn’t a rotation</h4><svg id="tr3" viewBox="0 0 300 170"></svg><p>The transpose mirrors across the diagonal, so the F comes out back to front. A quarter-turn keeps it readable. They are different moves.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §6 ===================== -->
+<section class="prose">
+  <h2><span class="n">6</span>Now, in symbols</h2>
+  <div class="math">\[ A = [a_{ij}]_{m\times n} = \begin{pmatrix} a_{11} & a_{12} & \cdots & a_{1n}\\ \vdots & & & \vdots\\ a_{m1} & a_{m2} & \cdots & a_{mn}\end{pmatrix} \]<div class="cap"><i>m</i> rows, <i>n</i> columns; <i>a<sub>ij</sub></i> sits in row <i>i</i>, column <i>j</i>.</div></div>
+  <div class="math">\[ (A + B)_{ij} = a_{ij} + b_{ij}, \qquad (kA)_{ij} = k\,a_{ij}, \qquad (A^{\mathsf T})_{ij} = a_{ji} \]<div class="cap">Adding needs equal sizes. <i>A</i><sup>T</sup> is <i>n</i> × <i>m</i>.</div></div>
+  <div class="math">\[ (AB)_{ij} = \sum_{k=1}^{n} a_{ik}\,b_{kj}, \qquad (m\times n)(n\times p) = m\times p \]<div class="cap">Row <i>i</i> of <i>A</i> dotted with column <i>j</i> of <i>B</i>. The inner sizes must match.</div></div>
+  <div class="math">\[ (A^{\mathsf T})^{\mathsf T} = A,\quad (A+B)^{\mathsf T} = A^{\mathsf T} + B^{\mathsf T},\quad (kA)^{\mathsf T} = kA^{\mathsf T},\quad (AB)^{\mathsf T} = B^{\mathsf T}A^{\mathsf T} \]<div class="cap">Transposing a product reverses the order, like socks and shoes in 7.B.7. Check the sizes: (<i>m</i> × <i>p</i>)<sup>T</sup> is <i>p</i> × <i>m</i>, and so is (<i>p</i> × <i>n</i>)(<i>n</i> × <i>m</i>).</div></div>
+  <div class="math">\[ A \text{ is symmetric} \iff A^{\mathsf T} = A \iff a_{ij} = a_{ji} \text{ for all } i, j \]</div>
+  <p>Spreadsheets and data tools treat every table as a matrix, and the size rules are checked for you:</p>
+  <pre class="code"><code>import numpy as np                        # numerical arrays
+
+A = np.array([[12, 5, 8, 3],              # week 1: 3 stores (rows) by 4 products (columns)
+              [ 9, 7, 6, 4],
+              [15, 2, 9, 5]])
+B = np.array([[10, 6, 7, 2],              # week 2: same shape
+              [11, 5, 8, 3],
+              [14, 3, 6, 6]])
+print(A.shape, A[1, 2])                   # (3, 4) and 6: Python counts from 0, so this is a₂₃
+print(A + B)                              # two-week totals, entry by entry
+print(A.T.shape)                          # (4, 3): the transpose swaps rows and columns
+print((A @ A.T).shape)                    # (3, 3): (3×4)(4×3), inner sizes match
+A @ A                                     # error: (3×4)(3×4), inner sizes 4 and 3 don't match</code></pre>
+</section>
+
+<!-- ===================== §7 ===================== -->
+<section class="prose">
+  <h2><span class="n">7</span>Where this goes</h2>
+  <ul class="goes">
+    <li><b>Next (7.B.12):</b> independence, basis and dimension: when some columns of a matrix are just mixes of others, and how many truly different directions a matrix holds.</li>
+    <li><b>Later in this book:</b> the transpose turns up everywhere: in the dot product (<b>u</b>·<b>v</b> = <b>u</b><sup>T</sup><b>v</b>), in least-squares fitting (<i>A</i><sup>T</sup><i>A</i>), and in the special behaviour of symmetric matrices.</li>
+    <li><b>In the world:</b> spreadsheets, sales and stock reports, mileage charts, photos and video frames, and the tables of numbers inside every recommendation system and AI model.</li>
+  </ul>
+</section>
+
+<!-- ===================== §8 ===================== -->
+<section class="prose">
+  <h2><span class="n">8</span>Words to know</h2>
+  <div class="vocab">
+    <div class="term"><b>Matrix</b>A rectangle of numbers arranged in rows and columns.</div>
+    <div class="term"><b>Size (<i>m</i> × <i>n</i>)</b>The number of rows, then the number of columns. Also called the dimensions or shape.</div>
+    <div class="term"><b>Entry <i>a<sub>ij</sub></i></b>The number in row <i>i</i>, column <i>j</i>.</div>
+    <div class="term"><b>Row vector / column vector</b>A matrix with a single row (1 × <i>n</i>) or a single column (<i>m</i> × 1).</div>
+    <div class="term"><b>Square matrix</b>Same number of rows and columns.</div>
+    <div class="term"><b>Matrix addition</b>Add entries in matching positions. Only for matrices of the same size.</div>
+    <div class="term"><b>Scalar multiplication</b><i>kA</i>: multiply every entry by the number <i>k</i>.</div>
+    <div class="term"><b>Zero matrix</b>All entries 0. Adding it changes nothing.</div>
+    <div class="term"><b>Undefined</b>An operation that has no meaning for the given sizes, like adding 3 × 4 to 3 × 3.</div>
+    <div class="term"><b>Transpose <i>A</i><sup>T</sup></b>Rows become columns: (<i>A</i><sup>T</sup>)<sub><i>ij</i></sub> = <i>a<sub>ji</sub></i>. An <i>m</i> × <i>n</i> matrix becomes <i>n</i> × <i>m</i>.</div>
+    <div class="term"><b>Main diagonal</b>The entries <i>a</i><sub>11</sub>, <i>a</i><sub>22</sub>, … from top-left to bottom-right. The transpose leaves them in place.</div>
+    <div class="term"><b>Symmetric matrix</b>A square matrix equal to its transpose: <i>a<sub>ij</sub></i> = <i>a<sub>ji</sub></i>.</div>
+    <div class="term"><b>Inner / outer sizes</b>In (<i>m</i> × <i>n</i>)(<i>n</i> × <i>p</i>), the inner sizes (<i>n</i>, <i>n</i>) must match; the outer ones give the result, <i>m</i> × <i>p</i>.</div>
+  </div>
+</section>
+
+<!-- ===================== Quiz ===================== -->
+<section class="prose"><h2><span class="n">9</span>Check yourself</h2>
+  <p>Four kinds of questions: size and entries, adding and scaling, the transpose, and whether a product is defined.</p>
+</section>
+<section class="wide">
+  <div class="card" id="quiz">
+    <div class="card-h"><span class="tag">Quiz</span><h3 id="qTitle"></h3><span class="score" id="score">Score: 0 / 0</span></div>
+    <div class="qtext" id="qText"></div>
+    <div class="qmath" id="qMath"></div>
+    <div class="choice" id="qChoice"></div>
+    <div class="inputs" id="qIn">
+      <div id="qBoxes" style="display:flex;gap:10px;align-items:flex-end"></div>
+      <div class="row" style="margin:0"><button class="primary" id="qCheck">Check</button><button id="qUndef">It’s undefined</button></div>
+    </div>
+    <div class="row" style="margin:10px 0 0"><button id="qShow">Show answer</button><button id="qNew">New question</button></div>
+    <div class="err" id="qErr"></div>
+    <div class="feedback" id="qFb" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ===================== Pager (filled in by the shared navigation) ===================== -->
+<nav class="wide">
+  <div class="pager"></div>
+  <div class="meta">7.B.11 · Prerequisites: 7.B.5 (matrix multiplication), 7.B.10 (3D) · Leads to: 7.B.12 (independence, basis and dimension)</div>
+</nav>
+</main>
+
+<script>
+/* =====================================================================
+   1. HELPERS
+   ===================================================================== */
+const NS = 'http://www.w3.org/2000/svg';
+const $ = id => document.getElementById(id);
+function mk(tag, attrs, parent){ const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; }
+function txt(parent, x, y, s, cls, extra){
+  extra = Object.assign({}, extra || {});
+  if (extra['text-anchor']){ extra.style = (extra.style ? extra.style + ';' : '') + 'text-anchor:' + extra['text-anchor']; delete extra['text-anchor']; }
+  const t = mk('text', Object.assign({ x, y, class: cls || '' }, extra), parent); t.textContent = s; return t;
+}
+function num(x, d){ if (d === undefined) d = 2; const r = Math.round(x * Math.pow(10, d)) / Math.pow(10, d); return r === 0 ? '0' : (r < 0 ? '−' : '') + String(Math.abs(r)); }
+const pn = x => x < 0 ? `(${num(x)})` : num(x);
+const ri = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+const shuffle = a => { for (let i = a.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const ease = e => e < 0.5 ? 2 * e * e : 1 - Math.pow(-2 * e + 2, 2) / 2;
+const lerp = (a, b, e) => a + (b - a) * e;
+const SUB = s => String(s).replace(/\d/g, d => '₀₁₂₃₄₅₆₇₈₉'[d]);   // 23 → ₂₃
+function parseNum(s){
+  s = String(s).trim().replace(/[−–]/g, '-').replace(/\s+/g, '');
+  if (/^-?\d+(\.\d+)?$|^-?\.\d+$/.test(s)) return parseFloat(s);
+  const m = s.match(/^(-?\d+)\/(\d+)$/); if (m && +m[2] !== 0) return +m[1] / +m[2];
+  return NaN;
+}
+function parseMat(s){                                       // "1 2 3; 4 5 6" → [[1,2,3],[4,5,6]], or null
+  const rows = String(s).trim().split(/\s*;\s*/).filter(r => r.length);
+  if (!rows.length) return null;
+  const M = rows.map(r => r.split(/[\s,]+/).filter(Boolean).map(parseNum));
+  if (M.some(r => !r.length || r.some(isNaN)) || M.some(r => r.length !== M[0].length)) return null;
+  return M;
+}
+const matStr = M => M.map(r => r.map(v => num(v).replace('−', '-')).join(' ')).join('; ');
+const size = M => [M.length, M[0].length];
+const T = M => M[0].map((_, j) => M.map(r => r[j]));
+const madd = (A, B, s) => A.map((r, i) => r.map((v, j) => v + (s || 1) * B[i][j]));
+const mscl = (k, A) => A.map(r => r.map(v => k * v));
+const mmul = (A, B) => A.map(r => B[0].map((_, j) => r.reduce((s, v, k) => s + v * B[k][j], 0)));
+const sameM = (A, B) => A.length === B.length && A[0].length === B[0].length && A.every((r, i) => r.every((v, j) => Math.abs(v - B[i][j]) < 1e-6));
+const rmat = (m, n, a, b) => Array.from({ length: m }, () => Array.from({ length: n }, () => ri(a, b)));
+function mhtml(M, cls){ return `<span class="mshow" style="grid-template-columns:repeat(${M[0].length},auto)">${M.map(r => r.map(v => `<span class="${cls || ''}">${num(v)}</span>`).join('')).join('')}</span>`; }
+function buttons(boxId, list, onPick){
+  list.forEach((p, i) => { const b = document.createElement('button'); b.className = 'preset'; b.innerHTML = p.n; b.onclick = () => onPick(i); $(boxId).appendChild(b); });
+  return i => [...$(boxId).children].forEach((b, j) => b.classList.toggle('on', j === i));
+}
+function svgPt(svg, ev){ const p = svg.createSVGPoint(); p.x = ev.clientX; p.y = ev.clientY; return p.matrixTransform(svg.getScreenCTM().inverse()); }
+const svgCss = document.createElement('style');
+svgCss.textContent = `
+  .cell{stroke:var(--line2);stroke-width:1}
+  .cv{font:600 15px var(--mono);text-anchor:middle;fill:var(--ink)}
+  .cvS{font:600 12px var(--mono);text-anchor:middle;fill:var(--ink)}
+  .hd{font:600 12px var(--sans);fill:var(--muted)}
+  .lab{font:700 15px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+  .labS{font:600 12.5px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+  .op{font:700 26px var(--mono);fill:var(--muted);text-anchor:middle}
+  .brk{fill:none;stroke:var(--ink);stroke-width:2}
+`;
+document.head.appendChild(svgCss);
+// square brackets around a grid at (x, y) of width w and height h
+function brackets(g, x, y, w, h){
+  mk('path', { d: `M${x + 6} ${y - 3} H${x - 3} V${y + h + 3} H${x + 6}`, class: 'brk' }, g);
+  mk('path', { d: `M${x + w - 6} ${y - 3} H${x + w + 3} V${y + h + 3} H${x + w - 6}`, class: 'brk' }, g);
+}
+
+/* =====================================================================
+   2. MAIN: a sales table is a matrix
+   ===================================================================== */
+const STORES = ['North', 'South', 'East', 'West', 'Hill'], PRODS = ['Apples', 'Bread', 'Milk', 'Eggs', 'Rice', 'Tea'];
+const MAIN = { A: [[12, 5, 8, 3], [9, 7, 6, 4], [15, 2, 9, 5]], B: [[10, 6, 7, 2], [11, 5, 8, 3], [14, 3, 6, 6]], k: 2, op: 0, e: 1, anim: null, sel: null };
+const mOps = [
+  { n: 'A + B', d: 'Two-week totals: add the entries in matching spots. Both tables must be the same size.' },
+  { n: 'A − B', d: 'Change from week 2 to week 1, entry by entry (negative: sold more in week 2).' },
+  { n: 'k·A', d: 'Scale every entry by k. k = 2: a store expects twice the sales; k = 0.5: half.' },
+  { n: 'Aᵀ', d: 'The transpose: rows become columns. The report by store becomes a report by product, and 3 × 4 becomes 4 × 3.' },
+];
+const CW = 50, CH = 32;                                      // cell width and height in the main picture
+function mLayout(){                                          // positions of A, B and the result for the current operation
+  const A = MAIN.A, B = MAIN.B, [m, n] = size(A), op = MAIN.op;
+  const res = mResult();
+  const gw = M => M[0].length * CW, gh = M => M.length * CH;
+  const top = 64;
+  if (op <= 1){
+    const xA = 70, xB = xA + gw(A) + 60, xC = xB + gw(B) + 110;
+    return { A: [xA, top], B: [xB, top], C: [xC, top], res, sign: [op ? '−' : '+', (xA + gw(A) + xB) / 2], eq: xB + gw(B) + 26 };
+  }
+  if (op === 2){ const xA = 150, xC = xA + gw(A) + 110; return { A: [xA, top], C: [xC, top], res, sign: ['', 0], eq: xA + gw(A) + 55 }; }
+  const xA = 110, xC = xA + gw(A) + 170; return { A: [xA, top], C: [xC, top], res, eq: xA + gw(A) + 85 };
+}
+function mResult(){
+  const { A, B, op, k } = MAIN;
+  if (op <= 1){ const [m, n] = size(A), [p, q] = size(B); if (m !== p || n !== q) return null; return madd(A, B, op ? -1 : 1); }
+  if (op === 2) return mscl(k, A);
+  return T(A);
+}
+function mGrid(g, M, x, y, col, o){                          // draw a matrix as labelled cells
+  o = o || {};
+  const [m, n] = size(M);
+  M.forEach((r, i) => r.forEach((v, j) => {
+    const sel = o.sel && o.sel(i, j);
+    mk('rect', { x: x + j * CW, y: y + i * CH, width: CW, height: CH, class: 'cell', style: `fill:${col};fill-opacity:${o.op ?? .14};${sel ? 'stroke:var(--ink);stroke-width:3' : ''}` }, g);
+    txt(g, x + j * CW + CW / 2, y + i * CH + CH / 2 + 5, num(v, 1), 'cv');
+  }));
+  brackets(g, x, y, n * CW, m * CH);
+  if (o.rows) o.rows.slice(0, m).forEach((s, i) => txt(g, x - 8, y + i * CH + CH / 2 + 4, s, 'hd', { 'text-anchor': 'end' }));
+  if (o.cols) o.cols.slice(0, n).forEach((s, j) => txt(g, x + j * CW + CW / 2, y - 10, s, 'hd', { 'text-anchor': 'middle' }));
+  if (o.name) txt(g, x + n * CW / 2, y + m * CH + 24, o.name, 'lab', { 'text-anchor': 'middle', style: `fill:${o.nc || 'var(--ink)'}` });
+}
+function mDraw(){
+  const svg = $('mSvg'); svg.innerHTML = '';
+  const { A, B, op } = MAIN, L = mLayout(), res = L.res, e = ease(MAIN.e), g = mk('g', {}, svg);
+  const [m, n] = size(A);
+  const sel = MAIN.sel;                                      // clicked cell: [which, i, j]
+  // which A / B entries feed the clicked result entry
+  const fromA = (i, j) => sel && (sel[0] === 'C' ? (op === 3 ? (i === sel[2] && j === sel[1]) : (i === sel[1] && j === sel[2])) : sel[0] === 'A' && i === sel[1] && j === sel[2]);
+  const fromB = (i, j) => sel && op <= 1 && ((sel[0] === 'C' && i === sel[1] && j === sel[2]) || (sel[0] === 'B' && i === sel[1] && j === sel[2]));
+  mGrid(g, A, L.A[0], L.A[1], 'var(--ca)', { rows: STORES, cols: PRODS, name: `A  (${m} × ${n})`, nc: 'var(--ca)', sel: fromA });
+  if (op <= 1){
+    const [p, q] = size(B);
+    mGrid(g, B, L.B[0], L.B[1], 'var(--cb)', { cols: PRODS, name: `B  (${p} × ${q})`, nc: 'var(--cb)', sel: fromB });
+    txt(g, L.sign[1], L.A[1] + Math.min(m, p) * CH / 2 + 9, L.sign[0], 'op');
+  } else if (op === 2) txt(g, L.A[0] - 40, L.A[1] + m * CH / 2 + 9, num(MAIN.k) + '·', 'op');
+  txt(g, L.eq, L.A[1] + m * CH / 2 + 9, op === 3 ? '→' : '=', 'op');
+  if (!res){                                                 // sizes don't match: no result
+    const [p, q] = size(B);
+    txt(g, L.C[0] + 10, L.C[1] + 40, 'undefined', 'lab', { style: 'fill:var(--wrong)' });
+    txt(g, L.C[0] + 10, L.C[1] + 64, `${m} × ${n} vs ${p} × ${q}`, 'labS', { style: 'fill:var(--wrong)' });
+    return;
+  }
+  const [rm, rn] = size(res), gc = mk('g', {}, svg);
+  // the result frame (cells appear as the copies land)
+  const C = L.C;
+  const rowsC = op === 3 ? PRODS : STORES, colsC = op === 3 ? STORES : PRODS;
+  res.forEach((r, i) => r.forEach((v, j) => {
+    const isSel = sel && sel[0] === 'C' && sel[1] === i && sel[2] === j;
+    mk('rect', { x: C[0] + j * CW, y: C[1] + i * CH, width: CW, height: CH, class: 'cell', style: `fill:var(--cres);fill-opacity:${.04 + .14 * e};${isSel ? 'stroke:var(--ink);stroke-width:3' : ''}` }, gc);
+  }));
+  brackets(gc, C[0], C[1], rn * CW, rm * CH);
+  rowsC.slice(0, rm).forEach((s, i) => txt(gc, C[0] - 8, C[1] + i * CH + CH / 2 + 4, s, 'hd', { 'text-anchor': 'end', style: `opacity:${e}` }));
+  colsC.slice(0, rn).forEach((s, j) => txt(gc, C[0] + j * CW + CW / 2, C[1] - 10, s, 'hd', { 'text-anchor': 'middle', style: `opacity:${e}` }));
+  txt(gc, C[0] + rn * CW / 2, C[1] + rm * CH + 24, (op === 0 ? 'A + B' : op === 1 ? 'A − B' : op === 2 ? num(MAIN.k) + 'A' : 'Aᵀ') + `  (${rm} × ${rn})`, 'lab', { 'text-anchor': 'middle', style: `fill:var(--cres);opacity:${.3 + .7 * e}` });
+  // flying copies: each source entry travels to its spot in the result
+  const fly = mk('g', {}, svg);
+  const flyCell = (x0, y0, x1, y1, val, col, fin) => {
+    const x = lerp(x0, x1, e), y = lerp(y0, y1, e);
+    if (MAIN.e < 1){ mk('rect', { x, y, width: CW, height: CH, rx: 4, style: `fill:${col};fill-opacity:.35;stroke:${col}` }, fly); txt(fly, x + CW / 2, y + CH / 2 + 5, val, 'cv'); }
+    else txt(fly, x1 + CW / 2, y1 + CH / 2 + 5, fin, 'cv');
+  };
+  res.forEach((r, i) => r.forEach((v, j) => {
+    const x1 = C[0] + j * CW, y1 = C[1] + i * CH;
+    if (op <= 1){
+      if (MAIN.e < 1){ flyCell(L.A[0] + j * CW, L.A[1] + i * CH, x1 - 6, y1 - 4, num(A[i][j], 1), 'var(--ca)', ''); flyCell(L.B[0] + j * CW, L.B[1] + i * CH, x1 + 6, y1 + 4, num(B[i][j], 1), 'var(--cb)', ''); }
+      else flyCell(0, 0, x1, y1, '', '', num(v, 1));
+    } else if (op === 2) flyCell(L.A[0] + j * CW, L.A[1] + i * CH, x1, y1, num(MAIN.e < 1 ? A[i][j] * lerp(1, MAIN.k, e) : v, 1), 'var(--ca)', num(v, 1));
+    else flyCell(L.A[0] + i * CW, L.A[1] + j * CH, x1, y1, num(A[j][i], 1), 'var(--ca)', num(v, 1));   // result (i,j) comes from A (j,i)
+  }));
+  // clickable hit areas
+  const hit = (which, x, y, M) => M.forEach((r, i) => r.forEach((_, j) => { const h = mk('rect', { x: x + j * CW, y: y + i * CH, width: CW, height: CH, style: 'fill:transparent;cursor:pointer' }, svg); h.onclick = () => { MAIN.sel = [which, i, j]; mDraw(); mReadout(); }; }));
+  hit('A', L.A[0], L.A[1], A); if (op <= 1) hit('B', L.B[0], L.B[1], B); if (MAIN.e >= 1) hit('C', C[0], C[1], res);
+}
+function mReadout(){
+  const { A, B, op, k } = MAIN, res = mResult(), sel = MAIN.sel, [m, n] = size(A);
+  let s = '';
+  if (!res){ const [p, q] = size(B); s = `<span class="kbad">A is ${m} × ${n} but B is ${p} × ${q}.</span> ${m !== p ? 'They have different numbers of rows' : 'They have different numbers of columns'}, so some entries have no partner: <b>A ${op ? '−' : '+'} B is undefined</b>.`; }
+  else {
+    const [rm, rn] = size(res);
+    s = op <= 1 ? `Both are ${m} × ${n}, so the result is ${rm} × ${rn}: each entry is the ${op ? 'difference' : 'sum'} of the two entries in the same spot.`
+      : op === 2 ? `Every one of the ${m * n} entries is multiplied by ${num(k)}. The size stays ${m} × ${n}.`
+      : `A is ${m} × ${n}, so Aᵀ is ${n} × ${m}. Entry a<sub>ij</sub> moves to row j, column i. The diagonal entries (${Array.from({ length: Math.min(m, n) }, (_, i) => num(A[i][i])).join(', ')}) stay put.`;
+  }
+  if (sel){
+    const [w, i, j] = sel, I = i + 1, J = j + 1;
+    const nm = `<span class="kr">${I}</span><span class="kc">${J}</span>`;
+    if (w === 'A') s += `<br>Clicked <b>a<sub>${nm}</sub> = ${num(A[i][j])}</b>: <span class="kr">row ${I}</span> (${STORES[i] || ''}), <span class="kc">column ${J}</span> (${PRODS[j] || ''}).` + (op === 3 ? ` In Aᵀ it moves to row ${J}, column ${I}.` : '');
+    else if (w === 'B') s += `<br>Clicked <b>b<sub>${nm}</sub> = ${num(B[i][j])}</b>: <span class="kr">row ${I}</span>, <span class="kc">column ${J}</span>.`;
+    else if (res){
+      const v = res[i][j];
+      s += `<br>Clicked entry (<span class="kr">${I}</span>, <span class="kc">${J}</span>) of the result = <b class="kres">${num(v)}</b>: ` +
+        (op === 0 ? `a<sub>${nm}</sub> + b<sub>${nm}</sub> = ${num(A[i][j])} + ${num(B[i][j])}.` : op === 1 ? `a<sub>${nm}</sub> − b<sub>${nm}</sub> = ${num(A[i][j])} − ${num(B[i][j])}.` : op === 2 ? `${num(k)} × a<sub>${nm}</sub> = ${num(k)} × ${num(A[i][j])}.` : `it is a<sub><span class="kr">${J}</span><span class="kc">${I}</span></sub> = ${num(A[j][i])}: row and column swapped.`);
+    }
+  } else s += '<br>Click any cell to see its name.';
+  $('mOut').innerHTML = s;
+}
+function mStop(){ if (MAIN.anim){ cancelAnimationFrame(MAIN.anim); MAIN.anim = null; } $('mPlay').textContent = 'Play'; }
+function mPlay(){
+  if (MAIN.anim){ mStop(); return; }
+  if (!mResult()){ MAIN.e = 1; mDraw(); mReadout(); return; }
+  $('mPlay').textContent = 'Pause'; MAIN.sel = null;
+  const from = MAIN.e >= 1 ? 0 : MAIN.e, t0 = performance.now(), dur = 1800 * (1 - from);
+  const step = now => { const t = Math.min(1, (now - t0) / dur); MAIN.e = from + (1 - from) * t; mDraw(); if (t < 1) MAIN.anim = requestAnimationFrame(step); else { mStop(); mReadout(); } };
+  MAIN.anim = requestAnimationFrame(step);
+}
+const mMark = buttons('mOps', mOps, i => { mStop(); MAIN.op = i; MAIN.sel = null; mMark(i); $('mDesc').textContent = mOps[i].d; MAIN.e = 0; mDraw(); mReadout(); mPlay(); });
+$('mUse').onclick = () => {
+  const A = parseMat($('mA').value), B = parseMat($('mB').value), k = parseNum($('mK').value);
+  if (!A || !B){ $('mErr').textContent = 'Type each table as rows of numbers separated by semicolons, like 1 2 3; 4 5 6. Every row needs the same length.'; return; }
+  if (isNaN(k)){ $('mErr').textContent = 'Type a number for k.'; return; }
+  if (A.length > 5 || B.length > 5 || A[0].length > 6 || B[0].length > 6){ $('mErr').textContent = 'Keep each table to at most 5 rows and 6 columns so it fits.'; return; }
+  if (A.concat(B).some(r => r.some(v => Math.abs(v) > 999))){ $('mErr').textContent = 'Keep the numbers between −999 and 999.'; return; }
+  $('mErr').textContent = ''; mStop(); MAIN.A = A; MAIN.B = B; MAIN.k = k; MAIN.sel = null; MAIN.e = 0; mDraw(); mReadout(); mPlay();
+};
+$('mPlay').onclick = mPlay;
+$('mReset').onclick = () => { mStop(); MAIN.e = 0; MAIN.sel = null; mDraw(); mReadout(); };
+['mA', 'mB', 'mK'].forEach(id => $(id).addEventListener('focus', e => e.target.select()));
+
+/* =====================================================================
+   3. SHAPE PLAYGROUND
+   ===================================================================== */
+const PS = { A: rmat(2, 3, -2, 4), B: rmat(3, 4, -2, 4), op: 'AB', sel: null };
+const pPresets = [
+  { n: '(2×3)(3×4)', a: [2, 3], b: [3, 4], op: 'AB', d: 'Inner sizes 3 and 3 match: AB is 2 × 4. But BA would be (3×4)(2×3): inner 4 and 2, undefined.' },
+  { n: 'Same size', a: [3, 2], b: [3, 2], op: 'A+B', d: 'Two 3 × 2 matrices: they add. But AB is (3×2)(3×2): inner 2 and 3, undefined.' },
+  { n: 'Row times column', a: [1, 4], b: [4, 1], op: 'AB', d: 'A row vector times a column vector: (1×4)(4×1) = 1 × 1, a single number: the dot product.' },
+  { n: 'Column times row', a: [4, 1], b: [1, 4], op: 'AB', d: 'The other order: (4×1)(1×4) = 4 × 4, a whole table: every entry of one times every entry of the other.' },
+  { n: 'Square', a: [3, 3], b: [3, 3], op: 'BA', d: 'Two 3 × 3 matrices: everything is defined, but AB and BA usually differ (7.B.5).' },
+];
+const PCW = 34, PCH = 30;
+function resize(M, m, n){ return Array.from({ length: m }, (_, i) => Array.from({ length: n }, (_, j) => (M[i] && M[i][j] !== undefined) ? M[i][j] : ri(-2, 4))); }
+function pInfo(){
+  const [m, n] = size(PS.A), [p, q] = size(PS.B);
+  return {
+    'A+B': { ok: m === p && n === q, sz: [m, n], why: m === p && n === q ? `same size, ${m} × ${n}` : `${m} × ${n} vs ${p} × ${q}` },
+    '3A': { ok: true, sz: [m, n], why: `always: ${m} × ${n}` },
+    'Aᵀ': { ok: true, sz: [n, m], why: `always: ${n} × ${m}` },
+    'AB': { ok: n === p, sz: [m, q], why: n === p ? `inner ${n} = ${p} → ${m} × ${q}` : `inner ${n} ≠ ${p}` },
+    'BA': { ok: q === m, sz: [p, n], why: q === m ? `inner ${q} = ${m} → ${p} × ${n}` : `inner ${q} ≠ ${m}` },
+  };
+}
+function pResult(){ const { A, B, op } = PS; return op === 'A+B' ? madd(A, B) : op === '3A' ? mscl(3, A) : op === 'Aᵀ' ? T(A) : op === 'AB' ? mmul(A, B) : mmul(B, A); }
+let PL = null;                                               // current layout, for dragging
+function pDraw(){
+  const svg = $('pSvg'); svg.innerHTML = '';
+  const info = pInfo(), { A, B, op } = PS, [m, n] = size(A), [p, q] = size(B);
+  // operation buttons
+  $('pOps').innerHTML = '';
+  Object.entries(info).forEach(([k, v]) => { const b = document.createElement('button'); b.className = (v.ok ? 'yes' : 'no') + (k === op ? ' on' : ''); b.innerHTML = `<b>${k === '3A' ? '3A' : k}</b><small>${v.ok ? '✓ ' : '✕ '}${v.why}</small>`; b.onclick = () => { PS.op = k; PS.sel = null; pDraw(); }; $('pOps').appendChild(b); });
+  const xA = 60, y0 = 60, xB = xA + 5 * PCW + 70, xC = xB + 5 * PCW + 90;
+  PL = { xA, xB, y0 };
+  const sel = PS.sel, I = info[op];
+  const inA = (i, j) => sel && ((op === 'AB' && i === sel[0]) || (op === 'BA' && j === sel[1]) || ((op === 'A+B' || op === '3A') && i === sel[0] && j === sel[1]) || (op === 'Aᵀ' && i === sel[1] && j === sel[0]));
+  const inB = (i, j) => sel && ((op === 'AB' && j === sel[1]) || (op === 'BA' && i === sel[0]) || (op === 'A+B' && i === sel[0] && j === sel[1]));
+  const grid = (M, x, y, col, hl) => M.forEach((r, i) => r.forEach((v, j) => {
+    const h = hl && hl(i, j);
+    mk('rect', { x: x + j * PCW, y: y + i * PCH, width: PCW, height: PCH, class: 'cell', style: `fill:${col};fill-opacity:${h ? .45 : .14};${h ? 'stroke:var(--ink);stroke-width:2' : ''}` }, svg);
+    txt(svg, x + j * PCW + PCW / 2, y + i * PCH + PCH / 2 + 4, num(v), 'cvS');
+  }));
+  const used = { A: ['A+B', '3A', 'Aᵀ', 'AB', 'BA'].includes(op), B: ['A+B', 'AB', 'BA'].includes(op) };
+  grid(A, xA, y0, 'var(--ca)', inA); brackets(svg, xA, y0, n * PCW, m * PCH);
+  grid(B, xB, y0, 'var(--cb)', inB); brackets(svg, xB, y0, q * PCW, p * PCH);
+  // size labels: rows on the left, columns underneath, coloured when they must match
+  const match = { 'A+B': [['Am', 'Bp'], ['An', 'Bq']], 'AB': [['An', 'Bp']], 'BA': [['Bq', 'Am']] }[op] || [];
+  const colOf = key => { for (const pr of match) if (pr.includes(key)){ const vals = pr.map(k => ({ Am: m, An: n, Bp: p, Bq: q })[k]); return vals[0] === vals[1] ? 'var(--good)' : 'var(--wrong)'; } return 'var(--muted)'; };
+  txt(svg, xA - 10, y0 + m * PCH / 2 + 5, `${m} rows`, 'labS', { 'text-anchor': 'end', style: `fill:${colOf('Am')}` });
+  txt(svg, xA + n * PCW / 2, y0 + m * PCH + 20, `${n} cols`, 'labS', { 'text-anchor': 'middle', style: `fill:${colOf('An')}` });
+  txt(svg, xB - 10, y0 + p * PCH / 2 + 5, `${p} rows`, 'labS', { 'text-anchor': 'end', style: `fill:${colOf('Bp')}` });
+  txt(svg, xB + q * PCW / 2, y0 + p * PCH + 20, `${q} cols`, 'labS', { 'text-anchor': 'middle', style: `fill:${colOf('Bq')}` });
+  txt(svg, xA, y0 - 18, `A  ${m} × ${n}`, 'lab', { style: 'fill:var(--ca)' });
+  txt(svg, xB, y0 - 18, `B  ${p} × ${q}`, 'lab', { style: 'fill:var(--cb)' });
+  // drag handles
+  [['A', xA + n * PCW, y0 + m * PCH, 'var(--ca)'], ['B', xB + q * PCW, y0 + p * PCH, 'var(--cb)']].forEach(([w, x, y, c]) => mk('circle', { cx: x, cy: y, r: 9, style: `fill:${c};stroke:var(--bg);stroke-width:2;cursor:nwse-resize`, 'data-h': w }, svg));
+  // the size equation
+  const eqS = op === 'AB' ? `(${m} × ${n})(${p} × ${q})` : op === 'BA' ? `(${p} × ${q})(${m} × ${n})` : op === 'A+B' ? `(${m} × ${n}) + (${p} × ${q})` : op === '3A' ? `3 · (${m} × ${n})` : `(${m} × ${n})ᵀ`;
+  txt(svg, xC, y0 - 18, op === '3A' ? '3A' : op, 'lab', { style: 'fill:var(--cres)' });
+  txt(svg, xC, 330, eqS + (I.ok ? `  =  ${I.sz[0]} × ${I.sz[1]}` : '  undefined'), 'lab', { style: `fill:${I.ok ? 'var(--cres)' : 'var(--wrong)'}` });
+  if (I.ok){
+    const R = pResult(), [rm, rn] = size(R);
+    R.forEach((r, i) => r.forEach((v, j) => {
+      const h = sel && sel[0] === i && sel[1] === j;
+      const rc = mk('rect', { x: xC + j * PCW, y: y0 + i * PCH, width: PCW, height: PCH, class: 'cell', style: `fill:var(--cres);fill-opacity:${h ? .45 : .14};cursor:pointer;${h ? 'stroke:var(--ink);stroke-width:2' : ''}` }, svg);
+      txt(svg, xC + j * PCW + PCW / 2, y0 + i * PCH + PCH / 2 + 4, num(v), 'cvS', { style: 'pointer-events:none' });
+      rc.onclick = () => { PS.sel = [i, j]; pDraw(); };
+    }));
+    brackets(svg, xC, y0, rn * PCW, rm * PCH);
+  } else {
+    txt(svg, xC, y0 + 30, '✕ no result', 'lab', { style: 'fill:var(--wrong)' });
+  }
+  // readout
+  let s = `<b>${op === '3A' ? '3A' : op}:</b> ${eqS} → ${I.ok ? `<span class="kres">${I.sz[0]} × ${I.sz[1]}</span>` : '<span class="kbad">undefined</span>'}. `;
+  if (op === 'AB' || op === 'BA'){
+    const [L1, L2] = op === 'AB' ? [n, p] : [q, m];
+    s += I.ok ? `Each entry is a row of the left matrix dotted with a column of the right one; both have length ${L1}, so the dot product works. The outer sizes give the answer’s size.` : `A row of the left matrix has ${L1} entries but a column of the right one has ${L2}: they can’t be dotted, so the product doesn’t exist.`;
+    if (I.ok && sel){
+      const [X, Y] = op === 'AB' ? [A, B] : [B, A], row = X[sel[0]], colv = Y.map(r => r[sel[1]]);
+      s += `<br>Entry (<span class="kr">${sel[0] + 1}</span>, <span class="kc">${sel[1] + 1}</span>) = row ${sel[0] + 1} · column ${sel[1] + 1} = ${row.map((v, k) => `${pn(v)}·${pn(colv[k])}`).join(' + ')} = <b class="kres">${num(row.reduce((t, v, k) => t + v * colv[k], 0))}</b>.`;
+    } else if (I.ok) s += ' Click a result cell to see its calculation.';
+  } else if (op === 'A+B') s += I.ok ? 'Same size, so entries pair up one to one.' + (sel ? ` Entry (${sel[0] + 1}, ${sel[1] + 1}) = ${num(A[sel[0]][sel[1]])} + ${pn(B[sel[0]][sel[1]])} = ${num(A[sel[0]][sel[1]] + B[sel[0]][sel[1]])}.` : '') : 'Different sizes: some entries have no partner, so the sum doesn’t exist.';
+  else if (op === '3A') s += 'Scaling never cares about size: every entry is tripled.';
+  else s += `Rows become columns, so ${m} × ${n} becomes ${n} × ${m}.` + (sel ? ` Entry (${sel[0] + 1}, ${sel[1] + 1}) of Aᵀ is a${SUB('' + (sel[1] + 1) + (sel[0] + 1))} = ${num(A[sel[1]][sel[0]])}.` : '');
+  $('pOut').innerHTML = s;
+}
+const pMark = buttons('pPresets', pPresets, i => { const P = pPresets[i]; PS.A = rmat(P.a[0], P.a[1], -2, 4); PS.B = rmat(P.b[0], P.b[1], -2, 4); PS.op = P.op; PS.sel = null; pMark(i); $('pDesc').textContent = P.d; pDraw(); });
+(function(){                                                  // dragging a corner handle resizes A or B
+  const svg = $('pSvg'); let drag = null;
+  svg.addEventListener('pointerdown', ev => { const h = ev.target.getAttribute && ev.target.getAttribute('data-h'); if (!h) return; drag = h; svg.setPointerCapture(ev.pointerId); });
+  svg.addEventListener('pointermove', ev => {
+    if (!drag) return;
+    const q = svgPt(svg, ev), x0 = drag === 'A' ? PL.xA : PL.xB;
+    const n = Math.max(1, Math.min(5, Math.round((q.x - x0) / PCW))), m = Math.max(1, Math.min(5, Math.round((q.y - PL.y0) / PCH)));
+    const M = PS[drag];
+    if (M.length !== m || M[0].length !== n){ PS[drag] = resize(M, m, n); PS.sel = null; pMark(-1); $('pDesc').textContent = 'Your own sizes.'; pDraw(); }
+  });
+  svg.addEventListener('pointerup', () => drag = null);
+})();
+
+/* =====================================================================
+   4. SYMMETRIC: mileage tables
+   ===================================================================== */
+const TOWNS = ['Ashford', 'Brook', 'Cedar', 'Dunmore', 'Easton'];
+const sPresets = [
+  { n: 'Road miles', M: [[0, 34, 58, 21, 47], [34, 0, 29, 40, 63], [58, 29, 0, 52, 38], [21, 40, 52, 0, 26], [47, 63, 38, 26, 0]], d: 'Distance from the row town to the column town. Same both ways, so the table is symmetric.' },
+  { n: 'Travel minutes', M: [[0, 41, 66, 25, 52], [38, 0, 35, 47, 70], [64, 33, 0, 61, 44], [25, 52, 58, 0, 31], [55, 68, 41, 29, 0]], d: 'Driving time from the row town to the column town. One-way streets and hills make some trips slower one way.' },
+  { n: 'Friends (1 = yes)', M: [[0, 1, 0, 1, 1], [1, 0, 1, 0, 0], [0, 1, 0, 1, 0], [1, 0, 1, 0, 1], [1, 0, 0, 1, 0]], d: 'Who is friends with whom in a group of five. Friendship goes both ways: symmetric.' },
+  { n: 'Follows (1 = yes)', M: [[0, 1, 1, 0, 1], [0, 0, 1, 0, 0], [1, 0, 0, 1, 0], [1, 1, 0, 0, 0], [0, 0, 1, 1, 0]], d: 'Who follows whom online. Following doesn’t have to go both ways: not symmetric.' },
+];
+const SS = { M: sPresets[0].M, e: 0, anim: null, pi: 0 };
+function sDraw(){
+  const svg = $('sSvg'); svg.innerHTML = '';
+  const M = SS.M, n = M.length, e = ease(SS.e), cw = 58, ch = 40, x0 = 130, y0 = 50, x1 = 620;
+  const people = SS.pi >= 2, names = people ? ['Ana', 'Ben', 'Cai', 'Dee', 'Eli'] : TOWNS;
+  const draw = (x, y, M2, title, moving) => {
+    names.forEach((s, j) => txt(svg, x + j * cw + cw / 2, y - 10, s, 'hd', { 'text-anchor': 'middle' }));
+    names.forEach((s, i) => txt(svg, x - 8, y + i * ch + ch / 2 + 4, s, 'hd', { 'text-anchor': 'end' }));
+    for (let i = 0; i < n; i++) for (let j = 0; j < n; j++){
+      const diff = M[i][j] !== M[j][i];
+      mk('rect', { x: x + j * cw, y: y + i * ch, width: cw, height: ch, class: 'cell', style: `fill:${i === j ? 'var(--cs)' : diff && (moving ? e >= 1 : true) ? 'var(--wrong)' : 'var(--ca)'};fill-opacity:${i === j ? .35 : diff ? .25 : .1}` }, svg);
+      if (!moving) txt(svg, x + j * cw + cw / 2, y + i * ch + ch / 2 + 5, num(M2[i][j]), 'cv');
+    }
+    mk('line', { x1: x, y1: y, x2: x + n * cw, y2: y + n * ch, style: 'stroke:var(--cs);stroke-width:2;stroke-dasharray:5 5' }, svg);
+    brackets(svg, x, y, n * cw, n * ch);
+    txt(svg, x + n * cw / 2, y + n * ch + 26, title, 'lab', { 'text-anchor': 'middle', style: 'fill:var(--ca)' });
+  };
+  draw(x0, y0, M, 'A', false);
+  draw(x1, y0, T(M), 'Aᵀ', true);
+  txt(svg, (x0 + n * cw + x1) / 2, y0 + n * ch / 2 + 8, '→', 'op');
+  // numbers flying from A (i,j) to Aᵀ (j,i)
+  for (let i = 0; i < n; i++) for (let j = 0; j < n; j++){
+    const xa = x0 + j * cw, ya = y0 + i * ch, xb = x1 + i * cw, yb = y0 + j * ch;
+    txt(svg, lerp(xa, xb, e) + cw / 2, lerp(ya, yb, e) + ch / 2 + 5, num(M[i][j]), 'cv', { style: `opacity:${SS.e > 0 ? 1 : 0}` });
+  }
+  const pairs = []; for (let i = 0; i < n; i++) for (let j = i + 1; j < n; j++) if (M[i][j] !== M[j][i]) pairs.push([i, j]);
+  const sym = !pairs.length;
+  $('sVerdict').style.background = sym ? 'var(--ok-bg)' : 'var(--bad-bg)'; $('sVerdict').style.color = sym ? 'var(--ok)' : 'var(--bad)';
+  $('sVerdict').textContent = sym ? '✓ Symmetric: Aᵀ = A' : `✕ Not symmetric: ${pairs.length} pair${pairs.length > 1 ? 's' : ''} differ`;
+  $('sOut').innerHTML = sym ? `Every entry equals its mirror across the diagonal, a<sub>ij</sub> = a<sub>ji</sub>, so flipping changes nothing. For example, ${names[0]}→${names[1]} and ${names[1]}→${names[0]} are both ${num(M[0][1])}.`
+    : `Mirror pairs that differ: ${pairs.slice(0, 4).map(([i, j]) => `${names[i]}→${names[j]} is ${num(M[i][j])} but ${names[j]}→${names[i]} is ${num(M[j][i])}`).join('; ')}${pairs.length > 4 ? '; and more' : ''}. So Aᵀ ≠ A.`;
+}
+function sStop(){ if (SS.anim){ cancelAnimationFrame(SS.anim); SS.anim = null; } }
+const sMark = buttons('sPresets', sPresets, i => { sStop(); SS.M = sPresets[i].M; SS.pi = i; SS.e = 0; sMark(i); $('sDesc').textContent = sPresets[i].d; sDraw(); });
+$('sPlay').onclick = () => { sStop(); const t0 = performance.now(); const step = now => { SS.e = Math.min(1, (now - t0) / 1800); sDraw(); if (SS.e < 1) SS.anim = requestAnimationFrame(step); }; SS.anim = requestAnimationFrame(step); };
+$('sReset').onclick = () => { sStop(); SS.e = 0; sDraw(); };
+
+/* =====================================================================
+   5. PICTURES AS MATRICES
+   ===================================================================== */
+const IMG_F = (() => {                                        // a letter F on a soft diagonal gradient
+  const P = ['..........', '.#######..', '.##.......', '.##.......', '.######...', '.##.......', '.##.......', '.##.......', '.##.......', '..........'];
+  return P.map((r, i) => [...r].map((c, j) => c === '#' ? 9 : Math.min(4, Math.floor((i + j) / 4))));
+})();
+const IMG_O = Array.from({ length: 10 }, (_, i) => Array.from({ length: 10 }, (_, j) => { const d = Math.hypot(i - 4.5, j - 4.5); return Math.max(0, Math.round(9 - 2.2 * Math.abs(d - 3))); }));
+const xOps = [
+  { n: 'Brighten k·A', d: 'Multiply every pixel by k. Values above 9 are capped at 9 (a screen can’t be brighter than white), which is why over-brightened photos lose detail.' },
+  { n: 'Blend ½A + ½B', d: 'Half of one picture plus half of the other: a cross-fade. Both must be the same size.' },
+  { n: 'Negative 9 − A', d: 'Subtract every pixel from 9: white becomes black. That’s 9·(all-ones matrix) − A.' },
+  { n: 'Transpose Aᵀ', d: 'Flip across the diagonal from top-left to bottom-right. The F ends up lying on its side and mirrored.' },
+  { n: 'Rotate 90°', d: 'Not a transpose! A quarter-turn moves pixel (i, j) to (j, 11 − i). The F is still readable, just turned.' },
+];
+const XS = { op: 0, k: 1.5, nums: false };
+function xResult(){
+  const A = IMG_F, k = XS.k;
+  return [A.map(r => r.map(v => Math.min(9, Math.round(k * v)))), A.map((r, i) => r.map((v, j) => Math.round((v + IMG_O[i][j]) / 2))), A.map(r => r.map(v => 9 - v)), T(A), A[0].map((_, j) => A.map((r, i) => A[9 - i][j]))][XS.op];
+}
+function xDraw(){
+  const svg = $('xSvg'); svg.innerHTML = '';
+  const cs = 26, y0 = 40, showB = XS.op === 1;
+  const pics = showB ? [[IMG_F, 'A'], [IMG_O, 'B'], [xResult(), '½A + ½B']] : [[IMG_F, 'A'], [xResult(), ['', '', '9 − A', 'Aᵀ', 'rotated'][XS.op] || num(XS.k) + 'A']];
+  const W = pics.length * 10 * cs + (pics.length - 1) * 60, x0 = (960 - W) / 2;
+  pics.forEach(([M, name], p) => {
+    const x = x0 + p * (10 * cs + 60);
+    M.forEach((r, i) => r.forEach((v, j) => {
+      const g = Math.round(v * 255 / 9);
+      mk('rect', { x: x + j * cs, y: y0 + i * cs, width: cs, height: cs, style: `fill:rgb(${g},${g},${g});stroke:rgba(128,128,128,.25)` }, svg);
+      if (XS.nums) txt(svg, x + j * cs + cs / 2, y0 + i * cs + cs / 2 + 4, String(v), 'cvS', { style: `fill:${v > 4 ? '#000' : '#fff'}` });
+    }));
+    mk('rect', { x, y: y0, width: 10 * cs, height: 10 * cs, style: 'fill:none;stroke:var(--line2);stroke-width:1.5' }, svg);
+    txt(svg, x + 5 * cs, y0 - 12, name, 'lab', { 'text-anchor': 'middle', style: `fill:${p === pics.length - 1 && p ? 'var(--cres)' : p === 1 ? 'var(--cb)' : 'var(--ca)'}` });
+    if (p < pics.length - 1) txt(svg, x + 10 * cs + 30, y0 + 5 * cs + 8, showB && p === 0 ? '+' : showB ? '=' : '→', 'op');
+  });
+  const R = xResult();
+  const capped = XS.op === 0 ? IMG_F.flat().filter(v => XS.k * v > 9).length : 0;
+  $('xOut').innerHTML = [
+    `Each pixel is multiplied by ${num(XS.k)}: a pixel of 2 becomes ${Math.min(9, Math.round(2 * XS.k))}.` + (capped ? ` ${capped} pixels would go above 9 and are capped, so they all look the same white: detail lost.` : ' No pixel goes past 9 here.'),
+    'Entry by entry: (a<sub>ij</sub> + b<sub>ij</sub>) / 2. Where the F crosses the ring, both are bright, so the blend stays bright.',
+    `Every entry becomes 9 − a<sub>ij</sub>. The F (9) turns black (0), and the dark background turns light.`,
+    'Entry a<sub>ij</sub> moves to (j, i). The pixel at row 2, column 8 (the end of the F’s top bar) lands at row 8, column 2. The F is now mirrored and lying down. Transpose again and it comes back: (Aᵀ)ᵀ = A.',
+    'A rotation sends (i, j) to (j, 11 − i): the F is turned but not mirrored. Compare with the transpose button: they disagree, so a transpose is not a rotation.',
+  ][XS.op];
+  $('xK').value = num(XS.k);
+}
+const xMark = buttons('xOps', xOps, i => { XS.op = i; xMark(i); $('xDesc').textContent = xOps[i].d; $('xErr').textContent = ''; xDraw(); });
+$('xGo').onclick = () => { const k = parseNum($('xK').value); if (isNaN(k) || k < 0 || k > 5){ $('xErr').textContent = 'Use a k between 0 and 5.'; return; } $('xErr').textContent = ''; XS.k = k; XS.op = 0; xMark(0); $('xDesc').textContent = xOps[0].d; xDraw(); };
+$('xNum').onclick = () => { XS.nums = !XS.nums; $('xNum').classList.toggle('on', XS.nums); xDraw(); };
+$('xK').addEventListener('focus', e => e.target.select());
+
+/* =====================================================================
+   6. TRAPS
+   ===================================================================== */
+(function(){
+  const block = (svg, x, y, m, n, col, cs) => { for (let i = 0; i < m; i++) for (let j = 0; j < n; j++) mk('rect', { x: x + j * cs, y: y + i * cs, width: cs, height: cs, class: 'cell', style: `fill:${col};fill-opacity:.25` }, svg); brackets(svg, x, y, n * cs, m * cs); };
+  let s = $('tr1'); block(s, 30, 40, 2, 3, 'var(--ca)', 26); txt(s, 135, 74, '+', 'op'); block(s, 165, 30, 3, 2, 'var(--cb)', 26);
+  txt(s, 69, 140, '2 × 3', 'labS', { 'text-anchor': 'middle', style: 'fill:var(--ca)' }); txt(s, 191, 140, '3 × 2', 'labS', { 'text-anchor': 'middle', style: 'fill:var(--cb)' }); txt(s, 255, 74, '✕', 'lab', { style: 'fill:var(--wrong)' });
+  s = $('tr2'); block(s, 14, 30, 2, 3, 'var(--ca)', 20); block(s, 84, 30, 3, 4, 'var(--cb)', 20); txt(s, 200, 50, '= 2×4 ✓', 'labS', { style: 'fill:var(--good)' });
+  txt(s, 50, 105, '(2×3)(3×4)', 'labS', { 'text-anchor': 'middle', style: 'fill:var(--muted)' });
+  txt(s, 150, 140, '(3×4)(2×3): 4 ≠ 2 ✕', 'labS', { 'text-anchor': 'middle', style: 'fill:var(--wrong)' });
+  s = $('tr3'); const cs = 9;
+  [[IMG_F, 'A', 20], [T(IMG_F), 'Aᵀ', 115], [IMG_F[0].map((_, j) => IMG_F.map((r, i) => IMG_F[9 - i][j])), 'rotated', 210]].forEach(([M, nm, x]) => {
+    M.forEach((r, i) => r.forEach((v, j) => { const g = Math.round(v * 255 / 9); mk('rect', { x: x + j * cs, y: 30 + i * cs, width: cs, height: cs, style: `fill:rgb(${g},${g},${g})` }, s); }));
+    txt(s, x + 45, 140, nm, 'labS', { 'text-anchor': 'middle', style: `fill:${nm === 'Aᵀ' ? 'var(--wrong)' : 'var(--ink)'}` });
+  });
+})();
+
+/* =====================================================================
+   7. QUIZ
+   ===================================================================== */
+const Q = { right: 0, total: 0 };
+let qq = null;
+const qTitles = { size: 'Size and entries', add: 'Add or scale', tr: 'Transpose', mul: 'Can you multiply?' };
+function qReset(){ ['qMath', 'qChoice', 'qBoxes'].forEach(id => $(id).innerHTML = ''); $('qFb').className = 'feedback'; $('qFb').innerHTML = ''; $('qErr').textContent = ''; $('qIn').style.display = ''; $('qUndef').style.display = 'none'; }
+function qScore(ok){ if (qq.counted) return; qq.counted = true; Q.total++; if (ok) Q.right++; $('score').textContent = `Score: ${Q.right} / ${Q.total}`; }
+function qFeedback(ok, html){ $('qFb').className = 'feedback ' + (ok ? 'ok' : 'bad'); $('qFb').innerHTML = (ok ? '<b>Right.</b> ' : '<b>Not quite.</b> ') + html; }
+function qBoxes(labels){
+  $('qBoxes').innerHTML = labels.map((l, k) => `<label class="field sm"><span>${l}</span><input id="qx${k}" type="text" inputmode="decimal" autocomplete="off"></label>`).join('');
+  labels.forEach((_, k) => qWire('qx' + k));
+}
+function qGrid(m, n){                                         // an m × n grid of answer boxes
+  $('qBoxes').innerHTML = `<div class="qgrid" style="grid-template-columns:repeat(${n},58px)">${Array.from({ length: m * n }, (_, k) => `<input id="qx${k}" type="text" inputmode="decimal" autocomplete="off" aria-label="row ${Math.floor(k / n) + 1}, column ${k % n + 1}">`).join('')}</div>`;
+  for (let k = 0; k < m * n; k++) qWire('qx' + k);
+}
+function qWire(id){ $(id).addEventListener('focus', e => e.target.select()); $(id).addEventListener('input', () => $('qErr').textContent = ''); $(id).addEventListener('keydown', e => { if (e.key === 'Enter') $('qCheck').click(); }); }
+function qRead(){ const ins = [...$('qBoxes').querySelectorAll('input')]; const v = ins.map(i => parseNum(i.value)); if (ins.some(i => i.value.trim() === '') || v.some(isNaN)) return null; return v; }
+function qChoices(list, correctIdx, explain){
+  $('qIn').style.display = 'none'; qq.correctIdx = correctIdx; qq.explainFn = explain;
+  list.forEach((c, k) => { const b = document.createElement('button'); b.innerHTML = c; b.onclick = () => { const ok = k === correctIdx; qScore(ok); [...$('qChoice').children].forEach((x, j) => { x.classList.remove('right', 'wrong'); if (j === k) x.classList.add(ok ? 'right' : 'wrong'); }); qFeedback(ok, explain(k)); }; $('qChoice').appendChild(b); });
+}
+
+function qSize(){
+  const m = ri(1, 4), n = ri(2, 5), A = rmat(m, n, -5, 9);
+  qq.A = A;
+  if (Math.random() < 0.45 || m === 1){
+    qq.kind = 'size'; qq.ans = [m, n];
+    $('qText').innerHTML = 'What size is this matrix? (rows × columns)';
+    $('qMath').innerHTML = `<i>A</i> = ${mhtml(A)}`;
+    qBoxes(['rows', 'columns']);
+    qq.explain = `It has ${m} row${m > 1 ? 's' : ''} (across) and ${n} columns (down), so it is ${m} × ${n}: rows first.`;
+  } else {
+    let i, j; do { i = ri(1, m); j = ri(1, n); } while (i === j || j > m || A[i - 1][j - 1] === A[j - 1][i - 1]);
+    qq.kind = 'entry'; qq.i = i; qq.j = j; qq.ans = [A[i - 1][j - 1]];
+    $('qText').innerHTML = `What is the entry <b><i>a</i><sub>${i}${j}</sub></b>?`;
+    $('qMath').innerHTML = `<i>A</i> = ${mhtml(A)}`;
+    qBoxes([`a${SUB('' + i + j)} =`]);
+    qq.explain = `a${SUB('' + i + j)} is in row ${i}, column ${j}: ${num(A[i - 1][j - 1])}.`;
+  }
+}
+function qSizeCheck(x){
+  const ok = x.every((v, k) => Math.abs(v - qq.ans[k]) < 1e-9); let why = qq.explain;
+  if (!ok && qq.kind === 'size' && x[0] === qq.ans[1] && x[1] === qq.ans[0]) why = 'Swapped: size is rows × columns. ' + why;
+  if (!ok && qq.kind === 'entry' && qq.j <= qq.A.length && Math.abs(x[0] - qq.A[qq.j - 1][qq.i - 1]) < 1e-9) why = `That’s a${SUB('' + qq.j + qq.i)}: the first number is the row, the second is the column. ` + why;
+  return [ok, why];
+}
+
+function qAdd(){
+  const kind = pick(['add', 'add', 'sub', 'scale']), m = ri(2, 3), n = ri(2, 4), A = rmat(m, n, -4, 8);
+  qq.kind = kind; qq.A = A;
+  if (kind === 'scale'){
+    const k = pick([2, 3, -1, -2, 0.5]); const A2 = k === 0.5 ? A.map(r => r.map(v => 2 * Math.round(v / 2))) : A;
+    qq.A = A2; qq.ans = mscl(k, A2).flat(); qq.undef = false;
+    $('qText').innerHTML = `Find ${num(k)}<i>A</i>.`;
+    $('qMath').innerHTML = `${num(k)} · ${mhtml(A2, 'ka')} =`;
+    qGrid(m, n); $('qUndef').style.display = '';
+    qq.explain = `Multiply every entry by ${num(k)}. Result: ${mhtml(mscl(k, A2), 'kres')}`;
+  } else {
+    const undef = Math.random() < 0.3;
+    let B = rmat(m, n, -4, 8);
+    if (undef) B = Math.random() < 0.5 ? rmat(m, n === 4 ? 3 : n + 1, -4, 8) : rmat(m === 3 ? 2 : m + 1, n, -4, 8);
+    qq.B = B; qq.undef = undef;
+    const sg = kind === 'sub' ? '−' : '+';
+    $('qText').innerHTML = `Find <i>A</i> ${sg} <i>B</i>, or say it’s undefined.`;
+    $('qMath').innerHTML = `${mhtml(A, 'ka')} ${sg} ${mhtml(B, 'kb')} =`;
+    qGrid(m, n); $('qUndef').style.display = '';
+    if (undef){ qq.ans = null; qq.explain = `A is ${m} × ${n} and B is ${B.length} × ${B[0].length}: different sizes, so A ${sg} B is undefined.`; }
+    else { const R = madd(A, B, kind === 'sub' ? -1 : 1); qq.ans = R.flat(); qq.explain = `Same size (${m} × ${n}), so ${kind === 'sub' ? 'subtract' : 'add'} matching entries. Result: ${mhtml(R, 'kres')}`; }
+  }
+}
+function qAddCheck(x){
+  if (qq.undef) return [false, 'Look at the sizes first. ' + qq.explain];
+  const ok = x.every((v, k) => Math.abs(v - qq.ans[k]) < 1e-6); let why = qq.explain;
+  if (!ok){
+    const n = qq.A[0].length, bad = x.map((v, k) => Math.abs(v - qq.ans[k]) > 1e-6 ? `(${Math.floor(k / n) + 1}, ${k % n + 1})` : null).filter(Boolean);
+    why = `Check entr${bad.length > 1 ? 'ies' : 'y'} ${bad.slice(0, 4).join(', ')}${bad.length > 4 ? ' and more' : ''}. ` + (qq.kind === 'sub' && qq.B && x.every((v, k) => Math.abs(v - madd(qq.A, qq.B).flat()[k]) < 1e-6) ? 'You added instead of subtracting. ' : '') + why;
+  }
+  return [ok, why];
+}
+
+function qTr(){
+  if (Math.random() < 0.6){
+    const m = ri(2, 3), n = ri(2, 4); let A; do { A = rmat(m, n, -4, 9); } while (m === n && sameM(A, T(A)));
+    qq.kind = 'type'; qq.A = A; qq.ans = T(A).flat();
+    $('qText').innerHTML = 'Type the transpose <i>A</i><sup>T</sup>.';
+    $('qMath').innerHTML = `<i>A</i> = ${mhtml(A, 'ka')}`;
+    qGrid(n, m);
+    qq.explain = `Row 1 of A becomes column 1 of Aᵀ, and so on. A is ${m} × ${n}, so Aᵀ is ${n} × ${m}: ${mhtml(T(A), 'kres')}`;
+  } else {
+    const n = ri(3, 4), sym = Math.random() < 0.5;
+    let A = rmat(n, n, -3, 9); A = A.map((r, i) => r.map((v, j) => j < i ? A[j][i] : v));      // symmetric copy
+    let fix = null;
+    if (!sym){ const i = ri(1, n - 1), j = ri(0, i - 1); A[i][j] = A[j][i] + pick([1, 2, -1, 3]); fix = [i, j]; }
+    qq.kind = 'sym'; qq.A = A; qq.sym = sym;
+    $('qText').innerHTML = 'Is this matrix symmetric?';
+    $('qMath').innerHTML = mhtml(A);
+    const ex = sym ? 'Every entry matches its mirror across the main diagonal, so Aᵀ = A.' : `Entry (${fix[0] + 1}, ${fix[1] + 1}) is ${num(A[fix[0]][fix[1]])} but its mirror (${fix[1] + 1}, ${fix[0] + 1}) is ${num(A[fix[1]][fix[0]])}, so Aᵀ ≠ A.`;
+    qChoices(['Symmetric', 'Not symmetric'], sym ? 0 : 1, () => ex);
+  }
+}
+function qTrCheck(x){
+  const ok = x.every((v, k) => Math.abs(v - qq.ans[k]) < 1e-6); let why = qq.explain;
+  if (!ok){ const n = qq.A[0].length, m = qq.A.length; const asRows = qq.A.flat(); if (x.every((v, k) => Math.abs(v - asRows[k]) < 1e-6)) why = 'You copied A in reading order; the transpose turns each row into a column. ' + why; }
+  return [ok, why];
+}
+
+function qMul(){
+  const m = ri(1, 4), n = ri(1, 4); const defined = Math.random() < 0.6;
+  let p = defined ? n : pick([1, 2, 3, 4].filter(v => v !== n)), q = ri(1, 4);
+  const order = pick(['AB', 'BA']);
+  qq.m = m; qq.n = n; qq.p = p; qq.q = q; qq.order = order;
+  // sizes for the asked product
+  const [L, R] = order === 'AB' ? [[m, n], [p, q]] : [[p, q], [m, n]];
+  const ok = L[1] === R[0];
+  const correct = ok ? `${L[0]} × ${R[1]}` : 'undefined';
+  const opts = new Set([correct, 'undefined', `${L[1]} × ${R[0]}`, `${R[0]} × ${L[1]}`, `${L[0]} × ${R[1]}`, `${R[1]} × ${L[0]}`, `${L[0]} × ${L[1]}`]);
+  const list = shuffle([...opts]).slice(0, 4); if (!list.includes(correct)) list[0] = correct;
+  const lst = shuffle(list);
+  $('qText').innerHTML = `<i>A</i> is ${m} × ${n} and <i>B</i> is ${p} × ${q}. What size is <b><i>${order[0]}${order[1]}</i></b>?`;
+  qChoices(lst, lst.indexOf(correct), k => {
+    const c = lst[k], base = `Write the sizes in order: (${L[0]} × ${L[1]})(${R[0]} × ${R[1]}). ` + (ok ? `Inner sizes ${L[1]} and ${R[0]} match, so the product exists; outer sizes give ${correct}.` : `Inner sizes ${L[1]} and ${R[0]} don’t match: a row of the left matrix (${L[1]} entries) can’t be dotted with a column of the right one (${R[0]} entries). Undefined.`);
+    if (c === correct) return base;
+    if (!ok) return 'Check the inner sizes before anything else. ' + base;
+    if (c === `${L[1]} × ${R[0]}` || c === `${R[0]} × ${L[1]}`) return 'Those are the inner sizes; the result takes the outer ones. ' + base;
+    if (c === 'undefined') return 'It is defined: the inner sizes match. ' + base;
+    return base;
+  });
+}
+
+let lastType = null;
+function qNew(){
+  qReset();
+  let t; do { t = pick(['size', 'add', 'tr', 'mul']); } while (t === lastType);
+  lastType = t; qq = { type: t, counted: false };
+  $('qTitle').textContent = qTitles[t];
+  ({ size: qSize, add: qAdd, tr: qTr, mul: qMul })[t]();
+}
+$('qCheck').onclick = () => {
+  const x = qRead(); if (!x){ $('qErr').textContent = 'Fill in every box with a number.'; return; }
+  const r = ({ size: qSizeCheck, add: qAddCheck, tr: qTrCheck })[qq.type](x);
+  qScore(r[0]); qFeedback(r[0], r[1]);
+};
+$('qUndef').onclick = () => { const ok = !!qq.undef; qScore(ok); qFeedback(ok, ok ? qq.explain : 'It is defined: both matrices are the same size (and scaling always works). ' + qq.explain); };
+$('qShow').onclick = () => {
+  qScore(false);
+  if (qq.correctIdx !== undefined){ [...$('qChoice').children].forEach((b, j) => { if (j === qq.correctIdx) b.classList.add('right'); }); qFeedback(false, qq.explainFn(qq.correctIdx)); return; }
+  if (qq.ans) [...$('qBoxes').querySelectorAll('input')].forEach((inp, k) => inp.value = num(qq.ans[k]).replace('−', '-'));
+  $('qFb').className = 'feedback bad'; $('qFb').innerHTML = '<b>Answer:</b> ' + (qq.undef ? 'undefined. ' : '') + qq.explain;
+};
+$('qNew').onclick = qNew;
+
+/* =====================================================================
+   8. START
+   ===================================================================== */
+$('mA').value = matStr(MAIN.A); $('mB').value = matStr(MAIN.B); $('mK').value = '2';
+mMark(0); $('mDesc').textContent = mOps[0].d; MAIN.e = 1; mDraw(); mReadout();
+$('pPresets').children[0].click();
+$('sPresets').children[0].click();
+$('xOps').children[3].click();
+qNew();
+</script>
+<script src="../shared/toc.js"></script>
+<script src="../shared/nav.js"></script>
+</body></html>

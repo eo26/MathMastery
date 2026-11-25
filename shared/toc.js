@@ -49,7 +49,7 @@ window.MM_TOC = [
     { id: '7.B.8', title: 'Systems of Equations as Matrices', url: 'https://claude.ai/artifact/WdS9PCVAE8xVdRaS5Q9qfH', built: true },
     { id: '7.B.9', title: 'Solving Systems by Row Reduction', url: 'https://claude.ai/artifact/8yhAHvXRAJ2SxwGiDAe9rh', built: true },
     { id: '7.B.10', title: 'Into 3D: Vectors and 3×3 Matrices', url: 'https://claude.ai/artifact/U8YcoeyAFMKjQ3r7mgxSib', built: true },
-    { id: '7.B.11', title: 'Matrices of Any Size: Adding, Scaling and the Transpose' },
+    { id: '7.B.11', title: 'Matrices of Any Size: Adding, Scaling and the Transpose', url: 'https://claude.ai/artifact/FnVPLrVpmFDcBMWfJfi6jh', built: true },
     { id: '7.B.12', title: 'Independence, Basis and Dimension: A First Look' },
   ]},
   { ch: 8, title: 'Calculus', pages: [
