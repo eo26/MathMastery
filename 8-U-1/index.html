@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Infinite Series</title>
+<!-- Fonts: a book serif for prose, a clean sans for UI, a mono for numbers -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<!-- MathJax renders the few formulas on the page (SVG output needs no external stylesheet) -->
+<script>
+  window.MathJax = { tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] }, svg: { fontCache: 'global' } };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<style>
+/* ===================== Theme ===================== */
+:root{
+  --bg:#f7f5ef; --paper:#ffffff; --ink:#1f1e1d; --muted:#6b6a66; --line:#e4e0d5; --line2:#c9c5b8;
+  --accent:#534AB7; --accent-bg:#EEEDFE;
+  --pos:#1D9E75; --neg:#D85A30; --pt:#7F77DD; --pt-soft:#AFA9EC; --pt-dark:#534AB7;
+  --pos-new:#9FE1CB; --neg-new:#F0997B; --ok:#3B6D11; --ok-bg:#EAF3DE; --bad:#A32D2D; --bad-bg:#FCEBEB; --note-bg:#FAF3E3; --note-line:#E7C98A;
+  --serif:"Source Serif 4", Georgia, "Times New Roman", serif;
+  --sans:"IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#191817; --paper:#232220; --ink:#ecebe6; --muted:#a3a29c; --line:#383733; --line2:#55534e;
+    --accent:#AFA9EC; --accent-bg:#2c2852; --pt-dark:#CECBF6; --pt-soft:#6f68b8; --pos-new:#5DCAA5; --neg-new:#F5C4B3;
+    --ok:#C0DD97; --ok-bg:#24400d; --bad:#F7C1C1; --bad-bg:#5a1c1c; --note-bg:#2b261b; --note-line:#6b5626;
+  }
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.7 var(--serif);-webkit-font-smoothing:antialiased}
+
+/* ===================== Layout ===================== */
+.topbar{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1000px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:14px;font:500 13px/1 var(--sans);color:var(--muted)}
+.brand{color:var(--ink);font-weight:600;letter-spacing:.02em}
+.brand b{color:var(--accent)}
+.crumbs{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pid{font-family:var(--mono);color:var(--accent);background:var(--accent-bg);padding:4px 8px;border-radius:6px}
+.prose{max-width:720px;margin:0 auto;padding:0 20px}
+.wide{max-width:1000px;margin:0 auto;padding:0 20px}
+
+/* ===================== Hero ===================== */
+.hero{padding:48px 0 12px}
+.kicker{font:600 13px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1{font:700 46px/1.1 var(--serif);margin:12px 0 14px;letter-spacing:-.01em}
+.dek{font-size:21px;color:var(--muted);margin:0 0 22px;font-style:italic}
+.tiers{display:flex;gap:6px;flex-wrap:wrap;font:500 13px/1 var(--sans);margin-bottom:8px}
+.tier{padding:7px 12px;border-radius:999px;border:1px solid var(--line2);color:var(--muted)}
+.tier.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.tier small{opacity:.7;margin-left:4px}
+
+/* ===================== Text elements ===================== */
+h2{font:700 28px/1.25 var(--serif);margin:56px 0 10px;display:flex;gap:12px;align-items:baseline}
+h2 .n{font:600 14px/1 var(--mono);color:var(--accent);min-width:28px}
+p{margin:0 0 16px}
+em.key{font-style:normal;background:linear-gradient(transparent 62%,var(--accent-bg) 62%);padding:0 2px}
+.goals{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:18px 22px;margin:22px 0 0;font:15.5px/1.6 var(--sans)}
+.goals h3{font:600 12px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
+.goals ul{margin:0;padding-left:20px}
+.note{background:var(--note-bg);border-left:4px solid var(--note-line);border-radius:0 10px 10px 0;padding:14px 18px;margin:20px 0;font:15.5px/1.6 var(--sans)}
+.note b{font-weight:600}
+.notice{list-style:none;padding:0;margin:8px 0 18px;counter-reset:n}
+.notice li{position:relative;padding:12px 0 12px 46px;border-top:1px solid var(--line)}
+.notice li:last-child{border-bottom:1px solid var(--line)}
+.notice li::before{counter-increment:n;content:counter(n);position:absolute;left:4px;top:13px;width:26px;height:26px;border-radius:50%;background:var(--accent-bg);color:var(--accent);font:600 13px/26px var(--mono);text-align:center}
+.goes{list-style:none;padding:0;margin:8px 0 18px}
+.goes li{padding:12px 0;border-top:1px solid var(--line)}
+.goes li:last-child{border-bottom:1px solid var(--line)}
+.math{overflow-x:auto;margin:12px 0 18px;padding:14px 18px;background:var(--paper);border:1px solid var(--line);border-radius:12px}
+.math .cap{font:14px/1.5 var(--sans);color:var(--muted);margin-top:4px}
+.mono{font-family:var(--mono);font-size:.92em;white-space:nowrap}
+.pos{color:var(--pos);font-weight:600}.neg{color:var(--neg);font-weight:600}.pt{color:var(--pt-dark);font-weight:600}
+
+/* ===================== Vocabulary ===================== */
+.vocab{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin:14px 0 8px}
+.term{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font:14.5px/1.5 var(--sans)}
+.term b{display:block;font:600 15px/1.3 var(--serif);margin-bottom:4px}
+
+/* ===================== Interactive cards ===================== */
+.card{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:18px 20px 20px;margin:26px 0;box-shadow:0 1px 0 var(--line),0 12px 32px -22px rgba(0,0,0,.25);font-family:var(--sans)}
+.card-h{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.card-h .tag{font:600 11px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--accent);background:var(--accent-bg);padding:5px 8px;border-radius:6px}
+.card-h h3{font:600 18px/1.3 var(--sans);margin:0}
+.card-h .sub{color:var(--muted);font-size:14.5px;flex-basis:100%}
+.panel-label{font:600 11px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:12px 0 4px;display:flex;justify-content:space-between}
+.panel-label span:last-child{letter-spacing:0;text-transform:none;font-weight:500}
+svg.nl{display:block;width:100%;height:auto;border:1px solid var(--line);border-radius:12px;background:var(--bg);touch-action:manipulation}
+svg.clickable{cursor:pointer}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:12px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0}
+button{font:500 14px/1 var(--sans);padding:9px 14px;border-radius:9px;border:1px solid var(--line2);background:var(--paper);color:var(--ink);cursor:pointer;transition:background .15s,border-color .15s}
+button:hover{border-color:var(--ink)}
+button.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+button.preset.on{background:var(--accent-bg);border-color:var(--accent);color:var(--accent)}
+button:disabled{opacity:.45;cursor:default}
+.desc{min-height:24px;color:var(--muted);font-size:14.5px;margin:2px 0 6px}
+.inputs{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;margin:12px 0 4px}
+.field{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.field input{width:92px;font:500 18px/1 var(--mono);padding:9px 10px;border-radius:9px;border:2px solid var(--line2);background:var(--bg);color:var(--ink);text-align:center}
+.field input:focus{outline:none;border-color:var(--accent)}
+.field i,.eq i,.sym{font:italic 600 1.15em var(--serif);text-transform:none;letter-spacing:0;color:var(--pt-dark)}
+.field.start input{border-color:var(--pt-soft)}
+.field.slide input{border-color:var(--pt)}
+.eq{font:500 20px/1 var(--mono);padding:10px 14px;background:var(--bg);border-radius:10px;border:1px solid var(--line)}
+.err{color:var(--bad);font-size:14px;min-height:20px;margin:2px 0}
+.readout{margin-top:12px;padding:12px 14px;background:var(--bg);border-radius:10px;border:1px solid var(--line);font-size:15px;line-height:1.55;min-height:48px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:12px;font-size:13px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{display:inline-block;width:14px;height:14px;border-radius:50%}
+.sw.pos{background:var(--pos)}.sw.neg{border:2.4px solid var(--neg)}
+.sw.x{position:relative;background:var(--pos);opacity:.45}.sw.x::after{content:'✕';position:absolute;inset:-1px 0 0 0;color:var(--neg);font:700 13px/1 var(--sans);text-align:center}
+.sw.posnew{background:var(--pos-new);border:1.5px solid var(--pos)}.sw.negnew{border:2.4px solid var(--neg-new)}.sw.pt{background:var(--pt)}
+.sw.mv{width:22px;height:4px;border-radius:2px;background:var(--pt-soft)}
+.sw.rl{width:22px;height:0;border-top:2px dashed var(--ink);border-radius:0;opacity:.7}
+.feedback{margin-top:10px;padding:12px 14px;border-radius:10px;font-size:15px;line-height:1.55;display:none}
+.feedback.ok{display:block;background:var(--ok-bg);color:var(--ok)}
+.feedback.bad{display:block;background:var(--bad-bg);color:var(--bad)}
+.feedback.info{display:block;background:var(--accent-bg);color:var(--accent)}
+.score{margin-left:auto;font:600 14px/1 var(--mono);color:var(--muted)}
+
+/* ===================== Footer nav ===================== */
+.pager{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:56px 0 18px;font-family:var(--sans)}
+.pager a,.pager div{display:block;padding:16px 18px;border:1px solid var(--line);border-radius:14px;background:var(--paper);color:var(--ink);text-decoration:none}
+.pager small{display:block;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.pager .next{text-align:right}
+.pager .soon{opacity:.6}
+.meta{font:13px/1.6 var(--sans);color:var(--muted);text-align:center;padding:10px 0 50px}
+
+@media (max-width:720px){
+  body{font-size:17px}
+  h1{font-size:34px}
+  .dek{font-size:18px}
+  h2{font-size:24px}
+  .card{padding:14px 12px 16px;border-radius:14px}
+  .crumbs{display:none}
+  svg.nl{min-width:640px}
+}
+</style>
+<meta name="mm-site" content="1">
+<link rel="stylesheet" href="../shared/nav.css">
+</head>
+<body>
+<style>
+/* ===================== Page-specific styles (8.U.1) ===================== */
+/* positive terms = purple, negative terms = orange, partial sum Sₙ = blue, the limit (sum) = gold, tolerance band = green, trouble = red */
+:root{ --cv:#7F77DD; --tp:#E08A2E; --pa:#2F6FDB; --rad:#B86E00; --tol:#1D9E75; --err:#D8443A; --yes:#1D9E75; --no:#D8443A; }
+@media (prefers-color-scheme:dark){ :root{ --cv:#AFA9EC; --tp:#F2B266; --pa:#6EA2F5; --rad:#FFB547; --tol:#5DCAA5; --err:#F07B72; --yes:#5DCAA5; --no:#F07B72; } }
+.kv{color:var(--cv);font-weight:700}.kt{color:var(--tp);font-weight:700}.ka{color:var(--pa);font-weight:700}.kr{color:var(--rad);font-weight:700}.kg{color:var(--tol);font-weight:700}.kn{color:var(--no);font-weight:700}
+svg{user-select:none;-webkit-user-select:none}
+.stack svg{width:100%;height:auto;display:block;background:var(--bg);border:1px solid var(--line);border-radius:10px;margin-top:6px}
+.split{display:grid;grid-template-columns:600px 1fr;gap:14px;margin-top:10px;align-items:start}
+.split svg{width:100%;height:auto;display:block;background:var(--bg);border:1px solid var(--line);border-radius:10px}
+.field.sm input{width:76px}
+.toggle button.on{background:var(--accent-bg);border-color:var(--accent);color:var(--accent)}
+.ctab{border-collapse:collapse;font:13.5px var(--mono);width:100%}
+.ctab th,.ctab td{border-bottom:1px dashed var(--line);padding:3px 8px;text-align:right}
+.ctab th{font:600 12px var(--sans);color:var(--muted)}
+.bigpoly{font:600 16px var(--mono);margin:10px 0 0;padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);overflow-x:auto;white-space:nowrap}
+.verdict{display:inline-block;font:600 15px var(--sans);padding:6px 12px;border-radius:8px;margin:8px 8px 0 0}
+.verdict.info{background:var(--accent-bg);color:var(--accent)}.verdict.ok{background:var(--ok-bg);color:var(--ok)}.verdict.bad{background:var(--bad-bg);color:var(--bad)}
+.legend span span{display:inline}
+.traps{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:8px}
+.traps .t{border:1px solid var(--line);border-radius:10px;background:var(--bg);padding:10px}
+.traps .t h4{margin:0 0 4px;font:600 15px var(--sans)}
+.traps .t p{margin:6px 0 0;font-size:14.5px;line-height:1.5;color:var(--muted)}
+.traps svg{width:100%;height:auto;display:block}
+.qtext{font:17px/1.55 var(--serif);margin:4px 0 10px}
+.qexpr{font:600 22px var(--mono);margin:4px 0 10px}
+.choice{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 0}.choice button{min-width:140px}
+.choice button.right{border-color:var(--ok);background:var(--ok-bg);color:var(--ok)}.choice button.wrong{border-color:var(--bad);background:var(--bad-bg);color:var(--bad)}
+/* a sigma with its limits stacked above and below */
+.sg{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;line-height:1;margin:0 4px 0 0}
+.sg b{font-size:1.35em;font-weight:400}.sg small{font-size:.5em;font-weight:500}
+pre.code{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:12px 16px;overflow-x:auto;font:13.5px/1.6 var(--mono);margin:10px 0 16px}
+</style>
+
+<!-- ===================== Top bar ===================== -->
+<div class="topbar"><div class="topbar-in">
+  <span class="brand">Math<b>Mastery</b></span>
+  <span class="crumbs">Chapter 8 · Calculus › Undergraduate</span>
+  <span class="pid">8.U.1</span>
+</div></div>
+
+<!-- ===================== Hero ===================== -->
+<header class="prose hero">
+  <div class="kicker">Chapter 8 · Calculus</div>
+  <h1>Infinite Series</h1>
+  <p class="dek">Can you add up infinitely many numbers and get a finite answer? Sometimes. This page is about telling when, and finding the answer when you can.</p>
+  <div class="tiers" aria-label="Tier">
+    <span class="tier">Basics</span>
+    <span class="tier on">Undergraduate <small>you are here</small></span>
+    <span class="tier">Masters</span>
+  </div>
+  <div class="goals">
+    <h3>On this page</h3>
+    <ul>
+      <li>Define the sum of a <b>series</b> as the limit of its <b>partial sums</b>, and see what <b>converge</b> and <b>diverge</b> look like.</li>
+      <li>Sum <b>geometric</b> and <b>telescoping</b> series exactly, and use them for a bouncing ball, repeating decimals and medicine buildup.</li>
+      <li>Use the <b>divergence test</b>, and see why the <b>harmonic series</b> diverges even though its terms shrink to 0.</li>
+      <li>Choose between the <b>comparison</b>, <b>integral</b> and <b>ratio</b> tests.</li>
+      <li>Handle <b>alternating series</b>, and see how rearranging a <b>conditionally convergent</b> series can change its sum to anything you like.</li>
+    </ul>
+  </div>
+</header>
+
+<main>
+<!-- ===================== §1 ===================== -->
+<section class="prose">
+  <h2><span class="n">1</span>Adding forever, one term at a time</h2>
+  <p>Walk halfway to a wall, then half the remaining distance, then half again. The steps are ½, ¼, ⅛, … metres for a wall 1 metre away. Zeno worried that infinitely many steps could never finish. The modern answer is to keep a running total: after <i>n</i> steps you have walked <i>S<sub>n</sub></i> = 1 − 1/2<sup><i>n</i></sup>, which gets as close to 1 as you like. We say the infinite sum <i>is</i> 1.</p>
+  <p>In general a <b>series</b> is an infinite sum <i>a</i><sub>1</sub> + <i>a</i><sub>2</sub> + <i>a</i><sub>3</sub> + …; each <i>a<sub>k</sub></i> is a <b>term</b>. The <b>partial sum</b> <i>S<sub>n</sub></i> = <i>a</i><sub>1</sub> + … + <i>a<sub>n</sub></i> is the running total after <i>n</i> terms. If the partial sums approach a limit <i>S</i> (in the sense of 8.B.1), the series <b>converges</b> and <i>S</i> is its <b>sum</b>. If they don’t, because they grow forever or keep jumping around, it <b>diverges</b>.</p>
+</section>
+<section class="wide">
+  <div class="card" id="main">
+    <div class="card-h"><span class="tag">Explore</span><h3>Lay the terms end to end</h3>
+      <span class="sub">Top: each term is a bar starting where the last one stopped (purple steps right, orange steps left), so the last bar ends at the partial sum <i>S<sub>n</sub></i>. Bottom: <i>S<sub>n</sub></i> against <i>n</i>, with the sum (gold) and a tolerance band (green). Add terms and see whether the running total settles.</span></div>
+    <div class="row" id="mPresets"></div>
+    <div class="desc" id="mDesc"></div>
+    <div class="inputs">
+      <label class="field sm"><span>terms <i>n</i></span><input id="mN" type="text" inputmode="numeric" autocomplete="off"></label>
+      <label class="field sm"><span>tolerance</span><input id="mTol" type="text" inputmode="decimal" autocomplete="off" style="border-color:var(--tol)"></label>
+      <div class="row" style="margin:0"><button id="mUse">Use these</button><button id="mMinus">− term</button><button class="primary" id="mPlus">+ term</button><button id="mTimes">×10 terms</button><button id="mPlay">Play</button></div>
+    </div>
+    <div class="err" id="mErr"></div>
+    <div class="bigpoly" id="mEq"></div>
+    <div class="stack"><svg id="mBars" viewBox="0 0 960 280" role="img" aria-label="Terms laid end to end on a number line"></svg><svg id="mPlot" viewBox="0 0 960 240" role="img" aria-label="Partial sums against the number of terms"></svg></div>
+    <div><span class="verdict info" id="mV"></span></div>
+    <div class="readout" id="mOut"></div>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--cv)"></i><span>positive term</span></span>
+      <span><i class="sw" style="background:var(--tp)"></i><span>negative term</span></span>
+      <span><i class="sw" style="background:var(--pa)"></i><span>partial sum <i>S<sub>n</sub></i></span></span>
+      <span><i class="sw mv" style="background:var(--rad)"></i><span>the sum (limit)</span></span>
+      <span><i class="sw" style="background:var(--tol);opacity:.4"></i><span>within the tolerance of the sum</span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §2 ===================== -->
+<section class="prose">
+  <h2><span class="n">2</span>Series you can sum exactly</h2>
+  <p>A <b>geometric series</b> multiplies by the same <b>ratio</b> <i>r</i> each time: <i>a</i> + <i>ar</i> + <i>ar</i>² + …. Its partial sums have a closed form. Multiply <i>S<sub>n</sub></i> by <i>r</i> and subtract; almost everything cancels: <i>S<sub>n</sub></i> − <i>rS<sub>n</sub></i> = <i>a</i> − <i>ar<sup>n</sup></i>. If |<i>r</i>| &lt; 1, then <i>r<sup>n</sup></i> → 0 and</p>
+  <div class="math">\[ a + ar + ar^2 + \cdots = \frac{a}{1 - r} \quad (|r| < 1), \qquad \text{diverges if } |r| \ge 1. \]</div>
+  <p>A <b>telescoping series</b> collapses like a folding telescope. Since 1/(<i>k</i>(<i>k</i> + 1)) = 1/<i>k</i> − 1/(<i>k</i> + 1), the partial sum is (1 − ½) + (½ − ⅓) + … + (1/<i>n</i> − 1/(<i>n</i> + 1)) = 1 − 1/(<i>n</i> + 1), so the sum is 1. Geometric series turn up everywhere something repeats with a fixed fraction:</p>
+  <ul>
+    <li>A ball dropped from height <i>h</i> that rebounds to a fraction <i>r</i> of its height travels <i>h</i> + 2<i>hr</i> + 2<i>hr</i>² + … = <i>h</i>(1 + <i>r</i>)/(1 − <i>r</i>). It bounces infinitely often, yet stops in finite time: Zeno again.</li>
+    <li>A <b>repeating decimal</b> is a geometric series: 0.333… = 3/10 + 3/100 + … = (3/10)/(1 − 1/10) = 1/3, and 0.999… = (9/10)/(1 − 1/10) = 1, exactly.</li>
+    <li>A medicine taken every few hours, with a fraction <i>f</i> still in the body when the next dose arrives, builds up to D + D<i>f</i> + D<i>f</i>² + … = D/(1 − <i>f</i>): a <b>steady state</b>.</li>
+  </ul>
+</section>
+<section class="wide">
+  <div class="card" id="gw">
+    <div class="card-h"><span class="tag">Explore</span><h3>Geometric series in the world</h3>
+      <span class="sub">Pick a situation, change its numbers, and compare the running totals with the formula <i>a</i>/(1 − <i>r</i>).</span></div>
+    <div class="row toggle" id="gTab"><button class="on">Bouncing ball</button><button>Repeating decimal</button><button>Medicine buildup</button></div>
+    <div class="inputs" id="gIns"></div>
+    <div class="err" id="gErr"></div>
+    <div class="stack" id="gSvgBox"><svg id="gSvg" viewBox="0 0 960 300" role="img" aria-label="The situation drawn over time"></svg></div>
+    <div class="split" style="grid-template-columns:1fr 1fr"><div class="readout" id="gOut" style="margin:0"></div><table class="ctab" id="gTab2"></table></div>
+  </div>
+</section>
+
+<!-- ===================== §3 ===================== -->
+<section class="prose">
+  <h2><span class="n">3</span>Shrinking terms aren’t enough</h2>
+  <p>If a series converges, its terms must shrink to 0, because <i>a<sub>n</sub></i> = <i>S<sub>n</sub></i> − <i>S<sub>n</sub></i>₋₁ and both partial sums approach the same <i>S</i>. Turned around, this is the <b>divergence test</b>: <b>if the terms don’t go to 0, the series diverges.</b> So 1/2 + 2/3 + 3/4 + … diverges (terms → 1), and so does 1 − 1 + 1 − 1 + … (terms never settle).</p>
+  <p>The converse is false, and the <b>harmonic series</b> 1 + ½ + ⅓ + ¼ + … is the classic proof. Group its terms: ½, then ⅓ + ¼ (both at least ¼, so at least ½), then ⅕ through ⅛ (four terms, each at least ⅛: at least ½ again), and so on. You get infinitely many halves, so the sum is infinite. It just gets there very slowly: <i>S<sub>n</sub></i> ≈ ln <i>n</i> + 0.577. It takes 12,367 terms to pass 10.</p>
+  <p>You can feel that slowness with a stack of identical books. Push the top book out by ½ of a book length, the next by ¼, then ⅙, …, 1/(2<i>k</i>). Each overhang is the most you can push before the books above topple, and the total overhang is half the harmonic series. With enough books the top one sticks out as far as you like, but you need 4 books for one full length, 31 for two, 227 for three and 1,674 for four.</p>
+</section>
+<section class="wide">
+  <div class="card" id="books">
+    <div class="card-h"><span class="tag">Explore</span><h3>The harmonic book stack</h3>
+      <span class="sub">Choose the number of books. The table edge is at 0; the gold line marks how far the top book reaches past it: ½(1 + ½ + ⅓ + … + 1/<i>n</i>) book lengths.</span></div>
+    <div class="row" id="bPresets"></div>
+    <div class="inputs"><label class="field sm"><span>books <i>n</i></span><input id="bN" type="text" inputmode="numeric" autocomplete="off"></label><div class="row" style="margin:0"><button class="primary" id="bGo">Stack</button></div></div>
+    <div class="err" id="bErr"></div>
+    <div class="stack"><svg id="bSvg" viewBox="0 0 960 340" role="img" aria-label="A stack of books overhanging a table edge"></svg></div>
+    <div class="readout" id="bOut"></div>
+  </div>
+</section>
+
+<!-- ===================== §4 ===================== -->
+<section class="prose">
+  <h2><span class="n">4</span>Tests for series with positive terms</h2>
+  <p>Most series can’t be summed exactly, but we can still decide whether they converge. For positive terms the partial sums only go up, so they either level off or run away. Three standard tests:</p>
+  <ul>
+    <li><b>Comparison test.</b> If 0 ≤ <i>a<sub>k</sub></i> ≤ <i>b<sub>k</sub></i> and Σ<i>b<sub>k</sub></i> converges, so does Σ<i>a<sub>k</sub></i>; if Σ<i>a<sub>k</sub></i> diverges, so does Σ<i>b<sub>k</sub></i>. Example: 1/(<i>k</i>² + 3) &lt; 1/<i>k</i>², so it converges; 1/√<i>k</i> ≥ 1/<i>k</i>, so it diverges. The <b>limit comparison</b> version only asks that <i>a<sub>k</sub></i>/<i>b<sub>k</sub></i> approach a positive number.</li>
+    <li><b>Integral test.</b> If <i>a<sub>k</sub></i> = <i>f</i>(<i>k</i>) for a positive decreasing <i>f</i>, the series and ∫₁<sup>∞</sup> <i>f</i>(<i>x</i>) d<i>x</i> converge or diverge together, because the rectangles of the sum fit just above and just below the curve (picture below). It gives the <b><i>p</i>-series</b> rule: Σ 1/<i>k<sup>p</sup></i> converges exactly when <i>p</i> &gt; 1.</li>
+    <li><b>Ratio test.</b> If <i>a</i><sub><i>k</i>+1</sub>/<i>a<sub>k</sub></i> → <i>L</i>: the series converges if <i>L</i> &lt; 1 and diverges if <i>L</i> &gt; 1, because far out it behaves like a geometric series with ratio <i>L</i>. If <i>L</i> = 1 the test says nothing. It is the test to use for factorials and powers, like 3<sup><i>k</i></sup>/<i>k</i>! or <i>k</i>²/2<sup><i>k</i></sup>.</li>
+  </ul>
+</section>
+<section class="wide">
+  <div class="card" id="integ">
+    <div class="card-h"><span class="tag">Explore</span><h3>The integral test for 1/<i>k<sup>p</sup></i></h3>
+      <span class="sub">Each term 1/<i>k<sup>p</sup></i> is a rectangle of width 1. Solid orange rectangles sit under the curve (so the sum from <i>k</i> = 2 on is less than the area); dashed ones poke above it (so the whole sum is more than the area from 1). Change <i>p</i> and watch the area under the curve go finite or infinite.</span></div>
+    <div class="row" id="iPresets"></div>
+    <div class="inputs"><label class="field sm"><span><i>p</i></span><input id="iP" type="text" inputmode="decimal" autocomplete="off"></label><div class="row" style="margin:0"><button class="primary" id="iGo">Use</button></div></div>
+    <div class="err" id="iErr"></div>
+    <div class="split"><svg id="iSvg" viewBox="0 0 600 330" role="img" aria-label="Rectangles above and below the curve 1 over x to the p"></svg><div class="readout" id="iOut" style="margin:0"></div></div>
+  </div>
+</section>
+
+<!-- ===================== §5 ===================== -->
+<section class="prose">
+  <h2><span class="n">5</span>Alternating series and the danger of reordering</h2>
+  <p>An <b>alternating series</b> flips sign every term, like 1 − ½ + ⅓ − ¼ + …. The <b>alternating series test</b>: if the sizes |<i>a<sub>k</sub></i>| shrink steadily to 0, the series converges. The partial sums zigzag, each step shorter than the last, closing in from both sides. A bonus: <b>the error after <i>n</i> terms is less than the next term</b>. The alternating harmonic series converges to ln 2 ≈ 0.693.</p>
+  <p>Notice something odd: the alternating harmonic series converges, but the series of its sizes (the harmonic series) doesn’t. That is called <b>conditional convergence</b>. When Σ|<i>a<sub>k</sub></i>| also converges, the series converges <b>absolutely</b>, and then it behaves like an ordinary finite sum: any order gives the same answer.</p>
+  <p>Conditional convergence is fragile. The positive terms alone add to infinity, and so do the negative ones, while the sum is held to ln 2 only by the way they take turns. <b>Riemann’s rearrangement theorem</b> says you can reorder the terms to reach any target you like: add positive terms until you pass it, then negative terms until you drop below, and repeat. Every term gets used exactly once, and because the terms shrink, the overshoots shrink too.</p>
+</section>
+<section class="wide">
+  <div class="card" id="rear">
+    <div class="card-h"><span class="tag">Explore</span><h3>Rearrange 1 − ½ + ⅓ − ¼ + … to hit any target</h3>
+      <span class="sub">Choose a target. The same terms, in a different order, converge to it. The first preset keeps the original order.</span></div>
+    <div class="row" id="rPresets"></div>
+    <div class="inputs"><label class="field sm"><span>target</span><input id="rT" type="text" inputmode="decimal" autocomplete="off"></label><div class="row" style="margin:0"><button class="primary" id="rGo">Rearrange</button></div></div>
+    <div class="err" id="rErr"></div>
+    <div class="bigpoly" id="rEq"></div>
+    <div class="stack"><svg id="rSvg" viewBox="0 0 960 280" role="img" aria-label="Partial sums of the rearranged series"></svg></div>
+    <div class="readout" id="rOut"></div>
+  </div>
+</section>
+
+<!-- ===================== §6 ===================== -->
+<section class="prose">
+  <h2><span class="n">6</span>Traps and non-examples</h2>
+</section>
+<section class="wide">
+  <div class="card" id="traps">
+    <div class="card-h"><span class="tag">Compare</span><h3>Easy to get wrong</h3></div>
+    <div class="traps">
+      <div class="t"><h4 class="kn">✕ “The terms go to 0, so it converges”</h4><svg id="tr1" viewBox="0 0 300 200"></svg><p>Harmonic series: the terms (orange bars) shrink to 0, but the partial sums (blue) keep climbing. The divergence test can only prove divergence, never convergence.</p></div>
+      <div class="t"><h4 class="kn">✕ Regrouping a divergent series</h4><svg id="tr2" viewBox="0 0 300 200"></svg><p>1 − 1 + 1 − 1 + …: grouped as (1 − 1) + (1 − 1) + … it looks like 0, grouped as 1 + (−1 + 1) + … like 1. The partial sums jump between 1 and 0 forever, so there is no sum to argue about.</p></div>
+      <div class="t"><h4 class="kn">✕ Reading ratio = 1 as a verdict</h4><svg id="tr3" viewBox="0 0 300 200"></svg><p><i>a</i><sub><i>k</i>+1</sub>/<i>a<sub>k</sub></i> → 1 for both 1/<i>k</i> (diverges) and 1/<i>k</i>² (converges). When the ratio test gives 1, it tells you nothing: switch tests.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §7 ===================== -->
+<section class="prose">
+  <h2><span class="n">7</span>Now, in symbols</h2>
+  <div class="math">\[ \sum_{k=1}^{\infty} a_k = \lim_{n\to\infty} S_n, \qquad S_n = \sum_{k=1}^{n} a_k \]</div>
+  <div class="math">\[ \sum_{k=0}^{\infty} ar^k = \frac{a}{1-r}\ (|r|<1), \qquad \sum_{k=1}^{\infty}\frac{1}{k(k+1)} = \lim_{n\to\infty}\Big(1 - \frac{1}{n+1}\Big) = 1 \]</div>
+  <div class="math">\[ \sum a_k \text{ converges} \Rightarrow a_k \to 0, \qquad \sum_{k=1}^{\infty}\frac{1}{k^p} \text{ converges} \iff p > 1, \qquad \sum_{k=1}^{n}\frac1k = \ln n + \gamma + o(1),\ \gamma \approx 0.5772 \]</div>
+  <div class="math">\[ \int_1^{\infty} f \le \sum_{k=1}^{\infty} f(k) \le f(1) + \int_1^{\infty} f, \qquad \lim_{k\to\infty}\Big|\frac{a_{k+1}}{a_k}\Big| = L < 1 \Rightarrow \text{converges} \]</div>
+  <div class="math">\[ \Big|\sum_{k=1}^{\infty}(-1)^{k+1}b_k - S_n\Big| \le b_{n+1} \quad (b_k \downarrow 0), \qquad \sum_{k=1}^{\infty}\frac{(-1)^{k+1}}{k} = \ln 2 \]</div>
+  <p>The slow growth of the harmonic series and the alternating-series error bound are both easy to see by brute force:</p>
+  <pre class="code"><code>import math                                         # logarithms and the constant pi
+
+H = 0.0                                             # running total of the harmonic series
+for n in range(1, 1_000_001):                       # add the first million terms
+    H += 1 / n                                      # the n-th term is 1/n
+print(H, math.log(1_000_000) + 0.5772)              # 14.39 vs 14.39: grows like ln n + γ, without bound
+
+A = sum((-1) ** (k + 1) / k for k in range(1, 101))  # first 100 terms of 1 − 1/2 + 1/3 − …
+print(abs(A - math.log(2)), 1 / 101)                # error 0.00496 is below the next term, 1/101 ≈ 0.0099</code></pre>
+</section>
+
+<!-- ===================== §8 ===================== -->
+<section class="prose">
+  <h2><span class="n">8</span>Where this goes</h2>
+  <ul class="goes">
+    <li><b>Next:</b> 8.U.2, power series: series whose terms carry powers of <i>x</i>, like 1 + <i>x</i> + <i>x</i>² + …, which converge for some <i>x</i> and not others. Then 8.U.3 uses them to approximate functions.</li>
+    <li><b>Later in this book:</b> Fourier series (sums of sines and cosines), probability (expected values as infinite sums), and analysis, where absolute versus conditional convergence decides when you may swap sums and integrals.</li>
+    <li><b>In the world:</b> repeating decimals and loan or subscription totals, steady drug levels in pharmacology, the physics of overhangs and damped bounces, and the error bounds that tell a computer when to stop adding.</li>
+  </ul>
+</section>
+
+<!-- ===================== §9 ===================== -->
+<section class="prose">
+  <h2><span class="n">9</span>Words to know</h2>
+  <div class="vocab">
+    <div class="term"><b>Series</b>An infinite sum <i>a</i><sub>1</sub> + <i>a</i><sub>2</sub> + <i>a</i><sub>3</sub> + ….</div>
+    <div class="term"><b>Term</b>One of the numbers <i>a<sub>k</sub></i> being added.</div>
+    <div class="term"><b>Partial sum</b><i>S<sub>n</sub></i>: the total of the first <i>n</i> terms.</div>
+    <div class="term"><b>Converge</b>The partial sums approach a finite limit.</div>
+    <div class="term"><b>Diverge</b>The partial sums don’t approach a finite limit: they grow without bound or keep oscillating.</div>
+    <div class="term"><b>Sum of a series</b>The limit of its partial sums, when it exists.</div>
+    <div class="term"><b>Geometric series</b><i>a</i> + <i>ar</i> + <i>ar</i>² + …; sums to <i>a</i>/(1 − <i>r</i>) when |<i>r</i>| &lt; 1.</div>
+    <div class="term"><b>Ratio (<i>r</i>)</b>The fixed multiplier from one term of a geometric series to the next.</div>
+    <div class="term"><b>Telescoping series</b>A series whose partial sums collapse because neighbouring pieces cancel.</div>
+    <div class="term"><b>Repeating decimal</b>A decimal like 0.142857142857…; it is a geometric series, so always a fraction.</div>
+    <div class="term"><b>Steady state</b>The level a repeated, partly decaying input settles to: D/(1 − <i>f</i>).</div>
+    <div class="term"><b>Divergence test</b>If <i>a<sub>k</sub></i> does not go to 0, the series diverges.</div>
+    <div class="term"><b>Harmonic series</b>1 + ½ + ⅓ + …; diverges, growing like ln <i>n</i>.</div>
+    <div class="term"><b><i>p</i>-series</b>Σ 1/<i>k<sup>p</sup></i>; converges exactly when <i>p</i> &gt; 1.</div>
+    <div class="term"><b>Comparison test</b>A positive series below a convergent one converges; above a divergent one diverges.</div>
+    <div class="term"><b>Integral test</b>For positive decreasing <i>f</i>, Σ<i>f</i>(<i>k</i>) and ∫<i>f</i> converge or diverge together.</div>
+    <div class="term"><b>Ratio test</b>If |<i>a</i><sub><i>k</i>+1</sub>/<i>a<sub>k</sub></i>| → <i>L</i>: converges if <i>L</i> &lt; 1, diverges if <i>L</i> &gt; 1, no verdict if <i>L</i> = 1.</div>
+    <div class="term"><b>Alternating series</b>A series whose terms switch sign each time.</div>
+    <div class="term"><b>Alternating series test</b>If the sizes decrease to 0, an alternating series converges, with error below the next term.</div>
+    <div class="term"><b>Absolute convergence</b>Σ|<i>a<sub>k</sub></i>| converges; the sum then doesn’t depend on order.</div>
+    <div class="term"><b>Conditional convergence</b>Σ<i>a<sub>k</sub></i> converges but Σ|<i>a<sub>k</sub></i>| diverges.</div>
+    <div class="term"><b>Rearrangement theorem</b>Riemann: a conditionally convergent series can be reordered to sum to any number, or to diverge.</div>
+  </div>
+</section>
+
+<!-- ===================== Quiz ===================== -->
+<section class="prose"><h2><span class="n">10</span>Check yourself</h2>
+  <p>Four kinds of questions: converge or diverge, which test to use, find the sum, and compute a partial sum. Fractions like 15/16 are fine.</p>
+</section>
+<section class="wide">
+  <div class="card" id="quiz">
+    <div class="card-h"><span class="tag">Quiz</span><h3 id="qTitle"></h3><span class="score" id="score">Score: 0 / 0</span></div>
+    <div class="qtext" id="qText"></div>
+    <div class="qexpr" id="qExpr"></div>
+    <div class="choice" id="qChoice"></div>
+    <div class="inputs" id="qIn">
+      <label class="field"><span id="qLab">Answer</span><input id="q1" type="text" autocomplete="off" style="width:160px"></label>
+      <div class="row" style="margin:0"><button class="primary" id="qCheck">Check</button></div>
+    </div>
+    <div class="row" style="margin:10px 0 0"><button id="qShow">Show answer</button><button id="qNew">New question</button></div>
+    <div class="err" id="qErr"></div>
+    <div class="feedback" id="qFb" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ===================== Pager (filled in by the shared navigation) ===================== -->
+<nav class="wide">
+  <div class="pager"></div>
+  <div class="meta">8.U.1 · Prerequisites: 8.B.1 (limits), 8.B.3 (integrals) · Leads to: 8.U.2 (power series), 8.U.3 (Taylor approximations), Fourier series</div>
+</nav>
+</main>
+
+<script>
+/* =====================================================================
+   1. HELPERS
+   ===================================================================== */
+const NS = 'http://www.w3.org/2000/svg';
+const $ = id => document.getElementById(id);
+function mk(tag, attrs, parent){                           // create an SVG element with attributes
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function txt(parent, x, y, s, cls, extra){                 // create an SVG text element
+  extra = Object.assign({}, extra || {});
+  if (extra['text-anchor']){ extra.style = (extra.style ? extra.style + ';' : '') + 'text-anchor:' + extra['text-anchor']; delete extra['text-anchor']; }
+  const t = mk('text', Object.assign({ x, y, class: cls || '' }, extra), parent);
+  t.textContent = s;
+  return t;
+}
+// round for display, use a true minus sign, never show −0
+function num(x, d){ if (d === undefined) d = 2; const r = Math.round(x * Math.pow(10, d)) / Math.pow(10, d); return r === 0 ? '0' : (r < 0 ? '−' : '') + String(Math.abs(r)); }
+const pn = x => x < 0 ? `(${num(x)})` : num(x);              // wrap negatives in brackets when substituting
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const ri = (a, b) => a + Math.floor(Math.random() * (b - a + 1));   // random whole number from a to b
+const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+function parseNum(s){                                     // integers, decimals, minus, simple fractions
+  s = String(s).trim().replace(/[−–]/g, '-').replace(/\s+/g, '');
+  if (/^-?\d+(\.\d+)?$|^-?\.\d+$/.test(s)) return parseFloat(s);
+  const m = s.match(/^(-?\d+)\/(\d+)$/);
+  if (m && +m[2] !== 0) return +m[1] / +m[2];
+  return NaN;
+}
+function selectOnFocus(ids){ ids.forEach(id => $(id).addEventListener('focus', e => e.target.select())); }
+function buttons(boxId, list, onPick){                    // a row of preset buttons; returns a function that marks one as on
+  list.forEach((p, i) => { const b = document.createElement('button'); b.className = 'preset'; b.textContent = p.n; b.onclick = () => onPick(i); $(boxId).appendChild(b); });
+  return i => [...$(boxId).children].forEach((b, j) => b.classList.toggle('on', j === i));
+}
+function svgPt(svg, ev){                                  // mouse position in the SVG's own coordinates
+  const p = svg.createSVGPoint(); p.x = ev.clientX; p.y = ev.clientY;
+  return p.matrixTransform(svg.getScreenCTM().inverse());
+}
+const svgCss = document.createElement('style');
+svgCss.textContent = `
+  .grid{stroke:var(--line);stroke-width:1}
+  .axis{stroke:var(--ink);stroke-width:1.4;opacity:.7}
+  .tl{fill:var(--muted);font:500 11.5px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:3px}
+  .lab{font:700 14px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:5px}
+  .labS{font:600 12.5px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+  .cap{fill:var(--muted);font:600 12px var(--sans);letter-spacing:.06em;paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+  .oval{fill:var(--paper);stroke:var(--line);stroke-width:1.5}
+`;
+document.head.appendChild(svgCss);
+let clipN = 0;                                            // unique clip-path ids
+
+/* ---------- axes: a coordinate grid inside an SVG, with separate x and y scales ---------- */
+function axes(svg, W, H, b, o){
+  o = o || {};
+  svg.innerHTML = '';
+  const L = o.padL ?? 44, R = o.padR ?? 16, T = o.padT ?? 16, B = o.padB ?? 30;
+  const sx = (W - L - R) / (b.x1 - b.x0), sy = (H - T - B) / (b.y1 - b.y0);   // pixels per unit
+  const X = x => L + (x - b.x0) * sx, Y = y => T + (b.y1 - y) * sy;
+  const step = (s, px) => (o.half ? [0.5, 1, 2, 5, 10, 20, 50, 100] : [1, 2, 5, 10, 20, 50, 100]).find(k => k * s >= px) || 200;   // a round step at least px pixels wide
+  const xg = o.xg || step(sx, 9), yg = o.yg || step(sy, 9);        // grid-line spacing
+  const xt = o.xt || step(sx, 34), yt = o.yt || step(sy, 26);      // tick-label spacing
+  const gGrid = mk('g', {}, svg), id = 'clp' + (++clipN);
+  const cp = mk('clipPath', { id }, svg); mk('rect', { x: L, y: T, width: W - L - R, height: H - T - B }, cp);
+  const cg = mk('g', { 'clip-path': `url(#${id})` }, svg);         // clipped layer for curves
+  const m = mk('g', {}, svg), top = mk('g', {}, svg);              // free layer, then labels on top
+  const near = (v, s) => Math.abs(v / s - Math.round(v / s)) < 1e-6;
+  for (let x = Math.ceil(b.x0 / xg) * xg; x <= b.x1 + 1e-9; x += xg) mk('line', { x1: X(x), y1: T, x2: X(x), y2: H - B, class: 'grid' }, gGrid);
+  for (let y = Math.ceil(b.y0 / yg) * yg; y <= b.y1 + 1e-9; y += yg) mk('line', { x1: L, y1: Y(y), x2: W - R, y2: Y(y), class: 'grid' }, gGrid);
+  const ay = (b.y0 <= 0 && b.y1 >= 0) ? Y(0) : H - B;              // where the x-axis is drawn
+  const ax = (b.x0 <= 0 && b.x1 >= 0) ? X(0) : L;                  // where the y-axis is drawn
+  mk('line', { x1: L, y1: ay, x2: W - R, y2: ay, class: 'axis' }, gGrid);
+  mk('line', { x1: ax, y1: T, x2: ax, y2: H - B, class: 'axis' }, gGrid);
+  const fx = o.fx || (v => num(v)), fy = o.fy || (v => num(v));
+  for (let x = Math.ceil(b.x0 / xt) * xt; x <= b.x1 + 1e-9; x += xt){
+    if (Math.abs(x) < 1e-9 && ax === X(0) && !o.zeroX) continue;
+    txt(top, X(x), ay + 16, fx(x), 'tl', { 'text-anchor': 'middle' });
+  }
+  for (let y = Math.ceil(b.y0 / yt) * yt; y <= b.y1 + 1e-9; y += yt){
+    if (Math.abs(y) < 1e-9 && ay === Y(0)) continue;
+    txt(top, ax - 6, Y(y) + 4, fy(y), 'tl', { 'text-anchor': 'end' });
+  }
+  if (o.xT) txt(top, W - R - 2, ay - 8, o.xT, 'cap', { 'text-anchor': 'end' });
+  if (o.yT) txt(top, ax + 8, T + 12, o.yT, 'cap');
+  return { svg, X, Y, sx, sy, cg, m, top, b, L, R, T, B, W, H, ay, ax,
+           inv: (px, py) => [b.x0 + (px - L) / sx, b.y1 - (py - T) / sy] };
+}
+function dPath(P, pts){ return pts.map((p, i) => (i ? 'L' : 'M') + P.X(p[0]).toFixed(1) + ' ' + P.Y(p[1]).toFixed(1)).join(''); }
+// sample y = f(x) from a to b, breaking the curve where f is undefined or jumps
+function sample(f, a, b, n, ok){
+  const out = []; let cur = [];
+  for (let i = 0; i <= n; i++){
+    const x = a + (b - a) * i / n, y = (ok && !ok(x)) ? NaN : f(x);
+    if (!isFinite(y)){ if (cur.length > 1) out.push(cur); cur = []; continue; }
+    if (cur.length && Math.abs(y - cur[cur.length - 1][1]) > 40){ if (cur.length > 1) out.push(cur); cur = []; }
+    cur.push([x, y]);
+  }
+  if (cur.length > 1) out.push(cur);
+  return out;
+}
+function dot(P, x, y, col, o){                              // a filled (or open) point
+  o = o || {};
+  return mk('circle', { cx: P.X(x), cy: P.Y(y), r: o.r || 6, style: o.open ? `fill:var(--bg);stroke:${col};stroke-width:2.6` : `fill:${col};stroke:var(--bg);stroke-width:1.5` }, o.layer || P.m);
+}
+function vline(P, x, col, o){ o = o || {}; return mk('line', { x1: P.X(x), y1: o.y0 !== undefined ? P.Y(o.y0) : P.T, x2: P.X(x), y2: o.y1 !== undefined ? P.Y(o.y1) : P.H - P.B, style: `stroke:${col};stroke-width:${o.w || 2.5};${o.dash ? 'stroke-dasharray:' + o.dash : ''}` }, o.layer || P.m); }
+function hline(P, y, col, o){ o = o || {}; return mk('line', { x1: o.x0 !== undefined ? P.X(o.x0) : P.L, y1: P.Y(y), x2: o.x1 !== undefined ? P.X(o.x1) : P.W - P.R, y2: P.Y(y), style: `stroke:${col};stroke-width:${o.w || 2.5};${o.dash ? 'stroke-dasharray:' + o.dash : ''}` }, o.layer || P.m); }
+function arrowHead(g, x1, y1, x2, y2, col, size){            // a small triangle at (x2, y2) pointing away from (x1, y1)
+  const a = Math.atan2(y2 - y1, x2 - x1), s = size || 9;
+  const p = [[x2, y2], [x2 - s * Math.cos(a - 0.4), y2 - s * Math.sin(a - 0.4)], [x2 - s * Math.cos(a + 0.4), y2 - s * Math.sin(a + 0.4)]];
+  mk('polygon', { points: p.map(q => q.join(',')).join(' '), style: `fill:${col}` }, g);
+}
+
+/* ---------- arrow diagram: inputs in a left oval, outputs in a right oval, one arrow per pair ---------- */
+// pairs: [[in, out], ...]; o.ins / o.outs give the order (defaults: sorted values); o.fmt formats a value;
+// o.hl = input to highlight (others fade); o.lit = [in, out] arrow drawn thick; o.dead = inputs shown crossed out
+function arrowDiagram(svg, W, H, pairs, o){
+  o = o || {};
+  svg.innerHTML = '';
+  const fmt = o.fmt || (v => typeof v === 'number' ? num(v) : v);
+  const key = v => String(v);
+  const uniq = arr => { const s = new Set(), r = []; arr.forEach(v => { if (!s.has(key(v))){ s.add(key(v)); r.push(v); } }); return r; };
+  const srt = arr => arr.every(v => typeof v === 'number') ? arr.slice().sort((a, b) => a - b) : arr;
+  const ins = o.ins || srt(uniq(pairs.map(p => p[0]))), outs = o.outs || srt(uniq(pairs.map(p => p[1])));
+  const top = o.top ?? 34, bot = H - (o.bottom ?? 14);
+  const lx = W * 0.25, rx = W * 0.75, ow = Math.min(W * 0.17, 90);
+  mk('ellipse', { cx: lx, cy: (top + bot) / 2, rx: ow, ry: (bot - top) / 2, class: 'oval' }, svg);
+  mk('ellipse', { cx: rx, cy: (top + bot) / 2, rx: ow, ry: (bot - top) / 2, class: 'oval' }, svg);
+  txt(svg, lx, 18, o.inLab || 'INPUTS x', 'cap', { 'text-anchor': 'middle', style: 'fill:var(--in)' });
+  txt(svg, rx, 18, o.outLab || 'OUTPUTS y', 'cap', { 'text-anchor': 'middle', style: 'fill:var(--out)' });
+  const ypos = (i, n) => n === 1 ? (top + bot) / 2 : top + 26 + (bot - top - 52) * i / (n - 1);
+  const iy = {}, oy = {};
+  ins.forEach((v, i) => iy[key(v)] = ypos(i, ins.length));
+  outs.forEach((v, i) => oy[key(v)] = ypos(i, outs.length));
+  const cnt = {}; pairs.forEach(p => cnt[key(p[0])] = (cnt[key(p[0])] || 0) + 1);   // how many outputs each input has
+  const dx = Math.min(ow * 0.45, 34), fs = ins.length > 9 || outs.length > 9 ? 'labS' : 'lab';
+  const ga = mk('g', {}, svg), gd = mk('g', {}, svg);
+  pairs.forEach(p => {                                     // arrows
+    const k = key(p[0]), bad = cnt[k] > 1, faded = o.hl !== undefined && o.hl !== null && key(o.hl) !== k;
+    const lit = o.lit && key(o.lit[0]) === k && key(o.lit[1]) === key(p[1]);
+    const col = bad ? 'var(--no)' : 'var(--pt)';
+    const x1 = lx + dx + 8, y1 = iy[k], x2 = rx - dx - 9, y2 = oy[key(p[1])];
+    mk('line', { x1, y1, x2, y2, style: `stroke:${col};stroke-width:${lit ? 4.5 : 2.4};opacity:${faded ? .18 : 1}` }, ga);
+    if (!faded) arrowHead(ga, x1, y1, x2, y2, col, lit ? 12 : 10);
+  });
+  ins.forEach(v => {                                       // input dots and labels
+    const k = key(v), dead = o.dead && o.dead.map(key).includes(k), bad = cnt[k] > 1;
+    const faded = o.hl !== undefined && o.hl !== null && key(o.hl) !== k;
+    const col = dead ? 'var(--muted)' : bad ? 'var(--no)' : 'var(--in)';
+    mk('circle', { cx: lx + dx, cy: iy[k], r: o.hl !== undefined && key(o.hl) === k ? 8 : 6, style: `fill:${col};opacity:${faded ? .35 : 1}` }, gd);
+    const t = txt(gd, lx + dx - 12, iy[k] + 5, fmt(v), fs, { 'text-anchor': 'end', style: `fill:${col};opacity:${faded ? .45 : 1}${dead ? ';text-decoration:line-through' : ''}` });
+  });
+  outs.forEach(v => {                                      // output dots and labels
+    const k = key(v);
+    mk('circle', { cx: rx - dx, cy: oy[k], r: 6, style: 'fill:var(--out)' }, gd);
+    txt(gd, rx - dx + 12, oy[k] + 5, fmt(v), fs, { style: 'fill:var(--out)' });
+  });
+  return { ins, outs };
+}
+// group pairs by input: Map from input to its list of distinct outputs
+function byInput(pairs){
+  const m = new Map();
+  pairs.forEach(([x, y]) => { const k = String(x); if (!m.has(k)) m.set(k, { x, ys: [] }); const e = m.get(k); if (!e.ys.some(v => String(v) === String(y))) e.ys.push(y); });
+  return m;
+}
+const setStr = arr => '{' + arr.map(v => num(v)).join(', ') + '}';
+
+
+/* ---------- helpers for zoomable graphs (any scale) ---------- */
+const niceStep = raw => { const p = Math.pow(10, Math.floor(Math.log10(raw))), m = raw / p; return (m <= 1 ? 1 : m <= 2 ? 2 : m <= 5 ? 5 : 10) * p; };
+const decs = st => Math.max(0, -Math.floor(Math.log10(st) + 1e-9));
+function fmt(v, st){ const d = decs(st); const r = Number(v.toFixed(d)); return r === 0 ? '0' : (r < 0 ? '−' : '') + Math.abs(r).toFixed(d); }
+// a coordinate system with any box (tiny or huge), labelled ticks, a clipped layer for curves
+function ax2(svg, W, H, b, o){
+  o = o || {}; svg.innerHTML = '';
+  const L = o.padL ?? 52, R = o.padR ?? 14, T = o.padT ?? 14, B = o.padB ?? 28;
+  const sx = (W - L - R) / (b.x1 - b.x0), sy = (H - T - B) / (b.y1 - b.y0), X = x => L + (x - b.x0) * sx, Y = y => T + (b.y1 - y) * sy;
+  const gx = niceStep((b.x1 - b.x0) / 8), gy = niceStep((b.y1 - b.y0) / 7);
+  const g = mk('g', {}, svg), id = 'c' + Math.random().toString(36).slice(2);
+  const cp = mk('clipPath', { id }, svg); mk('rect', { x: L, y: T, width: W - L - R, height: H - T - B }, cp);
+  const cg = mk('g', { 'clip-path': `url(#${id})` }, svg), m = mk('g', {}, svg), top = mk('g', {}, svg);
+  for (let v = Math.ceil(b.x0 / gx) * gx; v <= b.x1 + gx * 1e-6; v += gx){ mk('line', { x1: X(v), y1: T, x2: X(v), y2: H - B, class: 'grid' }, g); txt(top, X(v), H - B + 16, o.fx ? o.fx(v) : fmt(v, gx), 'tl', { 'text-anchor': 'middle' }); }
+  for (let v = Math.ceil(b.y0 / gy) * gy; v <= b.y1 + gy * 1e-6; v += gy){ mk('line', { x1: L, y1: Y(v), x2: W - R, y2: Y(v), class: 'grid' }, g); txt(top, L - 6, Y(v) + 4, fmt(v, gy), 'tl', { 'text-anchor': 'end' }); }
+  if (b.y0 < 0 && b.y1 > 0) mk('line', { x1: L, y1: Y(0), x2: W - R, y2: Y(0), class: 'axis' }, g);
+  if (b.x0 < 0 && b.x1 > 0) mk('line', { x1: X(0), y1: T, x2: X(0), y2: H - B, class: 'axis' }, g);
+  mk('rect', { x: L, y: T, width: W - L - R, height: H - T - B, style: 'fill:none;stroke:var(--line2)' }, g);
+  if (o.xT) txt(top, W - R - 4, H - B - 6, o.xT, 'cap', { 'text-anchor': 'end' });
+  if (o.yT) txt(top, L + 6, T + 14, o.yT, 'cap');
+  return { X, Y, sx, sy, cg, m, top, b, L, R, T, B, W, H, inv: (px, py) => [b.x0 + (px - L) / sx, b.y1 - (py - T) / sy] };
+}
+// sample a curve across the box, breaking at undefined points, at listed jumps, and at big leaps
+function curve(P, f, o){
+  o = o || {}; const b = P.b, n = o.n || 900, brk = o.breaks || [], polys = []; let cur = [];
+  const lim = (b.y1 - b.y0) * 3;
+  for (let i = 0; i <= n; i++){
+    const x = b.x0 + (b.x1 - b.x0) * i / n, y = f(x);
+    const crossed = cur.length && brk.some(c => (cur[cur.length - 1][0] - c) * (x - c) <= 0);
+    if (!isFinite(y) || crossed || (cur.length && Math.abs(y - cur[cur.length - 1][1]) > lim)){ if (cur.length > 1) polys.push(cur); cur = []; if (!isFinite(y)) continue; }
+    cur.push([x, Math.max(b.y0 - lim, Math.min(b.y1 + lim, y))]);
+  }
+  if (cur.length > 1) polys.push(cur);
+  polys.forEach(p => mk('path', { d: dPath(P, p), style: `fill:none;stroke:${o.col || 'var(--cv)'};stroke-width:${o.w || 3};${o.dash ? 'stroke-dasharray:' + o.dash : ''}` }, P.cg));
+}
+const holeAt = (P, x, y, col) => mk('circle', { cx: P.X(x), cy: P.Y(y), r: 6, style: `fill:var(--bg);stroke:${col || 'var(--cv)'};stroke-width:2.5` }, P.m);
+const dotAt = (P, x, y, col, r) => mk('circle', { cx: P.X(x), cy: P.Y(y), r: r || 6, style: `fill:${col || 'var(--cv)'};stroke:var(--bg);stroke-width:1.5` }, P.m);
+const sig = v => !isFinite(v) ? (v > 0 ? '∞' : v < 0 ? '−∞' : 'undefined') : Math.abs(v) >= 1e5 ? v.toExponential(2).replace('-', '−') : num(v, 6);
+function parseLim(s){
+  const t = String(s).trim().toLowerCase().replace(/\s+/g, '').replace(/[−–]/g, '-');
+  if (/^(dne|none|doesnotexist|noLimit|nolimit|no)$/i.test(t)) return 'DNE';
+  if (/^\+?(inf|infinity|∞|oo)$/.test(t)) return Infinity;
+  if (/^-(inf|infinity|∞|oo)$/.test(t)) return -Infinity;
+  return parseNum(s);
+}
+
+const minus = s => String(s).replace(/(^|[\s(,=>→\/·+])-(\d)/g, '$1−$2');
+const r4 = v => Number((Math.abs(v) < 1e-300 ? 0 : v).toPrecision(5));
+const sci = v => { if (v === 0) return '0'; const a = Math.abs(v); if (a >= 1e-3 && a < 1e6) return minus(String(r4(v))); let e = Math.floor(Math.log10(a)); if (Math.abs(v / Math.pow(10, e)) >= 9.995) e++; const m = v / Math.pow(10, e); return minus(`${m.toFixed(2)}×10${String(e).replace(/-/g, '⁻').replace(/\d/g, d => '⁰¹²³⁴⁵⁶⁷⁸⁹'[d])}`); };
+const fact = k => { let r = 1; for (let i = 2; i <= k; i++) r *= i; return r; };
+const gcd = (a, b) => b ? gcd(b, a % b) : Math.abs(a);
+// write a number as a fraction when it is one with a small denominator, otherwise as a decimal
+function frc(x){ if (Math.abs(x - Math.round(x)) < 1e-12) return num(Math.round(x)); for (let d = 2; d <= 5040; d++){ const n = x * d; if (Math.abs(n - Math.round(n)) < 1e-11 * d && gcd(Math.round(n), d) === 1) return (x < 0 ? '−' : '') + Math.abs(Math.round(n)) + '/' + d; } return String(r4(x)).replace('-', '−'); }
+const exact = x => { const f = frc(x); return f.includes('/') || Math.abs(x - Math.round(x)) < 1e-13 ? f : String(Number(x.toPrecision(12))).replace('-', '−'); };   // more digits when not a neat fraction
+const SUB = k => String(k).replace(/\d/g, d => '₀₁₂₃₄₅₆₇₈₉'[d]);
+const sigma = (lo, body) => `<span class="sg"><small>∞</small><b>Σ</b><small>k=${lo}</small></span>${body}`;
+
+/* =====================================================================
+   1. MAIN: terms end to end, partial sums
+   ===================================================================== */
+// each preset: term a(k) for k = 1, 2, …, how to write it (t), its sum L (Infinity = grows without bound, null = oscillates)
+const SP = [
+  { n: '½ + ¼ + ⅛ + …', a: k => 1 / 2 ** k, t: k => '1/' + 2 ** k, L: 1, Lt: '1', d: 'Zeno’s walk: each step halves the gap to 1. Geometric with r = ½: sum (½)/(1 − ½) = 1.' },
+  { n: '0.9 + 0.09 + …', a: k => 9 / 10 ** k, t: k => '9/' + 10 ** k, L: 1, Lt: '1', d: '0.999… as a series. Geometric with r = 1/10: sum (9/10)/(1 − 1/10) = 1 exactly. The gap after n terms is 10⁻ⁿ.' },
+  { n: '1 − ½ + ¼ − …', a: k => (-0.5) ** (k - 1), t: k => (k === 1 ? '1' : '1/' + 2 ** (k - 1)), L: 2 / 3, Lt: '2/3', d: 'Geometric with a negative ratio r = −½: the total zigzags but still settles, on 1/(1 + ½) = 2/3.' },
+  { n: '1/(k(k+1))', a: k => 1 / (k * (k + 1)), t: k => '1/' + k * (k + 1), L: 1, Lt: '1', d: 'Telescoping: 1/(k(k+1)) = 1/k − 1/(k+1), so Sₙ = 1 − 1/(n+1). Converges to 1, but slowly: the gap is 1/(n+1).' },
+  { n: '1/k²', a: k => 1 / (k * k), t: k => k === 1 ? '1' : '1/' + k * k, L: Math.PI ** 2 / 6, Lt: 'π²/6 ≈ 1.6449', d: 'A p-series with p = 2 > 1: converges. Euler found the sum is π²/6, a famous surprise.' },
+  { n: 'Harmonic 1/k', a: k => 1 / k, t: k => k === 1 ? '1' : '1/' + k, L: Infinity, d: 'The terms shrink to 0, yet the sum grows forever, like ln n + 0.577. Try ×10 terms a few times.' },
+  { n: '1 − ½ + ⅓ − …', a: k => (k % 2 ? 1 : -1) / k, t: k => k === 1 ? '1' : '1/' + k, L: Math.LN2, Lt: 'ln 2 ≈ 0.69315', d: 'The alternating harmonic series: converges (conditionally) to ln 2. The error is always less than the next term.' },
+  { n: '1 − 1 + 1 − …', a: k => (k % 2 ? 1 : -1), t: () => '1', L: null, d: 'The terms don’t shrink, so the partial sums jump between 1 and 0 forever: divergent by the divergence test.' },
+  { n: 'k/(k+1)', a: k => k / (k + 1), t: k => k + '/' + (k + 1), L: Infinity, d: '½ + ⅔ + ¾ + …: the terms head to 1, not 0, so the sum grows roughly like n. The divergence test settles it at once.' },
+];
+const MS = { i: 0, N: 5, tol: 0.01, anim: null };
+const tolCache = {};
+// first n after which the partial sum stays within tol of the sum (the gap shrinks steadily for every convergent preset)
+function nTol(i, tol){
+  const key = i + ':' + tol; if (key in tolCache) return tolCache[key];
+  const p = SP[i]; let S = 0, ans = null;
+  for (let k = 1; k <= 3e6; k++){ S += p.a(k); if (Math.abs(S - p.L) < tol){ ans = k; break; } }
+  return tolCache[key] = ans;
+}
+function mDraw(){
+  const p = SP[MS.i], N = MS.N, S = [0];
+  for (let k = 1; k <= N; k++) S.push(S[k - 1] + p.a(k));
+  const fin = p.L !== null && isFinite(p.L);
+  // ---------- top: terms end to end ----------
+  const svg = $('mBars'); svg.innerHTML = '';
+  const W = 960, H = 280, L = 150, R = 24, T = 26, B = 44;
+  let lo = Math.min(0, ...S), hi = Math.max(...S); if (fin){ lo = Math.min(lo, p.L); hi = Math.max(hi, p.L); }
+  const pad = (hi - lo) * 0.05 || 0.5; lo -= pad; hi += pad;
+  const X = v => L + (v - lo) / (hi - lo) * (W - L - R);
+  const rows = Math.min(N, 10), comb = N - rows;                  // if there are many terms, the first row lumps the early ones together
+  const rh = (H - T - B) / rows, bh = Math.min(rh * 0.62, 16);
+  const st = niceStep((hi - lo) / 8);
+  for (let v = Math.ceil(lo / st) * st; v <= hi + 1e-9; v += st){ mk('line', { x1: X(v), y1: T - 4, x2: X(v), y2: H - B, class: 'grid' }, svg); txt(svg, X(v), H - B + 16, fmt(v, st), 'tl', { 'text-anchor': 'middle' }); }
+  mk('line', { x1: L, y1: H - B, x2: W - R, y2: H - B, class: 'axis' }, svg);
+  mk('line', { x1: X(0), y1: T - 4, x2: X(0), y2: H - B, style: 'stroke:var(--ink);stroke-width:1.2;opacity:.5' }, svg);
+  if (fin){ mk('line', { x1: X(p.L), y1: 8, x2: X(p.L), y2: H - B, style: 'stroke:var(--rad);stroke-width:2.2;stroke-dasharray:7 5' }, svg); txt(svg, X(p.L), 18, 'sum = ' + p.Lt, 'labS', { 'text-anchor': X(p.L) > W - 120 ? 'end' : 'middle', style: 'fill:var(--rad)' }); }
+  for (let j = 0; j < rows; j++){
+    const k1 = j === 0 ? 1 : comb + j + 1, k2 = comb + j + 1;     // this row covers terms k1..k2
+    const a = S[k1 - 1], b = S[k2], y = T + (j + 0.5) * rh;
+    const neg = b < a, col = j === 0 && comb ? 'var(--muted)' : (neg ? 'var(--tp)' : 'var(--cv)');
+    mk('rect', { x: Math.min(X(a), X(b)), y: y - bh / 2, width: Math.max(1.5, Math.abs(X(b) - X(a))), height: bh, rx: 2, style: `fill:${col};opacity:.85` }, svg);
+    if (j < rows - 1) mk('line', { x1: X(b), y1: y, x2: X(b), y2: y + rh, style: 'stroke:var(--ink);stroke-width:1;opacity:.35;stroke-dasharray:2 3' }, svg);
+    if (rh >= 10.5) txt(svg, L - 10, y + 4, j === 0 && comb ? `terms 1–${k2}` : minus(`a${SUB(k2)} = ${p.a(k2) < 0 ? '−' : '+'}${frc(Math.abs(p.a(k2)))}`), 'labS', { 'text-anchor': 'end' });
+  }
+  mk('circle', { cx: X(S[N]), cy: H - B, r: 6.5, style: 'fill:var(--pa)' }, svg);
+  txt(svg, X(S[N]), H - 6, 'S' + SUB(N) + ' = ' + minus(String(r4(S[N]))), 'labS', { 'text-anchor': 'middle', style: 'fill:var(--pa)' });
+  // ---------- bottom: partial sums against n ----------
+  const xmax = Math.max(10, N);
+  let ylo = Math.min(0, ...S.slice(1)), yhi = Math.max(...S.slice(1)); if (fin){ ylo = Math.min(ylo, p.L); yhi = Math.max(yhi, p.L); }
+  const yp = (yhi - ylo) * 0.1 || 0.5;
+  const P = ax2($('mPlot'), 960, 240, { x0: 0, x1: xmax, y0: ylo - yp, y1: yhi + yp }, { xT: 'number of terms n', yT: 'partial sum Sₙ' });
+  if (fin){ mk('rect', { x: P.L, y: P.Y(p.L + MS.tol), width: P.W - P.L - P.R, height: Math.max(1, P.Y(p.L - MS.tol) - P.Y(p.L + MS.tol)), style: 'fill:var(--tol);opacity:.18' }, P.cg); mk('line', { x1: P.L, y1: P.Y(p.L), x2: P.W - P.R, y2: P.Y(p.L), style: 'stroke:var(--rad);stroke-width:2;stroke-dasharray:7 5' }, P.cg); }
+  if (N <= 60) for (let k = 1; k <= N; k++){ const a = p.a(k); mk('rect', { x: P.X(k) - Math.min(5, P.sx * 0.3), y: Math.min(P.Y(0), P.Y(a)), width: Math.min(10, P.sx * 0.6), height: Math.abs(P.Y(a) - P.Y(0)), style: `fill:${a < 0 ? 'var(--tp)' : 'var(--cv)'};opacity:.28` }, P.cg); }
+  const pts = []; const stepK = Math.max(1, Math.floor(N / 1500)); for (let k = 1; k <= N; k += stepK) pts.push([k, S[k]]); pts.push([N, S[N]]);
+  mk('path', { d: dPath(P, pts), style: 'fill:none;stroke:var(--pa);stroke-width:2;opacity:.75' }, P.cg);
+  if (N <= 150) for (let k = 1; k <= N; k++) dotAt(P, k, S[k], 'var(--pa)', N <= 40 ? 4.5 : 2.5);
+  else dotAt(P, N, S[N], 'var(--pa)', 5);
+  // ---------- equation chip, verdict and readout ----------
+  const show = Math.min(N, 6);
+  const parts = []; for (let k = 1; k <= show; k++){ const a = p.a(k); parts.push((k === 1 ? (a < 0 ? '−' : '') : (a < 0 ? ' − ' : ' + ')) + p.t(k)); }
+  $('mEq').textContent = minus(`S${SUB(N)} = ${parts.join('')}${N > show ? ' + …' : ''} = ${exact(S[N])}`);
+  const aN = p.a(N), ratio = p.a(N + 1) / aN;
+  let v, s = `After <b>${N}</b> term${N === 1 ? '' : 's'}: <span class="ka">S${SUB(N)} = ${N <= 40 ? exact(S[N]) : minus(String(r4(S[N])))}</span>. `;
+  if (fin){
+    const gap = Math.abs(p.L - S[N]), nt = nTol(MS.i, MS.tol);
+    v = `converges to ${p.Lt}`;
+    s += `Gap to the sum: ${sci(gap)}. `;
+    s += nt ? `The partial sums stay within ${MS.tol} of the sum from n = <span class="kg">${nt.toLocaleString()}</span> on. ` : '';
+  } else if (p.L === Infinity){
+    v = 'diverges: the partial sums grow without bound';
+    s += MS.i === 5 ? `Compare ln ${N} + 0.577 = ${r4(Math.log(N) + 0.5772)}: the harmonic sum creeps up like a logarithm, but never stops. ` : `Each term is close to 1, so Sₙ grows roughly like n. `;
+  } else { v = 'diverges: the partial sums never settle'; s += 'The partial sums keep jumping between 1 and 0. '; }
+  s += `<br>Terms: a${SUB(N)} = ${sci(aN)} (${Math.abs(aN) < 0.01 ? 'heading to 0' : MS.i >= 7 ? '<span class="kn">not heading to 0</span>' : 'shrinking'}); ratio a${SUB(N + 1)}/a${SUB(N)} = ${minus(String(r4(ratio)))}.`;
+  $('mV').textContent = minus(v);
+  $('mV').className = 'verdict ' + (fin ? 'ok' : 'bad');
+  $('mOut').innerHTML = minus(s);
+  $('mN').value = String(N); $('mTol').value = String(MS.tol);
+}
+function mStop(){ if (MS.anim){ clearTimeout(MS.anim); MS.anim = null; } $('mPlay').textContent = 'Play'; }
+const mMark = buttons('mPresets', SP, i => { mStop(); Object.assign(MS, { i, N: 5 }); mMark(i); $('mDesc').textContent = SP[i].d; $('mErr').textContent = ''; mDraw(); });
+$('mPlus').onclick = () => { mStop(); if (MS.N < 100000){ MS.N++; mDraw(); } };
+$('mMinus').onclick = () => { mStop(); if (MS.N > 1){ MS.N--; mDraw(); } };
+$('mTimes').onclick = () => { mStop(); MS.N = Math.min(100000, MS.N * 10); mDraw(); };
+$('mPlay').onclick = () => { if (MS.anim){ mStop(); return; } MS.N = 1; $('mPlay').textContent = 'Pause'; const step = () => { mDraw(); if (MS.N < 25){ MS.N++; MS.anim = setTimeout(step, 450); } else mStop(); }; step(); };
+$('mUse').onclick = () => {
+  const n = parseNum($('mN').value), tol = parseNum($('mTol').value);
+  if (isNaN(n) || isNaN(tol)){ $('mErr').textContent = 'Type numbers for the number of terms and the tolerance.'; return; }
+  if (!Number.isInteger(n) || n < 1 || n > 100000){ $('mErr').textContent = 'Use a whole number of terms from 1 to 100,000.'; return; }
+  if (tol <= 0 || tol > 1){ $('mErr').textContent = 'Use a tolerance between 0 and 1, like 0.01 or 0.001.'; return; }
+  if (tol < 1e-6 && SP[MS.i].L !== null && isFinite(SP[MS.i].L) && [3, 4, 6].includes(MS.i)){ $('mErr').textContent = 'This series converges slowly; use a tolerance of at least 0.000001.'; return; }
+  $('mErr').textContent = ''; mStop(); MS.N = n; MS.tol = tol; mDraw();
+};
+
+/* =====================================================================
+   2. GEOMETRIC SERIES IN THE WORLD
+   ===================================================================== */
+const GW = { tab: 0, ball: { h: 2, r: 0.6 }, dec: { b: '142857' }, med: { D: 100, hl: 6, tau: 8 } };
+function gBuild(){
+  const defs = [[['h', 'drop height h (m)'], ['r', 'rebound fraction r']], [['b', 'repeating block']], [['D', 'dose D (mg)'], ['hl', 'half-life (hours)'], ['tau', 'time between doses (hours)']]][GW.tab];
+  const st = [GW.ball, GW.dec, GW.med][GW.tab];
+  $('gIns').innerHTML = defs.map(([k, l]) => `<label class="field sm"><span>${l}</span><input id="gi_${k}" type="text" inputmode="${k === 'b' ? 'numeric' : 'decimal'}" autocomplete="off" value="${st[k]}" ${k === 'b' ? 'style="width:110px"' : ''}></label>`).join('') + '<div class="row" style="margin:0"><button class="primary" id="gGo">Use</button></div>' + (GW.tab === 1 ? '<div class="row" id="gDecP" style="margin:0"></div>' : '');
+  defs.forEach(([k]) => { $('gi_' + k).addEventListener('focus', e => e.target.select()); $('gi_' + k).addEventListener('keydown', e => { if (e.key === 'Enter') $('gGo').click(); }); });
+  if (GW.tab === 1) buttons('gDecP', [{ n: '0.333…' }, { n: '0.999…' }, { n: '0.090909…' }, { n: '0.142857…' }], i => { GW.dec.b = ['3', '9', '09', '142857'][i]; $('gi_b').value = GW.dec.b; $('gErr').textContent = ''; gDraw(); });
+  $('gGo').onclick = () => {
+    if (GW.tab === 1){ const b = $('gi_b').value.trim(); if (!/^\d{1,6}$/.test(b)){ $('gErr').textContent = 'Type the repeating block as 1 to 6 digits, like 3 or 142857.'; return; } $('gErr').textContent = ''; GW.dec.b = b; gDraw(); return; }
+    const v = defs.map(([k]) => parseNum($('gi_' + k).value));
+    if (v.some(isNaN)){ $('gErr').textContent = 'Fill in every box with a number.'; return; }
+    if (GW.tab === 0 && (v[0] <= 0 || v[0] > 100 || v[1] <= 0 || v[1] >= 1)){ $('gErr').textContent = 'Use a height between 0 and 100 m and a rebound fraction strictly between 0 and 1.'; return; }
+    if (GW.tab === 2 && (v[0] <= 0 || v[0] > 2000 || v[1] < 0.5 || v[1] > 100 || v[2] < 0.5 || v[2] > 72)){ $('gErr').textContent = 'Use a dose up to 2000 mg, a half-life of 0.5–100 hours and a gap of 0.5–72 hours.'; return; }
+    $('gErr').textContent = ''; defs.forEach(([k], j) => st[k] = v[j]); gDraw();
+  };
+}
+function gDraw(){
+  $('gSvgBox').style.display = GW.tab === 1 ? 'none' : '';
+  if (GW.tab === 0){
+    const { h, r } = GW.ball, g = 9.8, t0 = Math.sqrt(2 * h / g), q = Math.sqrt(r), Ttot = t0 * (1 + q) / (1 - q);
+    const P = ax2($('gSvg'), 960, 300, { x0: 0, x1: Ttot * 1.03, y0: 0, y1: h * 1.12 }, { xT: 'time (s)', yT: 'height (m)' });
+    const pts = []; for (let i = 0; i <= 60; i++){ const t = t0 * i / 60; pts.push([t, h - g * t * t / 2]); }
+    let tS = t0, hk = h;
+    for (let k = 1; k <= 60; k++){ hk *= r; const d = 2 * t0 * q ** k; if (P.sx * d < 0.6) break; for (let i = 0; i <= 40; i++){ const t = d * i / 40; pts.push([tS + t, Math.max(0, (g * d / 2) * t - g * t * t / 2)]); } tS += d; }
+    mk('path', { d: dPath(P, pts), style: 'fill:none;stroke:var(--cv);stroke-width:2.5' }, P.cg);
+    mk('line', { x1: P.X(Ttot), y1: P.T, x2: P.X(Ttot), y2: P.H - P.B, style: 'stroke:var(--rad);stroke-width:2;stroke-dasharray:7 5' }, P.cg);
+    txt(P.top, P.X(Ttot) - 6, P.T + 16, `stops at ${r4(Ttot)} s`, 'labS', { 'text-anchor': 'end', style: 'fill:var(--rad)' });
+    const D = h * (1 + r) / (1 - r);
+    const rows = []; let s = h; rows.push([0, h, s]); for (let k = 1; k <= 8; k++){ const term = 2 * h * r ** k; s += term; rows.push([k, term, s]); }
+    $('gTab2').innerHTML = '<tr><th>bounce</th><th>adds (m)</th><th>total so far (m)</th><th>% of the final total</th></tr>' + rows.map(([k, t, s]) => `<tr><td>${k === 0 ? 'drop' : k}</td><td>${r4(t)}</td><td>${r4(s)}</td><td>${num(100 * s / D, 1)}%</td></tr>`).join('');
+    $('gOut').innerHTML = minus(`Distance: h + 2hr + 2hr² + … = h + 2hr/(1 − r) = <b>${r4(D)} m</b>. After the drop, each bounce is a geometric term with ratio <span class="kv">r = ${r}</span>.<br>Time: each bounce lasts √r times as long as the one before, another geometric series with ratio √r = ${r4(q)}: total <span class="kr">${r4(Ttot)} s</span>. Infinitely many bounces, finished in finite time.`);
+  } else if (GW.tab === 1){
+    const b = GW.dec.b, m = b.length, n = parseInt(b, 10), den = 10 ** m - 1, gg = gcd(n, den) || 1, val = n / den;
+    const rows = []; let s = 0; for (let k = 1; k <= 6; k++){ const term = n / 10 ** (m * k); s += term; rows.push([k, term, s, val - s]); }
+    $('gTab2').innerHTML = '<tr><th>n</th><th>term</th><th>partial sum</th><th>gap to the value</th></tr>' + rows.map(([k, t, s, g]) => `<tr><td>${k}</td><td>${sci(t)}</td><td>${s.toFixed(Math.min(15, m * k))}</td><td>${sci(Math.max(0, g))}</td></tr>`).join('');
+    $('gOut').innerHTML = `0.${b}${b}${b}… = ${b}/10${m > 1 ? '^' + m : ''} + ${b}/10^${2 * m} + … : geometric, with first term a = ${b}/${10 ** m} and <span class="kv">ratio r = 1/${10 ** m}</span>.<br>Sum = a/(1 − r) = ${b}/${den} = <b>${n === 0 ? '0' : (n / gg) + (den / gg === 1 ? '' : '/' + den / gg)}</b>.` + (n === den ? '<br>So 0.999… is not “just below” 1: it <i>is</i> 1. The gap after n terms is 10⁻ⁿ, and the limit of the gaps is 0.' : '') + '<br>Every repeating decimal is a fraction, because every geometric series with a whole-number block sums to a ratio of whole numbers.';
+  } else {
+    const { D, hl, tau } = GW.med, f = 0.5 ** (tau / hl), peak = D / (1 - f), trough = D * f / (1 - f), nd = 12;
+    const P = ax2($('gSvg'), 960, 300, { x0: 0, x1: nd * tau, y0: 0, y1: peak * 1.15 }, { xT: 'time (hours)', yT: 'amount in the body (mg)' });
+    [peak, trough].forEach((v, j) => { mk('line', { x1: P.L, y1: P.Y(v), x2: P.W - P.R, y2: P.Y(v), style: 'stroke:var(--rad);stroke-width:1.8;stroke-dasharray:7 5' }, P.cg); txt(P.top, P.W - P.R - 6, P.Y(v) - 6, (j ? 'steady low ' : 'steady peak ') + r4(v), 'labS', { 'text-anchor': 'end', style: 'fill:var(--rad)' }); });
+    const pts = []; let A = 0;
+    for (let n = 0; n < nd; n++){ A += D; for (let i = 0; i <= 30; i++){ const t = tau * i / 30; pts.push([n * tau + t, A * 0.5 ** (t / hl)]); } A *= f; }
+    mk('path', { d: dPath(P, pts), style: 'fill:none;stroke:var(--cv);stroke-width:2.5' }, P.cg);
+    const n90 = Math.ceil(Math.log(0.1) / Math.log(f));
+    const rows = []; let s = 0; for (let k = 1; k <= 8; k++){ s += D * f ** (k - 1); rows.push([k, D * f ** (k - 1), s]); }
+    $('gTab2').innerHTML = '<tr><th>dose n</th><th>this dose’s share now</th><th>peak right after dose n</th><th>% of steady peak</th></tr>' + rows.map(([k, t, s]) => `<tr><td>${k}</td><td>${r4(t)}</td><td>${r4(s)}</td><td>${num(100 * s / peak, 1)}%</td></tr>`).join('');
+    $('gOut').innerHTML = minus(`Between doses a fraction <span class="kv">f = ½^(${r4(tau)}/${r4(hl)}) = ${r4(f)}</span> remains. Right after dose n the amount is D + Df + … + Dfⁿ⁻¹, a partial sum of a geometric series.<br>Steady peak D/(1 − f) = <b>${r4(peak)} mg</b>; steady low ${r4(trough)} mg. It reaches 90% of the steady peak after ${n90} dose${n90 === 1 ? '' : 's'} (when fⁿ ≤ 0.1). Illustrative numbers only, not dosing advice.`);
+  }
+}
+[...$('gTab').children].forEach((b, k) => b.onclick = () => { GW.tab = k; [...$('gTab').children].forEach((x, j) => x.classList.toggle('on', j === k)); $('gErr').textContent = ''; gBuild(); gDraw(); });
+
+/* =====================================================================
+   3. BOOK STACK
+   ===================================================================== */
+const BK = { n: 4 };
+function bDraw(){
+  const n = BK.n, Rr = new Array(n + 2).fill(0);
+  for (let i = n; i >= 1; i--) Rr[i] = Rr[i + 1] + 1 / (2 * i);          // right end of book i (1 = top) past the table edge
+  const over = Rr[1], svg = $('bSvg'); svg.innerHTML = '';
+  const W = 960, H = 340, L = 30, R = 30, T = 30, B = 40, x0 = -1.4, x1 = Math.max(1.6, over + 0.35);
+  const X = v => L + (v - x0) / (x1 - x0) * (W - L - R), tableY = H - B, bh = Math.min(30, (tableY - T) / n);
+  mk('rect', { x: L - 30, y: tableY, width: X(0) - L + 30, height: 12, style: 'fill:var(--muted);opacity:.35' }, svg);
+  for (let v = Math.ceil(x0); v <= x1; v++){ mk('line', { x1: X(v), y1: T - 10, x2: X(v), y2: tableY, class: 'grid' }, svg); txt(svg, X(v), H - 10, minus(String(v)), 'tl', { 'text-anchor': 'middle' }); }
+  for (let i = n; i >= 1; i--){ const y = tableY - (n - i + 1) * bh; mk('rect', { x: X(Rr[i] - 1), y, width: X(Rr[i]) - X(Rr[i] - 1), height: Math.max(1, bh - (bh > 4 ? 1 : 0)), rx: bh > 6 ? 2 : 0, style: `fill:${i % 2 ? 'var(--cv)' : 'var(--pa)'};opacity:.8` }, svg); }
+  mk('line', { x1: X(0), y1: T - 16, x2: X(0), y2: tableY, style: 'stroke:var(--ink);stroke-width:1.5;stroke-dasharray:5 4' }, svg);
+  txt(svg, X(0) - 6, T - 4, 'table edge', 'labS', { 'text-anchor': 'end' });
+  mk('line', { x1: X(over), y1: T - 16, x2: X(over), y2: tableY, style: 'stroke:var(--rad);stroke-width:2.2;stroke-dasharray:7 5' }, svg);
+  txt(svg, X(over) + (X(over) > W - 160 ? -6 : 6), T - 4, `overhang ${r4(over)}`, 'labS', { 'text-anchor': X(over) > W - 160 ? 'end' : 'start', style: 'fill:var(--rad)' });
+  const need = [[1, 4], [2, 31], [3, 227], [4, 1674], [5, 12367]];
+  $('bOut').innerHTML = `With <b>${n}</b> book${n === 1 ? '' : 's'} the top book reaches <span class="kr">${r4(over)}</span> book lengths past the edge: ½(1 + ½ + … + 1/${n}) = ½·H${SUB(n)}.` + (n >= 2 ? ` The bottom book sticks out only 1/${2 * n} = ${r4(1 / (2 * n))}: each new book goes underneath and adds less.` : '') + `<br>Books needed to reach 1, 2, 3, 4, 5 lengths: ${need.map(([a, b]) => b.toLocaleString()).join(', ')}. Every extra length takes about e² ≈ 7.4 times as many books, yet there is no limit: the harmonic series diverges.`;
+  $('bN').value = String(n);
+}
+buttons('bPresets', [{ n: '1 book' }, { n: '2' }, { n: '4' }, { n: '10' }, { n: '31' }, { n: '100' }], i => { BK.n = [1, 2, 4, 10, 31, 100][i]; $('bErr').textContent = ''; bDraw(); });
+$('bGo').onclick = () => { const n = parseNum($('bN').value); if (isNaN(n) || !Number.isInteger(n) || n < 1 || n > 250){ $('bErr').textContent = 'Use a whole number of books from 1 to 250.'; return; } $('bErr').textContent = ''; BK.n = n; bDraw(); };
+
+/* =====================================================================
+   4. INTEGRAL TEST
+   ===================================================================== */
+const IT = { p: 2 };
+function iDraw(){
+  const p = IT.p, f = x => 1 / x ** p, K = 12;
+  const P = ax2($('iSvg'), 600, 330, { x0: 0, x1: K + 1, y0: 0, y1: 1.15 }, { xT: 'x', yT: 'y = 1/xᵖ', padL: 44 });
+  for (let k = 1; k <= K; k++){ mk('rect', { x: P.X(k), y: P.Y(f(k)), width: P.sx, height: P.Y(0) - P.Y(f(k)), style: 'fill:none;stroke:var(--tp);stroke-width:1.5;stroke-dasharray:4 3' }, P.cg); }
+  for (let k = 2; k <= K + 1; k++){ mk('rect', { x: P.X(k - 1), y: P.Y(f(k)), width: P.sx, height: P.Y(0) - P.Y(f(k)), style: 'fill:var(--tp);opacity:.35' }, P.cg); }
+  curve(P, x => x >= 1 ? f(x) : NaN, { n: 600 });
+  let s = 0; for (let k = 1; k <= 2e5; k++) s += f(k);
+  const conv = p > 1, I = conv ? 1 / (p - 1) : Infinity;
+  const tail = conv ? 1 / ((p - 1) * 2e5 ** (p - 1)) : 0, est = s + tail;     // add the integral of the tail beyond 200,000 terms
+  $('iOut').innerHTML = minus(`p = <b>${r4(p)}</b>. Area under 1/xᵖ from 1 to ∞: ${conv ? `1/(p − 1) = <b>${r4(I)}</b>, finite` : '<span class="kn">infinite</span>' + (p === 1 ? ' (ln x grows forever)' : ` (x^${r4(1 - p)}/${r4(1 - p)} grows forever)`)}.<br>` +
+    (conv ? `So the sum lies between the area and 1 + the area: <span class="kg">${r4(I)} ≤ Σ1/kᵖ ≤ ${r4(1 + I)}</span>. Numerically it is about ${r4(est)}.<br>The solid rectangles (terms 2, 3, …) fit under the curve, so they total less than the area: the sum is finite.` : `So the series <span class="kn">diverges</span>: after 200,000 terms the partial sum is ${r4(s)} and still climbing.<br>The dashed rectangles (terms 1, 2, …) cover the area under the curve, so the sum is at least the infinite area.`) +
+    `<br>Rule: Σ1/kᵖ converges exactly when p &gt; 1.`);
+  $('iP').value = String(r4(p));
+}
+buttons('iPresets', [{ n: 'p = ½' }, { n: 'p = 1' }, { n: 'p = 1.5' }, { n: 'p = 2' }, { n: 'p = 3' }], i => { IT.p = [0.5, 1, 1.5, 2, 3][i]; $('iErr').textContent = ''; iDraw(); });
+$('iGo').onclick = () => { const p = parseNum($('iP').value); if (isNaN(p) || p < 0.2 || p > 5){ $('iErr').textContent = 'Use a p between 0.2 and 5.'; return; } $('iErr').textContent = ''; IT.p = p; iDraw(); };
+
+/* =====================================================================
+   5. REARRANGEMENT
+   ===================================================================== */
+const RA = { T: null };
+function rDraw(){
+  const target = RA.T, M = 1000, seq = [], S = [0];
+  let po = 1, ne = 2;                                            // next unused odd (positive) and even (negative) denominators
+  for (let n = 1; n <= M; n++){
+    let term;
+    if (target === null) term = (n % 2 ? 1 : -1) / n;            // original order
+    else if (S[n - 1] <= target){ term = 1 / po; po += 2; } else { term = -1 / ne; ne += 2; }
+    seq.push(term); S.push(S[n - 1] + term);
+  }
+  const tv = target === null ? Math.LN2 : target;
+  const ylo = Math.min(tv, ...S.slice(1, 301)) - 0.15, yhi = Math.max(tv, ...S.slice(1, 301)) + 0.15;
+  const P = ax2($('rSvg'), 960, 280, { x0: 0, x1: 300, y0: ylo, y1: yhi }, { xT: 'number of terms used', yT: 'partial sum' });
+  mk('line', { x1: P.L, y1: P.Y(tv), x2: P.W - P.R, y2: P.Y(tv), style: 'stroke:var(--rad);stroke-width:2;stroke-dasharray:7 5' }, P.cg);
+  txt(P.top, P.W - P.R - 6, P.Y(tv) - 7, target === null ? 'ln 2' : 'target ' + r4(tv), 'labS', { 'text-anchor': 'end', style: 'fill:var(--rad)' });
+  mk('path', { d: dPath(P, S.slice(0, 301).map((v, k) => [k, v])), style: 'fill:none;stroke:var(--pa);stroke-width:1.6;opacity:.6' }, P.cg);
+  for (let k = 1; k <= 300; k++) dotAt(P, k, S[k], seq[k - 1] > 0 ? 'var(--cv)' : 'var(--tp)', 2.4);
+  const fmtT = t => (t > 0 ? '+ ' : '− ') + '1/' + Math.round(1 / Math.abs(t));
+  $('rEq').textContent = (seq.slice(0, 14).map((t, j) => j === 0 ? (t > 0 ? '' : '−') + '1/' + Math.round(1 / Math.abs(t)) : fmtT(t)).join(' ').replace(/^1\/1/, '1') + ' …').replace(/ 1\/1 /, ' 1 ');
+  const np = seq.filter(t => t > 0).length;
+  $('rOut').innerHTML = minus(`After ${M} terms: partial sum <span class="ka">${r4(S[M])}</span>, ${target === null ? 'closing in on ln 2 ≈ 0.69315 in the original order' : `within ${sci(Math.abs(S[M] - tv))} of the target ${r4(tv)}`}. It used ${np} positive and ${M - np} negative terms so far; carried on forever, it uses every term 1, −½, ⅓, −¼, … exactly once.<br>` +
+    (target === null ? 'Same terms, original order: one positive, one negative, in turn.' : `The positive terms alone (1 + ⅓ + ⅕ + …) add to infinity, and so do the negative ones, so there is always enough of each to push the total past ${r4(tv)} again. The swings shrink because the terms do.`));
+  $('rT').value = target === null ? '' : String(r4(target));
+}
+buttons('rPresets', [{ n: 'Original order (ln 2)' }, { n: 'Target 0' }, { n: 'Target 1' }, { n: 'Target 1.5' }, { n: 'Target −1' }, { n: 'Target π' }], i => { RA.T = [null, 0, 1, 1.5, -1, Math.PI][i]; $('rErr').textContent = ''; rDraw(); });
+$('rGo').onclick = () => { const t = parseNum($('rT').value); if (isNaN(t) || Math.abs(t) > 3.5){ $('rErr').textContent = 'Type a target between −3.5 and 3.5.'; return; } $('rErr').textContent = ''; RA.T = t; rDraw(); };
+
+/* =====================================================================
+   6. TRAPS
+   ===================================================================== */
+(function(){
+  let P = ax2($('tr1'), 300, 200, { x0: 0, x1: 30, y0: 0, y1: 4.2 }, { padL: 30, padB: 22, padT: 8, padR: 8, xT: 'n' });
+  let s = 0; const ps = [];
+  for (let k = 1; k <= 30; k++){ s += 1 / k; ps.push([k, s]); mk('rect', { x: P.X(k) - 2.5, y: P.Y(1 / k), width: 5, height: P.Y(0) - P.Y(1 / k), style: 'fill:var(--tp);opacity:.6' }, P.cg); }
+  mk('path', { d: dPath(P, ps), style: 'fill:none;stroke:var(--pa);stroke-width:2.2' }, P.cg);
+  P = ax2($('tr2'), 300, 200, { x0: 0, x1: 14, y0: -0.4, y1: 1.4 }, { padL: 30, padB: 22, padT: 8, padR: 8, xT: 'n' });
+  const g = []; for (let k = 1; k <= 14; k++) g.push([k, k % 2]);
+  mk('path', { d: dPath(P, g), style: 'fill:none;stroke:var(--pa);stroke-width:1.5;opacity:.6' }, P.cg); g.forEach(([k, v]) => dotAt(P, k, v, 'var(--pa)', 3.5));
+  mk('line', { x1: P.L, y1: P.Y(0.5), x2: P.W - P.R, y2: P.Y(0.5), style: 'stroke:var(--err);stroke-width:1.5;stroke-dasharray:5 4' }, P.cg);
+  txt(P.top, P.W - P.R - 4, P.Y(0.5) - 5, 'no limit', 'labS', { 'text-anchor': 'end', style: 'fill:var(--err)' });
+  P = ax2($('tr3'), 300, 200, { x0: 1, x1: 30, y0: 0, y1: 1.1 }, { padL: 30, padB: 22, padT: 8, padR: 8, xT: 'k' });
+  curve(P, k => k / (k + 1), { col: 'var(--err)', w: 2.2 }); curve(P, k => (k / (k + 1)) ** 2, { col: 'var(--tol)', w: 2.2 });
+  txt(P.top, P.X(18), P.Y(0.97) - 6, '1/k: diverges', 'labS', { style: 'fill:var(--err)' }); txt(P.top, P.X(13), P.Y(0.8) + 16, '1/k²: converges', 'labS', { style: 'fill:var(--tol)' });
+})();
+
+/* =====================================================================
+   7. QUIZ
+   ===================================================================== */
+const Q = { right: 0, total: 0 };
+let qq = null;
+const qTitles = { conv: 'Converge or diverge?', test: 'Which test?', sum: 'Find the sum', part: 'Partial sum' };
+function qReset(){ ['qChoice', 'qExpr'].forEach(id => $(id).innerHTML = ''); $('qFb').className = 'feedback'; $('qFb').innerHTML = ''; $('qErr').textContent = ''; $('qIn').style.display = ''; $('q1').value = ''; }
+function qScore(ok){ if (qq.counted) return; qq.counted = true; Q.total++; if (ok) Q.right++; $('score').textContent = `Score: ${Q.right} / ${Q.total}`; }
+function qFeedback(ok, html){ $('qFb').className = 'feedback ' + (ok ? 'ok' : 'bad'); $('qFb').innerHTML = (ok ? '<b>Right.</b> ' : '<b>Not quite.</b> ') + minus(html); }
+function qChoices(list, correctIdx, explain){ $('qIn').style.display = 'none'; qq.correctIdx = correctIdx; qq.explainFn = explain; list.forEach((c, k) => { const b = document.createElement('button'); b.innerHTML = c; b.onclick = () => { const ok = k === correctIdx; qScore(ok); [...$('qChoice').children].forEach((x, j) => { x.classList.remove('right', 'wrong'); if (j === k) x.classList.add(ok ? 'right' : 'wrong'); }); qFeedback(ok, explain(k)); }; $('qChoice').appendChild(b); }); }
+// the pool of series used by the converge/diverge and which-test questions; test: 0 divergence, 1 geometric, 2 comparison/p-series/integral, 3 ratio, 4 alternating
+const TESTS = ['Divergence test', 'Geometric series', 'Comparison / p-series test', 'Ratio test', 'Alternating series test'];
+const POOL = [
+  () => { const [rt, r] = pick([['(1/2)ᵏ', 0.5], ['(2/3)ᵏ', 2 / 3], ['(3/2)ᵏ', 1.5], ['(−1/3)ᵏ', -1 / 3], ['(5/4)ᵏ', 1.25], ['3/4ᵏ', 0.25]]); const ok = Math.abs(r) < 1; return { e: sigma(1, rt), ok, test: 1, why: `Geometric with ratio r = ${frc(r)}: ${ok ? '|r| < 1, so it converges' : '|r| ≥ 1, so it diverges'}.` }; },
+  () => { const [pt, p] = pick([['1/k²', 2], ['1/√k', 0.5], ['1/k³', 3], ['1/k', 1], ['1/k^(3/2)', 1.5], ['1/∛k', 1 / 3]]); const ok = p > 1; return { e: sigma(1, pt), ok, test: 2, why: `A p-series with p = ${frc(p)}: ${ok ? 'p > 1, converges' : 'p ≤ 1, diverges'} (integral test).` }; },
+  () => { const [t, lim] = pick([['k/(k + 1)', '1'], ['(2k + 1)/(k + 3)', '2'], ['(k² + 1)/(3k²)', '1/3']]); return { e: sigma(1, t), ok: false, test: 0, why: `The terms approach ${lim}, not 0, so the series diverges by the divergence test.` }; },
+  () => { const [t, ok, b] = pick([['1/(2k + 1)', false, '1/(3k), a multiple of the harmonic series, which diverges'], ['1/(k² + 3)', true, '1/k², which converges'], ['1/(k·2ᵏ)', true, '1/2ᵏ, which converges'], ['1/(√k + 1)', false, '1/√k (their ratio → 1: limit comparison), a p-series with p = ½, which diverges']]); return { e: sigma(1, t), ok, test: 2, why: `Compare with ${b}. So it ${ok ? 'converges' : 'diverges'}.` }; },
+  () => { const [t, ok, L] = pick([['3ᵏ/k!', true, '0'], ['k²/2ᵏ', true, '½'], ['k!/2ᵏ', false, '∞'], ['k/3ᵏ', true, '⅓'], ['2ᵏ/k²', false, '2']]); return { e: sigma(1, t), ok, test: 3, why: `Ratio test: a₍ₖ₊₁₎/aₖ → ${L}, which is ${ok ? 'less than 1, so it converges' : 'more than 1, so it diverges'}.` }; },
+  () => { const [t, ok, test, why] = pick([['(−1)ᵏ⁺¹/k', true, 4, 'Alternating, and 1/k decreases to 0: converges (conditionally, to ln 2).'], ['(−1)ᵏ⁺¹/√k', true, 4, 'Alternating, and 1/√k decreases to 0: converges (conditionally).'], ['(−1)ᵏ k/(k + 1)', false, 0, 'The sizes approach 1, not 0, so the terms don’t go to 0: diverges by the divergence test.']]); return { e: sigma(1, t), ok, test, why }; },
+];
+function qConv(){ const c = pick(POOL)(); qq.c = c; $('qText').innerHTML = 'Does this series converge or diverge?'; $('qExpr').innerHTML = minus(c.e); qChoices(['Converges', 'Diverges'], c.ok ? 0 : 1, k => (k === (c.ok ? 0 : 1) ? '' : (c.ok ? 'It converges. ' : 'It diverges. ')) + c.why); }
+function qTest(){
+  let c; do { c = pick(POOL)(); } while (c.test === 2 && Math.random() < 0.3);
+  $('qText').innerHTML = 'Which test settles this series most directly?'; $('qExpr').innerHTML = minus(c.e);
+  qChoices(TESTS, c.test, k => (k === c.test ? '' : `The quickest route is the ${TESTS[c.test].toLowerCase()}${k === 3 && c.test === 2 ? ' (the ratio test gives 1 here, so it says nothing)' : ''}. `) + c.why);
+}
+function qSum(){
+  const kind = pick(['geo0', 'geo1', 'tel', 'dec']);
+  let e, ans, why, wrong = null;
+  if (kind === 'geo0'){ const a = pick([1, 2, 3, 5]), r = pick([1 / 2, 1 / 3, 2 / 3, 1 / 4, -1 / 2, -1 / 3, 3 / 4]); ans = a / (1 - r); e = sigma(0, `${a === 1 ? '' : a + '·'}(${frc(r)})ᵏ`); why = `Geometric, first term (k = 0) a = ${a}, ratio r = ${frc(r)}: sum a/(1 − r) = ${a}/(1 − (${frc(r)})) = ${frc(ans)}.`; wrong = r / (1 - r) * a; }
+  else if (kind === 'geo1'){ const r = pick([1 / 2, 1 / 3, 2 / 3, 1 / 4, 1 / 5]); ans = r / (1 - r); e = sigma(1, `(${frc(r)})ᵏ`); why = `Starts at k = 1, so the first term is a = ${frc(r)}: sum ${frc(r)}/(1 − ${frc(r)}) = ${frc(ans)}.`; wrong = 1 / (1 - r); }
+  else if (kind === 'tel'){ const [t, v, w] = pick([['1/(k(k + 1))', 1, '1/k − 1/(k+1): everything cancels except the first 1'], ['1/(k(k + 2))', 3 / 4, '½(1/k − 1/(k+2)): only ½(1 + ½) survives'], ['1/((k + 1)(k + 2))', 1 / 2, '1/(k+1) − 1/(k+2): only the first ½ survives'], ['2/(k(k + 1))', 2, '2(1/k − 1/(k+1)): only 2·1 survives']]); ans = v; e = sigma(1, t); why = `Telescoping: write the term as ${w}, so the sum is ${frc(v)}.`; }
+  else { const n = ri(1, 98), b = String(n).padStart(2, '0'); ans = n / 99; e = `0.${b}${b}${b}…`; why = `Geometric: ${b}/100 + ${b}/100² + … = (${n}/100)/(1 − 1/100) = ${n}/99${frc(ans) === n + '/99' ? '' : ' = ' + frc(ans)}.`; }
+  Object.assign(qq, { ans, explain: why, wrong });
+  $('qText').innerHTML = 'Find the exact sum.'; $('qExpr').innerHTML = minus(e); $('qLab').textContent = 'sum =';
+}
+function qPart(){
+  const [t, a, lo] = pick([['1/k', k => 1 / k, 1], ['1/2ᵏ', k => 1 / 2 ** k, 1], ['(−1)ᵏ⁺¹/k', k => (k % 2 ? 1 : -1) / k, 1], ['1/(k(k + 1))', k => 1 / (k * (k + 1)), 1], ['k/2ᵏ', k => k / 2 ** k, 1], ['1/k²', k => 1 / (k * k), 1], ['(2/3)ᵏ', k => (2 / 3) ** k, 1]]);
+  const n = pick([3, 4]); let s = 0; const terms = []; for (let k = lo; k < lo + n; k++){ s += a(k); terms.push(frc(a(k))); }
+  const prev = s - a(lo + n - 1), next = s + a(lo + n);
+  Object.assign(qq, { ans: s, explain: `S${SUB(n)} = ${terms.join(' + ').replace(/\+ −/g, '− ')} = ${frc(s)}.`, prev, next, n });
+  $('qText').innerHTML = `Compute the partial sum S${SUB(n)} (the first ${n} terms, from k = 1).`; $('qExpr').innerHTML = minus(sigma(1, t)); $('qLab').textContent = `S${SUB(n)} =`;
+}
+let lastType = null;
+function qNew(){
+  qReset();
+  let t; do { t = pick(['conv', 'test', 'sum', 'part']); } while (t === lastType);
+  lastType = t; qq = { type: t, counted: false };
+  $('qTitle').textContent = qTitles[t];
+  ({ conv: qConv, test: qTest, sum: qSum, part: qPart })[t]();
+}
+$('qCheck').onclick = () => {
+  const v = parseNum($('q1').value);
+  if ($('q1').value.trim() === '' || isNaN(v)){ $('qErr').textContent = 'Type a number (fractions like 15/16 are fine).'; return; }
+  const close = (x, y) => Math.abs(x - y) < 1e-6 * Math.max(1, Math.abs(y));
+  let ok = close(v, qq.ans), why = qq.explain;
+  if (!ok && qq.type === 'sum' && qq.wrong !== null && close(v, qq.wrong)) why = 'Check where the sum starts: the first term a is the k = ' + (qq.explain.includes('k = 1') ? '1' : '0') + ' term. ' + why;
+  if (!ok && qq.type === 'part' && close(v, qq.prev)) why = `That is S${SUB(qq.n - 1)}: you stopped one term early. ` + why;
+  if (!ok && qq.type === 'part' && close(v, qq.next)) why = `That is S${SUB(qq.n + 1)}: one term too many. ` + why;
+  $('qErr').textContent = ''; qScore(ok); qFeedback(ok, why);
+};
+$('q1').addEventListener('keydown', e => { if (e.key === 'Enter') $('qCheck').click(); });
+$('q1').addEventListener('input', () => $('qErr').textContent = '');
+$('qShow').onclick = () => {
+  qScore(false);
+  if (qq.correctIdx !== undefined){ [...$('qChoice').children].forEach((b, j) => { if (j === qq.correctIdx) b.classList.add('right'); }); qFeedback(false, qq.explainFn(qq.correctIdx)); return; }
+  $('q1').value = frc(qq.ans).replace('−', '-');
+  $('qFb').className = 'feedback bad'; $('qFb').innerHTML = '<b>Answer filled in.</b> ' + minus(qq.explain);
+};
+$('qNew').onclick = qNew;
+
+/* =====================================================================
+   8. START
+   ===================================================================== */
+selectOnFocus(['mN', 'mTol', 'bN', 'iP', 'rT', 'q1']);
+$('mPresets').children[0].click();
+gBuild(); gDraw();
+$('bPresets').children[2].click();
+$('iPresets').children[3].click();
+$('rPresets').children[2].click();
+qNew();
+</script>
+<script src="../shared/toc.js"></script>
+<script src="../shared/nav.js"></script>
+</body></html>
