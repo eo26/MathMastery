@@ -1,0 +1,1034 @@
+<style>
+/* ===================== Page-specific styles (7.B.10) ===================== */
+/* x / î / column 1 = green, y / ĵ / column 2 = orange, z / k̂ / column 3 = blue (as in 7.B.4–7.B.9, plus blue for the new direction);
+   the tracked vector and the moved cube = purple; second vector = gold; cross product = pink; shadows = grey */
+:root{ --ci:#1D9E75; --cj:#D85A30; --ck:#2F6FDB; --cp:#7F77DD; --cs:#AFA9EC; --cg:#B86E00; --cx:#C2417D; --sh:#5F5E5A; --sun:#E9B200; --good:#1D9E75; --wrong:#D8443A; }
+@media (prefers-color-scheme:dark){ :root{ --ci:#5DCAA5; --cj:#F0997B; --ck:#6EA2F5; --cp:#AFA9EC; --cs:#6F67C9; --cg:#FFB547; --cx:#EE7FB0; --sh:#B4B2A9; --sun:#FFD44D; --good:#5DCAA5; --wrong:#F07B72; } }
+.ki{color:var(--ci);font-weight:700}.kj{color:var(--cj);font-weight:700}.kk{color:var(--ck);font-weight:700}.kp{color:var(--cp);font-weight:700}.kg{color:var(--cg);font-weight:700}.kx{color:var(--cx);font-weight:700}
+.kgood{color:var(--good);font-weight:700}.kbad{color:var(--wrong);font-weight:700}
+svg{user-select:none;-webkit-user-select:none}
+.inputs .grp{display:flex;gap:10px;align-items:flex-end;padding-right:12px;border-right:1px dashed var(--line);margin-right:4px}
+.inputs .grp:last-of-type{border-right:none}
+.matw{display:flex;flex-direction:column;gap:4px}
+.mhead{display:grid;grid-template-columns:repeat(3,62px);gap:6px;padding:0 12px;font:600 11px var(--sans);letter-spacing:.04em;text-transform:uppercase;text-align:center}
+.mlab{font:600 12px var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-align:center}
+.mat{display:grid;grid-template-columns:repeat(3,62px);gap:6px;padding:6px 10px;border-left:2.5px solid var(--ink);border-right:2.5px solid var(--ink);border-radius:7px}
+.mat.v1{grid-template-columns:62px}
+.mat input{width:100%;font:500 17px/1 var(--mono);padding:8px 2px;text-align:center;border-radius:9px;border:2px solid var(--line2);background:var(--bg);color:var(--ink)}
+.mat input:focus{outline:none;box-shadow:0 0 0 2px var(--accent)}
+.mat input.ci{border-color:var(--ci)}.mat input.cj{border-color:var(--cj)}.mat input.ck{border-color:var(--ck)}.mat.mP input{border-color:var(--cp)}.mat.mG input{border-color:var(--cg)}
+.field.sm input{width:70px}.field.fp input{border-color:var(--cp)}.field.fg input{border-color:var(--cg)}.field.fs input{border-color:var(--sun)}
+.views{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.views svg{width:100%;height:auto;display:block;background:var(--bg);border:1px solid var(--line);border-radius:10px}
+.mshow{display:inline-grid;grid-template-columns:repeat(3,auto);gap:1px 12px;padding:3px 9px;border-left:2px solid var(--ink);border-right:2px solid var(--ink);border-radius:6px;font:600 15px var(--mono);vertical-align:middle;text-align:right}
+.mshow.v1{grid-template-columns:auto}
+.bigline{font:600 17px var(--mono);margin:12px 0 2px;display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.toggle button.on{background:var(--accent-bg);border-color:var(--accent);color:var(--accent)}
+.legs{display:flex;flex-direction:column;gap:6px}
+.legs .leg{display:flex;gap:8px;align-items:center;font:600 13px var(--sans)}
+.legs .leg span.n{width:52px}
+.legs input{width:62px;font:500 16px/1 var(--mono);padding:7px 2px;text-align:center;border-radius:9px;border:2px solid var(--line2);background:var(--bg);color:var(--ink)}
+.legend span span{display:inline}
+.traps{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:8px}
+.traps .t{border:1px solid var(--line);border-radius:10px;background:var(--bg);padding:10px}
+.traps .t h4{margin:0 0 4px;font:600 15px var(--sans)}
+.traps .t p{margin:6px 0 0;font-size:14.5px;line-height:1.5;color:var(--muted)}
+.traps .t svg{width:100%;height:auto;display:block}
+.traps .pair{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.qtext{font:17px/1.55 var(--serif);margin:4px 0 10px}
+.qvis{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:6px 0}
+.qvis svg{width:100%;height:auto;background:var(--bg);border:1px solid var(--line);border-radius:10px}
+.qmath{font:600 18px var(--mono);margin:6px 0 10px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.choice{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0 0}.choice button{padding:10px 14px}
+.choice button.right{border-color:var(--ok);background:var(--ok-bg)}.choice button.wrong{border-color:var(--bad);background:var(--bad-bg)}
+pre.code{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:12px 16px;overflow-x:auto;font:13.5px/1.6 var(--mono);margin:10px 0 16px}
+</style>
+
+<!-- ===================== Top bar ===================== -->
+<div class="topbar"><div class="topbar-in">
+  <span class="brand">Math<b>Mastery</b></span>
+  <span class="crumbs">Chapter 7 · Linear Algebra › Basics</span>
+  <span class="pid">7.B.10</span>
+</div></div>
+
+<!-- ===================== Hero ===================== -->
+<header class="prose hero">
+  <div class="kicker">Chapter 7 · Linear Algebra</div>
+  <h1>Into 3D: Vectors and 3×3 Matrices</h1>
+  <p class="dek">Add one more direction, up, and everything from the flat plane carries over: vectors get a third number, matrices get a third column, and area becomes volume.</p>
+  <div class="tiers" aria-label="Tier">
+    <span class="tier on">Basics <small>you are here</small></span>
+    <span class="tier">Undergraduate</span>
+    <span class="tier">Masters</span>
+  </div>
+  <div class="goals">
+    <h3>On this page</h3>
+    <ul>
+      <li>Locate points with three <b>coordinates</b> (<i>x</i>, <i>y</i>, <i>z</i>), and read them from flat <b>top, front and side views</b>.</li>
+      <li>Add, scale and measure 3D vectors, using the <b>3D distance formula</b>.</li>
+      <li>See a <b>3×3 matrix</b> as a move of all of space: its columns are where <b>î</b>, <b>ĵ</b> and <b>k̂</b> land.</li>
+      <li>Read the <b>3×3 determinant</b> as a <b>volume scale factor</b>, and see why a <b>projection</b> (a shadow) has determinant 0.</li>
+      <li>Use the <b>dot product</b> for angles and the <b>cross product</b> for a direction perpendicular to two vectors.</li>
+    </ul>
+  </div>
+</header>
+
+<main>
+<!-- ===================== §1 ===================== -->
+<section class="prose">
+  <h2><span class="n">1</span>A third direction</h2>
+  <p>On a map, two numbers pin down a place: how far east (<i>x</i>) and how far north (<i>y</i>). To find a lamp hanging in a room you need a third: how far <b>up</b> (<i>z</i>). A point in space is an ordered triple (<i>x</i>, <i>y</i>, <i>z</i>), measured along three <b>axes</b> that meet at right angles at the origin.</p>
+  <p>A screen is flat, so we can’t draw space directly. Architects solve this with <b>orthographic views</b>: a <b>top view</b> (looking straight down, you see <i>x</i> and <i>y</i> and lose the height), a <b>front view</b> (looking north, you see <i>x</i> and <i>z</i>) and a <b>side view</b> (looking west, you see <i>y</i> and <i>z</i>). Each view hides one coordinate, but between them they show all three. A fourth, slanted <b>corner view</b> ties them together.</p>
+  <p>The distance from the origin to (<i>x</i>, <i>y</i>, <i>z</i>) comes from Pythagoras twice. Across the floor to the spot under the point is √(<i>x</i>² + <i>y</i>²). That floor line and the vertical climb <i>z</i> make another right angle, so the full distance is √(<i>x</i>² + <i>y</i>² + <i>z</i>²): the <b>3D distance formula</b>.</p>
+</section>
+<section class="wide">
+  <div class="card" id="room">
+    <div class="card-h"><span class="tag">Explore</span><h3>A point in a room</h3>
+      <span class="sub">The room is 5 m east–west (<i>x</i>), 4 m north–south (<i>y</i>) and 3 m tall (<i>z</i>), with the origin in the south-west floor corner. Type a point and see it in all four views, reached by walking east, then north, then climbing up.</span></div>
+    <div class="row" id="rPresets"></div>
+    <div class="desc" id="rDesc"></div>
+    <div class="inputs">
+      <label class="field sm" style="--x:1"><span class="ki">x (east)</span><input id="rX" type="text" inputmode="decimal" autocomplete="off" style="border-color:var(--ci)"></label>
+      <label class="field sm"><span class="kj">y (north)</span><input id="rY" type="text" inputmode="decimal" autocomplete="off" style="border-color:var(--cj)"></label>
+      <label class="field sm"><span class="kk">z (up)</span><input id="rZ" type="text" inputmode="decimal" autocomplete="off" style="border-color:var(--ck)"></label>
+      <div class="row" style="margin:0"><button class="primary" id="rGo">Show this point</button></div>
+    </div>
+    <div class="err" id="rErr"></div>
+    <div class="views" id="rV"></div>
+    <div class="readout" id="rOut"></div>
+    <div class="legend">
+      <span><i class="sw mv" style="background:var(--ci)"></i><span>walk east (<i>x</i>)</span></span>
+      <span><i class="sw mv" style="background:var(--cj)"></i><span>walk north (<i>y</i>)</span></span>
+      <span><i class="sw mv" style="background:var(--ck)"></i><span>climb up (<i>z</i>)</span></span>
+      <span><i class="sw mv" style="background:var(--cs)"></i><span>floor diagonal √(<i>x</i>² + <i>y</i>²)</span></span>
+      <span><i class="sw" style="background:var(--cp)"></i><span>the point and its straight-line distance</span></span>
+      <span><i class="sw mv" style="background:var(--muted)"></i><span>the room’s edges</span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §2 ===================== -->
+<section class="prose">
+  <h2><span class="n">2</span>Vectors in 3D</h2>
+  <p>A 3D vector is a move: so far east, so far north, so far up, written as a column with three <b>components</b>. Everything from the plane carries over, one component at a time. To <b>add</b> vectors, add the east parts, the north parts and the up parts: on a picture, put them head to tail. To <b>scale</b> by <i>k</i>, multiply all three parts by <i>k</i>: 2<b>v</b> is the same trip, twice as far. The <b>length</b> (or <b>magnitude</b>) |<b>v</b>| is the 3D distance formula.</p>
+  <p>The three <b>unit vectors</b> <b>î</b> = (1, 0, 0), <b>ĵ</b> = (0, 1, 0) and <b>k̂</b> = (0, 0, 1) point one step along each axis, and every vector is a mix of them: (<i>x</i>, <i>y</i>, <i>z</i>) = <i>x</i><b>î</b> + <i>y</i><b>ĵ</b> + <i>z</i><b>k̂</b>.</p>
+</section>
+<section class="wide">
+  <div class="card" id="drone">
+    <div class="card-h"><span class="tag">Explore</span><h3>A drone’s flight</h3>
+      <span class="sub">A drone flies up to three straight legs, each a vector (east, north, up) in metres. The legs add head to tail. Compare the distance it flies with how far it ends up from where it started.</span></div>
+    <div class="row" id="dPresets"></div>
+    <div class="desc" id="dDesc"></div>
+    <div class="inputs">
+      <div class="legs" id="dLegs"></div>
+      <div class="row" style="margin:0;align-self:flex-end"><button class="primary" id="dGo">Fly this route</button></div>
+    </div>
+    <div class="err" id="dErr"></div>
+    <div class="views" id="dV"></div>
+    <div class="readout" id="dOut"></div>
+    <div class="legend">
+      <span><i class="sw mv" style="background:var(--cp)"></i><span>leg 1</span></span>
+      <span><i class="sw mv" style="background:var(--cg)"></i><span>leg 2</span></span>
+      <span><i class="sw mv" style="background:var(--cx)"></i><span>leg 3</span></span>
+      <span><i class="sw mv" style="background:var(--ink)"></i><span>displacement: start to finish (the sum)</span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §3 ===================== -->
+<section class="prose">
+  <h2><span class="n">3</span>A 3×3 matrix moves all of space</h2>
+  <p>In 7.B.4 a 2×2 matrix was a move of the plane, recorded by where <b>î</b> and <b>ĵ</b> land. Space works the same way with one more column. A <b>3×3 matrix</b> <i>A</i> is a move of all of space, and its three columns are where <b>î</b>, <b>ĵ</b> and <b>k̂</b> land. Grid lines stay straight and evenly spaced, and the origin stays put, so the unit cube becomes a slanted box called a <b>parallelepiped</b>.</p>
+  <p>Where does any other vector go? Since <b>v</b> = <i>x</i><b>î</b> + <i>y</i><b>ĵ</b> + <i>z</i><b>k̂</b>, the move sends it to <i>A</i><b>v</b> = <i>x</i>·(column 1) + <i>y</i>·(column 2) + <i>z</i>·(column 3). Same recipe, new landing spots.</p>
+</section>
+<section class="wide">
+  <div class="card" id="main">
+    <div class="card-h"><span class="tag">Explore</span><h3>Move space with a 3×3 matrix</h3>
+      <span class="sub">Pick a move, or type your own matrix and a vector <b>v</b>, then press Play. Dashed: before. Solid: after. The coloured path builds <i>A</i><b>v</b> as <i>x</i> of column 1, then <i>y</i> of column 2, then <i>z</i> of column 3.</span></div>
+    <div class="row" id="mPresets"></div>
+    <div class="desc" id="mDesc"></div>
+    <div class="inputs">
+      <div class="grp"><div class="matw">
+        <div class="mhead"><span class="ki">î lands</span><span class="kj">ĵ lands</span><span class="kk">k̂ lands</span></div>
+        <div class="mat" id="mA"></div></div></div>
+      <div class="grp"><div class="matw"><span class="mlab kp">v</span><div class="mat v1 mP" id="mVv"></div></div></div>
+      <div class="row" style="margin:0"><button id="mUse">Use these</button><button class="primary" id="mPlay">Play</button><button id="mReset">Reset</button></div>
+    </div>
+    <div class="err" id="mErr"></div>
+    <div class="views" id="mV"></div>
+    <div class="readout" id="mOut"></div>
+    <div class="legend">
+      <span><i class="sw mv" style="background:var(--ci)"></i><span>where î lands (column 1)</span></span>
+      <span><i class="sw mv" style="background:var(--cj)"></i><span>where ĵ lands (column 2)</span></span>
+      <span><i class="sw mv" style="background:var(--ck)"></i><span>where k̂ lands (column 3)</span></span>
+      <span><i class="sw mv" style="background:var(--cp)"></i><span>the cube and <b>v</b> after the move</span></span>
+      <span><i class="sw rl"></i><span>before (dashed)</span></span>
+      <span><span>⊙ / ⊗ an arrow pointing straight at you / away from you in that view</span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §4 ===================== -->
+<section class="prose">
+  <h2><span class="n">4</span>Volume and the determinant</h2>
+  <p>In the plane, the determinant told you how much a move scales area (7.B.6). In space, the <b>3×3 determinant</b> tells you how much it scales <b>volume</b>: the unit cube (volume 1) becomes a box of volume |det <i>A</i>|, and so does every other shape, by the same factor. The sign carries the same message as before. Negative means space has been turned inside out, like a right glove becoming a left glove in a mirror.</p>
+  <p>Determinant 0 means the box has no volume at all: space has been <b>squashed flat</b> onto a plane (or a line). The everyday example is a shadow. Sunlight squashes a 3D object onto the flat ground, a move called a <b>projection</b>. Many points in the air share one spot of shadow, so a shadow can’t be undone: you can’t recover a lamp-post’s height from its shadow alone without knowing where the sun is.</p>
+</section>
+<section class="wide">
+  <div class="card" id="shadow">
+    <div class="card-h"><span class="tag">Explore</span><h3>Shadows on the floor</h3>
+      <span class="sub">Set how high the sun is (degrees above the horizon) and where it is (compass bearing: 90 = east, 180 = south, 270 = west). The shadow move is a 3×3 matrix with a row of zeros: every point lands on the floor.</span></div>
+    <div class="row" id="sPresets"></div>
+    <div class="desc" id="sDesc"></div>
+    <div class="inputs">
+      <label class="field fs sm"><span>Sun height °</span><input id="sA" type="text" inputmode="decimal" autocomplete="off"></label>
+      <label class="field fs sm"><span>Bearing °</span><input id="sB" type="text" inputmode="decimal" autocomplete="off"></label>
+      <div class="row" style="margin:0"><button class="primary" id="sGo">Cast the shadow</button></div>
+    </div>
+    <div class="err" id="sErr"></div>
+    <div class="bigline" id="sMat"></div>
+    <div class="views" id="sV"></div>
+    <div class="readout" id="sOut"></div>
+    <div class="legend">
+      <span><i class="sw mv" style="background:var(--ink)"></i><span>house and flagpole</span></span>
+      <span><i class="sw" style="background:var(--sh);opacity:.5;border-radius:3px"></i><span>shadow on the floor</span></span>
+      <span><i class="sw mv" style="background:var(--sun)"></i><span>a sun ray from the top of the pole</span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §5 ===================== -->
+<section class="prose">
+  <h2><span class="n">5</span>Dot product and cross product</h2>
+  <p>The <b>dot product</b> works exactly as in the plane, with one more term: <b>u</b>·<b>v</b> = <i>u</i>₁<i>v</i>₁ + <i>u</i>₂<i>v</i>₂ + <i>u</i>₃<i>v</i>₃ = |<b>u</b>||<b>v</b>| cos θ. It measures how much two arrows point the same way. Zero means they are <b>perpendicular</b> (also called <b>orthogonal</b>), so the dot product also finds the <b>angle between two vectors</b>.</p>
+  <p>Space has something the plane doesn’t: given two arrows, there is a whole new direction sticking out of the flat sheet they span. The <b>cross product</b> <b>u</b> × <b>v</b> is the vector pointing that way. It is perpendicular to both <b>u</b> and <b>v</b>, and its length is the area of the parallelogram they make. Which of the two perpendicular directions? The <b>right-hand rule</b>: curl the fingers of your right hand from <b>u</b> to <b>v</b>, and your thumb points along <b>u</b> × <b>v</b>. Swap the order and the thumb flips: <b>v</b> × <b>u</b> = −(<b>u</b> × <b>v</b>).</p>
+</section>
+<section class="wide">
+  <div class="card" id="cross">
+    <div class="card-h"><span class="tag">Explore</span><h3>Dot and cross</h3>
+      <span class="sub">Type two vectors. The readout works out the dot product and the angle; the pink arrow is <b>u</b> × <b>v</b>, sticking out of the shaded parallelogram. Press Swap to see the cross product flip.</span></div>
+    <div class="row" id="xPresets"></div>
+    <div class="desc" id="xDesc"></div>
+    <div class="inputs">
+      <div class="grp"><div class="matw"><span class="mlab kp">u</span><div class="mat v1 mP" id="xU"></div></div></div>
+      <div class="grp"><div class="matw"><span class="mlab kg">v</span><div class="mat v1 mG" id="xVv"></div></div></div>
+      <div class="row" style="margin:0"><button class="primary" id="xGo">Use these</button><button id="xSwap">Swap u and v</button></div>
+    </div>
+    <div class="err" id="xErr"></div>
+    <div class="views" id="xV"></div>
+    <div class="readout" id="xOut"></div>
+    <div class="legend">
+      <span><i class="sw mv" style="background:var(--cp)"></i><span><b>u</b></span></span>
+      <span><i class="sw mv" style="background:var(--cg)"></i><span><b>v</b></span></span>
+      <span><i class="sw mv" style="background:var(--cx)"></i><span><b>u</b> × <b>v</b></span></span>
+      <span><i class="sw" style="background:var(--cs);opacity:.5;border-radius:3px"></i><span>parallelogram on <b>u</b> and <b>v</b></span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §6 ===================== -->
+<section class="prose">
+  <h2><span class="n">6</span>3D graphics: turning a model</h2>
+  <p>Every 3D video game and animated film does this millions of times a second. A model is a list of corner points; to turn it, tilt it or resize it, the computer multiplies every corner by one 3×3 matrix. Turning by an angle ψ around the vertical axis, tilting by θ around the east–west axis and resizing by <i>s</i> are each a matrix. Doing one move and then another is the product of their matrices, applied right to left, and just as in 7.B.5, <b>order matters</b>: turn-then-tilt is not tilt-then-turn.</p>
+</section>
+<section class="wide">
+  <div class="card" id="game">
+    <div class="card-h"><span class="tag">Explore</span><h3>Turn, tilt and resize a model</h3>
+      <span class="sub">The model is a block letter F, so flips and turns can’t hide. Set the turn, the tilt and the size, choose the order, and press Play. The matrix that does the whole move appears below.</span></div>
+    <div class="row" id="gPresets"></div>
+    <div class="desc" id="gDesc"></div>
+    <div class="inputs">
+      <label class="field sm"><span>Turn ψ° (about <i>z</i>)</span><input id="gT" type="text" inputmode="decimal" autocomplete="off" style="border-color:var(--ck)"></label>
+      <label class="field sm"><span>Tilt θ° (about <i>x</i>)</span><input id="gP" type="text" inputmode="decimal" autocomplete="off" style="border-color:var(--ci)"></label>
+      <label class="field sm"><span>Size <i>s</i></span><input id="gS" type="text" inputmode="decimal" autocomplete="off" style="border-color:var(--cp)"></label>
+      <div class="row toggle" style="margin:0"><button id="gO1" class="on">Turn, then tilt</button><button id="gO2">Tilt, then turn</button></div>
+      <div class="row" style="margin:0"><button class="primary" id="gPlay">Play</button><button id="gReset">Reset</button></div>
+    </div>
+    <div class="err" id="gErr"></div>
+    <div class="bigline" id="gMat"></div>
+    <div class="views" id="gV"></div>
+    <div class="readout" id="gOut"></div>
+    <div class="legend">
+      <span><i class="sw mv" style="background:var(--cp)"></i><span>the model after the move</span></span>
+      <span><i class="sw rl"></i><span>the model before</span></span>
+      <span><i class="sw mv" style="background:var(--ci)"></i><span>î lands</span></span>
+      <span><i class="sw mv" style="background:var(--cj)"></i><span>ĵ lands</span></span>
+      <span><i class="sw mv" style="background:var(--ck)"></i><span>k̂ lands</span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §7 ===================== -->
+<section class="prose">
+  <h2><span class="n">7</span>Traps and non-examples</h2>
+</section>
+<section class="wide">
+  <div class="card" id="traps">
+    <div class="card-h"><span class="tag">Compare</span><h3>Easy to get wrong in 3D</h3></div>
+    <div class="traps">
+      <div class="t"><h4 class="kbad">✕ One view isn’t enough</h4><div class="pair"><svg id="tr1a" viewBox="0 0 230 200"></svg><svg id="tr1b" viewBox="0 0 230 200"></svg></div>
+        <p>From above, (2, 1, 0) and (2, 1, 3) are the same dot. The front view separates them. A flat view always hides one coordinate.</p></div>
+      <div class="t"><h4 class="kbad">✕ <b>u</b> × <b>v</b> ≠ <b>v</b> × <b>u</b></h4><svg id="tr2" viewBox="0 0 300 220"></svg>
+        <p><b>î</b> × <b>ĵ</b> = <b>k̂</b> points up, but <b>ĵ</b> × <b>î</b> = −<b>k̂</b> points down. Same length, opposite direction.</p></div>
+      <div class="t"><h4 class="kbad">✕ A 3×3 determinant isn’t <i>ad</i> − <i>bc</i></h4><div style="font:600 15px var(--mono);margin:12px 0;text-align:center"><span class="mshow"><span>1</span><span>2</span><span>0</span><span>0</span><span>1</span><span>0</span><span>3</span><span>0</span><span>2</span></span></div>
+        <p>Using only the top-left 2×2 corner gives 1·1 − 2·0 = 1, but the true determinant is 2: every entry matters. Expand along the top row (section 8), or note that the third column only stretches k̂ by 2.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §8 ===================== -->
+<section class="prose">
+  <h2><span class="n">8</span>Now, in symbols</h2>
+  <div class="math">\[ \mathbf v = \begin{pmatrix} x\\ y\\ z\end{pmatrix} = x\,\hat\imath + y\,\hat\jmath + z\,\hat k, \qquad |\mathbf v| = \sqrt{x^2 + y^2 + z^2} \]<div class="cap">Components and length. Adding and scaling work one component at a time.</div></div>
+  <div class="math">\[ A\mathbf v = \begin{pmatrix} a & b & c\\ d & e & f\\ g & h & i\end{pmatrix}\begin{pmatrix} x\\ y\\ z\end{pmatrix} = x\begin{pmatrix} a\\ d\\ g\end{pmatrix} + y\begin{pmatrix} b\\ e\\ h\end{pmatrix} + z\begin{pmatrix} c\\ f\\ i\end{pmatrix} \]<div class="cap">The columns are where î, ĵ, k̂ land; <i>A</i><b>v</b> mixes them with the amounts <i>x</i>, <i>y</i>, <i>z</i>.</div></div>
+  <div class="math">\[ \det A = a(ei - fh) - b(di - fg) + c(dh - eg) \]<div class="cap">Expansion along the top row: each top entry times the 2×2 determinant left when you cross out its row and column, with signs + − +. |det <i>A</i>| is the volume scale factor.</div></div>
+  <div class="math">\[ \mathbf u \cdot \mathbf v = u_1v_1 + u_2v_2 + u_3v_3 = |\mathbf u||\mathbf v|\cos\theta \]</div>
+  <div class="math">\[ \mathbf u \times \mathbf v = \begin{pmatrix} u_2v_3 - u_3v_2\\ u_3v_1 - u_1v_3\\ u_1v_2 - u_2v_1\end{pmatrix}, \qquad |\mathbf u \times \mathbf v| = |\mathbf u||\mathbf v|\sin\theta \]<div class="cap">Perpendicular to both <b>u</b> and <b>v</b>, by the right-hand rule; its length is the parallelogram’s area.</div></div>
+  <div class="math">\[ R_z(\psi) = \begin{pmatrix} \cos\psi & -\sin\psi & 0\\ \sin\psi & \cos\psi & 0\\ 0 & 0 & 1\end{pmatrix},\quad R_x(\theta) = \begin{pmatrix} 1 & 0 & 0\\ 0 & \cos\theta & -\sin\theta\\ 0 & \sin\theta & \cos\theta\end{pmatrix} \]<div class="cap">Turning about the <i>z</i>-axis is the 2D rotation in the top-left corner; turn-then-tilt is <i>R<sub>x</sub></i>(θ)<i>R<sub>z</sub></i>(ψ).</div></div>
+  <p>Checking a cross product and a determinant by hand is tedious, so this is where a computer earns its place:</p>
+  <pre class="code"><code>import numpy as np                       # numerical arrays and linear algebra
+
+u = np.array([2, 1, 0])                  # the vector u
+v = np.array([1, -1, 2])                 # the vector v
+w = np.cross(u, v)                       # u × v, perpendicular to both
+print(w, w @ u, w @ v)                   # [ 2 -4 -3] 0 0: both dot products are 0, so w is perpendicular
+
+A = np.array([[2, 1, 0],                 # columns: where î, ĵ, k̂ land
+              [0, 1, 1],
+              [1, 0, 1]])
+print(np.linalg.det(A))                  # 3.0 (up to rounding): the move triples every volume
+
+t = np.radians(90)                        # 90 degrees, in radians
+Rz = np.array([[np.cos(t), -np.sin(t), 0], [np.sin(t), np.cos(t), 0], [0, 0, 1]])   # turn about z
+Rx = np.array([[1, 0, 0], [0, np.cos(t), -np.sin(t)], [0, np.sin(t), np.cos(t)]])   # tilt about x
+print(np.allclose(Rx @ Rz, Rz @ Rx))      # False: turn-then-tilt differs from tilt-then-turn</code></pre>
+</section>
+
+<!-- ===================== §9 ===================== -->
+<section class="prose">
+  <h2><span class="n">9</span>Where this goes</h2>
+  <ul class="goes">
+    <li><b>Next (7.B.11):</b> matrices of any shape, not just square: adding them, scaling them and flipping them over with the transpose.</li>
+    <li><b>Later in this book:</b> independence and dimension (7.B.12) explain exactly when a 3×3 matrix flattens space; calculus in three variables uses the dot and cross product throughout.</li>
+    <li><b>In the world:</b> every 3D game, film and design program turns models with 3×3 matrices; drones, phones and aircraft track position as (east, north, up); and shadows, maps and photos are all projections of 3D onto a flat surface.</li>
+  </ul>
+</section>
+
+<!-- ===================== §10 ===================== -->
+<section class="prose">
+  <h2><span class="n">10</span>Words to know</h2>
+  <div class="vocab">
+    <div class="term"><b>Coordinates (<i>x</i>, <i>y</i>, <i>z</i>)</b>Three numbers locating a point: east, north and up from the origin.</div>
+    <div class="term"><b>Axes</b>The three number lines (<i>x</i>, <i>y</i>, <i>z</i>), meeting at right angles at the origin.</div>
+    <div class="term"><b>Orthographic views</b>Flat top, front and side views; each shows two coordinates and hides the third.</div>
+    <div class="term"><b>Components</b>The three numbers of a vector: how far it goes along each axis.</div>
+    <div class="term"><b>Unit vectors î, ĵ, k̂</b>One step along <i>x</i>, <i>y</i> and <i>z</i>: (1, 0, 0), (0, 1, 0), (0, 0, 1).</div>
+    <div class="term"><b>Length (magnitude)</b>|<b>v</b>| = √(<i>x</i>² + <i>y</i>² + <i>z</i>²).</div>
+    <div class="term"><b>3D distance formula</b>The distance between two points is the length of the vector from one to the other: Pythagoras twice.</div>
+    <div class="term"><b>3×3 matrix</b>A move of space; its columns are where î, ĵ and k̂ land.</div>
+    <div class="term"><b>Parallelepiped</b>The slanted box that the unit cube becomes after a matrix move.</div>
+    <div class="term"><b>3×3 determinant</b>The volume scale factor of a move, with a minus sign if space is turned inside out.</div>
+    <div class="term"><b>Volume scale factor</b>How many times larger every volume becomes: |det <i>A</i>|.</div>
+    <div class="term"><b>Projection</b>A move that squashes space flat onto a plane, like a shadow. Determinant 0; it can’t be undone.</div>
+    <div class="term"><b>Rotation about an axis</b>A turn that leaves the points on one line (the axis) fixed.</div>
+    <div class="term"><b>Dot product</b><b>u</b>·<b>v</b> = <i>u</i>₁<i>v</i>₁ + <i>u</i>₂<i>v</i>₂ + <i>u</i>₃<i>v</i>₃ = |<b>u</b>||<b>v</b>| cos θ.</div>
+    <div class="term"><b>Angle between vectors</b>θ with cos θ = <b>u</b>·<b>v</b> / (|<b>u</b>||<b>v</b>|).</div>
+    <div class="term"><b>Perpendicular (orthogonal)</b>At right angles; for vectors, a dot product of 0.</div>
+    <div class="term"><b>Cross product</b><b>u</b> × <b>v</b>: a vector perpendicular to both, as long as the parallelogram’s area.</div>
+    <div class="term"><b>Right-hand rule</b>Curl your right hand’s fingers from <b>u</b> to <b>v</b>; your thumb points along <b>u</b> × <b>v</b>.</div>
+  </div>
+</section>
+
+<!-- ===================== Quiz ===================== -->
+<section class="prose"><h2><span class="n">11</span>Check yourself</h2>
+  <p>Four kinds of questions: vector arithmetic, where a vector lands under a matrix, reading a matrix from the views, and volume (the determinant).</p>
+</section>
+<section class="wide">
+  <div class="card" id="quiz">
+    <div class="card-h"><span class="tag">Quiz</span><h3 id="qTitle"></h3><span class="score" id="score">Score: 0 / 0</span></div>
+    <div class="qtext" id="qText"></div>
+    <div class="qmath" id="qMath"></div>
+    <div class="qvis" id="qVis"></div>
+    <div class="choice" id="qChoice"></div>
+    <div class="inputs" id="qIn">
+      <div id="qBoxes" style="display:flex;gap:8px;align-items:flex-end"></div>
+      <div class="row" style="margin:0"><button class="primary" id="qCheck">Check</button></div>
+    </div>
+    <div class="row" style="margin:10px 0 0"><button id="qShow">Show answer</button><button id="qNew">New question</button></div>
+    <div class="err" id="qErr"></div>
+    <div class="feedback" id="qFb" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ===================== Pager (filled in by the shared navigation) ===================== -->
+<nav class="wide">
+  <div class="pager"></div>
+  <div class="meta">7.B.10 · Prerequisites: 7.B.4 (a matrix is a move), 7.B.5 (multiplication), 7.B.6 (determinant), 7.B.3 (dot product) · Leads to: 7.B.11 (matrices of any size), 7.B.12 (independence and dimension)</div>
+</nav>
+</main>
+
+<script>
+/* =====================================================================
+   1. HELPERS
+   ===================================================================== */
+const NS = 'http://www.w3.org/2000/svg';
+const $ = id => document.getElementById(id);
+function mk(tag, attrs, parent){                           // create an SVG element with attributes
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function txt(parent, x, y, s, cls, extra){                 // create an SVG text element
+  extra = Object.assign({}, extra || {});
+  if (extra['text-anchor']){ extra.style = (extra.style ? extra.style + ';' : '') + 'text-anchor:' + extra['text-anchor']; delete extra['text-anchor']; }
+  const t = mk('text', Object.assign({ x, y, class: cls || '' }, extra), parent);
+  t.textContent = s;
+  return t;
+}
+function num(x, d){ if (d === undefined) d = 2; const r = Math.round(x * Math.pow(10, d)) / Math.pow(10, d); return r === 0 ? '0' : (r < 0 ? '−' : '') + String(Math.abs(r)); }
+const pn = x => x < 0 ? `(${num(x)})` : num(x);
+const ri = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+const shuffle = a => { for (let i = a.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+function parseNum(s){
+  s = String(s).trim().replace(/[−–]/g, '-').replace(/\s+/g, '');
+  if (/^-?\d+(\.\d+)?$|^-?\.\d+$/.test(s)) return parseFloat(s);
+  const m = s.match(/^(-?\d+)\/(\d+)$/);
+  if (m && +m[2] !== 0) return +m[1] / +m[2];
+  return NaN;
+}
+function readIds(ids, errId, msg){                        // read a list of boxes; null (with an error) if any is empty or invalid
+  const out = ids.map(id => parseNum($(id).value));
+  if (ids.some(id => $(id).value.trim() === '') || out.some(isNaN)){ $(errId).textContent = msg || 'Fill in every box with a number.'; return null; }
+  $(errId).textContent = ''; return out;
+}
+function buttons(boxId, list, onPick){
+  list.forEach((p, i) => { const b = document.createElement('button'); b.className = 'preset'; b.textContent = p.n; b.onclick = () => onPick(i); $(boxId).appendChild(b); });
+  return i => [...$(boxId).children].forEach((b, j) => b.classList.toggle('on', j === i));
+}
+// ---- vectors and 3×3 matrices (rows of arrays) ----
+const I3 = () => [[1, 0, 0], [0, 1, 0], [0, 0, 1]];
+const add = (a, b) => a.map((v, i) => v + b[i]);
+const sub = (a, b) => a.map((v, i) => v - b[i]);
+const scl = (k, a) => a.map(v => k * v);
+const dot = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+const len = a => Math.sqrt(dot(a, a));
+const cross = (a, b) => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
+const mv = (M, v) => M.map(r => dot(r, v));
+const mm = (A, B) => A.map(r => [0, 1, 2].map(j => r[0] * B[0][j] + r[1] * B[1][j] + r[2] * B[2][j]));
+const col = (M, j) => [M[0][j], M[1][j], M[2][j]];
+const tr = M => [0, 1, 2].map(i => [0, 1, 2].map(j => M[j][i]));
+const det3 = M => M[0][0] * (M[1][1] * M[2][2] - M[1][2] * M[2][1]) - M[0][1] * (M[1][0] * M[2][2] - M[1][2] * M[2][0]) + M[0][2] * (M[1][0] * M[2][1] - M[1][1] * M[2][0]);
+const blend = (A, e) => A.map((r, i) => r.map((v, j) => (i === j ? 1 : 0) + e * (v - (i === j ? 1 : 0))));   // I + e(A − I)
+const vstr = v => `(${v.map(x => num(x)).join(', ')})`;
+const COLS = ['ki', 'kj', 'kk'];
+function mhtml(M, colored){                                // a bracketed 3×3 matrix as HTML
+  return `<span class="mshow">${M.map(r => r.map((v, j) => `<span class="${colored ? COLS[j] : ''}">${num(v)}</span>`).join('')).join('')}</span>`;
+}
+const vhtml = (v, cls) => `<span class="mshow v1">${v.map(x => `<span class="${cls || ''}">${num(x)}</span>`).join('')}</span>`;
+function matInputs(boxId, prefix, cls){                    // build a grid of input boxes; cls(i, j) gives each its colour class
+  const rows = cls ? 3 : 3, cols = $(boxId).classList.contains('v1') ? 1 : 3;
+  for (let i = 0; i < rows; i++) for (let j = 0; j < cols; j++){
+    const inp = document.createElement('input');
+    inp.id = prefix + i + (cols > 1 ? String(j) : ''); inp.type = 'text'; inp.inputMode = 'decimal'; inp.autocomplete = 'off';
+    if (cls) inp.className = cls(i, j);
+    inp.addEventListener('focus', e => e.target.select());
+    $(boxId).appendChild(inp);
+  }
+}
+const setBoxes = (prefix, vals, cols) => vals.forEach((v, k) => { const id = cols === 1 ? prefix + k : prefix + Math.floor(k / 3) + (k % 3); $(id).value = num(v).replace('−', '-'); });
+const ids3 = p => [p + 0, p + 1, p + 2];
+const ids9 = p => [0, 1, 2].flatMap(i => [0, 1, 2].map(j => p + i + j));
+const to3 = a => [a.slice(0, 3), a.slice(3, 6), a.slice(6, 9)];
+const svgCss = document.createElement('style');
+svgCss.textContent = `
+  .grid{stroke:var(--line);stroke-width:1}
+  .axis{stroke:var(--ink);stroke-width:1.3;opacity:.55}
+  .tl{fill:var(--muted);font:500 10.5px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:3px}
+  .lab{font:700 14px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:4.5px}
+  .labS{font:600 12px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+  .cap{fill:var(--muted);font:600 11px var(--sans);letter-spacing:.07em;paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+`;
+document.head.appendChild(svgCss);
+
+/* =====================================================================
+   2. THE FOUR VIEWS: one 3D scene drawn as corner, top, front and side views
+   ===================================================================== */
+// each view turns a 3D point into flat (across, up) numbers; `toward` is the direction pointing at the viewer
+const VIEWS = {
+  C: { t: 'CORNER VIEW', p: q => [q[0] * 0.92 + q[1] * 0.42, q[2] + q[1] * 0.33 - q[0] * 0.24], toward: [-0.4, -0.7, 0.55] },
+  T: { t: 'TOP VIEW · looking down', hid: 'z points up at you', p: q => [q[0], q[1]], ax: [0, 1], toward: [0, 0, 1] },
+  F: { t: 'FRONT VIEW · looking north', hid: 'y points away from you', p: q => [q[0], q[2]], ax: [0, 2], toward: [0, -1, 0] },
+  S: { t: 'SIDE VIEW · looking west', hid: 'x points at you', p: q => [q[1], q[2]], ax: [1, 2], toward: [1, 0, 0] },
+};
+const AXC = ['var(--ci)', 'var(--cj)', 'var(--ck)'], AXN = ['x', 'y', 'z'];
+function mkViews(boxId, keys, W, H){                       // create the SVG panels inside a container
+  const box = $(boxId); box.innerHTML = '';
+  return keys.map(k => { const s = document.createElementNS(NS, 'svg'); s.setAttribute('viewBox', `0 0 ${W || 470} ${H || 300}`); box.appendChild(s); return { svg: s, key: k, W: W || 470, H: H || 300 }; });
+}
+// items: {k:'seg', a, b, c, w, dash, op} | {k:'arrow', a, b, c, w, lab, dash, op} | {k:'dot', p, c, r} | {k:'poly', pts, c, op} | {k:'text', p, s, c, dx, dy, anchor}
+// o.floor: draw a floor grid in the corner view; o.labels: tick labels on the flat views; o.pad
+function drawSet(panels, items, o){
+  o = o || {};
+  const pts = [[0, 0, 0]];
+  items.forEach(it => [it.a, it.b, it.p].concat(it.pts || []).forEach(q => { if (q) pts.push(q); }));
+  (o.extra || []).forEach(q => pts.push(q));
+  const lo = [0, 1, 2].map(i => Math.min(...pts.map(q => q[i]))), hi = [0, 1, 2].map(i => Math.max(...pts.map(q => q[i])));
+  const span = Math.max(1, ...[0, 1, 2].map(i => hi[i] - lo[i]));
+  const ext = o.ext !== undefined ? o.ext : span * 0.16;            // room for the axis labels past the content
+  const LO = lo.map(v => v - (v < 0 ? ext * 0.6 : ext * 0.25)), HI = hi.map(v => v + ext);
+  const box = [];                                                  // the 8 corners of the padded bounding box
+  for (const x of [LO[0], HI[0]]) for (const y of [LO[1], HI[1]]) for (const z of [LO[2], HI[2]]) box.push([x, y, z]);
+  const pad = o.pad || 22, top = 24;
+  // one scale for all panels, so lengths compare across views
+  const fits = panels.map(P => {
+    const V = VIEWS[P.key], pr = box.map(V.p);
+    const x0 = Math.min(...pr.map(p => p[0])), x1 = Math.max(...pr.map(p => p[0])), y0 = Math.min(...pr.map(p => p[1])), y1 = Math.max(...pr.map(p => p[1]));
+    return { x0, x1, y0, y1, u: Math.min((P.W - 2 * pad) / (x1 - x0 || 1), (P.H - pad - top) / (y1 - y0 || 1)) };
+  });
+  // the flat views share one scale, so lengths compare across them; the corner view gets its own
+  const flatU = fits.filter((f, n) => VIEWS[panels[n].key].ax).map(f => f.u), cornU = fits.filter((f, n) => !VIEWS[panels[n].key].ax).map(f => f.u);
+  const uF = Math.min(o.maxU || 90, ...flatU, 1e9), uC = Math.min(o.maxU || 90, ...cornU, 1e9);
+  let ret = Math.min(uF, uC);
+  panels.forEach((P, n) => {
+    const V = VIEWS[P.key], f = fits[n], svg = P.svg; svg.innerHTML = '';
+    const u = V.ax ? uF : uC;
+    const nice = px => [0.25, 0.5, 1, 2, 5, 10, 20, 50, 100].find(s => s * u >= px) || 200;
+    const g = o.grid || nice(15), gl = o.gridLab || nice(30);
+    const cx = P.W / 2 - u * (f.x0 + f.x1) / 2, cy = top + (P.H - top - pad) / 2 + u * (f.y0 + f.y1) / 2;
+    const S = q => { const p = V.p(q); return [cx + u * p[0], cy - u * p[1]]; };
+    const gg = mk('g', {}, svg), gi = mk('g', {}, svg), gt = mk('g', {}, svg);
+    if (V.ax){                                                     // flat view: square grid, two labelled axes
+      const a = V.ax, X0 = (0 - cx) / u, X1 = (P.W - cx) / u, Y0 = (cy - P.H) / u, Y1 = cy / u;
+      for (let v = Math.ceil(X0 / g) * g; v <= X1; v += g) mk('line', { x1: cx + u * v, y1: top - 4, x2: cx + u * v, y2: P.H, class: 'grid' }, gg);
+      for (let v = Math.ceil(Y0 / g) * g; v <= Y1; v += g) if (cy - u * v > top - 4) mk('line', { x1: 0, y1: cy - u * v, x2: P.W, y2: cy - u * v, class: 'grid' }, gg);
+      mk('line', { x1: 0, y1: cy, x2: P.W, y2: cy, class: 'axis' }, gg);
+      mk('line', { x1: cx, y1: top - 4, x2: cx, y2: P.H, class: 'axis' }, gg);
+      txt(gt, P.W - 8, cy - 7, AXN[a[0]], 'lab', { 'text-anchor': 'end', style: `fill:${AXC[a[0]]}` });
+      txt(gt, cx + 8, top + 12, AXN[a[1]], 'lab', { style: `fill:${AXC[a[1]]}` });
+      if (o.labels !== false){
+        for (let v = Math.ceil(X0 / gl) * gl; v <= X1; v += gl) if (Math.abs(v) > 1e-9 && cx + u * v > 14 && cx + u * v < P.W - 22) txt(gt, cx + u * v, cy + 14, num(v), 'tl', { 'text-anchor': 'middle' });
+        for (let v = Math.ceil(Y0 / gl) * gl; v <= Y1; v += gl) if (Math.abs(v) > 1e-9 && cy - u * v > top + 18 && cy - u * v < P.H - 6) txt(gt, cx - 5, cy - u * v + 4, num(v), 'tl', { 'text-anchor': 'end' });
+      }
+    } else {                                                       // corner view: floor grid and three axes
+      if (o.floor !== false){
+        const x0 = Math.floor(LO[0] / g) * g, x1 = Math.ceil(HI[0] / g) * g, y0 = Math.floor(LO[1] / g) * g, y1 = Math.ceil(HI[1] / g) * g;
+        for (let x = x0; x <= x1 + 1e-9; x += g){ const A = S([x, y0, 0]), B = S([x, y1, 0]); mk('line', { x1: A[0], y1: A[1], x2: B[0], y2: B[1], class: 'grid' }, gg); }
+        for (let y = y0; y <= y1 + 1e-9; y += g){ const A = S([x0, y, 0]), B = S([x1, y, 0]); mk('line', { x1: A[0], y1: A[1], x2: B[0], y2: B[1], class: 'grid' }, gg); }
+      }
+      [0, 1, 2].forEach(i => {
+        const a = [0, 0, 0], b = [0, 0, 0]; a[i] = Math.min(0, LO[i]); b[i] = HI[i];
+        const A = S(a), B = S(b);
+        mk('line', { x1: A[0], y1: A[1], x2: B[0], y2: B[1], class: 'axis' }, gg);
+        const d = Math.hypot(B[0] - A[0], B[1] - A[1]) || 1;
+        txt(gt, B[0] + 10 * (B[0] - A[0]) / d, B[1] + 10 * (B[1] - A[1]) / d + 5, AXN[i], 'lab', { 'text-anchor': 'middle', style: `fill:${AXC[i]}` });
+      });
+    }
+    // panel title (with what the view hides)
+    mk('rect', { x: 0, y: 0, width: P.W, height: top - 4, style: 'fill:var(--bg);opacity:.85' }, gt);
+    txt(gt, 10, 15, V.t + (V.hid && P.W >= 400 ? '  ·  ' + V.hid : ''), 'cap');
+    // the scene
+    items.forEach(it => {
+      if (it.k === 'poly'){ mk('polygon', { points: it.pts.map(q => S(q).join(',')).join(' '), style: `fill:${it.c};opacity:${it.op ?? .2};stroke:none` }, it.layer === 'top' ? gt : gi); return; }
+      if (it.k === 'seg'){ const A = S(it.a), B = S(it.b); mk('line', { x1: A[0], y1: A[1], x2: B[0], y2: B[1], style: `stroke:${it.c};stroke-width:${it.w || 2};opacity:${it.op ?? 1};stroke-linecap:round${it.dash ? ';stroke-dasharray:' + it.dash : ''}` }, gi); return; }
+      if (it.k === 'dot'){ const A = S(it.p); mk('circle', { cx: A[0], cy: A[1], r: it.r || 5, style: `fill:${it.c};stroke:var(--bg);stroke-width:1.5` }, gi); return; }
+      if (it.k === 'text'){ const A = S(it.p); txt(gt, A[0] + (it.dx || 0), A[1] + (it.dy || 0), it.s, it.cls || 'labS', { 'text-anchor': it.anchor || 'start', style: `fill:${it.c}` }); return; }
+      if (it.k === 'arrow'){
+        const A = S(it.a), B = S(it.b), L = Math.hypot(B[0] - A[0], B[1] - A[1]), w = it.w || 3, st = `stroke:${it.c};stroke-width:${w};opacity:${it.op ?? 1}${it.dash ? ';stroke-dasharray:' + it.dash : ''}`;
+        const v3 = sub(it.b, it.a);
+        if (len(v3) < 1e-9) return;
+        if (L < 6){                                                // pointing straight at or away from the viewer: ⊙ or ⊗
+          const at = dot(v3, V.toward) > 0;
+          mk('circle', { cx: B[0], cy: B[1], r: 7, style: `fill:var(--bg);stroke:${it.c};stroke-width:2;opacity:${it.op ?? 1}` }, gi);
+          if (at) mk('circle', { cx: B[0], cy: B[1], r: 2.2, style: `fill:${it.c}` }, gi);
+          else { mk('line', { x1: B[0] - 4, y1: B[1] - 4, x2: B[0] + 4, y2: B[1] + 4, style: `stroke:${it.c};stroke-width:2` }, gi); mk('line', { x1: B[0] - 4, y1: B[1] + 4, x2: B[0] + 4, y2: B[1] - 4, style: `stroke:${it.c};stroke-width:2` }, gi); }
+          if (it.lab) txt(gt, B[0] + 11, B[1] - 8, it.lab, 'lab', { style: `fill:${it.c}` });
+          return;
+        }
+        const ux = (B[0] - A[0]) / L, uy = (B[1] - A[1]) / L, hs = Math.min(11, L * 0.45);
+        mk('line', { x1: A[0], y1: A[1], x2: B[0] - ux * hs * 0.8, y2: B[1] - uy * hs * 0.8, style: st }, gi);
+        const p = [[B[0], B[1]], [B[0] - hs * ux + hs * 0.5 * uy, B[1] - hs * uy - hs * 0.5 * ux], [B[0] - hs * ux - hs * 0.5 * uy, B[1] - hs * uy + hs * 0.5 * ux]];
+        mk('polygon', { points: p.map(q => q.join(',')).join(' '), style: `fill:${it.c};opacity:${it.op ?? 1}` }, gi);
+        if (it.lab) txt(gt, B[0] + ux * 13 + (it.ldx || 0), B[1] + uy * 13 + 5 + (it.ldy || 0), it.lab, 'lab', { 'text-anchor': 'middle', style: `fill:${it.c}` });
+      }
+    });
+  });
+  return ret;
+}
+const CUBE_E = [[[0,0,0],[1,0,0]],[[0,0,0],[0,1,0]],[[0,0,0],[0,0,1]],[[1,0,0],[1,1,0]],[[1,0,0],[1,0,1]],[[0,1,0],[1,1,0]],[[0,1,0],[0,1,1]],[[0,0,1],[1,0,1]],[[0,0,1],[0,1,1]],[[1,1,0],[1,1,1]],[[1,0,1],[1,1,1]],[[0,1,1],[1,1,1]]];
+function boxEdges(a, b){ return CUBE_E.map(([p, q]) => [p.map((v, i) => v ? b[i] : a[i]), q.map((v, i) => v ? b[i] : a[i])]); }
+
+/* =====================================================================
+   3. A POINT IN A ROOM
+   ===================================================================== */
+const RM = [5, 4, 3];
+const rPresets = [
+  { n: 'Far corner', p: [5, 4, 3], d: 'The ceiling corner opposite the origin. Its distance is the room’s longest straight line: the space diagonal.' },
+  { n: 'Ceiling lamp', p: [2.5, 2, 3], d: 'A lamp in the middle of the ceiling.' },
+  { n: 'Light switch', p: [0, 1.5, 1.2], d: 'On the west wall (x = 0), 1.5 m north and 1.2 m up. With no east step, the front view shows it right on the z-axis.' },
+  { n: 'Table corner', p: [3, 1, 0.75], d: 'The corner of a table top, 75 cm off the floor.' },
+];
+const rViews = mkViews('rV', ['C', 'T', 'F', 'S']);
+let RP = [5, 4, 3];
+function rDraw(){
+  const [x, y, z] = RP, items = [];
+  boxEdges([0, 0, 0], RM).forEach(([a, b]) => items.push({ k: 'seg', a, b, c: 'var(--muted)', w: 1.5, op: .6 }));
+  items.push({ k: 'seg', a: [0, 0, 0], b: [x, y, 0], c: 'var(--cs)', w: 3, dash: '6 5' });
+  if (x) items.push({ k: 'arrow', a: [0, 0, 0], b: [x, 0, 0], c: 'var(--ci)', w: 3.5 });
+  if (y) items.push({ k: 'arrow', a: [x, 0, 0], b: [x, y, 0], c: 'var(--cj)', w: 3.5 });
+  if (z) items.push({ k: 'arrow', a: [x, y, 0], b: [x, y, z], c: 'var(--ck)', w: 3.5 });
+  items.push({ k: 'seg', a: [0, 0, 0], b: [x, y, z], c: 'var(--cp)', w: 2.5, op: .8 });
+  items.push({ k: 'dot', p: [x, y, z], c: 'var(--cp)', r: 7 });
+  items.push({ k: 'text', p: [x, y, z], s: `(${num(x)}, ${num(y)}, ${num(z)})`, c: 'var(--cp)', dx: 10, dy: -10 });
+  drawSet(rViews, items, { ext: 0.9, grid: 1, gridLab: 1 });
+  const fl = Math.hypot(x, y), d = Math.hypot(x, y, z);
+  $('rOut').innerHTML = `Walk <span class="ki">${num(x)} m east</span>, <span class="kj">${num(y)} m north</span>, then climb <span class="kk">${num(z)} m up</span>.<br>` +
+    `Floor diagonal: √(${num(x)}² + ${num(y)}²) = √${num(x * x + y * y)} ≈ <b>${num(fl)}</b> m. Then up: √(${num(fl)}² + ${num(z)}²) = √(${num(x)}² + ${num(y)}² + ${num(z)}²) = √${num(x * x + y * y + z * z)} ≈ <span class="kp">${num(d)} m</span> in a straight line from the origin.<br>` +
+    `Top view shows (<span class="ki">${num(x)}</span>, <span class="kj">${num(y)}</span>) and hides the height; front view shows (<span class="ki">${num(x)}</span>, <span class="kk">${num(z)}</span>); side view shows (<span class="kj">${num(y)}</span>, <span class="kk">${num(z)}</span>). Each coordinate appears in exactly two views.`;
+  ['rX', 'rY', 'rZ'].forEach((id, i) => $(id).value = num(RP[i]).replace('−', '-'));
+}
+const rMark = buttons('rPresets', rPresets, i => { RP = rPresets[i].p.slice(); rMark(i); $('rDesc').textContent = rPresets[i].d; $('rErr').textContent = ''; rDraw(); });
+$('rGo').onclick = () => {
+  const v = readIds(['rX', 'rY', 'rZ'], 'rErr'); if (!v) return;
+  if (v.some((t, i) => t < 0 || t > RM[i])){ $('rErr').textContent = 'Keep the point inside the room: 0 to 5 east, 0 to 4 north, 0 to 3 up.'; return; }
+  RP = v; rMark(-1); $('rDesc').textContent = 'Your own point.'; rDraw();
+};
+['rX', 'rY', 'rZ'].forEach(id => { $(id).addEventListener('focus', e => e.target.select()); $(id).addEventListener('keydown', e => { if (e.key === 'Enter') $('rGo').click(); }); });
+
+/* =====================================================================
+   4. A DRONE'S FLIGHT (adding vectors)
+   ===================================================================== */
+const LEGC = ['var(--cp)', 'var(--cg)', 'var(--cx)'];
+const dPresets = [
+  { n: 'Survey hop', legs: [[30, 0, 10], [0, 40, 0], [0, 0, -10]], d: 'Climb while flying east, cross north, drop back to the starting height.' },
+  { n: 'Climb, cross, land', legs: [[0, 0, 20], [60, 80, 0], [0, 0, -20]], d: 'Straight up 20 m, across 100 m, straight down. It flies 140 m but ends 100 m away.' },
+  { n: 'Out and back', legs: [[40, 30, 20], [-40, -30, -20], [0, 0, 0]], d: 'Leg 2 is −1 times leg 1. The sum is the zero vector: home again.' },
+  { n: 'Two of the same', legs: [[20, 10, 5], [20, 10, 5], [0, 0, 0]], d: 'Fly the same leg twice: the sum is 2 × the leg. Scaling is repeated adding.' },
+];
+(function(){
+  const box = $('dLegs');
+  box.innerHTML = '<div class="leg"><span class="n"></span><span style="width:62px;text-align:center" class="ki">east</span><span style="width:62px;text-align:center" class="kj">north</span><span style="width:62px;text-align:center" class="kk">up</span></div>' +
+    [0, 1, 2].map(r => `<div class="leg"><span class="n" style="color:${LEGC[r]}">Leg ${r + 1}</span>${[0, 1, 2].map(c => `<input id="dl${r}${c}" type="text" inputmode="decimal" autocomplete="off" style="border-color:${LEGC[r]}">`).join('')}</div>`).join('');
+  ids9('dl').forEach(id => $(id).addEventListener('focus', e => e.target.select()));
+})();
+const dViews = mkViews('dV', ['C', 'T', 'F', 'S']);
+let DL = dPresets[0].legs;
+function dDraw(){
+  const items = []; let pos = [0, 0, 0], total = 0;
+  const used = DL.map((l, i) => [l, i]).filter(([l]) => len(l) > 0);
+  used.forEach(([l, i]) => { const nx = add(pos, l); items.push({ k: 'arrow', a: pos, b: nx, c: LEGC[i], w: 3.5, lab: String(i + 1) }); pos = nx; total += len(l); });
+  const sum = DL.reduce(add, [0, 0, 0]);
+  if (len(sum) > 0) items.push({ k: 'arrow', a: [0, 0, 0], b: sum, c: 'var(--ink)', w: 2.5, dash: '7 5' });
+  items.push({ k: 'dot', p: [0, 0, 0], c: 'var(--ink)', r: 5 });
+  items.push({ k: 'text', p: [0, 0, 0], s: 'start', c: 'var(--muted)', dx: -8, dy: 16, anchor: 'end' });
+  drawSet(dViews, items, {});
+  const comp = (k, c) => `<span class="${c}">${DL.map(l => pn(l[k])).join(' + ')} = ${num(sum[k])}</span>`;
+  $('dOut').innerHTML = used.map(([l, i]) => `<span style="color:${LEGC[i]};font-weight:700">Leg ${i + 1}</span> ${vstr(l)}: length √(${l.map(v => pn(v) + '²').join(' + ')}) ≈ ${num(len(l), 1)} m`).join('<br>') +
+    `<br><b>Sum</b> (one component at a time): east ${comp(0, 'ki')}, north ${comp(1, 'kj')}, up ${comp(2, 'kk')}. Displacement ${vstr(sum)}, length <b>${num(len(sum), 1)} m</b>.` +
+    `<br>Distance flown: <b>${num(total, 1)} m</b>. ` + (len(sum) < 1e-9 ? 'It ends exactly where it started: the legs cancel.' : Math.abs(total - len(sum)) < 1e-6 ? 'Equal to the displacement: all legs point the same way, so there’s no detour.' : `The straight-line displacement is shorter: the length of a sum is at most the sum of the lengths (a straight line is the shortest path).`);
+  ids9('dl').forEach((id, k) => $(id).value = num(DL[Math.floor(k / 3)][k % 3]).replace('−', '-'));
+}
+const dMark = buttons('dPresets', dPresets, i => { DL = dPresets[i].legs.map(l => l.slice()); dMark(i); $('dDesc').textContent = dPresets[i].d; $('dErr').textContent = ''; dDraw(); });
+$('dGo').onclick = () => { const v = readIds(ids9('dl'), 'dErr', 'Fill in every box (use 0 for an unused leg).'); if (!v) return; if (v.some(t => Math.abs(t) > 500)){ $('dErr').textContent = 'Keep each number between −500 and 500.'; return; } DL = to3(v); dMark(-1); $('dDesc').textContent = 'Your own route.'; dDraw(); };
+
+/* =====================================================================
+   5. MAIN EXPLORER: a 3×3 matrix moves space
+   ===================================================================== */
+const mPresets = [
+  { n: 'Stretch', A: [[2, 0, 0], [0, 1, 0], [0, 0, 0.5]], d: 'Twice as long east–west, half as tall. Volume × 2 × 1 × ½ = 1: a new shape, the same volume.' },
+  { n: 'Turn 90° about z', A: [[0, -1, 0], [1, 0, 0], [0, 0, 1]], d: 'A turntable: the top view is the 90° turn from 7.B.4, and heights don’t change. k̂ stays put.' },
+  { n: 'Turn 90° about x', A: [[1, 0, 0], [0, 0, -1], [0, 1, 0]], d: 'Tips space over the east–west axis: north swings up, up swings south. î stays put.' },
+  { n: 'Shear', A: [[1, 0, 1], [0, 1, 0], [0, 0, 1]], d: 'Like pushing a deck of cards: each layer slides east by its height. The box leans; its volume stays 1.' },
+  { n: 'Mirror', A: [[1, 0, 0], [0, 1, 0], [0, 0, -1]], d: 'Flip through the floor: up becomes down. Volume 1, but det = −1: space is turned inside out.' },
+  { n: 'Flatten to floor', A: [[1, 0, 0], [0, 1, 0], [0, 0, 0]], d: 'Every point drops straight to the floor: the noon shadow. k̂ lands on 0, the cube becomes a flat square, det = 0.' },
+  { n: 'General', A: [[2, 1, 0], [0, 1, 1], [1, 0, 1]], d: 'No special pattern. The cube becomes a slanted box of volume 3.' },
+  { n: 'Flat but tilted', A: [[1, 0, 1], [0, 1, 1], [1, 1, 2]], d: 'Column 3 = column 1 + column 2, so all three columns lie in one tilted plane. det = 0: space is squashed onto that plane.' },
+];
+matInputs('mA', 'ma', (i, j) => ['ci', 'cj', 'ck'][j]);
+matInputs('mVv', 'mv');
+const mViews = mkViews('mV', ['C', 'T', 'F', 'S']);
+const MS = { A: mPresets[0].A, v: [1, 1, 1], e: 1, anim: null };
+function mDraw(){
+  const A = MS.A, M = blend(A, MS.e), v = MS.v, items = [];
+  boxEdges([0, 0, 0], [1, 1, 1]).forEach(([a, b]) => items.push({ k: 'seg', a, b, c: 'var(--muted)', w: 1.3, dash: '4 4', op: .7 }));
+  boxEdges([0, 0, 0], [1, 1, 1]).forEach(([a, b]) => items.push({ k: 'seg', a: mv(M, a), b: mv(M, b), c: 'var(--cs)', w: 2.2 }));
+  if (len(v) > 0) items.push({ k: 'arrow', a: [0, 0, 0], b: v, c: 'var(--cp)', w: 2, dash: '5 5', op: .55 });
+  const cs = [0, 1, 2].map(j => col(M, j));
+  // the path x·col1, then y·col2, then z·col3
+  let p = [0, 0, 0];
+  [0, 1, 2].forEach(j => { if (Math.abs(v[j]) > 1e-9){ const q = add(p, scl(v[j], cs[j])); if (len(sub(q, p)) > 1e-9) items.push({ k: 'seg', a: p, b: q, c: AXC[j], w: 2.5, dash: '3 4' }); p = q; } });
+  ['î', 'ĵ', 'k̂'].forEach((s, j) => items.push({ k: 'arrow', a: [0, 0, 0], b: cs[j], c: AXC[j], w: 3.5, lab: s }));
+  const Av = mv(M, v);
+  if (len(Av) > 1e-9) items.push({ k: 'arrow', a: [0, 0, 0], b: Av, c: 'var(--cp)', w: 3.5, lab: MS.e > 0.99 ? 'Av' : '' });
+  // keep the frame fixed during the animation: fit to the start and end pictures together
+  const extra = [[1, 1, 1], v, mv(A, v)].concat(boxEdges([0, 0, 0], [1, 1, 1]).flat().map(q => mv(A, q)));
+  drawSet(mViews, items, { extra });
+  const d = det3(A), cA = [0, 1, 2].map(j => col(A, j)), AV = mv(A, v);
+  let s = `<b>Columns:</b> <span class="ki">î → ${vstr(cA[0])}</span>, <span class="kj">ĵ → ${vstr(cA[1])}</span>, <span class="kk">k̂ → ${vstr(cA[2])}</span>.<br>` +
+    `<b>Where v goes:</b> <i>A</i><b>v</b> = ${pn(v[0])}·<span class="ki">${vstr(cA[0])}</span> + ${pn(v[1])}·<span class="kj">${vstr(cA[1])}</span> + ${pn(v[2])}·<span class="kk">${vstr(cA[2])}</span> = <span class="kp">${vstr(AV)}</span>.<br>` +
+    `<b>Volume:</b> det <i>A</i> = <b>${num(d)}</b>. `;
+  s += Math.abs(d) < 1e-9 ? '<span class="kbad">The cube is squashed flat: zero volume. Different points land on the same spot, so this move can’t be undone.</span>'
+    : `The unit cube becomes a box of volume ${num(Math.abs(d))}, and every shape’s volume is multiplied by ${num(Math.abs(d))}.` + (d < 0 ? ' <span class="kbad">Negative: space is turned inside out (a mirror image).</span>' : '');
+  $('mOut').innerHTML = s;
+}
+function mFill(){ setBoxes('ma', MS.A.flat()); setBoxes('mv', MS.v, 1); }
+function mStop(){ if (MS.anim){ cancelAnimationFrame(MS.anim); MS.anim = null; } $('mPlay').textContent = 'Play'; }
+function mPlay(){
+  if (MS.anim){ mStop(); return; }
+  $('mPlay').textContent = 'Pause';
+  const from = MS.e >= 1 ? 0 : MS.e, t0 = performance.now(), dur = 2200 * (1 - from);
+  const step = now => { const t = Math.min(1, (now - t0) / dur), e = from + (1 - from) * t; MS.e = e < 0.5 ? 2 * e * e : 1 - Math.pow(-2 * e + 2, 2) / 2; if (t >= 1) MS.e = 1; mDraw(); if (t < 1) MS.anim = requestAnimationFrame(step); else mStop(); };
+  MS.anim = requestAnimationFrame(step);
+}
+const mMark = buttons('mPresets', mPresets, i => { mStop(); MS.A = mPresets[i].A.map(r => r.slice()); mMark(i); $('mDesc').textContent = mPresets[i].d; $('mErr').textContent = ''; mFill(); MS.e = 0; mDraw(); mPlay(); });
+$('mUse').onclick = () => {
+  const a = readIds(ids9('ma'), 'mErr'), v = a && readIds(ids3('mv'), 'mErr'); if (!a || !v) return;
+  if (a.concat(v).some(t => Math.abs(t) > 10)){ $('mErr').textContent = 'Keep every number between −10 and 10 so the picture stays readable.'; return; }
+  mStop(); MS.A = to3(a); MS.v = v; mMark(-1); $('mDesc').textContent = 'Your own matrix.'; MS.e = 0; mDraw(); mPlay();
+};
+$('mPlay').onclick = mPlay;
+$('mReset').onclick = () => { mStop(); MS.e = 0; mDraw(); };
+
+/* =====================================================================
+   6. SHADOWS (a projection, determinant 0)
+   ===================================================================== */
+const sPresets = [
+  { n: 'Sun overhead', a: 90, b: 180, d: 'The sun straight up: everything drops straight down. The shadow is the top view.' },
+  { n: 'Morning (east)', a: 30, b: 90, d: 'A low sun in the east throws shadows west.' },
+  { n: 'Afternoon (south-west)', a: 45, b: 225, d: 'Sun 45° up in the south-west: a 4 m pole casts a 4 m shadow toward the north-east.' },
+  { n: 'Evening (west)', a: 15, b: 270, d: 'A very low sun: shadows stretch far to the east.' },
+];
+const HOUSE = (() => {                                        // a little house (box plus a pitched roof) and a flagpole
+  const E = boxEdges([1, 1, 0], [3, 3, 2]);
+  E.push([[1, 2, 3], [3, 2, 3]], [[1, 1, 2], [1, 2, 3]], [[1, 3, 2], [1, 2, 3]], [[3, 1, 2], [3, 2, 3]], [[3, 3, 2], [3, 2, 3]]);
+  return E;
+})();
+const HOUSE_F = [                                            // faces, for a filled shadow
+  [[1, 1, 0], [3, 1, 0], [3, 1, 2], [1, 1, 2]], [[1, 3, 0], [3, 3, 0], [3, 3, 2], [1, 3, 2]], [[1, 1, 0], [1, 3, 0], [1, 3, 2], [1, 1, 2]], [[3, 1, 0], [3, 3, 0], [3, 3, 2], [3, 1, 2]],
+  [[1, 1, 2], [3, 1, 2], [3, 2, 3], [1, 2, 3]], [[1, 3, 2], [3, 3, 2], [3, 2, 3], [1, 2, 3]], [[1, 1, 2], [1, 3, 2], [1, 2, 3]], [[3, 1, 2], [3, 3, 2], [3, 2, 3]]];
+const POLE = [[5, 0.5, 0], [5, 0.5, 4]];
+const sViews = mkViews('sV', ['C', 'T', 'F', 'S']);
+const SS = { a: 45, b: 225 };
+function sMatrix(){ const r = Math.PI / 180, c = 1 / Math.tan(SS.a * r); return [[1, 0, -c * Math.sin(SS.b * r)], [0, 1, -c * Math.cos(SS.b * r)], [0, 0, 0]].map(row => row.map(v => Math.abs(v) < 1e-12 ? 0 : v)); }
+function sDraw(){
+  const P = sMatrix(), items = [];
+  HOUSE_F.forEach(f => items.push({ k: 'poly', pts: f.map(q => mv(P, q)), c: 'var(--sh)', op: .22 }));
+  items.push({ k: 'seg', a: mv(P, POLE[0]), b: mv(P, POLE[1]), c: 'var(--sh)', w: 6, op: .45 });
+  HOUSE.forEach(([a, b]) => items.push({ k: 'seg', a, b, c: 'var(--ink)', w: 1.8 }));
+  items.push({ k: 'seg', a: POLE[0], b: POLE[1], c: 'var(--ink)', w: 3 });
+  const tip = mv(P, POLE[1]);
+  items.push({ k: 'seg', a: POLE[1], b: tip, c: 'var(--sun)', w: 2, dash: '6 5' });
+  items.push({ k: 'dot', p: POLE[1], c: 'var(--sun)', r: 5 }); items.push({ k: 'dot', p: tip, c: 'var(--sh)', r: 5 });
+  drawSet(sViews, items, {});
+  $('sMat').innerHTML = `Shadow matrix <span class="mshow">${P.map(r => r.map((v, j) => `<span class="${COLS[j]}">${num(v)}</span>`).join('')).join('')}</span> <span>det = 0</span>`;
+  const L = len(sub(tip, POLE[0]));
+  $('sOut').innerHTML = `Each point (<i>x</i>, <i>y</i>, <i>z</i>) slides along a sun ray down to the floor, and the move is the same matrix for every point: column 3 (where <span class="kk">k̂</span> lands) is the shadow of a 1 m stick, ${vstr(col(P, 2))}. ` +
+    `The 4 m flagpole’s shadow is ${num(L)} m long${SS.a >= 89.999 ? ' (just a dot under the pole)' : ''}.<br><b>Bottom row all zeros:</b> every output has height 0, so the cube is squashed flat and <b>det = 0</b>. ` +
+    `Every point on one sun ray lands on the same spot, so from the shadow alone you can’t tell how high anything was: a projection has no undo (no inverse).`;
+  $('sA').value = num(SS.a); $('sB').value = num(SS.b);
+}
+const sMark = buttons('sPresets', sPresets, i => { SS.a = sPresets[i].a; SS.b = sPresets[i].b; sMark(i); $('sDesc').textContent = sPresets[i].d; $('sErr').textContent = ''; sDraw(); });
+$('sGo').onclick = () => { const v = readIds(['sA', 'sB'], 'sErr'); if (!v) return; if (v[0] < 10 || v[0] > 90){ $('sErr').textContent = 'Use a sun height from 10° (very low) to 90° (straight overhead).'; return; } SS.a = v[0]; SS.b = ((v[1] % 360) + 360) % 360; sMark(-1); $('sDesc').textContent = 'Your own sun.'; sDraw(); };
+['sA', 'sB'].forEach(id => $(id).addEventListener('focus', e => e.target.select()));
+
+/* =====================================================================
+   7. DOT AND CROSS
+   ===================================================================== */
+const xPresets = [
+  { n: 'î and ĵ', u: [1, 0, 0], v: [0, 1, 0], d: 'Two axes: dot product 0 (perpendicular), cross product k̂, straight up.' },
+  { n: 'Perpendicular', u: [2, 1, 0], v: [-1, 2, 1], d: 'Not along any axis, but still at right angles: 2·(−1) + 1·2 + 0·1 = 0.' },
+  { n: '60°', u: [1, 1, 0], v: [0, 1, 1], d: 'Dot product 1, lengths √2 and √2: cos θ = 1/2, so θ = 60°.' },
+  { n: 'General', u: [2, 1, 0], v: [1, -1, 2], d: 'An everyday pair: the cross product sticks out at a slant.' },
+  { n: 'Parallel', u: [1, 2, 1], v: [2, 4, 2], d: 'v = 2u: no parallelogram, so u × v = 0. Parallel vectors have no single perpendicular direction.' },
+];
+matInputs('xU', 'xu'); matInputs('xVv', 'xv');
+const xViews = mkViews('xV', ['C', 'T', 'F', 'S']);
+const XS = { u: [2, 1, 0], v: [1, -1, 2] };
+function xDraw(){
+  const { u, v } = XS, w = cross(u, v), items = [];
+  items.push({ k: 'poly', pts: [[0, 0, 0], u, add(u, v), v], c: 'var(--cs)', op: .3 });
+  items.push({ k: 'seg', a: u, b: add(u, v), c: 'var(--cs)', w: 1.2, dash: '4 4' }); items.push({ k: 'seg', a: v, b: add(u, v), c: 'var(--cs)', w: 1.2, dash: '4 4' });
+  items.push({ k: 'arrow', a: [0, 0, 0], b: u, c: 'var(--cp)', w: 3.5, lab: 'u' });
+  items.push({ k: 'arrow', a: [0, 0, 0], b: v, c: 'var(--cg)', w: 3.5, lab: 'v' });
+  if (len(w) > 1e-9) items.push({ k: 'arrow', a: [0, 0, 0], b: w, c: 'var(--cx)', w: 3.5, lab: 'u×v' });
+  drawSet(xViews, items, {});
+  const d = dot(u, v), lu = len(u), lv = len(v);
+  let s = `<b>Dot:</b> u·v = ${u.map((a, i) => `${pn(a)}·${pn(v[i])}`).join(' + ')} = <b>${num(d)}</b>. `;
+  if (lu < 1e-9 || lv < 1e-9) s += 'One vector is zero, so there is no angle.';
+  else { const c = Math.max(-1, Math.min(1, d / (lu * lv))), th = Math.acos(c) * 180 / Math.PI; s += `|u| = ${num(lu)}, |v| = ${num(lv)}, so cos θ = ${num(d)} / (${num(lu)}·${num(lv)}) = ${num(c, 3)} and <b>θ ≈ ${num(th, 1)}°</b>` + (Math.abs(d) < 1e-9 ? ' — <span class="kgood">perpendicular</span>.' : d > 0 ? ' (less than 90°: they lean the same way).' : ' (more than 90°: they lean apart).'); }
+  s += `<br><b>Cross:</b> u × v = (${pn(u[1])}·${pn(v[2])} − ${pn(u[2])}·${pn(v[1])}, ${pn(u[2])}·${pn(v[0])} − ${pn(u[0])}·${pn(v[2])}, ${pn(u[0])}·${pn(v[1])} − ${pn(u[1])}·${pn(v[0])}) = <span class="kx">${vstr(w)}</span>. `;
+  s += len(w) < 1e-9 ? 'Zero: u and v are parallel (or one is zero), so they span no parallelogram.' : `Check: (u×v)·u = ${num(dot(w, u))} and (u×v)·v = ${num(dot(w, v))}, so it is perpendicular to both. Its length ${num(len(w))} is the parallelogram’s area.`;
+  $('xOut').innerHTML = s;
+  setBoxes('xu', u, 1); setBoxes('xv', v, 1);
+}
+const xMark = buttons('xPresets', xPresets, i => { XS.u = xPresets[i].u.slice(); XS.v = xPresets[i].v.slice(); xMark(i); $('xDesc').textContent = xPresets[i].d; $('xErr').textContent = ''; xDraw(); });
+$('xGo').onclick = () => { const u = readIds(ids3('xu'), 'xErr'), v = u && readIds(ids3('xv'), 'xErr'); if (!u || !v) return; if (u.concat(v).some(t => Math.abs(t) > 10)){ $('xErr').textContent = 'Keep every number between −10 and 10.'; return; } XS.u = u; XS.v = v; xMark(-1); $('xDesc').textContent = 'Your own vectors.'; xDraw(); };
+$('xSwap').onclick = () => { [XS.u, XS.v] = [XS.v, XS.u]; $('xDesc').textContent = 'Swapped: the pink arrow now points the other way, v × u = −(u × v).'; xDraw(); };
+
+/* =====================================================================
+   8. GAME CAMERA: turn, tilt, resize a model
+   ===================================================================== */
+const F_OUT = [[0, 0], [0.5, 0], [0.5, 1], [1.2, 1], [1.2, 1.4], [0.5, 1.4], [0.5, 2], [1.5, 2], [1.5, 2.4], [0, 2.4]];   // the letter F in the x–z plane
+const F_E = (() => { const E = [], n = F_OUT.length, th = 0.4;
+  for (let i = 0; i < n; i++){ const [a, b] = F_OUT[i], [c, d] = F_OUT[(i + 1) % n]; E.push([[a, 0, b], [c, 0, d]], [[a, th, b], [c, th, d]], [[a, 0, b], [a, th, b]]); }
+  return E; })();
+const Rz = t => { const c = Math.cos(t), s = Math.sin(t); return [[c, -s, 0], [s, c, 0], [0, 0, 1]]; };
+const Rx = t => { const c = Math.cos(t), s = Math.sin(t); return [[1, 0, 0], [0, c, -s], [0, s, c]]; };
+const gPresets = [
+  { n: 'Turn 90°', t: 90, p: 0, s: 1, o: 1, d: 'A quarter turn about the vertical axis: the F now faces west.' },
+  { n: 'Tilt 90°', t: 0, p: 90, s: 1, o: 1, d: 'A quarter tilt about the east–west axis: the upright F falls forward, so its top now points south (see the side view).' },
+  { n: 'Turn, then tilt', t: 90, p: 90, s: 1, o: 1, d: 'Turn 90° first, then tilt 90°. Compare with the next preset.' },
+  { n: 'Tilt, then turn', t: 90, p: 90, s: 1, o: 2, d: 'The same two moves in the other order: a different final pose and a different matrix.' },
+  { n: 'Grow and turn', t: 30, p: 0, s: 1.5, o: 1, d: 'Turn 30° and resize ×1.5: det = 1.5³ = 3.375, the volume scale factor.' },
+];
+const gViews = mkViews('gV', ['C', 'T', 'F', 'S']);
+const GS = { t: 90, p: 0, s: 1, o: 1, e: 1, anim: null };
+function gMatrix(e){                                         // the matrix part-way (e from 0 to 1) through the move
+  const r = Math.PI / 180, a1 = Math.min(1, 2 * e), a2 = Math.max(0, 2 * e - 1), sc = 1 + (GS.s - 1) * e;
+  let M = GS.o === 1 ? mm(Rx(GS.p * r * a2), Rz(GS.t * r * a1)) : mm(Rz(GS.t * r * a2), Rx(GS.p * r * a1));
+  return M.map(row => row.map(v => sc * v));
+}
+function gDraw(){
+  const M = gMatrix(GS.e), items = [];
+  F_E.forEach(([a, b]) => items.push({ k: 'seg', a, b, c: 'var(--muted)', w: 1.2, dash: '4 4', op: .6 }));
+  F_E.forEach(([a, b]) => items.push({ k: 'seg', a: mv(M, a), b: mv(M, b), c: 'var(--cp)', w: 2.4 }));
+  ['î', 'ĵ', 'k̂'].forEach((s, j) => items.push({ k: 'arrow', a: [0, 0, 0], b: col(M, j), c: AXC[j], w: 2.5, lab: s }));
+  const ext = []; [-1, 1].forEach(a => [-1, 1].forEach(b => [-1, 1].forEach(c => ext.push(scl(2.5 * Math.max(1, GS.s), [a, b, c])))));   // a fixed frame big enough for any turn
+  drawSet(gViews, items, { extra: ext, ext: 0.3 });
+  const F = gMatrix(1), d = det3(F);
+  $('gMat').innerHTML = `Whole move ${GS.o === 1 ? `= tilt · turn` : `= turn · tilt`} ${mhtml(F, true)} <span>det = ${num(d, 3)}</span>`;
+  const other = (() => { const keep = GS.o; GS.o = 3 - keep; const m = gMatrix(1); GS.o = keep; return m; })();
+  const same = other.every((r, i) => r.every((v, j) => Math.abs(v - F[i][j]) < 1e-9));
+  $('gOut').innerHTML = `Every corner of the F is multiplied by this one matrix. Its columns show where the model’s own east (<span class="ki">î</span>), north (<span class="kj">ĵ</span>) and up (<span class="kk">k̂</span>) directions end up. ` +
+    `Turns don’t change volume; the size <i>s</i> multiplies every length by ${num(GS.s)}, so volume by ${num(GS.s)}³ = <b>${num(d, 3)}</b>.<br>` +
+    (same ? 'Here the other order gives the same matrix (one of the moves is “do nothing”, or both are about the same axis).' : `<span class="kbad">The other order gives a different matrix</span>, ${mhtml(other, true)}, so a different pose. Order matters.`);
+  $('gT').value = num(GS.t); $('gP').value = num(GS.p); $('gS').value = num(GS.s);
+  $('gO1').classList.toggle('on', GS.o === 1); $('gO2').classList.toggle('on', GS.o === 2);
+}
+function gStop(){ if (GS.anim){ cancelAnimationFrame(GS.anim); GS.anim = null; } $('gPlay').textContent = 'Play'; }
+function gPlay(){
+  if (GS.anim){ gStop(); return; }
+  $('gPlay').textContent = 'Pause';
+  const from = GS.e >= 1 ? 0 : GS.e, t0 = performance.now(), dur = 3000 * (1 - from);
+  const step = now => { const t = Math.min(1, (now - t0) / dur); GS.e = from + (1 - from) * t; gDraw(); if (t < 1) GS.anim = requestAnimationFrame(step); else gStop(); };
+  GS.anim = requestAnimationFrame(step);
+}
+const gMark = buttons('gPresets', gPresets, i => { gStop(); Object.assign(GS, { t: gPresets[i].t, p: gPresets[i].p, s: gPresets[i].s, o: gPresets[i].o, e: 0 }); gMark(i); $('gDesc').textContent = gPresets[i].d; $('gErr').textContent = ''; gDraw(); gPlay(); });
+function gRead(){ const v = readIds(['gT', 'gP', 'gS'], 'gErr'); if (!v) return false; if (v[2] <= 0 || v[2] > 2){ $('gErr').textContent = 'Use a size between 0 and 2 (1 means unchanged).'; return false; } GS.t = v[0]; GS.p = v[1]; GS.s = v[2]; return true; }
+$('gO1').onclick = () => { if (!gRead()) return; gStop(); GS.o = 1; GS.e = 0; gMark(-1); $('gDesc').textContent = 'Turn first, then tilt.'; gDraw(); gPlay(); };
+$('gO2').onclick = () => { if (!gRead()) return; gStop(); GS.o = 2; GS.e = 0; gMark(-1); $('gDesc').textContent = 'Tilt first, then turn.'; gDraw(); gPlay(); };
+$('gPlay').onclick = () => { if (!GS.anim){ if (!gRead()) return; } gPlay(); };
+$('gReset').onclick = () => { gStop(); GS.e = 0; gDraw(); };
+['gT', 'gP', 'gS'].forEach(id => $(id).addEventListener('focus', e => e.target.select()));
+
+/* =====================================================================
+   9. TRAPS
+   ===================================================================== */
+(function(){
+  const it = [{ k: 'dot', p: [2, 1, 0], c: 'var(--cp)', r: 6 }, { k: 'dot', p: [2, 1, 3], c: 'var(--cg)', r: 6 }, { k: 'text', p: [2, 1, 3], s: 'z = 3', c: 'var(--cg)', dx: 9, dy: -6 }, { k: 'text', p: [2, 1, 0], s: 'z = 0', c: 'var(--cp)', dx: 9, dy: 14 }];
+  const a = { svg: $('tr1a'), key: 'T', W: 230, H: 200 }, b = { svg: $('tr1b'), key: 'F', W: 230, H: 200 };
+  drawSet([a, b], it, { extra: [[3, 2, 3.5]], grid: 1, gridLab: 1 });
+  [a, b].forEach(P => { const c = P.svg.querySelector('text.cap'); if (c) c.textContent = P.key === 'T' ? 'TOP' : 'FRONT'; });
+  drawSet([{ svg: $('tr2'), key: 'C', W: 300, H: 220 }], [
+    { k: 'poly', pts: [[0, 0, 0], [1, 0, 0], [1, 1, 0], [0, 1, 0]], c: 'var(--cs)', op: .3 },
+    { k: 'arrow', a: [0, 0, 0], b: [1, 0, 0], c: 'var(--ci)', w: 3, lab: 'î' }, { k: 'arrow', a: [0, 0, 0], b: [0, 1, 0], c: 'var(--cj)', w: 3, lab: 'ĵ' },
+    { k: 'arrow', a: [0, 0, 0], b: [0, 0, 1], c: 'var(--cx)', w: 3.5, lab: 'î×ĵ' }, { k: 'arrow', a: [0, 0, 0], b: [0, 0, -1], c: 'var(--wrong)', w: 3.5, lab: 'ĵ×î', ldy: 6 }], { ext: 0.4, floor: false });
+})();
+
+/* =====================================================================
+   10. QUIZ
+   ===================================================================== */
+const Q = { right: 0, total: 0 };
+let qq = null;
+const qTitles = { vec: 'Vector arithmetic', land: 'Where does the vector land?', read: 'Read the matrix from the views', vol: 'Volume and the determinant' };
+function qReset(){ ['qMath', 'qVis', 'qChoice', 'qBoxes'].forEach(id => $(id).innerHTML = ''); $('qVis').style.display = 'none'; $('qFb').className = 'feedback'; $('qFb').innerHTML = ''; $('qErr').textContent = ''; $('qIn').style.display = ''; }
+function qScore(ok){ if (qq.counted) return; qq.counted = true; Q.total++; if (ok) Q.right++; $('score').textContent = `Score: ${Q.right} / ${Q.total}`; }
+function qFeedback(ok, html){ $('qFb').className = 'feedback ' + (ok ? 'ok' : 'bad'); $('qFb').innerHTML = (ok ? '<b>Right.</b> ' : '<b>Not quite.</b> ') + html; }
+function qBoxes(labels, cls){                                 // a row of answer boxes
+  $('qBoxes').innerHTML = labels.map((l, k) => `<label class="field sm"><span>${l}</span><input id="qx${k}" type="text" inputmode="decimal" autocomplete="off" style="${cls ? 'border-color:' + cls[k] : ''}"></label>`).join('');
+  labels.forEach((_, k) => { $('qx' + k).addEventListener('focus', e => e.target.select()); $('qx' + k).addEventListener('keydown', e => { if (e.key === 'Enter') $('qCheck').click(); }); $('qx' + k).addEventListener('input', () => $('qErr').textContent = ''); });
+}
+function qMatBoxes(){                                         // a 3×3 grid of answer boxes, coloured by column
+  $('qBoxes').innerHTML = '<div class="matw"><div class="mhead"><span class="ki">î lands</span><span class="kj">ĵ lands</span><span class="kk">k̂ lands</span></div><div class="mat" id="qM"></div></div>';
+  for (let i = 0; i < 9; i++){ const inp = document.createElement('input'); inp.id = 'qx' + i; inp.type = 'text'; inp.inputMode = 'decimal'; inp.autocomplete = 'off'; inp.className = COLS[i % 3].replace('k', 'c'); inp.addEventListener('focus', e => e.target.select()); inp.addEventListener('input', () => $('qErr').textContent = ''); $('qM').appendChild(inp); }
+}
+const qRead = n => { const out = []; for (let k = 0; k < n; k++){ const s = $('qx' + k).value; if (s.trim() === '') return null; const v = parseNum(s); if (isNaN(v)) return null; out.push(v); } return out; };
+const andList = a => a.length > 1 ? a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1] : String(a[0]);
+const same = (a, b) => a.length === b.length && a.every((v, i) => Math.abs(v - b[i]) < 1e-6);
+const rv = (a, b) => [ri(a, b), ri(a, b), ri(a, b)];
+const nz = v => len(v) > 0;
+const QUADS = [[1, 2, 2], [2, 3, 6], [1, 4, 8], [2, 6, 9], [4, 4, 7], [0, 3, 4], [2, 2, 1], [6, 2, 3]];
+
+function qVec(){
+  const kind = pick(['add', 'scale', 'len', 'dot']);
+  qq.kind = kind;
+  if (kind === 'add'){
+    let u, v; do { u = rv(-4, 4); v = rv(-4, 4); } while (!nz(u) || !nz(v));
+    qq.u = u; qq.v = v; qq.ans = add(u, v);
+    $('qText').innerHTML = 'Add the two vectors.';
+    $('qMath').innerHTML = `${vhtml(u, 'kp')} + ${vhtml(v, 'kg')} =`;
+    qBoxes(['x', 'y', 'z'], ['var(--ci)', 'var(--cj)', 'var(--ck)']);
+    qq.explain = `Add one component at a time: ${[0, 1, 2].map(i => `${num(u[i])} + ${pn(v[i])} = ${num(qq.ans[i])}`).join(', ')}.`;
+  } else if (kind === 'scale'){
+    let u; do { u = rv(-4, 4); } while (!nz(u));
+    const k = pick([2, 3, -1, -2, -3]);
+    qq.ans = scl(k, u); qq.k = k; qq.u = u;
+    $('qText').innerHTML = 'Scale the vector.';
+    $('qMath').innerHTML = `${num(k)} × ${vhtml(u, 'kp')} =`;
+    qBoxes(['x', 'y', 'z'], ['var(--ci)', 'var(--cj)', 'var(--ck)']);
+    qq.explain = `Multiply every component by ${num(k)}: ${[0, 1, 2].map(i => `${num(k)}·${pn(u[i])} = ${num(qq.ans[i])}`).join(', ')}.`;
+  } else if (kind === 'len'){
+    let u = shuffle(pick(QUADS).slice()).map(v => v * pick([1, -1]));
+    qq.u = u; qq.ans = [len(u)];
+    $('qText').innerHTML = 'Find the length |<b>v</b>| of this vector. (It comes out to a whole number.)';
+    $('qMath').innerHTML = `<b>v</b> = ${vhtml(u, 'kp')}`;
+    qBoxes(['|v| ='], ['var(--cp)']);
+    qq.explain = `|v| = √(${u.map(v => pn(v) + '²').join(' + ')}) = √${num(dot(u, u))} = ${num(len(u))}.`;
+  } else {
+    let u, v; do { u = rv(-3, 4); v = rv(-3, 4); } while (!nz(u) || !nz(v));
+    qq.u = u; qq.v = v; qq.ans = [dot(u, v)];
+    $('qText').innerHTML = 'Find the dot product <b>u</b>·<b>v</b>.' + (Math.random() < 0.5 ? ' Then decide for yourself: are they perpendicular?' : '');
+    $('qMath').innerHTML = `${vhtml(u, 'kp')} · ${vhtml(v, 'kg')} =`;
+    qBoxes(['u·v ='], ['var(--cp)']);
+    qq.explain = `Multiply matching components and add: ${u.map((a, i) => `${pn(a)}·${pn(v[i])}`).join(' + ')} = ${u.map((a, i) => num(a * v[i])).join(' + ').replace(/\+ −/g, '− ')} = ${num(qq.ans[0])}.` + (qq.ans[0] === 0 ? ' Zero: they are perpendicular.' : ' Not zero, so not perpendicular.');
+  }
+}
+function qVecCheck(x){
+  const ok = same(x, qq.ans); let why = qq.explain;
+  if (!ok){
+    if (qq.kind === 'add' && same(x, sub(qq.u, qq.v))) why = 'That’s u − v: check the signs. ' + why;
+    else if (qq.kind === 'len' && Math.abs(x[0] - dot(qq.u, qq.u)) < 1e-9) why = `${num(x[0])} is the sum of the squares: take its square root. ` + why;
+    else if (qq.kind === 'len' && Math.abs(x[0] - qq.u.reduce((s, v) => s + Math.abs(v), 0)) < 1e-9) why = 'Adding the parts gives the length of a staircase path, not the straight line. ' + why;
+    else if (qq.kind === 'dot' && Math.abs(x[0] - qq.u.reduce((s, a, i) => s + a + qq.v[i], 0)) < 1e-9) why = 'You added the components; the dot product multiplies matching components first. ' + why;
+    else if (x.length === 3){ const bad = [0, 1, 2].filter(i => Math.abs(x[i] - qq.ans[i]) > 1e-6).map(i => AXN[i]); why = `Check ${andList(bad)}. ` + why; }
+  }
+  return [ok, why];
+}
+
+function qLand(){
+  let A, v; do { A = [rv(-2, 3), rv(-2, 3), rv(-2, 3)]; v = rv(-2, 2); } while (!nz(v) || v.filter(t => t !== 0).length < 2 || same(mv(A, v), mv(tr(A), v)));
+  qq.A = A; qq.v = v; qq.ans = mv(A, v);
+  $('qText').innerHTML = 'Where does <b>v</b> land under this matrix? Type <i>A</i><b>v</b>.';
+  $('qMath').innerHTML = `${mhtml(A, true)} ${vhtml(v, 'kp')} =`;
+  qBoxes(['x', 'y', 'z'], ['var(--ci)', 'var(--cj)', 'var(--ck)']);
+  qq.explain = `A v = ${pn(v[0])}·<span class="ki">${vstr(col(A, 0))}</span> + ${pn(v[1])}·<span class="kj">${vstr(col(A, 1))}</span> + ${pn(v[2])}·<span class="kk">${vstr(col(A, 2))}</span> = ${vstr(qq.ans)}. (Row by row: ${[0, 1, 2].map(i => `row ${i + 1}·v = ${num(qq.ans[i])}`).join(', ')}.)`;
+}
+function qLandCheck(x){
+  const ok = same(x, qq.ans); let why = qq.explain;
+  if (!ok){
+    if (same(x, mv(tr(qq.A), qq.v))) why = 'You used the rows as the landing spots. The <i>columns</i> are where î, ĵ, k̂ land, so v’s numbers multiply the columns. ' + why;
+    else { const bad = [0, 1, 2].filter(i => Math.abs(x[i] - qq.ans[i]) > 1e-6); why = `${bad.length > 1 ? 'Entries' : 'Entry'} ${andList(bad.map(i => i + 1))} ${bad.length > 1 ? 'are' : 'is'} off: entry i is row i of A dotted with v. ` + why; }
+  }
+  return [ok, why];
+}
+
+function qReadMat(){
+  // columns must look different in the top and front views, so each can be read
+  let A, ok;
+  do {
+    A = [rv(-2, 2), rv(-2, 2), rv(-2, 2)];
+    const cs = [0, 1, 2].map(j => col(A, j));
+    const tp = cs.map(c => c[0] + ',' + c[1]), fp = cs.map(c => c[0] + ',' + c[2]);
+    ok = cs.every(c => (c[0] || c[1]) && (c[0] || c[2])) && new Set(tp).size === 3 && new Set(fp).size === 3 && Math.abs(det3(A)) > 0;
+  } while (!ok);
+  qq.A = A; qq.ans = A.flat();
+  $('qText').innerHTML = 'The arrows show where <span class="ki">î</span>, <span class="kj">ĵ</span> and <span class="kk">k̂</span> land. Read their coordinates from the views (top gives <i>x</i> and <i>y</i>, front gives <i>x</i> and <i>z</i>) and type the matrix.';
+  $('qVis').style.display = ''; $('qVis').innerHTML = '';
+  const ps = ['C', 'T', 'F'].map(k => { const s = document.createElementNS(NS, 'svg'); s.setAttribute('viewBox', '0 0 320 280'); $('qVis').appendChild(s); return { svg: s, key: k, W: 320, H: 280 }; });
+  const items = ['î', 'ĵ', 'k̂'].map((s, j) => ({ k: 'arrow', a: [0, 0, 0], b: col(A, j), c: AXC[j], w: 3, lab: s }));
+  drawSet(ps, items, { extra: [[2.4, 2.4, 2.4], [-2.4, -2.4, -2.4]], grid: 1, gridLab: 1, ext: 0.2 });
+  qMatBoxes();
+  qq.explain = `Column 1 is where î lands, ${vstr(col(A, 0))}; column 2 is where ĵ lands, ${vstr(col(A, 1))}; column 3 is where k̂ lands, ${vstr(col(A, 2))}.`;
+}
+function qReadCheck(x){
+  const ok = same(x, qq.ans); let why = qq.explain;
+  if (!ok){
+    if (same(x, tr(qq.A).flat())) why = 'You wrote the landing spots as rows. Each one goes down a column. ' + why;
+    else { const M = to3(x), bad = [0, 1, 2].filter(j => !same(col(M, j), col(qq.A, j))); why = `Recheck ${andList(bad.map(j => ['î', 'ĵ', 'k̂'][j]))} (column${bad.length > 1 ? 's' : ''} ${andList(bad.map(j => j + 1))}). ` + why; }
+  }
+  return [ok, why];
+}
+
+function detSteps(A){
+  const [[a, b, c], [d, e, f], [g, h, i]] = A;
+  return `${pn(a)}·(${pn(e)}·${pn(i)} − ${pn(f)}·${pn(h)}) − ${pn(b)}·(${pn(d)}·${pn(i)} − ${pn(f)}·${pn(g)}) + ${pn(c)}·(${pn(d)}·${pn(h)} − ${pn(e)}·${pn(g)}) = ${pn(a)}·${pn(e * i - f * h)} − ${pn(b)}·${pn(d * i - f * g)} + ${pn(c)}·${pn(d * h - e * g)} = ${num(det3(A))}`;
+}
+function qVol(){
+  if (Math.random() < 0.6){
+    const kind = pick(['tri', 'gen', 'gen']);
+    let A;
+    if (kind === 'tri'){ do { A = [[ri(-3, 3), ri(-3, 3), ri(-3, 3)], [0, ri(-3, 3), ri(-3, 3)], [0, 0, ri(-3, 3)]]; } while (!A[0][0] || !A[1][1] || !A[2][2]); if (Math.random() < 0.5) A = tr(A); }
+    else { do { A = [rv(-2, 2), rv(-2, 2), rv(-2, 2)]; } while (Math.abs(det3(A)) > 12 || A.flat().filter(v => v === 0).length > 4); }
+    qq.mode = 'num'; qq.A = A; qq.ans = [det3(A)];
+    $('qText').innerHTML = 'Find det <i>A</i>: the volume scale factor, with its sign.';
+    $('qMath').innerHTML = `<i>A</i> = ${mhtml(A)}`;
+    qBoxes(['det A ='], ['var(--cp)']);
+    const isTri = A[1][0] === 0 && A[2][0] === 0 && A[2][1] === 0 || A[0][1] === 0 && A[0][2] === 0 && A[1][2] === 0;
+    qq.explain = (isTri ? `Triangular (zeros on one side of the diagonal), so det is the product of the diagonal: ${pn(A[0][0])}·${pn(A[1][1])}·${pn(A[2][2])} = ${num(det3(A))}. ` : '') + `Expanding along the top row: ${detSteps(A)}.` +
+      (det3(A) === 0 ? ' Zero: space is squashed flat.' : ` Volumes are multiplied by ${num(Math.abs(det3(A)))}${det3(A) < 0 ? ', and space is turned inside out' : ''}.`);
+  } else {
+    qq.mode = 'choice';
+    const mats = [];
+    let flat; do { const c1 = rv(-2, 2), c2 = rv(-2, 2), a = pick([1, -1, 2]), b = pick([1, -1]); const c3 = add(scl(a, c1), scl(b, c2)); flat = [0, 1, 2].map(i => [c1[i], c2[i], c3[i]]); } while (!nz(col(flat, 0)) || !nz(col(flat, 1)) || Math.abs(det3(flat)) > 0 || Math.max(...flat.flat().map(Math.abs)) > 5 || len(cross(col(flat, 0), col(flat, 1))) === 0);
+    while (mats.length < 2){ const M = [rv(-2, 2), rv(-2, 2), rv(-2, 2)]; if (Math.abs(det3(M)) > 0 && Math.abs(det3(M)) < 10) mats.push(M); }
+    const list = shuffle([flat, ...mats]);
+    qq.list = list; qq.correct = list.indexOf(flat); qq.A = flat;
+    $('qText').innerHTML = 'Which of these matrices squashes space flat (volume 0)?';
+    $('qIn').style.display = 'none';
+    $('qChoice').innerHTML = '';
+    list.forEach((M, k) => { const b = document.createElement('button'); b.innerHTML = mhtml(M); b.onclick = () => qPick(k); $('qChoice').appendChild(b); });
+    const c = [0, 1, 2].map(j => col(flat, j));
+    qq.explain = `The flat one has det = 0: ${detSteps(flat)}. Its third column is a mix of the first two, so all three columns lie in one plane. The others: ${list.filter(M => M !== flat).map(M => 'det = ' + num(det3(M))).join(', ')}.`;
+  }
+}
+function qPick(k){
+  const ok = k === qq.correct; qScore(ok);
+  [...$('qChoice').children].forEach((b, j) => { b.classList.remove('right', 'wrong'); if (j === k) b.classList.add(ok ? 'right' : 'wrong'); if (j === qq.correct && !ok) b.classList.add('right'); });
+  qFeedback(ok, qq.explain);
+}
+function qVolCheck(x){
+  const ok = Math.abs(x[0] - qq.ans[0]) < 1e-6; let why = qq.explain;
+  if (!ok){
+    const A = qq.A;
+    if (Math.abs(x[0] + qq.ans[0]) < 1e-6) why = 'Right size, wrong sign: the middle term of the expansion is subtracted. ' + why;
+    else if (Math.abs(x[0] - (A[0][0] * A[1][1] * A[2][2])) < 1e-6) why = 'The product of the diagonal only works for triangular matrices. ' + why;
+    else if (Math.abs(x[0] - (A[0][0] * A[1][1] - A[0][1] * A[1][0])) < 1e-6) why = 'That’s just the top-left 2×2 corner. A 3×3 determinant uses every entry. ' + why;
+  }
+  return [ok, why];
+}
+
+let lastType = null;
+function qNew(){
+  qReset();
+  let t; do { t = pick(['vec', 'land', 'read', 'vol']); } while (t === lastType);
+  lastType = t; qq = { type: t, counted: false };
+  $('qTitle').textContent = qTitles[t];
+  ({ vec: qVec, land: qLand, read: qReadMat, vol: qVol })[t]();
+}
+$('qCheck').onclick = () => {
+  const n = qq.type === 'read' ? 9 : $('qBoxes').querySelectorAll('input').length, x = qRead(n);
+  if (!x){ $('qErr').textContent = 'Fill in every box with a number.'; return; }
+  const r = ({ vec: qVecCheck, land: qLandCheck, read: qReadCheck, vol: qVolCheck })[qq.type](x);
+  qScore(r[0]); qFeedback(r[0], r[1]);
+};
+$('qShow').onclick = () => {
+  qScore(false);
+  if (qq.type === 'vol' && qq.mode === 'choice'){ [...$('qChoice').children].forEach((b, j) => { if (j === qq.correct) b.classList.add('right'); }); qFeedback(false, qq.explain); return; }
+  const ans = qq.ans; ans.forEach((v, k) => { if ($('qx' + k)) $('qx' + k).value = num(v).replace('−', '-'); });
+  $('qFb').className = 'feedback bad'; $('qFb').innerHTML = '<b>Answer filled in.</b> ' + qq.explain;
+};
+$('qNew').onclick = qNew;
+
+/* =====================================================================
+   11. START
+   ===================================================================== */
+$('rPresets').children[0].click();
+$('dPresets').children[0].click();
+mFill(); MS.e = 1; mMark(0); $('mDesc').textContent = mPresets[0].d; mDraw();
+$('sPresets').children[2].click();
+$('xPresets').children[3].click();
+Object.assign(GS, { e: 1 }); gMark(2); $('gDesc').textContent = gPresets[2].d; Object.assign(GS, { t: 90, p: 90, s: 1, o: 1 }); gDraw();
+qNew();
+</script>
+</body></html>
