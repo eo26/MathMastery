@@ -1,0 +1,768 @@
+<style>
+/* ===================== Page-specific styles (8.B.3) ===================== */
+/* f = purple, positive area = teal, negative area = red, the running total A(x) / antiderivative F = orange, the sweep point = blue */
+:root{ --cv:#7F77DD; --cvs:#AFA9EC; --pos:#1D9E75; --neg:#D8443A; --acc:#E08A2E; --pa:#2F6FDB; --avg:#B86E00; --no:#D8443A; --yes:#1D9E75; }
+@media (prefers-color-scheme:dark){ :root{ --cv:#AFA9EC; --cvs:#6F67C9; --pos:#5DCAA5; --neg:#F07B72; --acc:#F2B266; --pa:#6EA2F5; --avg:#FFB547; --no:#F07B72; --yes:#5DCAA5; } }
+.kv{color:var(--cv);font-weight:700}.kp{color:var(--pos);font-weight:700}.kn{color:var(--neg);font-weight:700}.ka{color:var(--acc);font-weight:700}.kb{color:var(--pa);font-weight:700}.kg{color:var(--avg);font-weight:700}.ky{color:var(--yes);font-weight:700}
+svg{user-select:none;-webkit-user-select:none}
+.stack svg{width:100%;height:auto;display:block;background:var(--bg);border:1px solid var(--line);border-radius:10px;margin-top:6px}
+.split{display:grid;grid-template-columns:600px 1fr;gap:14px;margin-top:10px;align-items:start}
+.split svg{width:100%;height:auto;display:block;background:var(--bg);border:1px solid var(--line);border-radius:10px}
+.field.sm input{width:70px}
+.toggle button.on{background:var(--accent-bg);border-color:var(--accent);color:var(--accent)}
+.steps{margin:8px 0 0;padding:0;list-style:none}
+.steps li{padding:6px 12px;font:16.5px var(--mono);border-left:3px solid var(--line);margin:4px 0}
+.steps li small{display:block;font:13px var(--sans);color:var(--muted)}
+.rules{border-collapse:collapse;font:15px var(--mono);margin:8px 0 14px}
+.rules td,.rules th{border:1px solid var(--line);padding:6px 14px}
+.rules th{font:600 12px var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-align:left}
+.verdict{display:inline-block;font:600 15px var(--sans);padding:6px 12px;border-radius:8px;margin:8px 8px 0 0}
+.verdict.info{background:var(--accent-bg);color:var(--accent)}
+.legend span span{display:inline}
+.traps{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:8px}
+.traps .t{border:1px solid var(--line);border-radius:10px;background:var(--bg);padding:10px}
+.traps .t h4{margin:0 0 4px;font:600 15px var(--sans)}
+.traps .t p{margin:6px 0 0;font-size:14.5px;line-height:1.5;color:var(--muted)}
+.traps svg{width:100%;height:auto;display:block}
+.qtext{font:17px/1.55 var(--serif);margin:4px 0 10px}
+.qexpr{font:600 22px var(--mono);margin:4px 0 10px}
+.qvis{display:flex;justify-content:center;margin:6px 0}
+.qvis svg{width:520px;height:auto;background:var(--bg);border:1px solid var(--line);border-radius:10px}
+.choice{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 0}.choice button{min-width:140px;font-family:var(--mono)}
+.choice button.right{border-color:var(--ok);background:var(--ok-bg);color:var(--ok)}.choice button.wrong{border-color:var(--bad);background:var(--bad-bg);color:var(--bad)}
+pre.code{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:12px 16px;overflow-x:auto;font:13.5px/1.6 var(--mono);margin:10px 0 16px}
+</style>
+
+<!-- ===================== Top bar ===================== -->
+<div class="topbar"><div class="topbar-in">
+  <span class="brand">Math<b>Mastery</b></span>
+  <span class="crumbs">Chapter 8 · Calculus › Basics</span>
+  <span class="pid">8.B.3</span>
+</div></div>
+
+<!-- ===================== Hero ===================== -->
+<header class="prose hero">
+  <div class="kicker">Chapter 8 · Calculus</div>
+  <h1>Integrals</h1>
+  <p class="dek">An integral adds up infinitely many thin slices: the area under a curve, the distance from a speedometer, the energy from a power meter. And it turns out to be the derivative run backwards.</p>
+  <div class="tiers" aria-label="Tier">
+    <span class="tier on">Basics <small>you are here</small></span>
+    <span class="tier">Undergraduate</span>
+    <span class="tier">Masters</span>
+  </div>
+  <div class="goals">
+    <h3>On this page</h3>
+    <ul>
+      <li>Approximate area with <b>Riemann sums</b> (left, right, midpoint) and define the <b>definite integral</b> as their limit.</li>
+      <li>Read area below the axis as <b>negative</b> (<b>signed area</b>), and find the <b>average value</b> of a function.</li>
+      <li>Find <b>antiderivatives</b> (with the constant +<i>C</i>) using the basic rules.</li>
+      <li>Use the <b>Fundamental Theorem of Calculus</b>: integrals are evaluated with antiderivatives, and the rate of change of accumulated area is the original function.</li>
+    </ul>
+  </div>
+</header>
+
+<main>
+<!-- ===================== §1 ===================== -->
+<section class="prose">
+  <h2><span class="n">1</span>Area as a limit of sums</h2>
+  <p>A car’s speedometer reads a steady 60 km/h for 2 hours: distance = 60 × 2 = 120 km, the area of a rectangle under the flat speed graph. When the speed changes, chop the time into short pieces, pretend the speed is steady on each piece, and add up the rectangles. That is a <b>Riemann sum</b>. Each rectangle’s width is Δ<i>x</i> = (<i>b</i> − <i>a</i>)/<i>n</i>; its height is <i>f</i> at the left end, the right end, or the midpoint of its piece.</p>
+  <p>More, thinner rectangles hug the curve better. The limit as <i>n</i> → ∞ is the <b>definite integral</b>, written ∫<sub><i>a</i></sub><sup><i>b</i></sup> <i>f</i>(<i>x</i>) <i>dx</i>. The ∫ is a stretched S for “sum”, and <i>dx</i> stands for the vanishing width Δ<i>x</i>. Where <i>f</i> dips below the axis, the rectangles have negative height, so that area counts as <b>negative</b>: the integral is <b>signed area</b>.</p>
+</section>
+<section class="wide">
+  <div class="card" id="main">
+    <div class="card-h"><span class="tag">Explore</span><h3>Rectangles, and the running total</h3>
+      <span class="sub">Choose a function, an interval and a number of rectangles <i>n</i>. Press Play to double <i>n</i> until the sum settles. Press Sweep: the lower graph traces the running total <i>A</i>(<i>x</i>) = area from <i>a</i> to <i>x</i>, and its slope at each moment equals the height <i>f</i>(<i>x</i>).</span></div>
+    <div class="row" id="mPresets"></div>
+    <div class="desc" id="mDesc"></div>
+    <div class="inputs">
+      <label class="field sm"><span><i>a</i></span><input id="mA" type="text" inputmode="decimal" autocomplete="off"></label>
+      <label class="field sm"><span><i>b</i></span><input id="mB" type="text" inputmode="decimal" autocomplete="off"></label>
+      <label class="field sm"><span><i>n</i></span><input id="mN" type="text" inputmode="numeric" autocomplete="off"></label>
+      <div class="row toggle" style="margin:0" id="mRule"><button>left</button><button class="on">midpoint</button><button>right</button></div>
+      <div class="row" style="margin:0"><button id="mUse">Use these</button><button class="primary" id="mPlay">Play</button><button id="mSweep">Sweep</button></div>
+    </div>
+    <div class="err" id="mErr"></div>
+    <div class="stack"><svg id="mF" viewBox="0 0 960 320" role="img" aria-label="Rectangles under the curve"></svg><svg id="mA2" viewBox="0 0 960 220" role="img" aria-label="The running total A(x)"></svg></div>
+    <div><span class="verdict info" id="mV"></span></div>
+    <div class="readout" id="mOut"></div>
+    <div class="legend">
+      <span><i class="sw mv" style="background:var(--cv)"></i><span><i>f</i></span></span>
+      <span><i class="sw" style="background:var(--pos);opacity:.5;border-radius:3px"></i><span>positive area</span></span>
+      <span><i class="sw" style="background:var(--neg);opacity:.5;border-radius:3px"></i><span>negative area (below the axis)</span></span>
+      <span><i class="sw mv" style="background:var(--acc)"></i><span>running total <i>A</i>(<i>x</i>)</span></span>
+      <span><i class="sw mv" style="background:var(--pa)"></i><span>tangent to <i>A</i>: slope <i>f</i>(<i>x</i>)</span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §2 ===================== -->
+<section class="prose">
+  <h2><span class="n">2</span>Antiderivatives</h2>
+  <p>An <b>antiderivative</b> of <i>f</i> is a function <i>F</i> whose derivative is <i>f</i>: the derivative run backwards. Since <i>x</i>² has derivative 2<i>x</i>, an antiderivative of 2<i>x</i> is <i>x</i>². But so is <i>x</i>² + 5, or <i>x</i>² − 1: shifting a graph up or down doesn’t change any slopes. So antiderivatives come as a family, <i>F</i>(<i>x</i>) + <i>C</i>, with an arbitrary <b>constant of integration</b> <i>C</i>. The family is written ∫ <i>f</i>(<i>x</i>) <i>dx</i>, an <b>indefinite integral</b> (no limits on the ∫).</p>
+  <table class="rules">
+    <tr><th>f(x)</th><th>an antiderivative F(x)</th><th>check: F′ = f</th></tr>
+    <tr><td>x<sup>n</sup> (n ≠ −1)</td><td>x<sup>n+1</sup>/(n + 1)</td><td>raise the power, divide by the new power</td></tr>
+    <tr><td>c (a constant)</td><td>c·x</td><td>a steady rate c piles up c per unit</td></tr>
+    <tr><td>1/x</td><td>ln|x|</td><td>the gap in the power rule</td></tr>
+    <tr><td>cos x, sin x</td><td>sin x, −cos x</td><td>the derivative table read backwards</td></tr>
+    <tr><td>e<sup>x</sup></td><td>e<sup>x</sup></td><td>still its own slope</td></tr>
+  </table>
+  <p>Sums and constant multiples work term by term, just as for derivatives: ∫(6<i>x</i>² − 4) <i>dx</i> = 2<i>x</i>³ − 4<i>x</i> + <i>C</i>.</p>
+</section>
+
+<!-- ===================== §3 ===================== -->
+<section class="prose">
+  <h2><span class="n">3</span>The Fundamental Theorem of Calculus</h2>
+  <p>Look again at the running total <i>A</i>(<i>x</i>) in the explorer. When you move <i>x</i> a tiny step d<i>x</i> to the right, the area grows by a thin strip of height <i>f</i>(<i>x</i>) and width d<i>x</i>. So the area grows at the rate <i>f</i>(<i>x</i>): <b><i>A</i>′(<i>x</i>) = <i>f</i>(<i>x</i>)</b>. The accumulated area is an antiderivative of the function. That is the first half of the <b>Fundamental Theorem of Calculus</b>, and it ties the two halves of calculus together: integrating and differentiating undo each other.</p>
+  <p>The second half is the practical one. If <i>F</i> is <i>any</i> antiderivative of <i>f</i>, then</p>
+  <div class="math">\[ \int_a^b f(x)\,dx = F(b) - F(a). \]</div>
+  <p>No rectangles needed: ∫<sub>0</sub><sup>2</sup> <i>x</i>² <i>dx</i> = 2³/3 − 0³/3 = 8/3. The constant <i>C</i> doesn’t matter, because it cancels in the subtraction. In motion terms: the area under a velocity graph is the change in position.</p>
+</section>
+<section class="wide">
+  <div class="card" id="ftc">
+    <div class="card-h"><span class="tag">Explore</span><h3>Area = change in the antiderivative</h3>
+      <span class="sub">The left graph shades ∫<sub><i>a</i></sub><sup><i>b</i></sup> <i>f</i>. The right graph shows antiderivatives <i>F</i> + <i>C</i> for several <i>C</i>: each rises by exactly the same amount from <i>a</i> to <i>b</i>, and that rise is the area.</span></div>
+    <div class="row" id="fPresets"></div>
+    <div class="inputs">
+      <label class="field sm"><span><i>a</i></span><input id="fA" type="text" inputmode="decimal" autocomplete="off"></label>
+      <label class="field sm"><span><i>b</i></span><input id="fB" type="text" inputmode="decimal" autocomplete="off"></label>
+      <div class="row" style="margin:0"><button class="primary" id="fGo">Use these</button></div>
+    </div>
+    <div class="err" id="fErr"></div>
+    <div class="stack" style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><svg id="fL" viewBox="0 0 470 330"></svg><svg id="fR" viewBox="0 0 470 330"></svg></div>
+    <ol class="steps" id="fSteps"></ol>
+  </div>
+</section>
+
+<!-- ===================== §4 ===================== -->
+<section class="prose">
+  <h2><span class="n">4</span>Signed area and average value</h2>
+  <p>Area above the axis counts positive, below counts negative, and the integral is the net result. ∫<sub>0</sub><sup>2π</sup> sin <i>x dx</i> = 0: the hump and the dip cancel. If you want the total area regardless of sign, integrate |<i>f</i>| instead.</p>
+  <p>The <b>average value</b> of <i>f</i> on [<i>a</i>, <i>b</i>] is the height of the rectangle with the same width and the same (signed) area: (1/(<i>b</i> − <i>a</i>))∫<sub><i>a</i></sub><sup><i>b</i></sup> <i>f</i>(<i>x</i>) <i>dx</i>. Picture the region as sand and level it flat: the flat height is the average. A day’s average temperature or a trip’s average speed are exactly this.</p>
+</section>
+<section class="wide">
+  <div class="card" id="avg">
+    <div class="card-h"><span class="tag">Explore</span><h3>Level the sand: average value</h3>
+      <span class="sub">The shaded region is ∫ <i>f</i>. Press Level: the region flattens into a rectangle of the same width and signed area. Its height is the average value.</span></div>
+    <div class="row" id="vPresets"></div>
+    <div class="desc" id="vDesc"></div>
+    <div class="row"><button class="primary" id="vPlay">Level</button><button id="vReset">Reset</button></div>
+    <div class="split"><svg id="vSvg" viewBox="0 0 600 340" role="img" aria-label="A region flattening to its average height"></svg><div class="readout" id="vOut"></div></div>
+  </div>
+</section>
+
+<!-- ===================== §5 ===================== -->
+<section class="prose">
+  <h2><span class="n">5</span>Rate in, total out</h2>
+  <p>Whenever you know a <b>rate</b> and want a <b>total</b>, you integrate. Speed (km per hour) over time gives distance. Power (kilowatts) over time gives energy (kilowatt-hours, what the electricity bill counts). Flow (litres per minute) over time gives volume, with outflow counting negative. The units tell you: the area of a rectangle with height in km/h and width in hours is in km.</p>
+</section>
+<section class="wide">
+  <div class="card" id="rate">
+    <div class="card-h"><span class="tag">Explore</span><h3>From a rate to a total</h3>
+      <span class="sub">Pick a story and press Play. The top graph is the rate; the area swept so far is the running total, drawn below.</span></div>
+    <div class="row" id="rPresets"></div>
+    <div class="desc" id="rDesc"></div>
+    <div class="row"><button class="primary" id="rPlay">Play</button><button id="rReset">Reset</button></div>
+    <div class="stack"><svg id="rTop" viewBox="0 0 960 260"></svg><svg id="rBot" viewBox="0 0 960 200"></svg></div>
+    <div class="readout" id="rOut"></div>
+  </div>
+</section>
+
+<!-- ===================== §6 ===================== -->
+<section class="prose">
+  <h2><span class="n">6</span>Traps and non-examples</h2>
+</section>
+<section class="wide">
+  <div class="card" id="traps">
+    <div class="card-h"><span class="tag">Compare</span><h3>Easy to get wrong</h3></div>
+    <div class="traps">
+      <div class="t"><h4 class="kn">✕ Integral ≠ total area</h4><svg id="tr1" viewBox="0 0 300 200"></svg><p>∫<sub>0</sub><sup>2π</sup> sin <i>x dx</i> = 0, but the shaded area is 4. The integral nets the parts below the axis against those above.</p></div>
+      <div class="t"><h4 class="kn">✕ Forgetting to divide by the new power</h4><svg id="tr2" viewBox="0 0 300 200"></svg><p>∫ <i>x</i>² <i>dx</i> is <i>x</i>³/3, not <i>x</i>³: the derivative of <i>x</i>³ is 3<i>x</i>², three times too big. Always check by differentiating your answer.</p></div>
+      <div class="t"><h4 class="kn">✕ Dropping the +<i>C</i></h4><svg id="tr3" viewBox="0 0 300 200"></svg><p><i>x</i>², <i>x</i>² + 2 and <i>x</i>² − 1 all have derivative 2<i>x</i>. An indefinite integral is the whole family; only a definite integral (where <i>C</i> cancels) gives one number.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §7 ===================== -->
+<section class="prose">
+  <h2><span class="n">7</span>Now, in symbols</h2>
+  <div class="math">\[ \int_a^b f(x)\,dx = \lim_{n\to\infty}\sum_{i=1}^{n} f(x_i^*)\,\Delta x, \qquad \Delta x = \frac{b - a}{n} \]<div class="cap">A Riemann sum and its limit; <i>x<sub>i</sub></i>* is a point in the <i>i</i>-th piece (left end, right end or midpoint).</div></div>
+  <div class="math">\[ \int x^n\,dx = \frac{x^{n+1}}{n+1} + C\ (n \ne -1), \qquad \int \cos x\,dx = \sin x + C, \qquad \int e^x\,dx = e^x + C \]</div>
+  <div class="math">\[ \frac{d}{dx}\int_a^x f(t)\,dt = f(x), \qquad \int_a^b f(x)\,dx = F(b) - F(a) \text{ where } F' = f \]<div class="cap">The Fundamental Theorem of Calculus, both halves.</div></div>
+  <div class="math">\[ \text{average of } f \text{ on } [a,b] = \frac{1}{b-a}\int_a^b f(x)\,dx, \qquad \int_a^b f + \int_b^c f = \int_a^c f \]</div>
+  <p>Riemann sums are what a computer actually does when there’s no formula, for example with measured data:</p>
+  <pre class="code"><code>import numpy as np                              # numerical arrays
+import sympy as sp                              # exact symbolic answers
+
+n = 1000                                        # number of rectangles
+dx = 2 / n                                      # their width on [0, 2]
+mids = np.arange(n) * dx + dx / 2               # the midpoint of each piece
+print(np.sum(mids**2 * dx))                     # 2.666666...: the midpoint sum for x² on [0, 2]
+
+x = sp.symbols('x')                             # exact version
+print(sp.integrate(x**2, (x, 0, 2)))            # 8/3, from the antiderivative x³/3
+print(sp.integrate(sp.sin(x), x))               # -cos(x): sympy leaves out the + C
+
+speeds = np.array([0, 30, 55, 60, 60, 40, 0])   # km/h, read every 10 minutes
+print(np.trapezoid(speeds, dx=10/60))           # ≈ 40.8 km: distance from a speed log (trapezoid rule)</code></pre>
+</section>
+
+<!-- ===================== §8 ===================== -->
+<section class="prose">
+  <h2><span class="n">8</span>Where this goes</h2>
+  <ul class="goes">
+    <li><b>Next (8.U.1):</b> infinite series: adding infinitely many terms, the discrete cousin of the integral.</li>
+    <li><b>Later in this book:</b> techniques of integration (substitution, which is the chain rule backwards; integration by parts, the product rule backwards), volumes and arc lengths, probability (areas under density curves, Chapter 9), and differential equations.</li>
+    <li><b>In the world:</b> distance from speed, energy from power, total rainfall, drug exposure from a blood-level curve, work done by a force, and every “add up a changing rate” problem.</li>
+  </ul>
+</section>
+
+<!-- ===================== §9 ===================== -->
+<section class="prose">
+  <h2><span class="n">9</span>Words to know</h2>
+  <div class="vocab">
+    <div class="term"><b>Riemann sum</b>A sum of rectangle areas, <i>f</i>(<i>x</i>*)·Δ<i>x</i>, approximating the area under a curve.</div>
+    <div class="term"><b>Left / right / midpoint sum</b>Riemann sums using the left end, right end or middle of each piece for the height.</div>
+    <div class="term"><b>Definite integral</b>∫<sub><i>a</i></sub><sup><i>b</i></sup> <i>f</i>(<i>x</i>) <i>dx</i>: the limit of Riemann sums; a number.</div>
+    <div class="term"><b>Limits of integration</b>The endpoints <i>a</i> (lower) and <i>b</i> (upper).</div>
+    <div class="term"><b>Integrand</b>The function being integrated, <i>f</i>(<i>x</i>).</div>
+    <div class="term"><b>Signed area</b>Area above the axis counts positive, below counts negative.</div>
+    <div class="term"><b>Antiderivative</b>A function <i>F</i> with <i>F</i>′ = <i>f</i>.</div>
+    <div class="term"><b>Indefinite integral</b>∫ <i>f</i>(<i>x</i>) <i>dx</i> = <i>F</i>(<i>x</i>) + <i>C</i>: the whole family of antiderivatives.</div>
+    <div class="term"><b>Constant of integration</b>The +<i>C</i>: antiderivatives differ by a constant.</div>
+    <div class="term"><b>Accumulation function</b><i>A</i>(<i>x</i>) = ∫<sub><i>a</i></sub><sup><i>x</i></sup> <i>f</i>(<i>t</i>) <i>dt</i>: the running total of area.</div>
+    <div class="term"><b>Fundamental Theorem of Calculus</b><i>A</i>′ = <i>f</i>, and ∫<sub><i>a</i></sub><sup><i>b</i></sup> <i>f</i> = <i>F</i>(<i>b</i>) − <i>F</i>(<i>a</i>): integration and differentiation undo each other.</div>
+    <div class="term"><b>Average value</b>(1/(<i>b</i> − <i>a</i>))∫<sub><i>a</i></sub><sup><i>b</i></sup> <i>f</i>: the level height with the same area.</div>
+  </div>
+</section>
+
+<!-- ===================== Quiz ===================== -->
+<section class="prose"><h2><span class="n">10</span>Check yourself</h2>
+  <p>Four kinds of questions: a Riemann sum, a definite integral, signed area from a graph, and antiderivatives. Fractions like 8/3 are fine.</p>
+</section>
+<section class="wide">
+  <div class="card" id="quiz">
+    <div class="card-h"><span class="tag">Quiz</span><h3 id="qTitle"></h3><span class="score" id="score">Score: 0 / 0</span></div>
+    <div class="qtext" id="qText"></div>
+    <div class="qexpr" id="qExpr"></div>
+    <div class="qvis" id="qVis"></div>
+    <div class="choice" id="qChoice"></div>
+    <div class="inputs" id="qIn">
+      <label class="field"><span id="qLab">Answer</span><input id="q1" type="text" autocomplete="off" style="width:160px"></label>
+      <div class="row" style="margin:0"><button class="primary" id="qCheck">Check</button></div>
+    </div>
+    <div class="row" style="margin:10px 0 0"><button id="qShow">Show answer</button><button id="qNew">New question</button></div>
+    <div class="err" id="qErr"></div>
+    <div class="feedback" id="qFb" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ===================== Pager (filled in by the shared navigation) ===================== -->
+<nav class="wide">
+  <div class="pager"></div>
+  <div class="meta">8.B.3 · Prerequisites: 8.B.1 (limits), 8.B.2 (derivatives) · Leads to: 8.U.1 (infinite series), 9 (probability)</div>
+</nav>
+</main>
+
+<script>
+/* =====================================================================
+   1. HELPERS
+   ===================================================================== */
+const NS = 'http://www.w3.org/2000/svg';
+const $ = id => document.getElementById(id);
+function mk(tag, attrs, parent){                           // create an SVG element with attributes
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function txt(parent, x, y, s, cls, extra){                 // create an SVG text element
+  extra = Object.assign({}, extra || {});
+  if (extra['text-anchor']){ extra.style = (extra.style ? extra.style + ';' : '') + 'text-anchor:' + extra['text-anchor']; delete extra['text-anchor']; }
+  const t = mk('text', Object.assign({ x, y, class: cls || '' }, extra), parent);
+  t.textContent = s;
+  return t;
+}
+// round for display, use a true minus sign, never show −0
+function num(x, d){ if (d === undefined) d = 2; const r = Math.round(x * Math.pow(10, d)) / Math.pow(10, d); return r === 0 ? '0' : (r < 0 ? '−' : '') + String(Math.abs(r)); }
+const pn = x => x < 0 ? `(${num(x)})` : num(x);              // wrap negatives in brackets when substituting
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const ri = (a, b) => a + Math.floor(Math.random() * (b - a + 1));   // random whole number from a to b
+const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+function parseNum(s){                                     // integers, decimals, minus, simple fractions
+  s = String(s).trim().replace(/[−–]/g, '-').replace(/\s+/g, '');
+  if (/^-?\d+(\.\d+)?$|^-?\.\d+$/.test(s)) return parseFloat(s);
+  const m = s.match(/^(-?\d+)\/(\d+)$/);
+  if (m && +m[2] !== 0) return +m[1] / +m[2];
+  return NaN;
+}
+function selectOnFocus(ids){ ids.forEach(id => $(id).addEventListener('focus', e => e.target.select())); }
+function buttons(boxId, list, onPick){                    // a row of preset buttons; returns a function that marks one as on
+  list.forEach((p, i) => { const b = document.createElement('button'); b.className = 'preset'; b.textContent = p.n; b.onclick = () => onPick(i); $(boxId).appendChild(b); });
+  return i => [...$(boxId).children].forEach((b, j) => b.classList.toggle('on', j === i));
+}
+function svgPt(svg, ev){                                  // mouse position in the SVG's own coordinates
+  const p = svg.createSVGPoint(); p.x = ev.clientX; p.y = ev.clientY;
+  return p.matrixTransform(svg.getScreenCTM().inverse());
+}
+const svgCss = document.createElement('style');
+svgCss.textContent = `
+  .grid{stroke:var(--line);stroke-width:1}
+  .axis{stroke:var(--ink);stroke-width:1.4;opacity:.7}
+  .tl{fill:var(--muted);font:500 11.5px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:3px}
+  .lab{font:700 14px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:5px}
+  .labS{font:600 12.5px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+  .cap{fill:var(--muted);font:600 12px var(--sans);letter-spacing:.06em;paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+  .oval{fill:var(--paper);stroke:var(--line);stroke-width:1.5}
+`;
+document.head.appendChild(svgCss);
+let clipN = 0;                                            // unique clip-path ids
+
+/* ---------- axes: a coordinate grid inside an SVG, with separate x and y scales ---------- */
+function axes(svg, W, H, b, o){
+  o = o || {};
+  svg.innerHTML = '';
+  const L = o.padL ?? 44, R = o.padR ?? 16, T = o.padT ?? 16, B = o.padB ?? 30;
+  const sx = (W - L - R) / (b.x1 - b.x0), sy = (H - T - B) / (b.y1 - b.y0);   // pixels per unit
+  const X = x => L + (x - b.x0) * sx, Y = y => T + (b.y1 - y) * sy;
+  const step = (s, px) => (o.half ? [0.5, 1, 2, 5, 10, 20, 50, 100] : [1, 2, 5, 10, 20, 50, 100]).find(k => k * s >= px) || 200;   // a round step at least px pixels wide
+  const xg = o.xg || step(sx, 9), yg = o.yg || step(sy, 9);        // grid-line spacing
+  const xt = o.xt || step(sx, 34), yt = o.yt || step(sy, 26);      // tick-label spacing
+  const gGrid = mk('g', {}, svg), id = 'clp' + (++clipN);
+  const cp = mk('clipPath', { id }, svg); mk('rect', { x: L, y: T, width: W - L - R, height: H - T - B }, cp);
+  const cg = mk('g', { 'clip-path': `url(#${id})` }, svg);         // clipped layer for curves
+  const m = mk('g', {}, svg), top = mk('g', {}, svg);              // free layer, then labels on top
+  const near = (v, s) => Math.abs(v / s - Math.round(v / s)) < 1e-6;
+  for (let x = Math.ceil(b.x0 / xg) * xg; x <= b.x1 + 1e-9; x += xg) mk('line', { x1: X(x), y1: T, x2: X(x), y2: H - B, class: 'grid' }, gGrid);
+  for (let y = Math.ceil(b.y0 / yg) * yg; y <= b.y1 + 1e-9; y += yg) mk('line', { x1: L, y1: Y(y), x2: W - R, y2: Y(y), class: 'grid' }, gGrid);
+  const ay = (b.y0 <= 0 && b.y1 >= 0) ? Y(0) : H - B;              // where the x-axis is drawn
+  const ax = (b.x0 <= 0 && b.x1 >= 0) ? X(0) : L;                  // where the y-axis is drawn
+  mk('line', { x1: L, y1: ay, x2: W - R, y2: ay, class: 'axis' }, gGrid);
+  mk('line', { x1: ax, y1: T, x2: ax, y2: H - B, class: 'axis' }, gGrid);
+  const fx = o.fx || (v => num(v)), fy = o.fy || (v => num(v));
+  for (let x = Math.ceil(b.x0 / xt) * xt; x <= b.x1 + 1e-9; x += xt){
+    if (Math.abs(x) < 1e-9 && ax === X(0) && !o.zeroX) continue;
+    txt(top, X(x), ay + 16, fx(x), 'tl', { 'text-anchor': 'middle' });
+  }
+  for (let y = Math.ceil(b.y0 / yt) * yt; y <= b.y1 + 1e-9; y += yt){
+    if (Math.abs(y) < 1e-9 && ay === Y(0)) continue;
+    txt(top, ax - 6, Y(y) + 4, fy(y), 'tl', { 'text-anchor': 'end' });
+  }
+  if (o.xT) txt(top, W - R - 2, ay - 8, o.xT, 'cap', { 'text-anchor': 'end' });
+  if (o.yT) txt(top, ax + 8, T + 12, o.yT, 'cap');
+  return { svg, X, Y, sx, sy, cg, m, top, b, L, R, T, B, W, H, ay, ax,
+           inv: (px, py) => [b.x0 + (px - L) / sx, b.y1 - (py - T) / sy] };
+}
+function dPath(P, pts){ return pts.map((p, i) => (i ? 'L' : 'M') + P.X(p[0]).toFixed(1) + ' ' + P.Y(p[1]).toFixed(1)).join(''); }
+// sample y = f(x) from a to b, breaking the curve where f is undefined or jumps
+function sample(f, a, b, n, ok){
+  const out = []; let cur = [];
+  for (let i = 0; i <= n; i++){
+    const x = a + (b - a) * i / n, y = (ok && !ok(x)) ? NaN : f(x);
+    if (!isFinite(y)){ if (cur.length > 1) out.push(cur); cur = []; continue; }
+    if (cur.length && Math.abs(y - cur[cur.length - 1][1]) > 40){ if (cur.length > 1) out.push(cur); cur = []; }
+    cur.push([x, y]);
+  }
+  if (cur.length > 1) out.push(cur);
+  return out;
+}
+function dot(P, x, y, col, o){                              // a filled (or open) point
+  o = o || {};
+  return mk('circle', { cx: P.X(x), cy: P.Y(y), r: o.r || 6, style: o.open ? `fill:var(--bg);stroke:${col};stroke-width:2.6` : `fill:${col};stroke:var(--bg);stroke-width:1.5` }, o.layer || P.m);
+}
+function vline(P, x, col, o){ o = o || {}; return mk('line', { x1: P.X(x), y1: o.y0 !== undefined ? P.Y(o.y0) : P.T, x2: P.X(x), y2: o.y1 !== undefined ? P.Y(o.y1) : P.H - P.B, style: `stroke:${col};stroke-width:${o.w || 2.5};${o.dash ? 'stroke-dasharray:' + o.dash : ''}` }, o.layer || P.m); }
+function hline(P, y, col, o){ o = o || {}; return mk('line', { x1: o.x0 !== undefined ? P.X(o.x0) : P.L, y1: P.Y(y), x2: o.x1 !== undefined ? P.X(o.x1) : P.W - P.R, y2: P.Y(y), style: `stroke:${col};stroke-width:${o.w || 2.5};${o.dash ? 'stroke-dasharray:' + o.dash : ''}` }, o.layer || P.m); }
+function arrowHead(g, x1, y1, x2, y2, col, size){            // a small triangle at (x2, y2) pointing away from (x1, y1)
+  const a = Math.atan2(y2 - y1, x2 - x1), s = size || 9;
+  const p = [[x2, y2], [x2 - s * Math.cos(a - 0.4), y2 - s * Math.sin(a - 0.4)], [x2 - s * Math.cos(a + 0.4), y2 - s * Math.sin(a + 0.4)]];
+  mk('polygon', { points: p.map(q => q.join(',')).join(' '), style: `fill:${col}` }, g);
+}
+
+/* ---------- arrow diagram: inputs in a left oval, outputs in a right oval, one arrow per pair ---------- */
+// pairs: [[in, out], ...]; o.ins / o.outs give the order (defaults: sorted values); o.fmt formats a value;
+// o.hl = input to highlight (others fade); o.lit = [in, out] arrow drawn thick; o.dead = inputs shown crossed out
+function arrowDiagram(svg, W, H, pairs, o){
+  o = o || {};
+  svg.innerHTML = '';
+  const fmt = o.fmt || (v => typeof v === 'number' ? num(v) : v);
+  const key = v => String(v);
+  const uniq = arr => { const s = new Set(), r = []; arr.forEach(v => { if (!s.has(key(v))){ s.add(key(v)); r.push(v); } }); return r; };
+  const srt = arr => arr.every(v => typeof v === 'number') ? arr.slice().sort((a, b) => a - b) : arr;
+  const ins = o.ins || srt(uniq(pairs.map(p => p[0]))), outs = o.outs || srt(uniq(pairs.map(p => p[1])));
+  const top = o.top ?? 34, bot = H - (o.bottom ?? 14);
+  const lx = W * 0.25, rx = W * 0.75, ow = Math.min(W * 0.17, 90);
+  mk('ellipse', { cx: lx, cy: (top + bot) / 2, rx: ow, ry: (bot - top) / 2, class: 'oval' }, svg);
+  mk('ellipse', { cx: rx, cy: (top + bot) / 2, rx: ow, ry: (bot - top) / 2, class: 'oval' }, svg);
+  txt(svg, lx, 18, o.inLab || 'INPUTS x', 'cap', { 'text-anchor': 'middle', style: 'fill:var(--in)' });
+  txt(svg, rx, 18, o.outLab || 'OUTPUTS y', 'cap', { 'text-anchor': 'middle', style: 'fill:var(--out)' });
+  const ypos = (i, n) => n === 1 ? (top + bot) / 2 : top + 26 + (bot - top - 52) * i / (n - 1);
+  const iy = {}, oy = {};
+  ins.forEach((v, i) => iy[key(v)] = ypos(i, ins.length));
+  outs.forEach((v, i) => oy[key(v)] = ypos(i, outs.length));
+  const cnt = {}; pairs.forEach(p => cnt[key(p[0])] = (cnt[key(p[0])] || 0) + 1);   // how many outputs each input has
+  const dx = Math.min(ow * 0.45, 34), fs = ins.length > 9 || outs.length > 9 ? 'labS' : 'lab';
+  const ga = mk('g', {}, svg), gd = mk('g', {}, svg);
+  pairs.forEach(p => {                                     // arrows
+    const k = key(p[0]), bad = cnt[k] > 1, faded = o.hl !== undefined && o.hl !== null && key(o.hl) !== k;
+    const lit = o.lit && key(o.lit[0]) === k && key(o.lit[1]) === key(p[1]);
+    const col = bad ? 'var(--no)' : 'var(--pt)';
+    const x1 = lx + dx + 8, y1 = iy[k], x2 = rx - dx - 9, y2 = oy[key(p[1])];
+    mk('line', { x1, y1, x2, y2, style: `stroke:${col};stroke-width:${lit ? 4.5 : 2.4};opacity:${faded ? .18 : 1}` }, ga);
+    if (!faded) arrowHead(ga, x1, y1, x2, y2, col, lit ? 12 : 10);
+  });
+  ins.forEach(v => {                                       // input dots and labels
+    const k = key(v), dead = o.dead && o.dead.map(key).includes(k), bad = cnt[k] > 1;
+    const faded = o.hl !== undefined && o.hl !== null && key(o.hl) !== k;
+    const col = dead ? 'var(--muted)' : bad ? 'var(--no)' : 'var(--in)';
+    mk('circle', { cx: lx + dx, cy: iy[k], r: o.hl !== undefined && key(o.hl) === k ? 8 : 6, style: `fill:${col};opacity:${faded ? .35 : 1}` }, gd);
+    const t = txt(gd, lx + dx - 12, iy[k] + 5, fmt(v), fs, { 'text-anchor': 'end', style: `fill:${col};opacity:${faded ? .45 : 1}${dead ? ';text-decoration:line-through' : ''}` });
+  });
+  outs.forEach(v => {                                      // output dots and labels
+    const k = key(v);
+    mk('circle', { cx: rx - dx, cy: oy[k], r: 6, style: 'fill:var(--out)' }, gd);
+    txt(gd, rx - dx + 12, oy[k] + 5, fmt(v), fs, { style: 'fill:var(--out)' });
+  });
+  return { ins, outs };
+}
+// group pairs by input: Map from input to its list of distinct outputs
+function byInput(pairs){
+  const m = new Map();
+  pairs.forEach(([x, y]) => { const k = String(x); if (!m.has(k)) m.set(k, { x, ys: [] }); const e = m.get(k); if (!e.ys.some(v => String(v) === String(y))) e.ys.push(y); });
+  return m;
+}
+const setStr = arr => '{' + arr.map(v => num(v)).join(', ') + '}';
+
+
+/* ---------- helpers for zoomable graphs (any scale) ---------- */
+const niceStep = raw => { const p = Math.pow(10, Math.floor(Math.log10(raw))), m = raw / p; return (m <= 1 ? 1 : m <= 2 ? 2 : m <= 5 ? 5 : 10) * p; };
+const decs = st => Math.max(0, -Math.floor(Math.log10(st) + 1e-9));
+function fmt(v, st){ const d = decs(st); const r = Number(v.toFixed(d)); return r === 0 ? '0' : (r < 0 ? '−' : '') + Math.abs(r).toFixed(d); }
+// a coordinate system with any box (tiny or huge), labelled ticks, a clipped layer for curves
+function ax2(svg, W, H, b, o){
+  o = o || {}; svg.innerHTML = '';
+  const L = o.padL ?? 52, R = o.padR ?? 14, T = o.padT ?? 14, B = o.padB ?? 28;
+  const sx = (W - L - R) / (b.x1 - b.x0), sy = (H - T - B) / (b.y1 - b.y0), X = x => L + (x - b.x0) * sx, Y = y => T + (b.y1 - y) * sy;
+  const gx = niceStep((b.x1 - b.x0) / 8), gy = niceStep((b.y1 - b.y0) / 7);
+  const g = mk('g', {}, svg), id = 'c' + Math.random().toString(36).slice(2);
+  const cp = mk('clipPath', { id }, svg); mk('rect', { x: L, y: T, width: W - L - R, height: H - T - B }, cp);
+  const cg = mk('g', { 'clip-path': `url(#${id})` }, svg), m = mk('g', {}, svg), top = mk('g', {}, svg);
+  for (let v = Math.ceil(b.x0 / gx) * gx; v <= b.x1 + gx * 1e-6; v += gx){ mk('line', { x1: X(v), y1: T, x2: X(v), y2: H - B, class: 'grid' }, g); txt(top, X(v), H - B + 16, o.fx ? o.fx(v) : fmt(v, gx), 'tl', { 'text-anchor': 'middle' }); }
+  for (let v = Math.ceil(b.y0 / gy) * gy; v <= b.y1 + gy * 1e-6; v += gy){ mk('line', { x1: L, y1: Y(v), x2: W - R, y2: Y(v), class: 'grid' }, g); txt(top, L - 6, Y(v) + 4, fmt(v, gy), 'tl', { 'text-anchor': 'end' }); }
+  if (b.y0 < 0 && b.y1 > 0) mk('line', { x1: L, y1: Y(0), x2: W - R, y2: Y(0), class: 'axis' }, g);
+  if (b.x0 < 0 && b.x1 > 0) mk('line', { x1: X(0), y1: T, x2: X(0), y2: H - B, class: 'axis' }, g);
+  mk('rect', { x: L, y: T, width: W - L - R, height: H - T - B, style: 'fill:none;stroke:var(--line2)' }, g);
+  if (o.xT) txt(top, W - R - 4, H - B - 6, o.xT, 'cap', { 'text-anchor': 'end' });
+  if (o.yT) txt(top, L + 6, T + 14, o.yT, 'cap');
+  return { X, Y, sx, sy, cg, m, top, b, L, R, T, B, W, H, inv: (px, py) => [b.x0 + (px - L) / sx, b.y1 - (py - T) / sy] };
+}
+// sample a curve across the box, breaking at undefined points, at listed jumps, and at big leaps
+function curve(P, f, o){
+  o = o || {}; const b = P.b, n = o.n || 900, brk = o.breaks || [], polys = []; let cur = [];
+  const lim = (b.y1 - b.y0) * 3;
+  for (let i = 0; i <= n; i++){
+    const x = b.x0 + (b.x1 - b.x0) * i / n, y = f(x);
+    const crossed = cur.length && brk.some(c => (cur[cur.length - 1][0] - c) * (x - c) <= 0);
+    if (!isFinite(y) || crossed || (cur.length && Math.abs(y - cur[cur.length - 1][1]) > lim)){ if (cur.length > 1) polys.push(cur); cur = []; if (!isFinite(y)) continue; }
+    cur.push([x, Math.max(b.y0 - lim, Math.min(b.y1 + lim, y))]);
+  }
+  if (cur.length > 1) polys.push(cur);
+  polys.forEach(p => mk('path', { d: dPath(P, p), style: `fill:none;stroke:${o.col || 'var(--cv)'};stroke-width:${o.w || 3};${o.dash ? 'stroke-dasharray:' + o.dash : ''}` }, P.cg));
+}
+const holeAt = (P, x, y, col) => mk('circle', { cx: P.X(x), cy: P.Y(y), r: 6, style: `fill:var(--bg);stroke:${col || 'var(--cv)'};stroke-width:2.5` }, P.m);
+const dotAt = (P, x, y, col, r) => mk('circle', { cx: P.X(x), cy: P.Y(y), r: r || 6, style: `fill:${col || 'var(--cv)'};stroke:var(--bg);stroke-width:1.5` }, P.m);
+const sig = v => !isFinite(v) ? (v > 0 ? '∞' : v < 0 ? '−∞' : 'undefined') : Math.abs(v) >= 1e5 ? v.toExponential(2).replace('-', '−') : num(v, 6);
+function parseLim(s){
+  const t = String(s).trim().toLowerCase().replace(/\s+/g, '').replace(/[−–]/g, '-');
+  if (/^(dne|none|doesnotexist|noLimit|nolimit|no)$/i.test(t)) return 'DNE';
+  if (/^\+?(inf|infinity|∞|oo)$/.test(t)) return Infinity;
+  if (/^-(inf|infinity|∞|oo)$/.test(t)) return -Infinity;
+  return parseNum(s);
+}
+
+const minus = s => String(s).replace(/(^|[\s(,=>→\/·])-(\d)/g, '$1−$2');
+const r4 = v => Number((Math.abs(v) < 1e-12 ? 0 : v).toPrecision(5));
+function frc(x){                                                // exact-looking fraction when it is one
+  if (Math.abs(x - Math.round(x)) < 1e-9) return num(Math.round(x));
+  for (let d = 2; d <= 30; d++){ const n = x * d; if (Math.abs(n - Math.round(n)) < 1e-9) return (x < 0 ? '−' : '') + Math.abs(Math.round(n)) + '/' + d; }
+  return String(r4(x)).replace('-', '−');
+}
+function simpson(f, a, b, n){ n = n || 2000; const h = (b - a) / n; let s = f(a) + f(b); for (let i = 1; i < n; i++) s += f(a + i * h) * (i % 2 ? 4 : 2); return s * h / 3; }
+function shade(P, f, a, b, o){                                   // fill between f and the x-axis, teal above and red below
+  o = o || {}; const n = 300, pts = [];
+  for (let i = 0; i <= n; i++){ const x = a + (b - a) * i / n; pts.push([x, f(x)]); }
+  const clipY = (sign) => pts.map(([x, y]) => [x, sign > 0 ? Math.max(0, y) : Math.min(0, y)]);
+  [[1, 'var(--pos)'], [-1, 'var(--neg)']].forEach(([sg, c]) => { const q = clipY(sg); mk('path', { d: dPath(P, [[a, 0], ...q, [b, 0]]) + 'Z', style: `fill:${c};opacity:${o.op ?? .3}` }, P.cg); });
+}
+function zeroLine(P){ if (P.b.y0 < 0 && P.b.y1 > 0) mk('line', { x1: P.L, y1: P.Y(0), x2: P.W - P.R, y2: P.Y(0), style: 'stroke:var(--ink);stroke-width:1.3;opacity:.55' }, P.cg); }
+
+/* =====================================================================
+   2. MAIN: Riemann rectangles and the running total
+   ===================================================================== */
+const mPresets = [
+  { n: 'x² on [0, 2]', f: x => x * x, F: x => x ** 3 / 3, Fs: 'x³/3', fs: 'x²', a: 0, b: 2, d: 'The exact area is 2³/3 = 8/3 ≈ 2.667. Left sums undershoot (the curve rises), right sums overshoot.' },
+  { n: 'sin x on [0, π]', f: Math.sin, F: x => -Math.cos(x), Fs: '−cos x', fs: 'sin x', a: 0, b: Math.PI, d: 'One hump of the sine wave has area exactly 2.' },
+  { n: 'sin x on [0, 2π]', f: Math.sin, F: x => -Math.cos(x), Fs: '−cos x', fs: 'sin x', a: 0, b: 2 * Math.PI, d: 'A hump and a dip: signed area 0. The running total climbs to 2 and comes back down.' },
+  { n: '4 − x² on [−1, 3]', f: x => 4 - x * x, F: x => 4 * x - x ** 3 / 3, Fs: '4x − x³/3', fs: '4 − x²', a: -1, b: 3, d: 'Above the axis until x = 2, below after. Net area 20/3: the red part (below the axis) is subtracted from the teal part.' },
+  { n: 'eˣ on [0, 1]', f: Math.exp, F: Math.exp, Fs: 'eˣ', fs: 'eˣ', a: 0, b: 1, d: 'Area = e − 1 ≈ 1.718.' },
+  { n: '1/x on [1, e]', f: x => 1 / x, F: Math.log, Fs: 'ln x', fs: '1/x', a: 1, b: Math.E, d: 'Area exactly 1: this is how the natural logarithm can be defined.' },
+];
+const RULES = ['left', 'midpoint', 'right'];
+const M = { i: 0, a: 0, b: 2, n: 4, rule: 1, x: null, anim: null };
+function riemann(f, a, b, n, rule){ const dx = (b - a) / n; let s = 0; for (let i = 0; i < n; i++){ const x = a + dx * (i + [0, 0.5, 1][rule]); s += f(x) * dx; } return s; }
+function mBounds(p){ const ys = []; for (let i = 0; i <= 200; i++){ const x = M.a + (M.b - M.a) * (i - 10) / 180; ys.push(p.f(x)); } const fin = ys.filter(isFinite); let y0 = Math.min(0, ...fin), y1 = Math.max(0, ...fin); const pad = (y1 - y0) * 0.1; return [y0 - pad, y1 + pad]; }
+function mDraw(){
+  const p = mPresets[M.i], { a, b, n, rule } = M, w = b - a, x0 = a - w * 0.08, x1 = b + w * 0.08, [y0, y1] = mBounds(p);
+  const fx = { fx: v => r4(v) };
+  const P = ax2($('mF'), 960, 320, { x0, x1, y0, y1 }, { yT: 'f(x)', xT: 'x' });
+  zeroLine(P);
+  const dx = w / n, xs = M.x === null ? b : M.x;
+  for (let i = 0; i < n; i++){
+    const L = a + i * dx, h = p.f(a + dx * (i + [0, 0.5, 1][rule]));
+    const op = L + dx <= xs + 1e-9 ? .45 : .12;
+    mk('rect', { x: P.X(L), y: P.Y(Math.max(0, h)), width: Math.max(0.5, P.X(L + dx) - P.X(L)), height: Math.abs(P.Y(h) - P.Y(0)), style: `fill:${h >= 0 ? 'var(--pos)' : 'var(--neg)'};fill-opacity:${op};stroke:${h >= 0 ? 'var(--pos)' : 'var(--neg)'};stroke-width:${n > 64 ? 0 : 1}` }, P.cg);
+    if (n <= 16) dotAt(P, a + dx * (i + [0, 0.5, 1][rule]), h, 'var(--cv)', 3.5);
+  }
+  curve(P, p.f, { n: 900 });
+  if (M.x !== null){ mk('line', { x1: P.X(M.x), y1: P.T, x2: P.X(M.x), y2: P.H - P.B, style: 'stroke:var(--pa);stroke-width:2' }, P.m); dotAt(P, M.x, p.f(M.x), 'var(--pa)', 6); }
+  // running total
+  const A = x => p.F(x) - p.F(a), Avals = []; for (let i = 0; i <= 200; i++) Avals.push(A(a + w * i / 200));
+  let ay0 = Math.min(0, ...Avals), ay1 = Math.max(0, ...Avals); if (ay1 - ay0 < 1e-6) ay1 = ay0 + 1; const pad = (ay1 - ay0) * 0.12;
+  const Q = ax2($('mA2'), 960, 220, { x0, x1, y0: ay0 - pad, y1: ay1 + pad }, { yT: 'A(x) = area from a to x', xT: 'x' });
+  zeroLine(Q);
+  const xe = M.x === null ? b : M.x;
+  mk('path', { d: dPath(Q, Array.from({ length: 301 }, (_, i) => { const x = a + (xe - a) * i / 300; return [x, A(x)]; })), style: 'fill:none;stroke:var(--acc);stroke-width:3.5' }, Q.cg);
+  if (M.x !== null){ const s = p.f(M.x), y = A(M.x), d = w * 0.12; mk('path', { d: dPath(Q, [[M.x - d, y - s * d], [M.x + d, y + s * d]]), style: 'fill:none;stroke:var(--pa);stroke-width:2.5' }, Q.cg); dotAt(Q, M.x, y, 'var(--pa)', 6); }
+  const S = riemann(p.f, a, b, n, rule), exact = p.F(b) - p.F(a);
+  $('mV').textContent = minus(`${RULES[rule]} sum with n = ${n}: ${r4(S)}   ·   exact ∫ = ${frc(exact)}`);
+  let s = `Δx = (${frc(b)} − ${a < 0 ? '(' + frc(a) + ')' : frc(a)})/${n} = ${r4(dx)}. The ${RULES[rule]} sum adds ${n} rectangles: <b>${r4(S)}</b>. The exact integral is F(b) − F(a) with F(x) = ${p.Fs}: <span class="ka">${frc(exact)}</span> ≈ ${r4(exact)}. Error: ${r4(S - exact)}${n >= 8 ? ' (double n and see it shrink)' : ''}.`;
+  if (M.x !== null) s += `<br>At x = ${r4(M.x)}: running total A(x) = <span class="ka">${r4(A(M.x))}</span>, and its slope is <span class="kb">${r4(p.f(M.x))}</span> = f(${r4(M.x)}): A′(x) = f(x).`;
+  $('mOut').innerHTML = minus(s);
+  $('mA').value = frc(a).replace('−', '-'); $('mB').value = String(r4(b)); $('mN').value = String(n);
+}
+function mStop(){ if (M.anim){ clearTimeout(M.anim); cancelAnimationFrame(M.anim); M.anim = null; } $('mPlay').textContent = 'Play'; $('mSweep').textContent = 'Sweep'; }
+const mMark = buttons('mPresets', mPresets, i => { mStop(); Object.assign(M, { i, a: mPresets[i].a, b: mPresets[i].b, n: 4, x: null }); mMark(i); $('mDesc').textContent = mPresets[i].d; $('mErr').textContent = ''; mDraw(); });
+[...$('mRule').children].forEach((b, k) => b.onclick = () => { M.rule = k; [...$('mRule').children].forEach((x, j) => x.classList.toggle('on', j === k)); mDraw(); });
+$('mUse').onclick = () => { const a = parseNum($('mA').value), b = parseNum($('mB').value), n = parseInt($('mN').value, 10), p = mPresets[M.i]; if (isNaN(a) || isNaN(b) || isNaN(n)){ $('mErr').textContent = 'Type numbers for a, b and n.'; return; } if (b <= a){ $('mErr').textContent = 'b must be bigger than a.'; return; } if (n < 1 || n > 1000){ $('mErr').textContent = 'Use n from 1 to 1000.'; return; } if (M.i === 5 && a <= 0){ $('mErr').textContent = '1/x needs a > 0 (it blows up at 0).'; return; } if (b - a > 20){ $('mErr').textContent = 'Keep the interval shorter than 20.'; return; } $('mErr').textContent = ''; mStop(); Object.assign(M, { a, b, n, x: null }); mDraw(); };
+$('mPlay').onclick = () => { if (M.anim){ mStop(); return; } M.x = null; M.n = 1; $('mPlay').textContent = 'Pause'; const step = () => { mDraw(); if (M.n < 256){ M.n *= 2; M.anim = setTimeout(step, 750); } else mStop(); }; step(); };
+$('mSweep').onclick = () => { if (M.anim){ mStop(); return; } $('mSweep').textContent = 'Pause'; M.x = M.a; let last = performance.now(); const step = now => { M.x = Math.min(M.b, M.x + (now - last) / 1000 * (M.b - M.a) / 4); last = now; mDraw(); if (M.x < M.b) M.anim = requestAnimationFrame(step); else mStop(); }; M.anim = requestAnimationFrame(step); };
+
+/* =====================================================================
+   3. FUNDAMENTAL THEOREM: area = F(b) − F(a)
+   ===================================================================== */
+const fPresets = [
+  { n: '2x', f: x => 2 * x, F: x => x * x, Fs: 'x²', a: 1, b: 3, box: [-0.5, 4, -1, 8], Fbox: [-4, 20] },
+  { n: '3x² − 2', f: x => 3 * x * x - 2, F: x => x ** 3 - 2 * x, Fs: 'x³ − 2x', a: 0, b: 2, box: [-1.5, 2.6, -3, 12], Fbox: [-6, 14] },
+  { n: 'cos x', f: Math.cos, F: Math.sin, Fs: 'sin x', a: 0, b: Math.PI / 2, box: [-0.5, 3.5, -1.2, 1.2], Fbox: [-3, 4] },
+  { n: 'eˣ', f: Math.exp, F: Math.exp, Fs: 'eˣ', a: 0, b: 1.5, box: [-1, 2, -0.5, 5], Fbox: [-3, 8] },
+];
+const FS = { i: 0, a: 1, b: 3 };
+function fDraw(){
+  const p = fPresets[FS.i], { a, b } = FS, [x0, x1, y0, y1] = p.box;
+  const L = ax2($('fL'), 470, 330, { x0, x1, y0, y1 }, { yT: 'f(x) = ' + p.n, xT: 'x', padL: 40 });
+  zeroLine(L); shade(L, p.f, a, b); curve(L, p.f, { n: 500 });
+  const area = p.F(b) - p.F(a);
+  txt(L.top, L.X((a + b) / 2), L.Y(Math.max(0.3, p.f((a + b) / 2) / 2)), `area ${r4(area)}`, 'lab', { 'text-anchor': 'middle', style: 'fill:var(--pos)' });
+  const R = ax2($('fR'), 470, 330, { x0, x1, y0: p.Fbox[0], y1: p.Fbox[1] }, { yT: 'F(x) + C', xT: 'x', padL: 40 });
+  zeroLine(R);
+  [-3, 0, 3].forEach((C, k) => { curve(R, x => p.F(x) + C, { col: 'var(--acc)', w: k === 1 ? 3.5 : 1.8, dash: k === 1 ? '' : '6 5', n: 500 }); const ya = p.F(a) + C, yb = p.F(b) + C; dotAt(R, a, ya, 'var(--pa)', 4.5); dotAt(R, b, yb, 'var(--pa)', 4.5); mk('line', { x1: R.X(b), y1: R.Y(ya), x2: R.X(b), y2: R.Y(yb), style: 'stroke:var(--pos);stroke-width:3' }, R.m); mk('line', { x1: R.X(a), y1: R.Y(ya), x2: R.X(b), y2: R.Y(ya), style: 'stroke:var(--muted);stroke-width:1;stroke-dasharray:3 4' }, R.m); });
+  txt(R.top, R.X(b) + 8, R.Y(p.F(b) - area / 2), `rise ${r4(area)}`, 'labS', { style: 'fill:var(--pos)' });
+  $('fSteps').innerHTML = minus([
+    ['Find an antiderivative (check: its derivative is f)', `F(x) = ${p.Fs}`],
+    ['Evaluate at the top and bottom limits', `F(${frc(b)}) = ${r4(p.F(b))},  F(${frc(a)}) = ${r4(p.F(a))}`],
+    ['Subtract', `∫ f = F(${frc(b)}) − F(${frc(a)}) = ${frc(area)}`, 'Every curve F + C on the right rises by this same amount from a to b: C cancels.'],
+  ].map(([t, e, n2]) => `<li><small>${t}</small>${e}${n2 ? `<small>${n2}</small>` : ''}</li>`).join(''));
+  $('fA').value = frc(a).replace('−', '-'); $('fB').value = String(r4(b));
+}
+const fMark = buttons('fPresets', fPresets, i => { FS.i = i; FS.a = fPresets[i].a; FS.b = fPresets[i].b; fMark(i); $('fErr').textContent = ''; fDraw(); });
+$('fGo').onclick = () => { const a = parseNum($('fA').value), b = parseNum($('fB').value), p = fPresets[FS.i]; if (isNaN(a) || isNaN(b) || a >= b){ $('fErr').textContent = 'Type a and b with a < b.'; return; } if (a < p.box[0] || b > p.box[1]){ $('fErr').textContent = `Keep a and b between ${p.box[0]} and ${p.box[1]}.`; return; } $('fErr').textContent = ''; FS.a = a; FS.b = b; fDraw(); };
+
+/* =====================================================================
+   4. AVERAGE VALUE
+   ===================================================================== */
+const vPresets = [
+  { n: 'A day’s temperature', f: t => 15 + 8 * Math.sin((t - 9) * Math.PI / 12), a: 0, b: 24, y: [0, 26], u: '°C', d: 'Temperature over 24 hours. The average temperature is the level that has the same area.' },
+  { n: 'x² on [0, 3]', f: x => x * x, a: 0, b: 3, y: [0, 10], u: '', d: 'Area 9 over a width of 3: average height 3.' },
+  { n: 'sin x on [0, π]', f: Math.sin, a: 0, b: Math.PI, y: [0, 1.2], u: '', d: 'Area 2 over a width of π: average 2/π ≈ 0.64.' },
+  { n: 'Mostly negative', f: x => x * x - 4, a: -1, b: 3, y: [-5, 6], u: '', d: 'Signed area counts: the average can be negative.' },
+];
+const VS = { i: 0, e: 0, anim: null };
+function vDraw(){
+  const p = vPresets[VS.i], I = simpson(p.f, p.a, p.b), avg = I / (p.b - p.a), e = VS.e < 0.5 ? 2 * VS.e * VS.e : 1 - Math.pow(-2 * VS.e + 2, 2) / 2;
+  const P = ax2($('vSvg'), 600, 340, { x0: p.a, x1: p.b, y0: p.y[0], y1: p.y[1] }, { padL: 40, xT: 'x' });
+  zeroLine(P);
+  const g = x => p.f(x) + (avg - p.f(x)) * e;                // the sand flattening toward the average
+  shade(P, g, p.a, p.b, { op: .35 });
+  curve(P, p.f, { n: 500, w: e > 0 ? 1.5 : 3, dash: e > 0 ? '5 5' : '' });
+  if (e > 0) curve(P, g, { n: 300, col: 'var(--avg)', w: 3 });
+  mk('line', { x1: P.L, y1: P.Y(avg), x2: P.W - P.R, y2: P.Y(avg), style: 'stroke:var(--avg);stroke-width:1.5;stroke-dasharray:6 5' }, P.m);
+  txt(P.top, P.W - P.R - 6, P.Y(avg) - 7, `average ${r4(avg)}${p.u}`, 'labS', { 'text-anchor': 'end', style: 'fill:var(--avg)' });
+  $('vOut').innerHTML = minus(`∫ f from ${r4(p.a)} to ${r4(p.b)} = <b>${r4(I)}</b>. Width ${r4(p.b - p.a)}. Average value = ${r4(I)} / ${r4(p.b - p.a)} = <span class="kg">${r4(avg)}${p.u}</span>. The flattened rectangle has exactly the same signed area: what is above the line on the original fills what is below it.`);
+}
+function vStop(){ if (VS.anim){ cancelAnimationFrame(VS.anim); VS.anim = null; } }
+const vMark = buttons('vPresets', vPresets, i => { vStop(); VS.i = i; VS.e = 0; vMark(i); $('vDesc').textContent = vPresets[i].d; vDraw(); });
+$('vPlay').onclick = () => { vStop(); VS.e = 0; const t0 = performance.now(); const step = now => { VS.e = Math.min(1, (now - t0) / 2000); vDraw(); if (VS.e < 1) VS.anim = requestAnimationFrame(step); }; VS.anim = requestAnimationFrame(step); };
+$('vReset').onclick = () => { vStop(); VS.e = 0; vDraw(); };
+
+/* =====================================================================
+   5. RATE IN, TOTAL OUT
+   ===================================================================== */
+const smooth = u => u <= 0 ? 0 : u >= 1 ? 1 : u * u * (3 - 2 * u);
+const rPresets = [
+  { n: 'Car trip: speed → distance', f: t => 90 * smooth(t / 0.2) - 50 * smooth((t - 0.8) / 0.15) + 30 * smooth((t - 1.2) / 0.2) - 70 * smooth((t - 1.8) / 0.2), a: 0, b: 2, ux: 'hours', ur: 'speed (km/h)', ut: 'distance (km)', d: 'Speed up to 90 km/h, slow to 40 through a town, back to 70, then stop. The distance is the area under the speed graph.' },
+  { n: 'Home electricity: power → energy', f: t => 0.4 + 1.6 * Math.exp(-((t - 7.5) ** 2) / 1.2) + 2.6 * Math.exp(-((t - 19) ** 2) / 3) + 0.8 * Math.exp(-((t - 13) ** 2) / 2), a: 0, b: 24, ux: 'hour of day', ur: 'power (kW)', ut: 'energy used (kWh)', d: 'A small base load all day, a morning peak (kettle, shower) and a big evening peak (oven, washing). The meter counts kilowatt-hours: area under the power curve.' },
+  { n: 'Tank: flow → volume', f: t => t < 10 ? 12 : t < 15 ? 12 - 4 * (t - 10) : t < 25 ? -8 : -8 + 1.6 * (t - 25), a: 0, b: 30, ux: 'minutes', ur: 'flow (L/min)', ut: 'water added (L)', d: 'Filling at 12 L/min, then the inflow is closed and a drain opens. Negative flow is outflow: the net volume goes down.' },
+];
+const RS = { i: 0, t: null, anim: null };
+function rDraw(){
+  const p = rPresets[RS.i], t = RS.t === null ? p.b : RS.t;
+  const ys = []; for (let i = 0; i <= 300; i++) ys.push(p.f(p.a + (p.b - p.a) * i / 300));
+  let y0 = Math.min(0, ...ys), y1 = Math.max(...ys); const pad = (y1 - y0) * 0.1;
+  const P = ax2($('rTop'), 960, 260, { x0: p.a, x1: p.b, y0: y0 - pad, y1: y1 + pad }, { yT: p.ur, xT: p.ux, padL: 56 });
+  zeroLine(P); shade(P, p.f, p.a, t, { op: .4 }); curve(P, p.f, { n: 600 });
+  mk('line', { x1: P.X(t), y1: P.T, x2: P.X(t), y2: P.H - P.B, style: 'stroke:var(--pa);stroke-width:2' }, P.m);
+  const tot = x => simpson(p.f, p.a, x, 400), vals = []; for (let i = 0; i <= 120; i++) vals.push(tot(p.a + (p.b - p.a) * i / 120));
+  let z0 = Math.min(0, ...vals), z1 = Math.max(...vals); const pz = (z1 - z0) * 0.12 || 1;
+  const Q = ax2($('rBot'), 960, 200, { x0: p.a, x1: p.b, y0: z0 - pz, y1: z1 + pz }, { yT: p.ut, xT: p.ux, padL: 56 });
+  zeroLine(Q);
+  mk('path', { d: dPath(Q, Array.from({ length: 121 }, (_, i) => { const x = p.a + (t - p.a) * i / 120; return [x, tot(x)]; })), style: 'fill:none;stroke:var(--acc);stroke-width:3.5' }, Q.cg);
+  const T = tot(t); dotAt(Q, t, T, 'var(--pa)', 6);
+  const unitT = p.ut.match(/\((.*)\)/)[1];
+  let s = `At ${r4(t)} ${p.ux}: rate ${r4(p.f(t))} ${p.ur.match(/\((.*)\)/)[1]}, total so far <span class="ka">${r4(T)} ${unitT}</span> (the shaded area).`;
+  if (RS.i === 0) s += ` Over the whole trip: ${r4(tot(p.b))} km in 2 hours, an average speed of ${r4(tot(p.b) / 2)} km/h.`;
+  if (RS.i === 1) s += ` Over the whole day: ${r4(tot(p.b))} kWh. Average power ${r4(tot(p.b) / 24)} kW.`;
+  if (RS.i === 2) s += ` The level peaks at about 13 minutes, where the flow crosses 0 from positive to negative: the running total is at its maximum where its rate (the flow) is 0.`;
+  $('rOut').innerHTML = minus(s);
+}
+function rStop(){ if (RS.anim){ cancelAnimationFrame(RS.anim); RS.anim = null; } $('rPlay').textContent = 'Play'; }
+const rMark = buttons('rPresets', rPresets, i => { rStop(); RS.i = i; RS.t = null; rMark(i); $('rDesc').textContent = rPresets[i].d; rDraw(); });
+$('rPlay').onclick = () => { if (RS.anim){ rStop(); return; } const p = rPresets[RS.i]; if (RS.t === null || RS.t >= p.b) RS.t = p.a; $('rPlay').textContent = 'Pause'; let last = performance.now(); const step = now => { RS.t = Math.min(p.b, RS.t + (now - last) / 1000 * (p.b - p.a) / 6); last = now; rDraw(); if (RS.t < p.b) RS.anim = requestAnimationFrame(step); else rStop(); }; RS.anim = requestAnimationFrame(step); };
+$('rReset').onclick = () => { rStop(); RS.t = rPresets[RS.i].a; rDraw(); };
+
+/* =====================================================================
+   6. TRAPS
+   ===================================================================== */
+(function(){
+  let P = ax2($('tr1'), 300, 200, { x0: 0, x1: 2 * Math.PI, y0: -1.3, y1: 1.3 }, { padL: 30, padB: 22, padT: 8, padR: 8, fx: v => r4(v) });
+  zeroLine(P); shade(P, Math.sin, 0, 2 * Math.PI, { op: .4 }); curve(P, Math.sin);
+  txt(P.top, P.X(1.57), P.Y(0.4), '+2', 'lab', { 'text-anchor': 'middle', style: 'fill:var(--pos)' }); txt(P.top, P.X(4.71), P.Y(-0.4) + 6, '−2', 'lab', { 'text-anchor': 'middle', style: 'fill:var(--neg)' });
+  P = ax2($('tr2'), 300, 200, { x0: 0, x1: 2, y0: 0, y1: 8 }, { padL: 30, padB: 22, padT: 8, padR: 8 });
+  curve(P, x => x ** 3, { col: 'var(--neg)', dash: '5 5' }); curve(P, x => x ** 3 / 3, { col: 'var(--acc)' }); curve(P, x => x * x);
+  txt(P.top, P.X(1.75), P.Y(5.4), 'x³ ✕', 'labS', { style: 'fill:var(--neg)' }); txt(P.top, P.X(1.6), P.Y(1.1), 'x³/3 ✓', 'labS', { style: 'fill:var(--acc)' });
+  P = ax2($('tr3'), 300, 200, { x0: -2, x1: 2, y0: -2, y1: 5 }, { padL: 30, padB: 22, padT: 8, padR: 8 });
+  zeroLine(P); [-1, 0, 2].forEach(C => curve(P, x => x * x + C, { col: 'var(--acc)', w: 2 }));
+})();
+
+/* =====================================================================
+   7. QUIZ
+   ===================================================================== */
+const Q = { right: 0, total: 0 };
+let qq = null;
+const qTitles = { riem: 'Riemann sum', eval: 'Evaluate the integral', area: 'Signed area from a graph', anti: 'Antiderivative' };
+function qReset(){ ['qVis', 'qChoice', 'qExpr'].forEach(id => $(id).innerHTML = ''); $('qFb').className = 'feedback'; $('qFb').innerHTML = ''; $('qErr').textContent = ''; $('qIn').style.display = ''; $('q1').value = ''; }
+function qScore(ok){ if (qq.counted) return; qq.counted = true; Q.total++; if (ok) Q.right++; $('score').textContent = `Score: ${Q.right} / ${Q.total}`; }
+function qFeedback(ok, html){ $('qFb').className = 'feedback ' + (ok ? 'ok' : 'bad'); $('qFb').innerHTML = (ok ? '<b>Right.</b> ' : '<b>Not quite.</b> ') + minus(html); }
+function qChoices(list, correctIdx, explain){ $('qIn').style.display = 'none'; qq.correctIdx = correctIdx; qq.explainFn = explain; list.forEach((c, k) => { const b = document.createElement('button'); b.innerHTML = c; b.onclick = () => { const ok = k === correctIdx; qScore(ok); [...$('qChoice').children].forEach((x, j) => { x.classList.remove('right', 'wrong'); if (j === k) x.classList.add(ok ? 'right' : 'wrong'); }); qFeedback(ok, explain(k)); }; $('qChoice').appendChild(b); }); }
+const shuffleArr = a => { for (let i = a.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+function qRiem(){
+  const kind = pick(['sq', 'lin']), rule = ri(0, 2), n = 4, a = 0, b = pick([4, 8]), dx = (b - a) / n;
+  const c = ri(-2, 3), k = ri(1, 3);
+  const f = kind === 'sq' ? (x => x * x / (b === 8 ? 4 : 1) + c) : (x => k * x + c);
+  const fs = kind === 'sq' ? (b === 8 ? `x²/4 ${c < 0 ? '−' : '+'} ${Math.abs(c)}` : `x² ${c < 0 ? '−' : '+'} ${Math.abs(c)}`) : `${k === 1 ? '' : k}x ${c < 0 ? '−' : '+'} ${Math.abs(c)}`;
+  const pts = Array.from({ length: n }, (_, i) => a + dx * (i + [0, 0.5, 1][rule]));
+  const S = pts.reduce((s, x) => s + f(x) * dx, 0);
+  Object.assign(qq, { ans: S, rule, f, dx, pts, n, a, b });
+  $('qText').innerHTML = `Use a <b>${RULES[rule]}</b> Riemann sum with <b>n = ${n}</b> rectangles to approximate the integral.`;
+  $('qExpr').innerHTML = minus(`∫ from ${a} to ${b} of (${fs}) dx`);
+  $('qLab').textContent = 'sum =';
+  qq.explain = `Δx = (${b} − ${a})/${n} = ${dx}. Heights at x = ${pts.join(', ')}: ${pts.map(x => r4(f(x))).join(', ')}. Sum = ${dx} × (${pts.map(x => r4(f(x))).join(' + ')}) = ${r4(S)}.`;
+}
+function qEval(){
+  const terms = []; const nT = ri(1, 2);
+  const pw = shuffleArr([0, 1, 2, 3]).slice(0, nT + 1);
+  pw.forEach(p => terms.push([p, (p + 1) * pick([1, 2, -1, 1])]));   // coefficient divisible by p + 1, so the antiderivative is tidy
+  const a = ri(-1, 1), b = a + ri(1, 3);
+  const f = x => terms.reduce((s, [p, c]) => s + c * x ** p, 0), F = x => terms.reduce((s, [p, c]) => s + c / (p + 1) * x ** (p + 1), 0);
+  const tstr = ts => ts.map(([p, c], i) => { const sg = c < 0 ? (i ? ' − ' : '−') : (i ? ' + ' : ''); const ac = Math.abs(c); return sg + (p === 0 ? ac : (ac === 1 ? '' : ac) + 'x' + ['', '', '²', '³'][p]); }).join('');
+  const Fterms = terms.map(([p, c]) => [p + 1, c / (p + 1)]);
+  qq.ans = F(b) - F(a);
+  $('qText').innerHTML = 'Evaluate with the Fundamental Theorem: find an antiderivative F, then F(b) − F(a).';
+  $('qExpr').innerHTML = minus(`∫ from ${a} to ${b} of (${tstr(terms.sort((u, v) => v[0] - u[0]))}) dx`);
+  $('qLab').textContent = 'value =';
+  qq.explain = `F(x) = ${tstr(Fterms.sort((u, v) => v[0] - u[0]))}. F(${b}) = ${r4(F(b))}, F(${a}) = ${r4(F(a))}. Answer: ${r4(F(b))} − ${pn(r4(F(a)))} = ${frc(qq.ans)}.`;
+  qq.F = F; qq.f = f; qq.a = a; qq.b = b;
+}
+function qArea(){
+  const xs = [0, 1, 2, 3, 4, 5, 6];
+  let ys; do { ys = xs.map(() => ri(-3, 4)); } while (!ys.some(v => v < 0) || !ys.some(v => v > 0));
+  let a, b; do { a = ri(0, 2); b = ri(a + 3, 6); } while (!ys.slice(a, b + 1).some(v => v < 0) || !ys.slice(a, b + 1).some(v => v > 0));
+  // exact signed area of a piecewise-linear graph: trapezoids
+  let A = 0; for (let i = a; i < b; i++) A += (ys[i] + ys[i + 1]) / 2;
+  let T = 0; for (let i = a; i < b; i++){ const y1 = ys[i], y2 = ys[i + 1]; if (y1 * y2 >= 0) T += Math.abs(y1 + y2) / 2; else { const z = Math.abs(y1) / (Math.abs(y1) + Math.abs(y2)); T += Math.abs(y1) * z / 2 + Math.abs(y2) * (1 - z) / 2; } }
+  qq.ans = A; qq.tot = T;
+  const s = document.createElementNS(NS, 'svg'); s.setAttribute('viewBox', '0 0 520 340'); $('qVis').appendChild(s);
+  const P = ax2(s, 520, 340, { x0: 0, x1: 6, y0: -4, y1: 5 }, { padL: 30, xT: 'x' });
+  zeroLine(P);
+  const f = x => { const i = Math.min(5, Math.floor(x)); return ys[i] + (ys[i + 1] - ys[i]) * (x - i); };
+  shade(P, f, a, b, { op: .35 });
+  mk('path', { d: dPath(P, xs.map((x, i) => [x, ys[i]])), style: 'fill:none;stroke:var(--cv);stroke-width:3' }, P.cg);
+  $('qText').innerHTML = `The graph of f is made of straight pieces. Find <b>∫ from ${a} to ${b} of f(x) dx</b> (signed area: below the axis counts negative).`;
+  $('qLab').textContent = 'integral =';
+  qq.explain = `Add the trapezoids one unit wide: ${Array.from({ length: b - a }, (_, k) => `(${pn(ys[a + k])} + ${pn(ys[a + k + 1])})/2`).join(' + ')} = ${frc(A)}. (Counting every piece as positive would give the total area ${r4(T)} instead.)`;
+}
+function qAnti(){
+  const p = ri(1, 3), c = (p + 1) * ri(1, 3), d = ri(-5, 5);
+  const fs = `${c}x${['', '', '²', '³'][p]} ${d < 0 ? '−' : '+'} ${Math.abs(d)}`;
+  const coef = c / (p + 1), pw = ['', 'x', 'x²', 'x³', 'x⁴'];
+  const right = `${coef === 1 ? '' : coef}${pw[p + 1]} ${d < 0 ? '−' : '+'} ${Math.abs(d)}x + C`;
+  const noDiv = `${c}${pw[p + 1]} ${d < 0 ? '−' : '+'} ${Math.abs(d)}x + C`;
+  const deriv = `${c * p}${pw[p - 1] || ''} + C`;
+  const noX = `${coef === 1 ? '' : coef}${pw[p + 1]} ${d < 0 ? '−' : '+'} ${Math.abs(d)} + C`;
+  const list = shuffleArr([...new Set([right, noDiv, deriv, noX])]);
+  $('qText').innerHTML = 'Which is the indefinite integral?';
+  $('qExpr').innerHTML = minus(`∫ (${fs}) dx`);
+  qChoices(list.map(minus), list.indexOf(right), k => {
+    const ch = list[k];
+    const base = `Raise each power by one and divide by the new power: ${c}x${['', '', '²', '³'][p]} → ${c}/${p + 1}·${pw[p + 1]} = ${coef === 1 ? '' : coef}${pw[p + 1]}, and the constant ${d} → ${d}x. Check by differentiating: you get back ${fs}.`;
+    return (ch === noDiv ? 'You raised the power but didn’t divide by the new power. ' : ch === deriv ? 'That’s the derivative, not the antiderivative. ' : ch === noX ? 'A constant integrates to constant × x. ' : '') + base;
+  });
+}
+let lastType = null;
+function qNew(){
+  qReset();
+  let t; do { t = pick(['riem', 'eval', 'area', 'anti']); } while (t === lastType);
+  lastType = t; qq = { type: t, counted: false };
+  $('qTitle').textContent = qTitles[t];
+  ({ riem: qRiem, eval: qEval, area: qArea, anti: qAnti })[t]();
+}
+$('qCheck').onclick = () => {
+  const v = parseNum($('q1').value);
+  if ($('q1').value.trim() === '' || isNaN(v)){ $('qErr').textContent = 'Type a number (fractions like 8/3 are fine).'; return; }
+  const ok = Math.abs(v - qq.ans) < 1e-6 * Math.max(1, Math.abs(qq.ans)); let why = qq.explain;
+  if (!ok){
+    if (qq.type === 'riem'){ const other = [0, 1, 2].filter(r => r !== qq.rule).find(r => Math.abs(riemann(qq.f, qq.a, qq.b, qq.n, r) - v) < 1e-6); if (other !== undefined) why = `That’s the ${RULES[other]} sum; this question asks for the ${RULES[qq.rule]} sum. ` + why; else if (Math.abs(v - qq.ans / qq.dx) < 1e-6) why = `You added the heights but forgot to multiply by the width Δx = ${qq.dx}. ` + why; }
+    if (qq.type === 'area' && Math.abs(v - qq.tot) < 1e-6) why = 'That’s the total area; the integral counts the part below the axis as negative. ' + why;
+    if (qq.type === 'eval' && Math.abs(v - (qq.F(qq.a) - qq.F(qq.b))) < 1e-6) why = 'Backwards: it’s F(top) − F(bottom). ' + why;
+  }
+  $('qErr').textContent = ''; qScore(ok); qFeedback(ok, why);
+};
+$('q1').addEventListener('keydown', e => { if (e.key === 'Enter') $('qCheck').click(); });
+$('q1').addEventListener('input', () => $('qErr').textContent = '');
+$('qShow').onclick = () => {
+  qScore(false);
+  if (qq.correctIdx !== undefined){ [...$('qChoice').children].forEach((b, j) => { if (j === qq.correctIdx) b.classList.add('right'); }); qFeedback(false, qq.explainFn(qq.correctIdx)); return; }
+  $('q1').value = frc(qq.ans).replace('−', '-');
+  $('qFb').className = 'feedback bad'; $('qFb').innerHTML = '<b>Answer filled in.</b> ' + minus(qq.explain);
+};
+$('qNew').onclick = qNew;
+
+/* =====================================================================
+   8. START
+   ===================================================================== */
+selectOnFocus(['mA', 'mB', 'mN', 'fA', 'fB', 'q1']);
+$('mPresets').children[0].click();
+$('fPresets').children[0].click();
+$('vPresets').children[0].click();
+$('rPresets').children[0].click();
+qNew();
+</script>
+</body></html>
