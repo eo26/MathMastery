@@ -54,7 +54,7 @@ window.MM_TOC = [
   ]},
   { ch: 8, title: 'Calculus', pages: [
     { id: '8.B.1', title: 'Limits', url: 'https://claude.ai/artifact/67LjZ2erNznVxsJjiuAyZa', built: true },
-    { id: '8.B.2', title: 'Derivatives' },
+    { id: '8.B.2', title: 'Derivatives', url: 'https://claude.ai/artifact/5WnUWrkeKmTLe4sVP4S884', built: true },
     { id: '8.B.3', title: 'Integrals' },
     { id: '8.U.1', title: 'Infinite Series' },
     { id: '8.U.2', title: 'Power Series' },

@@ -1,0 +1,860 @@
+<style>
+/* ===================== Page-specific styles (8.B.2) ===================== */
+/* f = purple, the derivative f′ = orange, f″ = teal; tangent = green, secant = pink; the point a = blue */
+:root{ --cv:#7F77DD; --cvs:#AFA9EC; --d1:#E08A2E; --d2:#1D9E75; --tan:#1D9E75; --sec:#C2417D; --pa:#2F6FDB; --no:#D8443A; --yes:#1D9E75; --up:#1D9E75; --dn:#D8443A; --water:#3B8FD9; }
+@media (prefers-color-scheme:dark){ :root{ --cv:#AFA9EC; --cvs:#6F67C9; --d1:#F2B266; --d2:#5DCAA5; --tan:#5DCAA5; --sec:#EE7FB0; --pa:#6EA2F5; --no:#F07B72; --yes:#5DCAA5; --up:#5DCAA5; --dn:#F07B72; --water:#6FB2EE; } }
+.kv{color:var(--cv);font-weight:700}.kd{color:var(--d1);font-weight:700}.kd2{color:var(--d2);font-weight:700}.kt{color:var(--tan);font-weight:700}.ks{color:var(--sec);font-weight:700}.ka{color:var(--pa);font-weight:700}.kn{color:var(--no);font-weight:700}.ky{color:var(--yes);font-weight:700}
+svg{user-select:none;-webkit-user-select:none}
+.solo svg{width:100%;height:auto;display:block;background:var(--bg);border:1px solid var(--line);border-radius:10px;margin-top:10px}
+.stack svg{width:100%;height:auto;display:block;background:var(--bg);border:1px solid var(--line);border-radius:10px;margin-top:6px}
+.split{display:grid;grid-template-columns:600px 1fr;gap:14px;margin-top:10px;align-items:start}
+.split svg{width:100%;height:auto;display:block;background:var(--bg);border:1px solid var(--line);border-radius:10px}
+.field.sm input{width:70px}.field.fa input{border-color:var(--pa)}.field.fs input{border-color:var(--sec)}
+.toggle button.on{background:var(--accent-bg);border-color:var(--accent);color:var(--accent)}
+.steps{margin:8px 0 0;padding:0;list-style:none}
+.steps li{padding:6px 12px;font:16.5px var(--mono);border-left:3px solid var(--line);margin:4px 0}
+.steps li small{display:block;font:13px var(--sans);color:var(--muted)}
+.rules{border-collapse:collapse;font:15px var(--mono);margin:8px 0 14px}
+.rules td,.rules th{border:1px solid var(--line);padding:6px 14px}
+.rules th{font:600 12px var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-align:left}
+.verdict{display:inline-block;font:600 15px var(--sans);padding:6px 12px;border-radius:8px;margin:8px 8px 0 0}
+.verdict.ok{background:var(--ok-bg);color:var(--ok)}.verdict.bad{background:var(--bad-bg);color:var(--bad)}.verdict.info{background:var(--accent-bg);color:var(--accent)}
+.legend span span{display:inline}
+.traps{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:8px}
+.traps .t{border:1px solid var(--line);border-radius:10px;background:var(--bg);padding:10px}
+.traps .t h4{margin:0 0 4px;font:600 15px var(--sans)}
+.traps .t p{margin:6px 0 0;font-size:14.5px;line-height:1.5;color:var(--muted)}
+.traps svg{width:100%;height:auto;display:block}
+.qtext{font:17px/1.55 var(--serif);margin:4px 0 10px}
+.qexpr{font:600 22px var(--mono);margin:4px 0 10px}
+.qvis{display:flex;justify-content:center;margin:6px 0}
+.qvis svg{width:480px;height:auto;background:var(--bg);border:1px solid var(--line);border-radius:10px}
+.choice{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 0}.choice button{min-width:130px}
+.choice.pics button{padding:6px;display:flex;flex-direction:column;gap:4px;align-items:center}
+.choice.pics button svg{width:250px;height:auto;display:block}
+.choice button.right{border-color:var(--ok);background:var(--ok-bg);color:var(--ok)}.choice button.wrong{border-color:var(--bad);background:var(--bad-bg);color:var(--bad)}
+pre.code{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:12px 16px;overflow-x:auto;font:13.5px/1.6 var(--mono);margin:10px 0 16px}
+</style>
+
+<!-- ===================== Top bar ===================== -->
+<div class="topbar"><div class="topbar-in">
+  <span class="brand">Math<b>Mastery</b></span>
+  <span class="crumbs">Chapter 8 · Calculus › Basics</span>
+  <span class="pid">8.B.2</span>
+</div></div>
+
+<!-- ===================== Hero ===================== -->
+<header class="prose hero">
+  <div class="kicker">Chapter 8 · Calculus</div>
+  <h1>Derivatives</h1>
+  <p class="dek">The derivative is the slope of a curve at a single point: how fast the output is changing right now. Zoom in on a smooth curve and it looks straight; the derivative is the slope of that straight line.</p>
+  <div class="tiers" aria-label="Tier">
+    <span class="tier on">Basics <small>you are here</small></span>
+    <span class="tier">Undergraduate</span>
+    <span class="tier">Masters</span>
+  </div>
+  <div class="goals">
+    <h3>On this page</h3>
+    <ul>
+      <li>Define the <b>derivative</b> <i>f</i>′(<i>a</i>) as the limit of the <b>difference quotient</b>, and see it as the slope of the <b>tangent line</b>.</li>
+      <li>Use the <b>power</b>, <b>sum</b> and <b>constant multiple</b> rules, and the derivatives of sin, cos and <i>e</i><sup><i>x</i></sup>.</li>
+      <li>Use the <b>product</b>, <b>quotient</b> and <b>chain rules</b>, with a picture for each.</li>
+      <li>Read <i>f</i>′ and the <b>second derivative</b> <i>f</i>″ from a graph: increasing, decreasing, <b>critical points</b>, <b>concavity</b>.</li>
+    </ul>
+  </div>
+</header>
+
+<main>
+<!-- ===================== §1 ===================== -->
+<section class="prose">
+  <h2><span class="n">1</span>Slope at a point</h2>
+  <p>A straight line has one slope everywhere. A curve’s steepness changes as you move along it. To measure it at one point (<i>a</i>, <i>f</i>(<i>a</i>)), take a second point a little to the right, at <i>a</i> + <i>h</i>, and draw the <b>secant line</b> through both. Its slope is rise over run:</p>
+  <div class="math">\[ \frac{f(a + h) - f(a)}{h} \]<div class="cap">The difference quotient: the average rate of change over [<i>a</i>, <i>a</i> + <i>h</i>].</div></div>
+  <p>Now let <i>h</i> shrink toward 0. The second point slides toward the first, the secant swings into the <b>tangent line</b>, and the difference quotient heads to a limit (8.B.1). That limit is the <b>derivative</b> of <i>f</i> at <i>a</i>, written <i>f</i>′(<i>a</i>) (“<i>f</i> prime of <i>a</i>”) or <i>df</i>/<i>dx</i>. For <i>f</i>(<i>x</i>) = <i>x</i>²: ((<i>a</i> + <i>h</i>)² − <i>a</i>²)/<i>h</i> = (2<i>ah</i> + <i>h</i>²)/<i>h</i> = 2<i>a</i> + <i>h</i>, which heads to 2<i>a</i>. So the slope of <i>x</i>² at any point <i>a</i> is 2<i>a</i>.</p>
+  <p>Doing this at every point gives a new function, <i>f</i>′, whose height at each <i>x</i> is the slope of <i>f</i> there. Where <i>f</i> climbs, <i>f</i>′ is positive; where <i>f</i> falls, <i>f</i>′ is negative; at the top of a hill or bottom of a valley, <i>f</i>′ = 0.</p>
+</section>
+<section class="wide">
+  <div class="card" id="main">
+    <div class="card-h"><span class="tag">Explore</span><h3>Secant to tangent, and the graph of f′</h3>
+      <span class="sub">Drag the blue point along <i>f</i> (or type <i>a</i>). Press Shrink <i>h</i> to slide the second point in until the secant becomes the tangent; Zoom shows the curve straightening out. Below, every place you visit leaves a dot at height <i>f</i>′(<i>a</i>): press Sweep to trace the whole derivative.</span></div>
+    <div class="row" id="mPresets"></div>
+    <div class="desc" id="mDesc"></div>
+    <div class="inputs">
+      <label class="field fa sm"><span><i>a</i></span><input id="mA" type="text" inputmode="decimal" autocomplete="off"></label>
+      <label class="field fs sm"><span><i>h</i></span><input id="mH" type="text" inputmode="decimal" autocomplete="off"></label>
+      <div class="row" style="margin:0"><button id="mUse">Use these</button><button class="primary" id="mShrink">Shrink h</button><button id="mSweep">Sweep</button><button id="mClear">Clear trace</button></div>
+      <div class="row toggle" style="margin:0"><button id="mZoom">Zoom: off</button><button id="mShow">Show all of f′</button></div>
+    </div>
+    <div class="err" id="mErr"></div>
+    <div class="stack"><svg id="mF" viewBox="0 0 960 330" role="img" aria-label="The function with secant and tangent lines" style="touch-action:none;cursor:ew-resize"></svg><svg id="mD" viewBox="0 0 960 220" role="img" aria-label="The derivative traced point by point"></svg></div>
+    <div><span class="verdict info" id="mV"></span></div>
+    <div class="readout" id="mOut"></div>
+    <div class="legend">
+      <span><i class="sw mv" style="background:var(--cv)"></i><span><i>f</i></span></span>
+      <span><i class="sw mv" style="background:var(--sec)"></i><span>secant through <i>a</i> and <i>a</i> + <i>h</i></span></span>
+      <span><i class="sw mv" style="background:var(--tan)"></i><span>tangent at <i>a</i> (slope <i>f</i>′(<i>a</i>))</span></span>
+      <span><i class="sw" style="background:var(--d1)"></i><span>a traced point (<i>a</i>, <i>f</i>′(<i>a</i>))</span></span>
+      <span><i class="sw mv" style="background:var(--d1)"></i><span>the whole derivative <i>f</i>′</span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §2 ===================== -->
+<section class="prose">
+  <h2><span class="n">2</span>The basic rules</h2>
+  <p>Working out a limit every time would be slow, so we work out a few once and build everything else from rules.</p>
+  <table class="rules">
+    <tr><th>Function</th><th>Derivative</th><th>Why, in a sentence</th></tr>
+    <tr><td>c (a constant)</td><td>0</td><td>A flat line has slope 0.</td></tr>
+    <tr><td>x<sup>n</sup></td><td>n·x<sup>n−1</sup></td><td>The <b>power rule</b>: x² → 2x, x³ → 3x², √x = x<sup>½</sup> → ½x<sup>−½</sup>.</td></tr>
+    <tr><td>c·f(x)</td><td>c·f′(x)</td><td>Stretching a graph up by c multiplies every slope by c.</td></tr>
+    <tr><td>f(x) + g(x)</td><td>f′(x) + g′(x)</td><td>The <b>sum rule</b>: rates of change add.</td></tr>
+    <tr><td>sin x, cos x</td><td>cos x, −sin x</td><td>Slopes of a wave are another wave, a quarter-turn ahead (uses lim sin h / h = 1).</td></tr>
+    <tr><td>e<sup>x</sup></td><td>e<sup>x</sup></td><td>The one function that is its own slope: that’s what makes e special.</td></tr>
+  </table>
+  <p>So the derivative of 3<i>x</i>⁴ − 2<i>x</i> + 5 is 12<i>x</i>³ − 2: each term separately, constants vanish.</p>
+</section>
+
+<!-- ===================== §3 ===================== -->
+<section class="prose">
+  <h2><span class="n">3</span>Product, quotient and chain</h2>
+  <p><b>Product rule.</b> Think of <i>u</i>·<i>v</i> as the area of a rectangle with sides <i>u</i> and <i>v</i>. Nudge both sides: the area grows by a strip <i>u</i>·Δ<i>v</i> along one side, a strip <i>v</i>·Δ<i>u</i> along the other, and a tiny corner Δ<i>u</i>·Δ<i>v</i> that vanishes in the limit. So (<i>uv</i>)′ = <i>u</i>′<i>v</i> + <i>uv</i>′, <b>not</b> <i>u</i>′<i>v</i>′. The <b>quotient rule</b> follows from it: (<i>u</i>/<i>v</i>)′ = (<i>u</i>′<i>v</i> − <i>uv</i>′)/<i>v</i>².</p>
+  <p><b>Chain rule.</b> For a function inside a function, like sin(<i>x</i>²), rates multiply. Picture gears: if the middle gear turns 3 times for each turn of the first, and the last turns 2 times for each turn of the middle, the last turns 6 times for each turn of the first. So (<i>f</i>(<i>g</i>(<i>x</i>)))′ = <i>f</i>′(<i>g</i>(<i>x</i>))·<i>g</i>′(<i>x</i>): the outside’s rate (measured at the inside) times the inside’s rate.</p>
+</section>
+<section class="wide">
+  <div class="card" id="rect">
+    <div class="card-h"><span class="tag">Explore</span><h3>Product rule: a growing rectangle</h3>
+      <span class="sub">Sides <i>u</i> = 2 + <i>t</i> and <i>v</i> = 1 + 0.5<i>t</i> grow as time <i>t</i> runs. Set a small step Δ<i>t</i>: the new area is the old one plus two strips and a corner. Shrink Δ<i>t</i> and the corner becomes negligible.</span></div>
+    <div class="inputs">
+      <label class="field sm"><span><i>t</i></span><input id="rT" type="text" inputmode="decimal" autocomplete="off"></label>
+      <label class="field sm"><span>Δ<i>t</i></span><input id="rD" type="text" inputmode="decimal" autocomplete="off"></label>
+      <div class="row" style="margin:0"><button class="primary" id="rGo">Show</button><button id="rShrink">Shrink Δt</button></div>
+    </div>
+    <div class="err" id="rErr"></div>
+    <div class="split"><svg id="rSvg" viewBox="0 0 600 360" role="img" aria-label="A rectangle growing in both directions"></svg><div class="readout" id="rOut"></div></div>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--cv);opacity:.35;border-radius:3px"></i><span>old area <i>uv</i></span></span>
+      <span><i class="sw" style="background:var(--d1);border-radius:3px"></i><span><i>v</i>·Δ<i>u</i></span></span>
+      <span><i class="sw" style="background:var(--d2);border-radius:3px"></i><span><i>u</i>·Δ<i>v</i></span></span>
+      <span><i class="sw" style="background:var(--no);border-radius:3px"></i><span>corner Δ<i>u</i>·Δ<i>v</i></span></span>
+    </div>
+  </div>
+</section>
+<section class="wide">
+  <div class="card" id="gears">
+    <div class="card-h"><span class="tag">Explore</span><h3>Chain rule: gears</h3>
+      <span class="sub">Turn the input gear <i>x</i>. The middle gear is <i>u</i> = <i>g</i>(<i>x</i>), the output gear is <i>y</i> = <i>f</i>(<i>u</i>). Set the two gear ratios and press Turn: the output’s rate is the product.</span></div>
+    <div class="inputs">
+      <label class="field sm"><span><i>du</i>/<i>dx</i></span><input id="gA" type="text" inputmode="decimal" autocomplete="off"></label>
+      <label class="field sm"><span><i>dy</i>/<i>du</i></span><input id="gB" type="text" inputmode="decimal" autocomplete="off"></label>
+      <div class="row" style="margin:0"><button class="primary" id="gPlay">Turn</button><button id="gReset">Reset</button></div>
+    </div>
+    <div class="err" id="gErr"></div>
+    <div class="solo"><svg id="gSvg" viewBox="0 0 960 260" role="img" aria-label="Three gears turning at multiplied rates"></svg></div>
+    <div class="readout" id="gOut"></div>
+  </div>
+</section>
+<section class="wide">
+  <div class="card" id="rules">
+    <div class="card-h"><span class="tag">Explore</span><h3>Rules at work</h3>
+      <span class="sub">Pick a function: the steps show which rule does what. Type an <i>x</i> to check the formula against the limit definition, computed with a tiny <i>h</i>.</span></div>
+    <div class="row" id="uPresets"></div>
+    <div class="inputs"><label class="field fa sm"><span><i>x</i></span><input id="uX" type="text" inputmode="decimal" autocomplete="off"></label><div class="row" style="margin:0"><button class="primary" id="uGo">Check</button></div></div>
+    <div class="err" id="uErr"></div>
+    <div class="split"><svg id="uSvg" viewBox="0 0 600 360" role="img" aria-label="The function and its derivative"></svg><div><ol class="steps" id="uSteps"></ol><div class="readout" id="uOut"></div></div></div>
+    <div class="legend"><span><i class="sw mv" style="background:var(--cv)"></i><span><i>f</i></span></span><span><i class="sw mv" style="background:var(--d1)"></i><span><i>f</i>′</span></span><span><i class="sw mv" style="background:var(--tan)"></i><span>tangent at <i>x</i></span></span></div>
+  </div>
+</section>
+
+<!-- ===================== §4 ===================== -->
+<section class="prose">
+  <h2><span class="n">4</span>Reading the shape: f′ and f″</h2>
+  <p>The sign of <i>f</i>′ tells you the direction: <i>f</i>′ &gt; 0 means <i>f</i> is <b>increasing</b>, <i>f</i>′ &lt; 0 means <b>decreasing</b>. Where <i>f</i>′ = 0 (or doesn’t exist) is a <b>critical point</b>: often a peak (<b>local maximum</b>) or a valley (<b>local minimum</b>), where the tangent is flat.</p>
+  <p>The derivative of the derivative is the <b>second derivative</b> <i>f</i>″. It measures how the slope itself changes: <i>f</i>″ &gt; 0 means the slope is increasing, so the graph bends upward like a cup (<b>concave up</b>); <i>f</i>″ &lt; 0 means it bends downward like a cap (<b>concave down</b>). Where the bending switches is an <b>inflection point</b>.</p>
+  <p>In motion, these have names. If <i>s</i>(<i>t</i>) is position, then <i>s</i>′(<i>t</i>) is <b>velocity</b> (how fast position changes) and <i>s</i>″(<i>t</i>) is <b>acceleration</b> (how fast velocity changes). For a spreading rumour, the number who’ve heard it grows fastest at the inflection point, halfway to everyone.</p>
+</section>
+<section class="wide">
+  <div class="card" id="stack">
+    <div class="card-h"><span class="tag">Explore</span><h3>f, f′ and f″ together</h3>
+      <span class="sub">Drag the cursor (or press Play). The top graph is shaded green where it rises and red where it falls; the middle graph is its slope, the bottom one the slope of the slope.</span></div>
+    <div class="row" id="sPresets"></div>
+    <div class="desc" id="sDesc"></div>
+    <div class="row"><button class="primary" id="sPlay">Play</button></div>
+    <div class="solo" id="sCar" style="display:none"><svg id="sRoad" viewBox="0 0 960 70" role="img" aria-label="A car on a road"></svg></div>
+    <div class="stack" id="sStack" style="touch-action:none;cursor:ew-resize"><svg id="s0" viewBox="0 0 960 200"></svg><svg id="s1" viewBox="0 0 960 170"></svg><svg id="s2" viewBox="0 0 960 170"></svg></div>
+    <div class="readout" id="sOut"></div>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--up);opacity:.35;border-radius:3px"></i><span>increasing (<i>f</i>′ &gt; 0)</span></span>
+      <span><i class="sw" style="background:var(--dn);opacity:.35;border-radius:3px"></i><span>decreasing (<i>f</i>′ &lt; 0)</span></span>
+      <span><i class="sw" style="background:var(--ink)"></i><span>critical point (<i>f</i>′ = 0)</span></span>
+      <span><i class="sw" style="border:2.4px solid var(--d2)"></i><span>inflection point (<i>f</i>″ = 0)</span></span>
+    </div>
+  </div>
+</section>
+<section class="prose">
+  <p>The chain rule also answers “how fast?” questions where two quantities are tied together. Pour water into a cone-shaped cup at a steady rate. The volume rises steadily, but the water level doesn’t: near the narrow tip a little water raises the level a lot, and higher up the same amount spreads over a wider surface. With <i>V</i> = π<i>h</i>³/12 for this cup, the chain rule gives d<i>V</i>/d<i>t</i> = (π<i>h</i>²/4)·d<i>h</i>/d<i>t</i>, so the level rises at d<i>h</i>/d<i>t</i> = 4·(pour rate)/(π<i>h</i>²).</p>
+</section>
+<section class="wide">
+  <div class="card" id="cone">
+    <div class="card-h"><span class="tag">Explore</span><h3>Filling a cone-shaped cup</h3>
+      <span class="sub">Water pours in at a steady rate. Watch how fast the level rises at each moment.</span></div>
+    <div class="inputs"><label class="field sm"><span>Pour rate (cm³/s)</span><input id="cQ" type="text" inputmode="decimal" autocomplete="off"></label><div class="row" style="margin:0"><button class="primary" id="cPlay">Pour</button><button id="cReset">Empty</button></div></div>
+    <div class="err" id="cErr"></div>
+    <div class="solo"><svg id="cSvg" viewBox="0 0 960 330" role="img" aria-label="A cone filling with water and graphs of level and its rate"></svg></div>
+    <div class="readout" id="cOut"></div>
+  </div>
+</section>
+
+<!-- ===================== §5 ===================== -->
+<section class="prose">
+  <h2><span class="n">5</span>Traps and non-examples</h2>
+</section>
+<section class="wide">
+  <div class="card" id="traps">
+    <div class="card-h"><span class="tag">Compare</span><h3>Easy to get wrong</h3></div>
+    <div class="traps">
+      <div class="t"><h4 class="kn">✕ A corner has no derivative</h4><svg id="tr1" viewBox="0 0 300 200"></svg><p>|<i>x</i>| at 0: from the left every secant has slope −1, from the right +1. The limit doesn’t exist, so there’s no tangent. Continuous doesn’t imply differentiable.</p></div>
+      <div class="t"><h4 class="kn">✕ (<i>uv</i>)′ ≠ <i>u</i>′<i>v</i>′</h4><svg id="tr2" viewBox="0 0 300 200"></svg><p><i>x</i>·<i>x</i> = <i>x</i>² has derivative 2<i>x</i>, but <i>u</i>′<i>v</i>′ = 1·1 = 1. The rectangle grows along both sides: <i>u</i>′<i>v</i> + <i>uv</i>′ = <i>x</i> + <i>x</i>.</p></div>
+      <div class="t"><h4 class="kn">✕ <i>f</i>′ = 0 isn’t always a peak or valley</h4><svg id="tr3" viewBox="0 0 300 200"></svg><p><i>x</i>³ has a flat tangent at 0, but keeps climbing on both sides: it’s an inflection point. Check the sign of <i>f</i>′ on each side.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §6 ===================== -->
+<section class="prose">
+  <h2><span class="n">6</span>Now, in symbols</h2>
+  <div class="math">\[ f'(a) = \lim_{h\to 0}\frac{f(a+h) - f(a)}{h}, \qquad \text{tangent line: } y = f(a) + f'(a)(x - a) \]</div>
+  <div class="math">\[ \frac{d}{dx}x^n = nx^{n-1},\quad \frac{d}{dx}\sin x = \cos x,\quad \frac{d}{dx}\cos x = -\sin x,\quad \frac{d}{dx}e^x = e^x,\quad \frac{d}{dx}\ln x = \frac1x \]</div>
+  <div class="math">\[ (uv)' = u'v + uv', \qquad \Big(\frac uv\Big)' = \frac{u'v - uv'}{v^2}, \qquad \frac{d}{dx}f(g(x)) = f'(g(x))\,g'(x) = \frac{dy}{du}\frac{du}{dx} \]</div>
+  <div class="math">\[ f' > 0 \Rightarrow f \text{ increasing}, \quad f'' > 0 \Rightarrow f \text{ concave up}, \qquad s'(t) = v(t),\ s''(t) = v'(t) = a(t) \]</div>
+  <p>A computer algebra system applies the rules for you, and a quick numerical check catches mistakes:</p>
+  <pre class="code"><code>import sympy as sp                                   # symbolic maths
+
+x = sp.symbols('x')                                  # the variable
+f = x**2 * sp.sin(x)                                 # a product
+print(sp.diff(f, x))                                 # x**2*cos(x) + 2*x*sin(x): the product rule
+print(sp.diff(sp.sin(x**2), x))                      # 2*x*cos(x**2): the chain rule
+g = sp.lambdify(x, f)                                # turn f into an ordinary Python function
+h = 1e-6                                             # a tiny step
+print((g(1 + h) - g(1)) / h)                         # ≈ 2.2232: the difference quotient at x = 1
+print(float(sp.diff(f, x).subs(x, 1)))               # 2.2232...: the exact derivative agrees</code></pre>
+</section>
+
+<!-- ===================== §7 ===================== -->
+<section class="prose">
+  <h2><span class="n">7</span>Where this goes</h2>
+  <ul class="goes">
+    <li><b>Next (8.B.3):</b> integrals, the reverse process: from a rate back to a total, and the area under a curve.</li>
+    <li><b>Later in this book:</b> optimisation (find where <i>f</i>′ = 0 to get the best design), related rates, Taylor approximations (8.U.3) built from <i>f</i>′, <i>f</i>″, …, and differential equations, where a rate is given and the function is unknown.</li>
+    <li><b>In the world:</b> speed and acceleration, growth rates of populations and infections, the steepness of a road or a ramp, the marginal effect of one more unit of anything, and every “how fast is it changing right now?”</li>
+  </ul>
+</section>
+
+<!-- ===================== §8 ===================== -->
+<section class="prose">
+  <h2><span class="n">8</span>Words to know</h2>
+  <div class="vocab">
+    <div class="term"><b>Derivative</b><i>f</i>′(<i>a</i>): the instantaneous rate of change of <i>f</i> at <i>a</i>; the slope of the tangent line there.</div>
+    <div class="term"><b>Difference quotient</b>(<i>f</i>(<i>a</i> + <i>h</i>) − <i>f</i>(<i>a</i>))/<i>h</i>: the average rate of change, the slope of a secant.</div>
+    <div class="term"><b>Secant line</b>A line through two points of a curve.</div>
+    <div class="term"><b>Tangent line</b>The line through a point with the curve’s slope there: the limit of secants.</div>
+    <div class="term"><b>Instantaneous rate of change</b>The rate at one moment, found as a limit of average rates.</div>
+    <div class="term"><b>Differentiable</b>Having a derivative at a point. Corners, jumps and vertical tangents are not.</div>
+    <div class="term"><b>Leibniz notation</b><i>dy</i>/<i>dx</i>: another way to write the derivative, as a ratio of tiny changes.</div>
+    <div class="term"><b>Power rule</b>(<i>x</i><sup><i>n</i></sup>)′ = <i>nx</i><sup><i>n</i>−1</sup>.</div>
+    <div class="term"><b>Sum / constant multiple rule</b>Differentiate term by term; constants come along for the ride.</div>
+    <div class="term"><b>Product rule</b>(<i>uv</i>)′ = <i>u</i>′<i>v</i> + <i>uv</i>′.</div>
+    <div class="term"><b>Quotient rule</b>(<i>u</i>/<i>v</i>)′ = (<i>u</i>′<i>v</i> − <i>uv</i>′)/<i>v</i>².</div>
+    <div class="term"><b>Chain rule</b>(<i>f</i>(<i>g</i>(<i>x</i>)))′ = <i>f</i>′(<i>g</i>(<i>x</i>))·<i>g</i>′(<i>x</i>): rates multiply.</div>
+    <div class="term"><b>Critical point</b>Where <i>f</i>′ = 0 or doesn’t exist: candidates for peaks and valleys.</div>
+    <div class="term"><b>Local maximum / minimum</b>A peak or valley: higher (lower) than all nearby points.</div>
+    <div class="term"><b>Second derivative</b><i>f</i>″: the derivative of <i>f</i>′; how the slope is changing.</div>
+    <div class="term"><b>Concave up / down</b>Bending like a cup (<i>f</i>″ &gt; 0) or a cap (<i>f</i>″ &lt; 0).</div>
+    <div class="term"><b>Inflection point</b>Where the concavity switches.</div>
+    <div class="term"><b>Velocity / acceleration</b>The first and second derivatives of position.</div>
+  </div>
+</section>
+
+<!-- ===================== Quiz ===================== -->
+<section class="prose"><h2><span class="n">9</span>Check yourself</h2>
+  <p>Four kinds of questions: differentiate, read a slope from a graph, match <i>f</i> to <i>f</i>′, and find where <i>f</i>′ = 0 or <i>f</i> increases.</p>
+</section>
+<section class="wide">
+  <div class="card" id="quiz">
+    <div class="card-h"><span class="tag">Quiz</span><h3 id="qTitle"></h3><span class="score" id="score">Score: 0 / 0</span></div>
+    <div class="qtext" id="qText"></div>
+    <div class="qexpr" id="qExpr"></div>
+    <div class="qvis" id="qVis"></div>
+    <div class="choice" id="qChoice"></div>
+    <div class="inputs" id="qIn">
+      <label class="field"><span id="qLab">Answer</span><input id="q1" type="text" autocomplete="off" style="width:160px"></label>
+      <div class="row" style="margin:0"><button class="primary" id="qCheck">Check</button></div>
+    </div>
+    <div class="row" style="margin:10px 0 0"><button id="qShow">Show answer</button><button id="qNew">New question</button></div>
+    <div class="err" id="qErr"></div>
+    <div class="feedback" id="qFb" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ===================== Pager (filled in by the shared navigation) ===================== -->
+<nav class="wide">
+  <div class="pager"></div>
+  <div class="meta">8.B.2 · Prerequisites: 8.B.1 (limits), 3.B.5 (slope), 5.B.4 (waves: sine and cosine) · Leads to: 8.B.3 (integrals), 8.U.3 (Taylor approximations)</div>
+</nav>
+</main>
+
+<script>
+/* =====================================================================
+   1. HELPERS
+   ===================================================================== */
+const NS = 'http://www.w3.org/2000/svg';
+const $ = id => document.getElementById(id);
+function mk(tag, attrs, parent){                           // create an SVG element with attributes
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function txt(parent, x, y, s, cls, extra){                 // create an SVG text element
+  extra = Object.assign({}, extra || {});
+  if (extra['text-anchor']){ extra.style = (extra.style ? extra.style + ';' : '') + 'text-anchor:' + extra['text-anchor']; delete extra['text-anchor']; }
+  const t = mk('text', Object.assign({ x, y, class: cls || '' }, extra), parent);
+  t.textContent = s;
+  return t;
+}
+// round for display, use a true minus sign, never show −0
+function num(x, d){ if (d === undefined) d = 2; const r = Math.round(x * Math.pow(10, d)) / Math.pow(10, d); return r === 0 ? '0' : (r < 0 ? '−' : '') + String(Math.abs(r)); }
+const pn = x => x < 0 ? `(${num(x)})` : num(x);              // wrap negatives in brackets when substituting
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const ri = (a, b) => a + Math.floor(Math.random() * (b - a + 1));   // random whole number from a to b
+const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+function parseNum(s){                                     // integers, decimals, minus, simple fractions
+  s = String(s).trim().replace(/[−–]/g, '-').replace(/\s+/g, '');
+  if (/^-?\d+(\.\d+)?$|^-?\.\d+$/.test(s)) return parseFloat(s);
+  const m = s.match(/^(-?\d+)\/(\d+)$/);
+  if (m && +m[2] !== 0) return +m[1] / +m[2];
+  return NaN;
+}
+function selectOnFocus(ids){ ids.forEach(id => $(id).addEventListener('focus', e => e.target.select())); }
+function buttons(boxId, list, onPick){                    // a row of preset buttons; returns a function that marks one as on
+  list.forEach((p, i) => { const b = document.createElement('button'); b.className = 'preset'; b.textContent = p.n; b.onclick = () => onPick(i); $(boxId).appendChild(b); });
+  return i => [...$(boxId).children].forEach((b, j) => b.classList.toggle('on', j === i));
+}
+function svgPt(svg, ev){                                  // mouse position in the SVG's own coordinates
+  const p = svg.createSVGPoint(); p.x = ev.clientX; p.y = ev.clientY;
+  return p.matrixTransform(svg.getScreenCTM().inverse());
+}
+const svgCss = document.createElement('style');
+svgCss.textContent = `
+  .grid{stroke:var(--line);stroke-width:1}
+  .axis{stroke:var(--ink);stroke-width:1.4;opacity:.7}
+  .tl{fill:var(--muted);font:500 11.5px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:3px}
+  .lab{font:700 14px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:5px}
+  .labS{font:600 12.5px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+  .cap{fill:var(--muted);font:600 12px var(--sans);letter-spacing:.06em;paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+  .oval{fill:var(--paper);stroke:var(--line);stroke-width:1.5}
+`;
+document.head.appendChild(svgCss);
+let clipN = 0;                                            // unique clip-path ids
+
+/* ---------- axes: a coordinate grid inside an SVG, with separate x and y scales ---------- */
+function axes(svg, W, H, b, o){
+  o = o || {};
+  svg.innerHTML = '';
+  const L = o.padL ?? 44, R = o.padR ?? 16, T = o.padT ?? 16, B = o.padB ?? 30;
+  const sx = (W - L - R) / (b.x1 - b.x0), sy = (H - T - B) / (b.y1 - b.y0);   // pixels per unit
+  const X = x => L + (x - b.x0) * sx, Y = y => T + (b.y1 - y) * sy;
+  const step = (s, px) => (o.half ? [0.5, 1, 2, 5, 10, 20, 50, 100] : [1, 2, 5, 10, 20, 50, 100]).find(k => k * s >= px) || 200;   // a round step at least px pixels wide
+  const xg = o.xg || step(sx, 9), yg = o.yg || step(sy, 9);        // grid-line spacing
+  const xt = o.xt || step(sx, 34), yt = o.yt || step(sy, 26);      // tick-label spacing
+  const gGrid = mk('g', {}, svg), id = 'clp' + (++clipN);
+  const cp = mk('clipPath', { id }, svg); mk('rect', { x: L, y: T, width: W - L - R, height: H - T - B }, cp);
+  const cg = mk('g', { 'clip-path': `url(#${id})` }, svg);         // clipped layer for curves
+  const m = mk('g', {}, svg), top = mk('g', {}, svg);              // free layer, then labels on top
+  const near = (v, s) => Math.abs(v / s - Math.round(v / s)) < 1e-6;
+  for (let x = Math.ceil(b.x0 / xg) * xg; x <= b.x1 + 1e-9; x += xg) mk('line', { x1: X(x), y1: T, x2: X(x), y2: H - B, class: 'grid' }, gGrid);
+  for (let y = Math.ceil(b.y0 / yg) * yg; y <= b.y1 + 1e-9; y += yg) mk('line', { x1: L, y1: Y(y), x2: W - R, y2: Y(y), class: 'grid' }, gGrid);
+  const ay = (b.y0 <= 0 && b.y1 >= 0) ? Y(0) : H - B;              // where the x-axis is drawn
+  const ax = (b.x0 <= 0 && b.x1 >= 0) ? X(0) : L;                  // where the y-axis is drawn
+  mk('line', { x1: L, y1: ay, x2: W - R, y2: ay, class: 'axis' }, gGrid);
+  mk('line', { x1: ax, y1: T, x2: ax, y2: H - B, class: 'axis' }, gGrid);
+  const fx = o.fx || (v => num(v)), fy = o.fy || (v => num(v));
+  for (let x = Math.ceil(b.x0 / xt) * xt; x <= b.x1 + 1e-9; x += xt){
+    if (Math.abs(x) < 1e-9 && ax === X(0) && !o.zeroX) continue;
+    txt(top, X(x), ay + 16, fx(x), 'tl', { 'text-anchor': 'middle' });
+  }
+  for (let y = Math.ceil(b.y0 / yt) * yt; y <= b.y1 + 1e-9; y += yt){
+    if (Math.abs(y) < 1e-9 && ay === Y(0)) continue;
+    txt(top, ax - 6, Y(y) + 4, fy(y), 'tl', { 'text-anchor': 'end' });
+  }
+  if (o.xT) txt(top, W - R - 2, ay - 8, o.xT, 'cap', { 'text-anchor': 'end' });
+  if (o.yT) txt(top, ax + 8, T + 12, o.yT, 'cap');
+  return { svg, X, Y, sx, sy, cg, m, top, b, L, R, T, B, W, H, ay, ax,
+           inv: (px, py) => [b.x0 + (px - L) / sx, b.y1 - (py - T) / sy] };
+}
+function dPath(P, pts){ return pts.map((p, i) => (i ? 'L' : 'M') + P.X(p[0]).toFixed(1) + ' ' + P.Y(p[1]).toFixed(1)).join(''); }
+// sample y = f(x) from a to b, breaking the curve where f is undefined or jumps
+function sample(f, a, b, n, ok){
+  const out = []; let cur = [];
+  for (let i = 0; i <= n; i++){
+    const x = a + (b - a) * i / n, y = (ok && !ok(x)) ? NaN : f(x);
+    if (!isFinite(y)){ if (cur.length > 1) out.push(cur); cur = []; continue; }
+    if (cur.length && Math.abs(y - cur[cur.length - 1][1]) > 40){ if (cur.length > 1) out.push(cur); cur = []; }
+    cur.push([x, y]);
+  }
+  if (cur.length > 1) out.push(cur);
+  return out;
+}
+function dot(P, x, y, col, o){                              // a filled (or open) point
+  o = o || {};
+  return mk('circle', { cx: P.X(x), cy: P.Y(y), r: o.r || 6, style: o.open ? `fill:var(--bg);stroke:${col};stroke-width:2.6` : `fill:${col};stroke:var(--bg);stroke-width:1.5` }, o.layer || P.m);
+}
+function vline(P, x, col, o){ o = o || {}; return mk('line', { x1: P.X(x), y1: o.y0 !== undefined ? P.Y(o.y0) : P.T, x2: P.X(x), y2: o.y1 !== undefined ? P.Y(o.y1) : P.H - P.B, style: `stroke:${col};stroke-width:${o.w || 2.5};${o.dash ? 'stroke-dasharray:' + o.dash : ''}` }, o.layer || P.m); }
+function hline(P, y, col, o){ o = o || {}; return mk('line', { x1: o.x0 !== undefined ? P.X(o.x0) : P.L, y1: P.Y(y), x2: o.x1 !== undefined ? P.X(o.x1) : P.W - P.R, y2: P.Y(y), style: `stroke:${col};stroke-width:${o.w || 2.5};${o.dash ? 'stroke-dasharray:' + o.dash : ''}` }, o.layer || P.m); }
+function arrowHead(g, x1, y1, x2, y2, col, size){            // a small triangle at (x2, y2) pointing away from (x1, y1)
+  const a = Math.atan2(y2 - y1, x2 - x1), s = size || 9;
+  const p = [[x2, y2], [x2 - s * Math.cos(a - 0.4), y2 - s * Math.sin(a - 0.4)], [x2 - s * Math.cos(a + 0.4), y2 - s * Math.sin(a + 0.4)]];
+  mk('polygon', { points: p.map(q => q.join(',')).join(' '), style: `fill:${col}` }, g);
+}
+
+/* ---------- arrow diagram: inputs in a left oval, outputs in a right oval, one arrow per pair ---------- */
+// pairs: [[in, out], ...]; o.ins / o.outs give the order (defaults: sorted values); o.fmt formats a value;
+// o.hl = input to highlight (others fade); o.lit = [in, out] arrow drawn thick; o.dead = inputs shown crossed out
+function arrowDiagram(svg, W, H, pairs, o){
+  o = o || {};
+  svg.innerHTML = '';
+  const fmt = o.fmt || (v => typeof v === 'number' ? num(v) : v);
+  const key = v => String(v);
+  const uniq = arr => { const s = new Set(), r = []; arr.forEach(v => { if (!s.has(key(v))){ s.add(key(v)); r.push(v); } }); return r; };
+  const srt = arr => arr.every(v => typeof v === 'number') ? arr.slice().sort((a, b) => a - b) : arr;
+  const ins = o.ins || srt(uniq(pairs.map(p => p[0]))), outs = o.outs || srt(uniq(pairs.map(p => p[1])));
+  const top = o.top ?? 34, bot = H - (o.bottom ?? 14);
+  const lx = W * 0.25, rx = W * 0.75, ow = Math.min(W * 0.17, 90);
+  mk('ellipse', { cx: lx, cy: (top + bot) / 2, rx: ow, ry: (bot - top) / 2, class: 'oval' }, svg);
+  mk('ellipse', { cx: rx, cy: (top + bot) / 2, rx: ow, ry: (bot - top) / 2, class: 'oval' }, svg);
+  txt(svg, lx, 18, o.inLab || 'INPUTS x', 'cap', { 'text-anchor': 'middle', style: 'fill:var(--in)' });
+  txt(svg, rx, 18, o.outLab || 'OUTPUTS y', 'cap', { 'text-anchor': 'middle', style: 'fill:var(--out)' });
+  const ypos = (i, n) => n === 1 ? (top + bot) / 2 : top + 26 + (bot - top - 52) * i / (n - 1);
+  const iy = {}, oy = {};
+  ins.forEach((v, i) => iy[key(v)] = ypos(i, ins.length));
+  outs.forEach((v, i) => oy[key(v)] = ypos(i, outs.length));
+  const cnt = {}; pairs.forEach(p => cnt[key(p[0])] = (cnt[key(p[0])] || 0) + 1);   // how many outputs each input has
+  const dx = Math.min(ow * 0.45, 34), fs = ins.length > 9 || outs.length > 9 ? 'labS' : 'lab';
+  const ga = mk('g', {}, svg), gd = mk('g', {}, svg);
+  pairs.forEach(p => {                                     // arrows
+    const k = key(p[0]), bad = cnt[k] > 1, faded = o.hl !== undefined && o.hl !== null && key(o.hl) !== k;
+    const lit = o.lit && key(o.lit[0]) === k && key(o.lit[1]) === key(p[1]);
+    const col = bad ? 'var(--no)' : 'var(--pt)';
+    const x1 = lx + dx + 8, y1 = iy[k], x2 = rx - dx - 9, y2 = oy[key(p[1])];
+    mk('line', { x1, y1, x2, y2, style: `stroke:${col};stroke-width:${lit ? 4.5 : 2.4};opacity:${faded ? .18 : 1}` }, ga);
+    if (!faded) arrowHead(ga, x1, y1, x2, y2, col, lit ? 12 : 10);
+  });
+  ins.forEach(v => {                                       // input dots and labels
+    const k = key(v), dead = o.dead && o.dead.map(key).includes(k), bad = cnt[k] > 1;
+    const faded = o.hl !== undefined && o.hl !== null && key(o.hl) !== k;
+    const col = dead ? 'var(--muted)' : bad ? 'var(--no)' : 'var(--in)';
+    mk('circle', { cx: lx + dx, cy: iy[k], r: o.hl !== undefined && key(o.hl) === k ? 8 : 6, style: `fill:${col};opacity:${faded ? .35 : 1}` }, gd);
+    const t = txt(gd, lx + dx - 12, iy[k] + 5, fmt(v), fs, { 'text-anchor': 'end', style: `fill:${col};opacity:${faded ? .45 : 1}${dead ? ';text-decoration:line-through' : ''}` });
+  });
+  outs.forEach(v => {                                      // output dots and labels
+    const k = key(v);
+    mk('circle', { cx: rx - dx, cy: oy[k], r: 6, style: 'fill:var(--out)' }, gd);
+    txt(gd, rx - dx + 12, oy[k] + 5, fmt(v), fs, { style: 'fill:var(--out)' });
+  });
+  return { ins, outs };
+}
+// group pairs by input: Map from input to its list of distinct outputs
+function byInput(pairs){
+  const m = new Map();
+  pairs.forEach(([x, y]) => { const k = String(x); if (!m.has(k)) m.set(k, { x, ys: [] }); const e = m.get(k); if (!e.ys.some(v => String(v) === String(y))) e.ys.push(y); });
+  return m;
+}
+const setStr = arr => '{' + arr.map(v => num(v)).join(', ') + '}';
+
+
+/* ---------- helpers for zoomable graphs (any scale) ---------- */
+const niceStep = raw => { const p = Math.pow(10, Math.floor(Math.log10(raw))), m = raw / p; return (m <= 1 ? 1 : m <= 2 ? 2 : m <= 5 ? 5 : 10) * p; };
+const decs = st => Math.max(0, -Math.floor(Math.log10(st) + 1e-9));
+function fmt(v, st){ const d = decs(st); const r = Number(v.toFixed(d)); return r === 0 ? '0' : (r < 0 ? '−' : '') + Math.abs(r).toFixed(d); }
+// a coordinate system with any box (tiny or huge), labelled ticks, a clipped layer for curves
+function ax2(svg, W, H, b, o){
+  o = o || {}; svg.innerHTML = '';
+  const L = o.padL ?? 52, R = o.padR ?? 14, T = o.padT ?? 14, B = o.padB ?? 28;
+  const sx = (W - L - R) / (b.x1 - b.x0), sy = (H - T - B) / (b.y1 - b.y0), X = x => L + (x - b.x0) * sx, Y = y => T + (b.y1 - y) * sy;
+  const gx = niceStep((b.x1 - b.x0) / 8), gy = niceStep((b.y1 - b.y0) / 7);
+  const g = mk('g', {}, svg), id = 'c' + Math.random().toString(36).slice(2);
+  const cp = mk('clipPath', { id }, svg); mk('rect', { x: L, y: T, width: W - L - R, height: H - T - B }, cp);
+  const cg = mk('g', { 'clip-path': `url(#${id})` }, svg), m = mk('g', {}, svg), top = mk('g', {}, svg);
+  for (let v = Math.ceil(b.x0 / gx) * gx; v <= b.x1 + gx * 1e-6; v += gx){ mk('line', { x1: X(v), y1: T, x2: X(v), y2: H - B, class: 'grid' }, g); txt(top, X(v), H - B + 16, o.fx ? o.fx(v) : fmt(v, gx), 'tl', { 'text-anchor': 'middle' }); }
+  for (let v = Math.ceil(b.y0 / gy) * gy; v <= b.y1 + gy * 1e-6; v += gy){ mk('line', { x1: L, y1: Y(v), x2: W - R, y2: Y(v), class: 'grid' }, g); txt(top, L - 6, Y(v) + 4, fmt(v, gy), 'tl', { 'text-anchor': 'end' }); }
+  if (b.y0 < 0 && b.y1 > 0) mk('line', { x1: L, y1: Y(0), x2: W - R, y2: Y(0), class: 'axis' }, g);
+  if (b.x0 < 0 && b.x1 > 0) mk('line', { x1: X(0), y1: T, x2: X(0), y2: H - B, class: 'axis' }, g);
+  mk('rect', { x: L, y: T, width: W - L - R, height: H - T - B, style: 'fill:none;stroke:var(--line2)' }, g);
+  if (o.xT) txt(top, W - R - 4, H - B - 6, o.xT, 'cap', { 'text-anchor': 'end' });
+  if (o.yT) txt(top, L + 6, T + 14, o.yT, 'cap');
+  return { X, Y, sx, sy, cg, m, top, b, L, R, T, B, W, H, inv: (px, py) => [b.x0 + (px - L) / sx, b.y1 - (py - T) / sy] };
+}
+// sample a curve across the box, breaking at undefined points, at listed jumps, and at big leaps
+function curve(P, f, o){
+  o = o || {}; const b = P.b, n = o.n || 900, brk = o.breaks || [], polys = []; let cur = [];
+  const lim = (b.y1 - b.y0) * 3;
+  for (let i = 0; i <= n; i++){
+    const x = b.x0 + (b.x1 - b.x0) * i / n, y = f(x);
+    const crossed = cur.length && brk.some(c => (cur[cur.length - 1][0] - c) * (x - c) <= 0);
+    if (!isFinite(y) || crossed || (cur.length && Math.abs(y - cur[cur.length - 1][1]) > lim)){ if (cur.length > 1) polys.push(cur); cur = []; if (!isFinite(y)) continue; }
+    cur.push([x, Math.max(b.y0 - lim, Math.min(b.y1 + lim, y))]);
+  }
+  if (cur.length > 1) polys.push(cur);
+  polys.forEach(p => mk('path', { d: dPath(P, p), style: `fill:none;stroke:${o.col || 'var(--cv)'};stroke-width:${o.w || 3};${o.dash ? 'stroke-dasharray:' + o.dash : ''}` }, P.cg));
+}
+const holeAt = (P, x, y, col) => mk('circle', { cx: P.X(x), cy: P.Y(y), r: 6, style: `fill:var(--bg);stroke:${col || 'var(--cv)'};stroke-width:2.5` }, P.m);
+const dotAt = (P, x, y, col, r) => mk('circle', { cx: P.X(x), cy: P.Y(y), r: r || 6, style: `fill:${col || 'var(--cv)'};stroke:var(--bg);stroke-width:1.5` }, P.m);
+const sig = v => !isFinite(v) ? (v > 0 ? '∞' : v < 0 ? '−∞' : 'undefined') : Math.abs(v) >= 1e5 ? v.toExponential(2).replace('-', '−') : num(v, 6);
+function parseLim(s){
+  const t = String(s).trim().toLowerCase().replace(/\s+/g, '').replace(/[−–]/g, '-');
+  if (/^(dne|none|doesnotexist|noLimit|nolimit|no)$/i.test(t)) return 'DNE';
+  if (/^\+?(inf|infinity|∞|oo)$/.test(t)) return Infinity;
+  if (/^-(inf|infinity|∞|oo)$/.test(t)) return -Infinity;
+  return parseNum(s);
+}
+
+const minus = s => String(s).replace(/(^|[\s(,=>→\/·])-(\d)/g, '$1−$2');
+const r3 = v => Number(v.toPrecision(4));
+const nd = (f, x) => (f(x + 1e-5) - f(x - 1e-5)) / 2e-5;     // numerical slope, for checks
+
+/* =====================================================================
+   2. MAIN: secant to tangent, and f′ traced
+   ===================================================================== */
+const mPresets = [
+  { n: 'x²', f: x => x * x, df: x => 2 * x, rule: 'f(x) = x²', dr: 'f′(x) = 2x', b: [-3, 3, -2, 9], db: [-6.5, 6.5], a: 1, d: 'The slope at a is 2a: negative on the left, 0 at the bottom, positive on the right. f′ is a straight line.' },
+  { n: 'x³ − 3x', f: x => x * x * x - 3 * x, df: x => 3 * x * x - 3, rule: 'f(x) = x³ − 3x', dr: 'f′(x) = 3x² − 3', b: [-2.5, 2.5, -5, 5], db: [-4, 15], a: -1.5, d: 'A hill at x = −1 and a valley at x = 1: exactly where f′ crosses 0.' },
+  { n: 'sin x', f: Math.sin, df: Math.cos, rule: 'f(x) = sin x', dr: 'f′(x) = cos x', b: [-6.5, 6.5, -1.6, 1.6], db: [-1.6, 1.6], a: 0, d: 'Sweep and the traced slopes draw a cosine wave.' },
+  { n: 'eˣ', f: Math.exp, df: Math.exp, rule: 'f(x) = eˣ', dr: 'f′(x) = eˣ', b: [-3, 2.2, -1, 9], db: [-1, 9], a: 1, d: 'The slope at every point equals the height there: f′ = f.' },
+  { n: '|x| (a corner)', f: Math.abs, df: x => x === 0 ? NaN : Math.sign(x), rule: 'f(x) = |x|', dr: 'f′(x) = −1 for x < 0, +1 for x > 0, none at 0', b: [-3, 3, -1, 3], db: [-2, 2], a: 0, d: 'At the corner the secants from the right have slope 1, from the left −1. No single tangent: not differentiable at 0.' },
+  { n: '√x', f: x => x < 0 ? NaN : Math.sqrt(x), df: x => x <= 0 ? NaN : 0.5 / Math.sqrt(x), rule: 'f(x) = √x = x^½', dr: 'f′(x) = ½·x^(−½) = 1/(2√x)', b: [-0.5, 6, -0.5, 2.8], db: [-0.2, 3], a: 1, d: 'The power rule with n = ½. Near 0 the tangent gets steeper and steeper: vertical at 0, so no derivative there.' },
+];
+const M = { i: 0, a: 1, h: 1, zoom: false, show: false, trace: [], anim: null };
+let MF = null;
+function mDraw(){
+  const p = mPresets[M.i], a = M.a, h = M.h, fa = p.f(a);
+  const box = M.zoom ? (() => { const w = Math.max(Math.abs(h) * 3, 0.02); const hh = w * (p.b[3] - p.b[2]) / (p.b[1] - p.b[0]); return { x0: a - w, x1: a + w, y0: fa - hh, y1: fa + hh }; })() : { x0: p.b[0], x1: p.b[1], y0: p.b[2], y1: p.b[3] };
+  const P = MF = ax2($('mF'), 960, 330, box, { yT: 'f(x)', xT: 'x' });
+  curve(P, p.f, { n: 1200 });
+  const fah = p.f(a + h), sl = (fah - fa) / h, d = p.df(a);
+  if (isFinite(fa)){
+    if (isFinite(sl)) mk('path', { d: dPath(P, [[box.x0, fa + sl * (box.x0 - a)], [box.x1, fa + sl * (box.x1 - a)]]), style: 'fill:none;stroke:var(--sec);stroke-width:2.5' }, P.cg);
+    if (isFinite(d)) mk('path', { d: dPath(P, [[box.x0, fa + d * (box.x0 - a)], [box.x1, fa + d * (box.x1 - a)]]), style: 'fill:none;stroke:var(--tan);stroke-width:2;stroke-dasharray:7 6' }, P.cg);
+    if (isFinite(fah)){ mk('line', { x1: P.X(a), y1: P.Y(fa), x2: P.X(a + h), y2: P.Y(fa), style: 'stroke:var(--pa);stroke-width:2' }, P.m); mk('line', { x1: P.X(a + h), y1: P.Y(fa), x2: P.X(a + h), y2: P.Y(fah), style: 'stroke:var(--d1);stroke-width:2' }, P.m); dotAt(P, a + h, fah, 'var(--sec)', 6); }
+    dotAt(P, a, fa, 'var(--pa)', 8);
+  }
+  // derivative panel
+  const D = ax2($('mD'), 960, 220, { x0: p.b[0], x1: p.b[1], y0: p.db[0], y1: p.db[1] }, { yT: 'f′(x)', xT: 'x' });
+  if (D.b.y0 < 0 && D.b.y1 > 0) mk('line', { x1: D.L, y1: D.Y(0), x2: D.W - D.R, y2: D.Y(0), style: 'stroke:var(--ink);stroke-width:1.2;opacity:.5' }, D.cg);
+  if (M.show) curve(D, p.df, { col: 'var(--d1)', n: 1200, breaks: [0].filter(() => M.i === 4) });
+  M.trace.forEach(([x, y]) => dotAt(D, x, y, 'var(--d1)', 3.5));
+  if (isFinite(d)){ dotAt(D, a, d, 'var(--d1)', 7); mk('line', { x1: D.X(a), y1: D.T, x2: D.X(a), y2: D.H - D.B, style: 'stroke:var(--pa);stroke-width:1;stroke-dasharray:3 4' }, D.cg); }
+  $('mV').textContent = minus(isFinite(d) ? `f′(${r3(a)}) = ${sig(r3(d))}` : `f′(${r3(a)}) does not exist`);
+  let s = `<b>${p.rule}</b>, ${p.dr}.<br>Secant slope over [${r3(a)}, ${r3(a + h)}]: (f(${r3(a + h)}) − f(${r3(a)})) / ${h} = <span class="ks">${isFinite(sl) ? sig(r3(sl)) : 'undefined'}</span>. `;
+  if (isFinite(d)) s += `As h → 0 it heads to <span class="kt">${sig(r3(d))}</span>, the slope of the tangent: ${d > 1e-9 ? 'f is increasing here' : d < -1e-9 ? 'f is decreasing here' : 'a flat tangent: a critical point'}.`;
+  else if (M.i === 4 && Math.abs(a) < 1e-9) s += `From the right the secant slope is always <b>1</b>; try a negative h and it’s always <b>−1</b>. The one-sided limits differ: no derivative at the corner.`;
+  else s += 'No tangent slope here.';
+  $('mOut').innerHTML = minus(s);
+  $('mA').value = String(r3(a)); $('mH').value = String(h);
+}
+function mAddTrace(){ const p = mPresets[M.i], d = p.df(M.a); if (isFinite(d)) M.trace.push([M.a, d]); }
+function mStop(){ if (M.anim){ clearTimeout(M.anim); cancelAnimationFrame(M.anim); M.anim = null; } $('mShrink').textContent = 'Shrink h'; $('mSweep').textContent = 'Sweep'; }
+const mMark = buttons('mPresets', mPresets, i => { mStop(); Object.assign(M, { i, a: mPresets[i].a, h: 1, trace: [], zoom: false, show: false }); $('mZoom').classList.remove('on'); $('mZoom').textContent = 'Zoom: off'; $('mShow').classList.remove('on'); mMark(i); $('mDesc').textContent = mPresets[i].d; $('mErr').textContent = ''; mAddTrace(); mDraw(); });
+$('mUse').onclick = () => { const a = parseNum($('mA').value), h = parseNum($('mH').value), p = mPresets[M.i]; if (isNaN(a) || isNaN(h)){ $('mErr').textContent = 'Type numbers for a and h.'; return; } if (h === 0){ $('mErr').textContent = 'h can’t be 0: the secant needs two different points (that’s the 0/0 the limit gets around).'; return; } if (a < p.b[0] || a > p.b[1]){ $('mErr').textContent = `Keep a between ${p.b[0]} and ${p.b[1]}.`; return; } $('mErr').textContent = ''; mStop(); M.a = a; M.h = h; mAddTrace(); mDraw(); };
+$('mShrink').onclick = () => { if (M.anim){ mStop(); return; } const HS = [1, 0.5, 0.2, 0.1, 0.01, 0.001]; let k = 0; $('mShrink').textContent = 'Pause'; const step = () => { M.h = HS[k] * (M.h < 0 ? -1 : 1); mDraw(); k++; if (k < HS.length) M.anim = setTimeout(step, 800); else mStop(); }; step(); };
+$('mSweep').onclick = () => { if (M.anim){ mStop(); return; } const p = mPresets[M.i]; let x = p.b[0]; $('mSweep').textContent = 'Pause'; M.h = 0.001; const step = () => { M.a = x; mAddTrace(); mDraw(); x += (p.b[1] - p.b[0]) / 120; if (x <= p.b[1] + 1e-9) M.anim = setTimeout(step, 30); else mStop(); }; step(); };
+$('mClear').onclick = () => { M.trace = []; mDraw(); };
+$('mZoom').onclick = () => { M.zoom = !M.zoom; $('mZoom').classList.toggle('on', M.zoom); $('mZoom').textContent = 'Zoom: ' + (M.zoom ? 'on' : 'off'); mDraw(); };
+$('mShow').onclick = () => { M.show = !M.show; $('mShow').classList.toggle('on', M.show); mDraw(); };
+(function(){ const svg = $('mF'); let drag = false;
+  const set = ev => { if (M.zoom) return; const q = svgPt(svg, ev), p = mPresets[M.i]; let x = MF.inv(q.x, q.y)[0]; x = Math.round(clamp(x, p.b[0], p.b[1]) * 50) / 50; if (!isFinite(p.f(x))) return; M.a = x; mAddTrace(); mDraw(); };
+  svg.addEventListener('pointerdown', ev => { mStop(); drag = true; svg.setPointerCapture(ev.pointerId); set(ev); });
+  svg.addEventListener('pointermove', ev => { if (drag) set(ev); });
+  svg.addEventListener('pointerup', () => drag = false); })();
+
+/* =====================================================================
+   3. PRODUCT RULE RECTANGLE
+   ===================================================================== */
+const R = { t: 1, dt: 0.5 };
+function rDraw(){
+  const u = t => 2 + R.t * 0 + t, v = t => 1 + 0.5 * t;
+  const U = 2 + R.t, V = 1 + 0.5 * R.t, dU = R.dt, dV = 0.5 * R.dt;
+  const svg = $('rSvg'); svg.innerHTML = '';
+  const sc = 340 / 7.5, x0 = 70, y0 = 320;
+  const rect = (x, y, w, h, c, op) => mk('rect', { x: x0 + x * sc, y: y0 - (y + h) * sc, width: w * sc, height: h * sc, style: `fill:${c};fill-opacity:${op};stroke:${c};stroke-width:1.5` }, svg);
+  rect(0, 0, U, V, 'var(--cv)', .3); rect(U, 0, dU, V, 'var(--d1)', .6); rect(0, V, U, dV, 'var(--d2)', .6); rect(U, V, dU, dV, 'var(--no)', .8);
+  txt(svg, x0 + U * sc / 2, y0 + 20, `u = ${r3(U)}`, 'labS', { 'text-anchor': 'middle', style: 'fill:var(--cv)' });
+  txt(svg, x0 - 8, y0 - V * sc / 2, `v = ${r3(V)}`, 'labS', { 'text-anchor': 'end', style: 'fill:var(--cv)' });
+  txt(svg, x0 + (U + dU / 2) * sc, y0 + 20, 'Δu', 'labS', { 'text-anchor': 'middle', style: 'fill:var(--d1)' });
+  txt(svg, x0 - 8, y0 - (V + dV / 2) * sc + 4, 'Δv', 'labS', { 'text-anchor': 'end', style: 'fill:var(--d2)' });
+  const A = U * V, s1 = V * dU, s2 = U * dV, c = dU * dV;
+  $('rOut').innerHTML = `Area uv = ${r3(U)} × ${r3(V)} = ${r3(A)}.<br>After Δt = ${R.dt}: new area = old + <span class="kd">v·Δu</span> + <span class="kd2">u·Δv</span> + <span class="kn">Δu·Δv</span> = ${r3(A)} + ${r3(s1)} + ${r3(s2)} + ${r3(c)}.<br>Divide the growth by Δt: ${r3(s1 / R.dt)} + ${r3(s2 / R.dt)} + <span class="kn">${r3(c / R.dt)}</span>. As Δt → 0 the corner term (Δu·Δv/Δt = ${r3(c / R.dt)}) vanishes, leaving <b>(uv)′ = u′v + uv′ = 1·${r3(V)} + ${r3(U)}·0.5 = ${r3(V + 0.5 * U)}</b>. The naive guess u′v′ = 1·0.5 = 0.5 misses almost everything.`;
+  $('rT').value = String(R.t); $('rD').value = String(R.dt);
+}
+$('rGo').onclick = () => { const t = parseNum($('rT').value), d = parseNum($('rD').value); if (isNaN(t) || isNaN(d) || t < 0 || t > 3 || d <= 0 || d > 2){ $('rErr').textContent = 'Use t from 0 to 3 and Δt from just above 0 to 2.'; return; } $('rErr').textContent = ''; R.t = t; R.dt = d; rDraw(); };
+$('rShrink').onclick = () => { R.dt = Math.max(0.01, Math.round(R.dt / 2 * 1000) / 1000); rDraw(); };
+
+/* =====================================================================
+   4. CHAIN RULE GEARS
+   ===================================================================== */
+const G = { a: 3, b: 2, th: 0, anim: null };
+function gear(svg, cx, cy, r, ang, col, teeth, lab, sub){
+  const g = mk('g', { transform: `rotate(${ang * 180 / Math.PI} ${cx} ${cy})` }, svg), pts = [];
+  for (let k = 0; k < teeth * 2; k++){ const t = k * Math.PI / teeth, rr = k % 2 ? r : r + 9; pts.push([cx + rr * Math.cos(t), cy + rr * Math.sin(t)]); }
+  mk('polygon', { points: pts.map(p => p.join(',')).join(' '), style: `fill:${col};fill-opacity:.25;stroke:${col};stroke-width:2` }, g);
+  mk('line', { x1: cx, y1: cy, x2: cx + r - 6, y2: cy, style: `stroke:${col};stroke-width:4;stroke-linecap:round` }, g);
+  mk('circle', { cx, cy, r: 6, style: `fill:${col}` }, svg);
+  txt(svg, cx, cy + r + 30, lab, 'lab', { 'text-anchor': 'middle', style: `fill:${col}` });
+  txt(svg, cx, cy + r + 48, sub, 'labS', { 'text-anchor': 'middle', style: 'fill:var(--muted)' });
+}
+function gDraw(){
+  const svg = $('gSvg'); svg.innerHTML = '';
+  const th = G.th, turns = v => (v / (2 * Math.PI)).toFixed(2);
+  gear(svg, 170, 110, 70, th, 'var(--pa)', 12, 'x', `${turns(th)} turns`);
+  gear(svg, 480, 110, 70, th * G.a, 'var(--cv)', 12, 'u = g(x)', `${turns(th * G.a)} turns`);
+  gear(svg, 790, 110, 70, th * G.a * G.b, 'var(--d1)', 12, 'y = f(u)', `${turns(th * G.a * G.b)} turns`);
+  [[255, 395, `× ${G.a}`, 'du/dx'], [565, 705, `× ${G.b}`, 'dy/du']].forEach(([x1, x2, t, s]) => { mk('line', { x1, y1: 110, x2: x2 - 10, y2: 110, style: 'stroke:var(--muted);stroke-width:2' }, svg); arrowHead(svg, x1, 110, x2, 110, 'var(--muted)', 10); txt(svg, (x1 + x2) / 2, 98, t, 'lab', { 'text-anchor': 'middle' }); txt(svg, (x1 + x2) / 2, 132, s, 'labS', { 'text-anchor': 'middle', style: 'fill:var(--muted)' }); });
+  $('gOut').innerHTML = `For each turn of x, u turns ${G.a} times; for each turn of u, y turns ${G.b} times. So y turns <b>${G.a} × ${G.b} = ${r3(G.a * G.b)}</b> times per turn of x: <b>dy/dx = dy/du · du/dx</b>. Example: y = sin(x²). The inside u = x² has du/dx = 2x; the outside y = sin u has dy/du = cos u. So dy/dx = cos(x²)·2x.`;
+  $('gA').value = String(G.a); $('gB').value = String(G.b);
+}
+function gStop(){ if (G.anim){ cancelAnimationFrame(G.anim); G.anim = null; } $('gPlay').textContent = 'Turn'; }
+$('gPlay').onclick = () => { if (G.anim){ gStop(); return; } const a = parseNum($('gA').value), b = parseNum($('gB').value); if (isNaN(a) || isNaN(b) || Math.abs(a) > 5 || Math.abs(b) > 5){ $('gErr').textContent = 'Use ratios between −5 and 5.'; return; } $('gErr').textContent = ''; G.a = a; G.b = b; $('gPlay').textContent = 'Pause'; let last = performance.now(); const step = now => { G.th += (now - last) / 1000 * 0.6; last = now; gDraw(); G.anim = requestAnimationFrame(step); }; G.anim = requestAnimationFrame(step); };
+$('gReset').onclick = () => { gStop(); G.th = 0; gDraw(); };
+
+/* =====================================================================
+   5. RULES AT WORK
+   ===================================================================== */
+const uPresets = [
+  { n: '3x⁴ − 2x + 5', f: x => 3 * x ** 4 - 2 * x + 5, df: x => 12 * x ** 3 - 2, b: [-1.6, 1.6, -2, 16], steps: [['Sum rule: one term at a time', '(3x⁴)′ − (2x)′ + (5)′'], ['Power rule and constant multiples', '3·4x³ − 2·1 + 0'], ['Result', 'f′(x) = 12x³ − 2']] },
+  { n: 'x²·sin x', f: x => x * x * Math.sin(x), df: x => 2 * x * Math.sin(x) + x * x * Math.cos(x), b: [-4, 4, -12, 12], steps: [['Product rule with u = x², v = sin x', 'u′v + uv′'], ['u′ = 2x, v′ = cos x', '2x·sin x + x²·cos x'], ['Result', 'f′(x) = 2x sin x + x² cos x']] },
+  { n: 'x/(x² + 1)', f: x => x / (x * x + 1), df: x => (1 - x * x) / ((x * x + 1) ** 2), b: [-5, 5, -0.8, 0.8], steps: [['Quotient rule with u = x, v = x² + 1', '(u′v − uv′)/v²'], ['u′ = 1, v′ = 2x', '(1·(x² + 1) − x·2x)/(x² + 1)²'], ['Simplify', 'f′(x) = (1 − x²)/(x² + 1)²']] },
+  { n: 'sin(x²)', f: x => Math.sin(x * x), df: x => 2 * x * Math.cos(x * x), b: [-3, 3, -1.5, 1.5], steps: [['Chain rule: outside sin u, inside u = x²', 'cos(u) · u′'], ['Put u back, u′ = 2x', 'cos(x²) · 2x'], ['Result', 'f′(x) = 2x cos(x²)']] },
+  { n: 'e^(3x)', f: x => Math.exp(3 * x), df: x => 3 * Math.exp(3 * x), b: [-2, 0.8, -1, 12], steps: [['Chain rule: outside eᵘ, inside u = 3x', 'eᵘ · u′'], ['u′ = 3', 'e^(3x) · 3'], ['Result', 'f′(x) = 3e^(3x): three times as steep as e^(3x) is tall']] },
+  { n: '√(x² + 9)', f: x => Math.sqrt(x * x + 9), df: x => x / Math.sqrt(x * x + 9), b: [-6, 6, 0, 7], steps: [['Chain rule: outside √u = u^½, inside u = x² + 9', '½u^(−½) · u′'], ['u′ = 2x', '½(x² + 9)^(−½) · 2x'], ['Simplify', 'f′(x) = x / √(x² + 9)']] },
+];
+const U = { i: 0, x: 1 };
+function uDraw(){
+  const p = uPresets[U.i], x = U.x, P = ax2($('uSvg'), 600, 360, { x0: p.b[0], x1: p.b[1], y0: p.b[2], y1: p.b[3] }, { xT: 'x' });
+  curve(P, p.df, { col: 'var(--d1)', n: 900 }); curve(P, p.f, { n: 900 });
+  const fx = p.f(x), d = p.df(x);
+  mk('path', { d: dPath(P, [[p.b[0], fx + d * (p.b[0] - x)], [p.b[1], fx + d * (p.b[1] - x)]]), style: 'fill:none;stroke:var(--tan);stroke-width:2;stroke-dasharray:6 5' }, P.cg);
+  dotAt(P, x, fx, 'var(--pa)', 7); dotAt(P, x, d, 'var(--d1)', 6);
+  $('uSteps').innerHTML = p.steps.map(([t, e]) => `<li><small>${t}</small>${e}</li>`).join('');
+  const num1 = (p.f(x + 1e-6) - p.f(x)) / 1e-6;
+  $('uOut').innerHTML = minus(`At x = ${x}: the formula gives <span class="kd">f′(${x}) = ${r3(d)}</span>; the difference quotient with h = 0.000001 gives ${r3(num1)}. They agree, so the rule did its job. The green tangent at (${x}, ${r3(fx)}) has that slope.`);
+  $('uX').value = String(x);
+}
+const uMark = buttons('uPresets', uPresets, i => { U.i = i; uMark(i); $('uErr').textContent = ''; uDraw(); });
+$('uGo').onclick = () => { const x = parseNum($('uX').value), p = uPresets[U.i]; if (isNaN(x) || x < p.b[0] || x > p.b[1]){ $('uErr').textContent = `Type an x between ${p.b[0]} and ${p.b[1]}.`; return; } $('uErr').textContent = ''; U.x = x; uDraw(); };
+
+/* =====================================================================
+   6. f, f′, f″ STACKED (with motion and growth presets)
+   ===================================================================== */
+const sPresets = [
+  { n: 'Car trip', f: t => -(t ** 3) / 3 + 3 * t * t, d1: t => -t * t + 6 * t, d2: t => -2 * t + 6, b: [0, 6], names: ['position s (m)', 'velocity v = s′ (m/s)', 'acceleration a = s″'], car: true, d: 'Speeding up for 3 seconds (a > 0), then braking (a < 0) until it stops at t = 6. Fastest at t = 3, where acceleration is 0: the inflection point of s.' },
+  { n: 'Thrown ball', f: t => 2 + 15 * t - 5 * t * t, d1: t => 15 - 10 * t, d2: () => -10, b: [0, 3.15], names: ['height h (m)', 'velocity h′ (m/s)', 'acceleration h″'], d: 'Gravity gives a constant acceleration of −10 m/s². Velocity falls steadily, through 0 at the peak.' },
+  { n: 'Spreading rumour', f: t => 1000 / (1 + 99 * Math.exp(-0.6 * t)), d1: t => { const e = Math.exp(-0.6 * t); return 1000 * 99 * 0.6 * e / (1 + 99 * e) ** 2; }, d2: null, b: [0, 16], names: ['people who have heard', 'new people per day', 'change in that rate'], d: 'It spreads slowly, then fast, then slowly as almost everyone has heard. The rate peaks at the inflection point, when half have heard.' },
+  { n: 'x³ − 3x', f: x => x ** 3 - 3 * x, d1: x => 3 * x * x - 3, d2: x => 6 * x, b: [-2.3, 2.3], names: ['f(x)', 'f′(x)', 'f″(x)'], d: 'Hill at −1, valley at 1 (f′ = 0); concave down on the left, up on the right, switching at 0.' },
+  { n: 'x⁴ − 2x²', f: x => x ** 4 - 2 * x * x, d1: x => 4 * x ** 3 - 4 * x, d2: x => 12 * x * x - 4, b: [-1.7, 1.7], names: ['f(x)', 'f′(x)', 'f″(x)'], d: 'Two valleys and a hill: three critical points, and two inflection points at ±1/√3.' },
+];
+sPresets[2].d2 = t => nd(sPresets[2].d1, t);
+const S = { i: 0, t: 1, anim: null };
+let SP = null;
+function zerosOf(g, a, b){ const z = []; let px = a, pv = g(a); for (let k = 1; k <= 600; k++){ const x = a + (b - a) * k / 600, v = g(x); if (pv === 0) z.push(px); else if (pv * v < 0){ let lo = px, hi = x; for (let it = 0; it < 40; it++){ const m = (lo + hi) / 2; if (g(lo) * g(m) <= 0) hi = m; else lo = m; } z.push((lo + hi) / 2); } px = x; pv = v; } return z; }
+function sDraw(){
+  const p = sPresets[S.i], [a, b] = p.b, t = S.t, fs = [p.f, p.d1, p.d2], ids = ['s0', 's1', 's2'], Hs = [200, 170, 170];
+  const crit = zerosOf(p.d1, a, b), infl = zerosOf(p.d2, a, b);
+  SP = [];
+  fs.forEach((g, k) => {
+    const ys = []; for (let i = 0; i <= 300; i++) ys.push(g(a + (b - a) * i / 300));
+    let y0 = Math.min(...ys), y1 = Math.max(...ys); if (y1 - y0 < 1e-6){ y0 -= 1; y1 += 1; } const pad = (y1 - y0) * 0.12;
+    const P = ax2($(ids[k]), 960, Hs[k], { x0: a, x1: b, y0: Math.min(y0 - pad, k ? -pad : y0 - pad), y1: y1 + pad }, { yT: p.names[k], padL: 60 });
+    SP.push(P);
+    if (P.b.y0 < 0 && P.b.y1 > 0) mk('line', { x1: P.L, y1: P.Y(0), x2: P.W - P.R, y2: P.Y(0), style: 'stroke:var(--ink);stroke-width:1.2;opacity:.5' }, P.cg);
+    if (k === 0){                                             // shade rising / falling stretches
+      const cuts = [a, ...crit, b];
+      for (let j = 0; j < cuts.length - 1; j++){ const m = (cuts[j] + cuts[j + 1]) / 2, up = p.d1(m) > 0; mk('rect', { x: P.X(cuts[j]), y: P.T, width: P.X(cuts[j + 1]) - P.X(cuts[j]), height: P.H - P.T - P.B, style: `fill:${up ? 'var(--up)' : 'var(--dn)'};opacity:.08` }, P.cg); }
+      crit.forEach(x => dotAt(P, x, p.f(x), 'var(--ink)', 5)); infl.forEach(x => holeAt(P, x, p.f(x), 'var(--d2)'));
+    }
+    if (k === 1) crit.forEach(x => dotAt(P, x, 0, 'var(--ink)', 5));
+    if (k === 2) infl.forEach(x => holeAt(P, x, 0, 'var(--d2)'));
+    curve(P, g, { col: ['var(--cv)', 'var(--d1)', 'var(--d2)'][k], n: 600 });
+    mk('line', { x1: P.X(t), y1: P.T, x2: P.X(t), y2: P.H - P.B, style: 'stroke:var(--pa);stroke-width:1.5;stroke-dasharray:4 4' }, P.m);
+    dotAt(P, t, g(t), 'var(--pa)', 6);
+  });
+  $('sCar').style.display = p.car ? '' : 'none';
+  if (p.car){ const svg = $('sRoad'); svg.innerHTML = ''; const X = s => 60 + s / 36 * 840; mk('line', { x1: 40, y1: 52, x2: 920, y2: 52, style: 'stroke:var(--ink);stroke-width:3' }, svg); for (let m = 0; m <= 36; m += 6) txt(svg, X(m), 68, m + ' m', 'tl', { 'text-anchor': 'middle' }); const x = X(p.f(t)); mk('rect', { x: x - 26, y: 22, width: 52, height: 22, rx: 6, style: 'fill:var(--cv)' }, svg); [x - 15, x + 15].forEach(cx => mk('circle', { cx, cy: 46, r: 6, style: 'fill:var(--ink)' }, svg)); }
+  const v1 = p.d1(t), v2 = p.d2(t);
+  $('sOut').innerHTML = minus(`At ${p.car || S.i === 1 || S.i === 2 ? 't' : 'x'} = ${r3(t)}: <b>${p.names[0]}</b> ${r3(p.f(t))}; <b>${p.names[1]}</b> <span class="kd">${r3(v1)}</span> (${v1 > 1e-9 ? 'rising' : v1 < -1e-9 ? 'falling' : 'flat'}), <b>${p.names[2]}</b> <span class="kd2">${r3(v2)}</span> (${v2 > 1e-9 ? 'concave up: slope increasing' : v2 < -1e-9 ? 'concave down: slope decreasing' : 'switching concavity'}).` +
+    (crit.length ? ` Critical points at ${crit.map(r3).join(', ')}.` : '') + (infl.length ? ` Inflection at ${infl.map(r3).join(', ')}.` : ''));
+}
+function sStop(){ if (S.anim){ cancelAnimationFrame(S.anim); S.anim = null; } $('sPlay').textContent = 'Play'; }
+$('sPlay').onclick = () => { if (S.anim){ sStop(); return; } const p = sPresets[S.i]; if (S.t >= p.b[1] - 1e-6) S.t = p.b[0]; $('sPlay').textContent = 'Pause'; let last = performance.now(); const step = now => { S.t = Math.min(p.b[1], S.t + (now - last) / 1000 * (p.b[1] - p.b[0]) / 6); last = now; sDraw(); if (S.t < p.b[1]) S.anim = requestAnimationFrame(step); else sStop(); }; S.anim = requestAnimationFrame(step); };
+const sMark = buttons('sPresets', sPresets, i => { sStop(); S.i = i; S.t = (sPresets[i].b[0] * 3 + sPresets[i].b[1]) / 4; sMark(i); $('sDesc').textContent = sPresets[i].d; sDraw(); });
+(function(){ const box = $('sStack'); let drag = false;
+  const set = ev => { const svg = ev.target.closest('svg'); if (!svg || !SP) return; const q = svgPt(svg, ev), p = sPresets[S.i]; S.t = clamp(SP[0].inv(q.x, 0)[0], p.b[0], p.b[1]); sDraw(); };
+  box.addEventListener('pointerdown', ev => { sStop(); drag = true; box.setPointerCapture(ev.pointerId); set(ev); });
+  box.addEventListener('pointermove', ev => { if (drag){ const svg = $('s0'); const q = svgPt(svg, ev), p = sPresets[S.i]; S.t = clamp(SP[0].inv(q.x, 0)[0], p.b[0], p.b[1]); sDraw(); } });
+  box.addEventListener('pointerup', () => drag = false); })();
+
+/* =====================================================================
+   7. FILLING A CONE
+   ===================================================================== */
+const CN = { Q: 20, t: 0, anim: null };
+const HMAX = 12, VMAX = Math.PI * HMAX ** 3 / 12;            // cup 12 cm tall, top radius 6 cm
+const hOf = t => Math.cbrt(12 * CN.Q * t / Math.PI), dhOf = t => t <= 0 ? Infinity : 4 * CN.Q / (Math.PI * hOf(t) ** 2);
+function cDraw(){
+  const svg = $('cSvg'); svg.innerHTML = '';
+  const T = VMAX / CN.Q, t = Math.min(CN.t, T), h = hOf(t);
+  // the cup
+  const cx = 135, top = 40, bot = 300, k = (bot - top) / HMAX, kx = k * 0.8;
+  mk('polygon', { points: `${cx - 6 * kx},${top} ${cx + 6 * kx},${top} ${cx},${bot}`, style: 'fill:none;stroke:var(--ink);stroke-width:2' }, svg);
+  if (h > 0) mk('polygon', { points: `${cx - h / 2 * kx},${bot - h * k} ${cx + h / 2 * kx},${bot - h * k} ${cx},${bot}`, style: 'fill:var(--water);opacity:.6' }, svg);
+  txt(svg, cx, 322, `h = ${r3(h)} cm`, 'lab', { 'text-anchor': 'middle', style: 'fill:var(--water)' });
+  // graphs: level and its rate
+  const g1 = document.createElementNS(NS, 'svg'); g1.setAttribute('x', 270); g1.setAttribute('y', 0); g1.setAttribute('width', 340); g1.setAttribute('height', 330); g1.setAttribute('viewBox', '0 0 340 330'); svg.appendChild(g1);
+  const g2 = document.createElementNS(NS, 'svg'); g2.setAttribute('x', 620); g2.setAttribute('y', 0); g2.setAttribute('width', 340); g2.setAttribute('height', 330); g2.setAttribute('viewBox', '0 0 340 330'); svg.appendChild(g2);
+  const P1 = ax2(g1, 340, 330, { x0: 0, x1: T, y0: 0, y1: HMAX * 1.05 }, { xT: 't (s)', yT: 'level h (cm)', padL: 40 });
+  curve(P1, x => hOf(x), { n: 300, col: 'var(--water)' }); dotAt(P1, t, h, 'var(--pa)', 6);
+  const P2 = ax2(g2, 340, 330, { x0: 0, x1: T, y0: 0, y1: 4 }, { xT: 't (s)', yT: 'dh/dt (cm/s)', padL: 40 });
+  curve(P2, x => dhOf(x), { n: 300, col: 'var(--d1)' }); if (t > 0) dotAt(P2, t, Math.min(4, dhOf(t)), 'var(--pa)', 6);
+  $('cOut').innerHTML = t > 0 ? `After ${r3(t)} s: volume ${r3(CN.Q * t)} cm³, level <b>${r3(h)} cm</b>, rising at <span class="kd">${r3(dhOf(t))} cm/s</span> = 4·${CN.Q}/(π·${r3(h)}²). The volume grows at a steady ${CN.Q} cm³/s, but the level slows down as the surface widens: dV/dt = (πh²/4)·dh/dt, the chain rule linking the two rates.` + (t >= T - 1e-9 ? ' The cup is full.' : '') : 'Press Pour. The first drops raise the level very fast, because the cup is narrow at the bottom.';
+  $('cQ').value = String(CN.Q);
+}
+function cStop(){ if (CN.anim){ cancelAnimationFrame(CN.anim); CN.anim = null; } $('cPlay').textContent = 'Pour'; }
+$('cPlay').onclick = () => { if (CN.anim){ cStop(); return; } const Q = parseNum($('cQ').value); if (isNaN(Q) || Q <= 0 || Q > 200){ $('cErr').textContent = 'Use a pour rate between 0 and 200 cm³/s.'; return; } $('cErr').textContent = ''; if (Q !== CN.Q){ CN.Q = Q; CN.t = 0; } const T = VMAX / CN.Q; if (CN.t >= T) CN.t = 0; $('cPlay').textContent = 'Pause'; let last = performance.now(); const step = now => { CN.t = Math.min(T, CN.t + (now - last) / 1000 * T / 8); last = now; cDraw(); if (CN.t < T) CN.anim = requestAnimationFrame(step); else cStop(); }; CN.anim = requestAnimationFrame(step); };
+$('cReset').onclick = () => { cStop(); CN.t = 0; cDraw(); };
+
+/* =====================================================================
+   8. TRAPS
+   ===================================================================== */
+(function(){
+  let P = ax2($('tr1'), 300, 200, { x0: -2, x1: 2, y0: -0.5, y1: 2 }, { padL: 30, padB: 22, padT: 8, padR: 8 });
+  curve(P, Math.abs); [[-1, 'var(--no)'], [1, 'var(--yes)']].forEach(([m, c]) => mk('path', { d: dPath(P, [[0, 0], [m * 2, 2]]), style: `fill:none;stroke:${c};stroke-width:1.5;stroke-dasharray:4 4` }, P.cg)); dotAt(P, 0, 0, 'var(--pa)', 5);
+  P = ax2($('tr2'), 300, 200, { x0: 0, x1: 3, y0: 0, y1: 3 }, { padL: 30, padB: 22, padT: 8, padR: 8 });
+  [[0, 0, 1.6, 1.6, 'var(--cv)', .3], [1.6, 0, .6, 1.6, 'var(--d1)', .6], [0, 1.6, 1.6, .6, 'var(--d2)', .6], [1.6, 1.6, .6, .6, 'var(--no)', .7]].forEach(([x, y, w, h, c, o]) => mk('rect', { x: P.X(x), y: P.Y(y + h), width: P.X(x + w) - P.X(x), height: P.Y(y) - P.Y(y + h), style: `fill:${c};fill-opacity:${o}` }, P.m));
+  P = ax2($('tr3'), 300, 200, { x0: -1.5, x1: 1.5, y0: -2, y1: 2 }, { padL: 30, padB: 22, padT: 8, padR: 8 });
+  curve(P, x => x ** 3); mk('line', { x1: P.X(-1.5), y1: P.Y(0), x2: P.X(1.5), y2: P.Y(0), style: 'stroke:var(--tan);stroke-width:2;stroke-dasharray:6 5' }, P.m); holeAt(P, 0, 0, 'var(--d2)');
+})();
+
+/* =====================================================================
+   9. QUIZ
+   ===================================================================== */
+const Q = { right: 0, total: 0 };
+let qq = null;
+const qTitles = { diff: 'Differentiate', slope: 'Read the slope', match: 'Match f to f′', crit: 'Where is f′ = 0?' };
+function qReset(){ ['qVis', 'qChoice', 'qExpr'].forEach(id => $(id).innerHTML = ''); $('qChoice').className = 'choice'; $('qFb').className = 'feedback'; $('qFb').innerHTML = ''; $('qErr').textContent = ''; $('qIn').style.display = ''; $('q1').value = ''; }
+function qScore(ok){ if (qq.counted) return; qq.counted = true; Q.total++; if (ok) Q.right++; $('score').textContent = `Score: ${Q.right} / ${Q.total}`; }
+function qFeedback(ok, html){ $('qFb').className = 'feedback ' + (ok ? 'ok' : 'bad'); $('qFb').innerHTML = (ok ? '<b>Right.</b> ' : '<b>Not quite.</b> ') + minus(html); }
+function qChoices(list, correctIdx, explain, pics){ $('qIn').style.display = 'none'; if (pics) $('qChoice').className = 'choice pics'; qq.correctIdx = correctIdx; qq.explainFn = explain; list.forEach((c, k) => { const b = document.createElement('button'); if (typeof c === 'string') b.innerHTML = c; else b.appendChild(c); b.onclick = () => { const ok = k === correctIdx; qScore(ok); [...$('qChoice').children].forEach((x, j) => { x.classList.remove('right', 'wrong'); if (j === k) x.classList.add(ok ? 'right' : 'wrong'); }); qFeedback(ok, explain(k)); }; $('qChoice').appendChild(b); }); }
+function qDiff(){
+  const kind = pick(['poly', 'poly', 'prod', 'chain', 'chainExp', 'trig']);
+  let f, df, expr, a, why;
+  if (kind === 'poly'){ const c = ri(1, 4), n = ri(2, 4), d = ri(-6, 6), e = ri(-9, 9); a = ri(-2, 2); f = x => c * x ** n + d * x + e; df = x => c * n * x ** (n - 1) + d; expr = `f(x) = ${c === 1 ? '' : c}x${['', '', '²', '³', '⁴'][n]} ${d < 0 ? '− ' + -d : '+ ' + d}x ${e < 0 ? '− ' + -e : '+ ' + e}`; why = `Power rule term by term: f′(x) = ${c * n}x${n - 1 > 1 ? ['', '', '²', '³'][n - 1] : ''} ${d < 0 ? '−' : '+'} ${Math.abs(d)}. At x = ${a}: ${c * n}·${pn(a)}${n - 1 > 1 ? ['', '', '²', '³'][n - 1] : ''} ${d < 0 ? '−' : '+'} ${Math.abs(d)} = ${df(a)}.`; }
+  else if (kind === 'prod'){ const k = ri(-3, 3); a = ri(-2, 2); f = x => x * x * (x + k); df = x => 2 * x * (x + k) + x * x; expr = `f(x) = x²·(x ${k < 0 ? '− ' + -k : '+ ' + k})`; why = `Product rule: (x²)′(x ${k < 0 ? '−' : '+'} ${Math.abs(k)}) + x²·1 = 2x(x ${k < 0 ? '−' : '+'} ${Math.abs(k)}) + x². At x = ${a}: ${2 * a * (a + k)} + ${a * a} = ${df(a)}.`; }
+  else if (kind === 'chain'){ const m = ri(2, 3), b = ri(-3, 3), n = pick([2, 3]); a = ri(-1, 2); f = x => (m * x + b) ** n; df = x => n * m * (m * x + b) ** (n - 1); expr = `f(x) = (${m}x ${b < 0 ? '− ' + -b : '+ ' + b})${n === 2 ? '²' : '³'}`; why = `Chain rule: outside u${n === 2 ? '²' : '³'}, inside u = ${m}x ${b < 0 ? '−' : '+'} ${Math.abs(b)}. f′(x) = ${n}(${m}x ${b < 0 ? '−' : '+'} ${Math.abs(b)})${n === 3 ? '²' : ''}·${m}. At x = ${a}: ${n}·${pn(m * a + b)}${n === 3 ? '²' : ''}·${m} = ${df(a)}.`; }
+  else if (kind === 'chainExp'){ const k = pick([2, 3, -2, 5, -3]); a = 0; f = x => Math.exp(k * x); df = x => k * Math.exp(k * x); expr = `f(x) = e^(${k}x)`; why = `Chain rule: f′(x) = ${k}·e^(${k}x). At x = 0, e⁰ = 1, so f′(0) = ${k}.`; }
+  else { const c = pick([2, 3, 5]); a = 0; const sinc = Math.random() < 0.5; f = x => sinc ? c * Math.sin(x) : c * Math.cos(x) + x; df = x => sinc ? c * Math.cos(x) : -c * Math.sin(x) + 1; expr = sinc ? `f(x) = ${c} sin x` : `f(x) = ${c} cos x + x`; why = sinc ? `f′(x) = ${c} cos x, and cos 0 = 1, so f′(0) = ${c}.` : `f′(x) = −${c} sin x + 1, and sin 0 = 0, so f′(0) = 1.`; }
+  Object.assign(qq, { ans: df(a), f, explain: why, kind });
+  $('qText').innerHTML = `Find <b>f′(${a})</b>.`; $('qExpr').innerHTML = minus(expr); $('qLab').textContent = `f′(${a}) =`;
+}
+function qSlope(){
+  const m = pick([-2, -1, -0.5, 0.5, 1, 2, 3, 0]), a = ri(-2, 2), c = pick([0.5, 1, -0.5, -1]);
+  // f(x) = c(x − a)² + m(x − a) + k, so f′(a) = m
+  const k = ri(-1, 2), f = x => c * (x - a) ** 2 + m * (x - a) + k;
+  qq.ans = m;
+  const svg = document.createElementNS(NS, 'svg'); svg.setAttribute('viewBox', '0 0 480 340'); $('qVis').appendChild(svg);
+  const P = ax2(svg, 480, 340, { x0: a - 4, x1: a + 4, y0: k - 4, y1: k + 4 }, { padL: 34, xT: 'x' });
+  curve(P, f); mk('path', { d: dPath(P, [[a - 4, k - 4 * m], [a + 4, k + 4 * m]]), style: 'fill:none;stroke:var(--tan);stroke-width:2.5' }, P.cg); dotAt(P, a, k, 'var(--pa)', 7);
+  $('qText').innerHTML = `The green line is tangent to f at x = ${a}. Read its slope from the grid: what is <b>f′(${a})</b>?`;
+  $('qLab').textContent = `f′(${a}) =`;
+  qq.explain = `Along the tangent, a run of 2 gives a rise of ${2 * m}, so the slope is ${2 * m}/2 = ${m}. The derivative is the tangent’s slope: f′(${a}) = ${m}.`;
+}
+function miniGraph(f, b, col){ const s = document.createElementNS(NS, 'svg'); s.setAttribute('viewBox', '0 0 250 160'); const P = ax2(s, 250, 160, { x0: b[0], x1: b[1], y0: b[2], y1: b[3] }, { padL: 26, padB: 18, padT: 8, padR: 8 }); if (P.b.y0 < 0 && P.b.y1 > 0) mk('line', { x1: P.L, y1: P.Y(0), x2: P.W - P.R, y2: P.Y(0), style: 'stroke:var(--ink);stroke-width:1.2;opacity:.6' }, P.cg); curve(P, f, { col, n: 400 }); return s; }
+const MATCH = [
+  { f: x => x * x, d: x => 2 * x, w: [x => -2 * x, x => x * x - 2], b: [-2, 2, -4, 4], why: 'f falls then rises, with its bottom at 0: f′ is negative, then 0, then positive, a rising line.' },
+  { f: x => x ** 3 - 3 * x, d: x => 3 * x * x - 3, w: [x => -3 * x * x + 3, x => 6 * x], b: [-2, 2, -4, 9], why: 'f rises, falls between −1 and 1, then rises: f′ is positive, negative, positive, crossing 0 at ±1, a U shape.' },
+  { f: Math.sin, d: Math.cos, w: [x => -Math.cos(x), x => -Math.sin(x)], b: [-6, 6, -1.5, 1.5], why: 'At x = 0, sin is rising most steeply, so f′(0) is at its highest: cos.' },
+  { f: x => -x * x + 2, d: x => -2 * x, w: [x => 2 * x, x => -x * x], b: [-2, 2, -4, 4], why: 'f rises to a peak at 0, then falls: f′ goes from positive to negative through 0, a falling line.' },
+  { f: Math.exp, d: Math.exp, w: [x => -Math.exp(-x), x => Math.exp(x) - 2], b: [-2, 1.8, -3, 6], why: 'eˣ is its own derivative: always positive and growing as fast as it is tall.' },
+];
+function qMatch(){
+  const m = pick(MATCH), opts = shuffleArr([[m.d, true], [m.w[0], false], [m.w[1], false]]);
+  $('qText').innerHTML = 'Here is the graph of <b>f</b>. Which graph is <b>f′</b>?';
+  $('qVis').appendChild((() => { const s = miniGraph(m.f, m.b, 'var(--cv)'); s.setAttribute('style', 'width:360px'); return s; })());
+  qChoices(opts.map(([g]) => miniGraph(g, m.b, 'var(--d1)')), opts.findIndex(o => o[1]), () => m.why + ' Check: wherever f has a flat tangent, f′ must cross 0.', true);
+}
+function shuffleArr(a){ for (let i = a.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+function qCrit(){
+  let p, q; do { p = ri(-4, 3); q = ri(-3, 5); } while (q <= p);
+  const s = p + q, pr = p * q;
+  // f(x) = x³/3 − (p+q)x²/2 + pq·x, so f′(x) = (x − p)(x − q)
+  const tStr = `f′(x) = x² ${s === 0 ? '' : (s > 0 ? '− ' : '+ ') + (Math.abs(s) === 1 ? '' : Math.abs(s)) + 'x '}${pr === 0 ? '' : (pr < 0 ? '− ' : '+ ') + Math.abs(pr)}`.trim();
+  qq.p = p; qq.q = q;
+  if (Math.random() < 0.5){
+    qq.mode = 'zeros'; qq.ans = [p, q];
+    $('qText').innerHTML = 'The derivative of a function is given. Where is <b>f′(x) = 0</b>? Type both x-values, separated by a comma.';
+    $('qExpr').innerHTML = minus(tStr); $('qLab').textContent = 'x =';
+    qq.explain = `Factor: ${tStr.replace('f′(x) = ', '')} = (x ${p < 0 ? '+' : '−'} ${Math.abs(p)})(x ${q < 0 ? '+' : '−'} ${Math.abs(q)}), which is 0 at x = ${p} and x = ${q}: the critical points.`;
+  } else {
+    qq.mode = 'inc';
+    $('qText').innerHTML = 'The derivative of a function is given. <b>Where is f increasing?</b>';
+    $('qExpr').innerHTML = minus(tStr);
+    const opts = shuffleArr([`x < ${p} or x > ${q}`, `${p} < x < ${q}`, `x > ${q} only`, `x < ${p} only`]);
+    const correct = `x < ${p} or x > ${q}`;
+    qChoices(opts.map(minus), opts.indexOf(correct), k => `f′(x) = (x ${p < 0 ? '+' : '−'} ${Math.abs(p)})(x ${q < 0 ? '+' : '−'} ${Math.abs(q)}). It’s positive (f increasing) when both factors have the same sign: x < ${p} or x > ${q}. Between ${p} and ${q} it’s negative, so f decreases there: a hill at ${p}, a valley at ${q}.` + (opts[k] === `${p} < x < ${q}` ? ' (That middle stretch is where f is decreasing.)' : ''));
+  }
+}
+let lastType = null;
+function qNew(){
+  qReset();
+  let t; do { t = pick(['diff', 'slope', 'match', 'crit']); } while (t === lastType);
+  lastType = t; qq = { type: t, counted: false };
+  $('qTitle').textContent = qTitles[t];
+  ({ diff: qDiff, slope: qSlope, match: qMatch, crit: qCrit })[t]();
+  $('qText').innerHTML = minus($('qText').innerHTML);
+}
+$('qCheck').onclick = () => {
+  const raw = $('q1').value;
+  if (raw.trim() === ''){ $('qErr').textContent = 'Type an answer first.'; return; }
+  let ok, why = qq.explain;
+  if (qq.type === 'crit'){
+    const v = raw.split(/[,;]|\band\b|\s+/).filter(Boolean).map(parseNum);
+    if (!v.length || v.some(isNaN)){ $('qErr').textContent = 'Type numbers separated by a comma, like −1, 3.'; return; }
+    const got = [...new Set(v)].sort((a, b) => a - b); ok = got.length === 2 && got[0] === qq.p && got[1] === qq.q;
+    if (!ok && got.length === 1 && (got[0] === qq.p || got[0] === qq.q)) why = 'There are two: a quadratic f′ crosses 0 twice here. ' + why;
+    else if (!ok && got.length === 2 && got[0] === -qq.q && got[1] === -qq.p) why = 'Signs flipped: (x − p) is 0 at x = p, not −p. ' + why;
+  } else {
+    const v = parseNum(raw); if (isNaN(v)){ $('qErr').textContent = 'Type a number (fractions like 1/2 are fine).'; return; }
+    ok = Math.abs(v - qq.ans) < 1e-6 * Math.max(1, Math.abs(qq.ans));
+    if (!ok && qq.type === 'slope' && qq.ans !== 0 && Math.abs(v - 1 / qq.ans) < 1e-6) why = 'Upside down: slope is rise over run. ' + why;
+    else if (!ok && qq.type === 'diff' && Math.abs(v - qq.f(parseNum($('qLab').textContent.match(/\((-?[\d.]+|−\d+)\)/)?.[1]?.replace('−', '-') || 0))) < 1e-6) why = 'That’s f(x), the height, not f′(x), the slope. ' + why;
+  }
+  $('qErr').textContent = ''; qScore(ok); qFeedback(ok, why);
+};
+$('q1').addEventListener('keydown', e => { if (e.key === 'Enter') $('qCheck').click(); });
+$('q1').addEventListener('input', () => $('qErr').textContent = '');
+$('qShow').onclick = () => {
+  qScore(false);
+  if (qq.correctIdx !== undefined){ [...$('qChoice').children].forEach((b, j) => { if (j === qq.correctIdx) b.classList.add('right'); }); qFeedback(false, qq.explainFn(qq.correctIdx)); return; }
+  $('q1').value = qq.type === 'crit' ? `${qq.p}, ${qq.q}` : String(r3(qq.ans));
+  $('qFb').className = 'feedback bad'; $('qFb').innerHTML = '<b>Answer filled in.</b> ' + minus(qq.explain);
+};
+$('qNew').onclick = qNew;
+
+/* =====================================================================
+   10. START
+   ===================================================================== */
+selectOnFocus(['mA', 'mH', 'rT', 'rD', 'gA', 'gB', 'uX', 'cQ', 'q1']);
+$('mPresets').children[0].click();
+rDraw(); gDraw();
+$('uPresets').children[1].click();
+$('sPresets').children[0].click();
+cDraw();
+qNew();
+</script>
+</body></html>
