@@ -1,0 +1,995 @@
+<style>
+/* ===================== Page-specific styles (3.B.5) ===================== */
+/* run (across) = blue, rise (up) = orange, the line = purple, the y-intercept b = green;
+   a second line: parallel = gold, perpendicular = pink */
+:root{ --in:#2F6FDB; --out:#E08A2E; --pt:#7F77DD; --pt-soft:#AFA9EC; --yes:#1D9E75; --no:#D8443A; --cb:#1D9E75; --par:#B86E00; --perp:#C2417D; --water:#3B8FD9; --warm:#E0663A; }
+@media (prefers-color-scheme:dark){ :root{ --in:#6EA2F5; --out:#F2B266; --pt:#AFA9EC; --pt-soft:#6F67C9; --yes:#5DCAA5; --no:#F07B72; --cb:#5DCAA5; --par:#FFB547; --perp:#EE7FB0; --water:#6FB2EE; --warm:#F08A62; } }
+.ki{color:var(--in);font-weight:700}.ko{color:var(--out);font-weight:700}.kp{color:var(--pt);font-weight:700}.kb{color:var(--cb);font-weight:700}.kpar{color:var(--par);font-weight:700}.kperp{color:var(--perp);font-weight:700}.kn{color:var(--no);font-weight:700}.ky{color:var(--yes);font-weight:700}
+svg{user-select:none;-webkit-user-select:none}
+.solo svg{width:100%;height:auto;display:block;background:var(--bg);border:1px solid var(--line);border-radius:10px;margin-top:10px}
+.split{display:grid;grid-template-columns:620px 1fr;gap:14px;margin-top:10px;align-items:start}
+.split svg{width:100%;height:auto;display:block;background:var(--bg);border:1px solid var(--line);border-radius:10px}
+.inputs .grp{display:flex;gap:8px;align-items:flex-end;padding-right:12px;border-right:1px dashed var(--line);margin-right:4px}
+.inputs .grp:last-of-type{border-right:none}
+.field.sm input{width:64px}.field.fi input{border-color:var(--in)}.field.fo input{border-color:var(--out)}.field.fp input{border-color:var(--pt)}.field.fb input{border-color:var(--cb)}
+.toggle button.on{background:var(--accent-bg);border-color:var(--accent);color:var(--accent)}
+.forms{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+.forms div{padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);font:600 17px var(--mono)}
+.forms div small{display:block;font:600 11px var(--sans);letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:2px}
+.vtab{border-collapse:collapse;font:15px var(--mono);width:100%}
+.vtab th,.vtab td{border-bottom:1px dashed var(--line);padding:5px 10px;text-align:right}
+.vtab th{font:600 12px var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.vtab td.d{color:var(--out);font-size:13px;text-align:left}
+.steps{margin:8px 0 0;padding:0;list-style:none}
+.steps li{padding:5px 12px;font:16px var(--mono);border-left:3px solid var(--line);margin:3px 0}
+.steps li small{font:13px var(--sans);color:var(--muted);margin-left:10px}
+.tri{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:10px}
+.tri button{display:flex;flex-direction:column;align-items:stretch;padding:6px;gap:4px;text-align:left}
+.tri button svg{width:100%;height:auto;display:block}
+.tri button b{font:600 14px var(--sans)}
+.tri button small{font:500 12.5px var(--mono);color:var(--muted)}
+.tri button.on{background:var(--accent-bg);border-color:var(--accent)}
+.verdict{display:inline-block;font:600 15px var(--sans);padding:6px 12px;border-radius:8px;margin:8px 8px 0 0}
+.verdict.ok{background:var(--ok-bg);color:var(--ok)}.verdict.bad{background:var(--bad-bg);color:var(--bad)}.verdict.info{background:var(--accent-bg);color:var(--accent)}
+.legend span span{display:inline}
+.traps{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:8px}
+.traps .t{border:1px solid var(--line);border-radius:10px;background:var(--bg);padding:10px}
+.traps .t h4{margin:0 0 4px;font:600 15px var(--sans)}
+.traps .t p{margin:6px 0 0;font-size:14.5px;line-height:1.5;color:var(--muted)}
+.traps svg{width:100%;height:auto;display:block}
+.qtext{font:17px/1.55 var(--serif);margin:4px 0 10px}
+.qvis{display:flex;justify-content:center;margin:6px 0}
+.qvis svg{width:460px;height:auto;background:var(--bg);border:1px solid var(--line);border-radius:10px}
+.choice{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 0}.choice button{min-width:130px}
+.choice button.right{border-color:var(--ok);background:var(--ok-bg);color:var(--ok)}.choice button.wrong{border-color:var(--bad);background:var(--bad-bg);color:var(--bad)}
+pre.code{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:12px 16px;overflow-x:auto;font:13.5px/1.6 var(--mono);margin:10px 0 16px}
+</style>
+
+<!-- ===================== Top bar ===================== -->
+<div class="topbar"><div class="topbar-in">
+  <span class="brand">Math<b>Mastery</b></span>
+  <span class="crumbs">Chapter 3 · Algebra › Basics</span>
+  <span class="pid">3.B.5</span>
+</div></div>
+
+<!-- ===================== Hero ===================== -->
+<header class="prose hero">
+  <div class="kicker">Chapter 3 · Algebra</div>
+  <h1>Lines: Slope and Linear Functions</h1>
+  <p class="dek">A straight line changes at a steady rate: every step to the right climbs (or drops) by the same amount. That one number, the slope, plus a starting height tells you everything about the line.</p>
+  <div class="tiers" aria-label="Tier">
+    <span class="tier on">Basics <small>you are here</small></span>
+    <span class="tier">Undergraduate</span>
+    <span class="tier">Masters</span>
+  </div>
+  <div class="goals">
+    <h3>On this page</h3>
+    <ul>
+      <li>Find the <b>slope</b> of a line as <b>rise over run</b>, and read it as a <b>rate of change</b>: positive, negative, zero or undefined.</li>
+      <li>Read and write a <b>linear function</b> in <b>slope-intercept form</b> <i>y</i> = <i>mx</i> + <i>b</i>, where <i>b</i> is the <b><i>y</i>-intercept</b>.</li>
+      <li>Use <b>point-slope form</b> and <b>standard form</b>, and convert between all three.</li>
+      <li>Recognise <b>parallel</b> lines (equal slopes) and <b>perpendicular</b> lines (slopes that multiply to −1).</li>
+    </ul>
+  </div>
+</header>
+
+<main>
+<!-- ===================== §1 ===================== -->
+<section class="prose">
+  <h2><span class="n">1</span>Steady change makes a straight line</h2>
+  <p>A taxi charges $3 to get in and $2 per mile. After 0 miles you owe $3, after 1 mile $5, after 2 miles $7: every extra mile adds the same $2. Plot those pairs and they fall on a straight line. That’s the signature of a <b>linear function</b>: the output changes by the same amount for every equal step of the input.</p>
+  <p>The amount it changes per step is the <b>slope</b>. On a graph, pick any two points on the line. The horizontal distance between them is the <b>run</b>, the vertical distance is the <b>rise</b>, and the slope is <b>rise ÷ run</b>. For the taxi: from 1 mile to 3 miles is a run of 2, and the fare goes from $5 to $9, a rise of 4: slope 4 ÷ 2 = 2 dollars per mile. The slope is a <b>rate of change</b>, and it comes with units: dollars per mile, litres per minute, metres per second.</p>
+  <p>The sign tells the direction. <b>Positive</b> slope: the line climbs as you move right. <b>Negative</b>: it falls. <b>Zero</b>: it’s flat (horizontal), because the rise is 0. A <b>vertical</b> line has a run of 0, and dividing by zero is impossible, so its slope is <b>undefined</b>. (It isn’t a function either: one input, endless outputs. See 3.B.4.)</p>
+</section>
+<section class="wide">
+  <div class="card" id="main">
+    <div class="card-h"><span class="tag">Explore</span><h3>Slope, equation and table, linked</h3>
+      <span class="sub">Drag the two points, or type them, or type <i>m</i> and <i>b</i> directly. The staircase shows rise over run; the table shows the same slope as “each +1 in <i>x</i> adds <i>m</i> to <i>y</i>”. The dashed line is the previous one, for comparison.</span></div>
+    <div class="row" id="mPresets"></div>
+    <div class="desc" id="mDesc"></div>
+    <div class="inputs">
+      <div class="grp"><label class="field fp sm"><span><i>x</i>₁</span><input id="mx1" type="text" inputmode="decimal" autocomplete="off"></label><label class="field fp sm"><span><i>y</i>₁</span><input id="my1" type="text" inputmode="decimal" autocomplete="off"></label><label class="field fp sm"><span><i>x</i>₂</span><input id="mx2" type="text" inputmode="decimal" autocomplete="off"></label><label class="field fp sm"><span><i>y</i>₂</span><input id="my2" type="text" inputmode="decimal" autocomplete="off"></label><div class="row" style="margin:0"><button id="mUseP">Use points</button></div></div>
+      <div class="grp"><label class="field fo sm"><span>slope <i>m</i></span><input id="mm" type="text" inputmode="decimal" autocomplete="off"></label><label class="field fb sm"><span><i>b</i></span><input id="mb" type="text" inputmode="decimal" autocomplete="off"></label><div class="row" style="margin:0"><button id="mUseM">Use m and b</button></div></div>
+    </div>
+    <div class="err" id="mErr"></div>
+    <div class="split">
+      <svg id="mSvg" viewBox="0 0 620 440" role="img" aria-label="A line through two draggable points with a rise-over-run staircase" style="touch-action:none"></svg>
+      <div><div id="mForms" class="forms"></div><table class="vtab" id="mTab" style="margin-top:10px"></table></div>
+    </div>
+    <div class="readout" id="mOut"></div>
+    <div class="legend">
+      <span><i class="sw mv" style="background:var(--in)"></i><span>run (across)</span></span>
+      <span><i class="sw mv" style="background:var(--out)"></i><span>rise (up or down)</span></span>
+      <span><i class="sw" style="background:var(--pt)"></i><span>the line and its two points</span></span>
+      <span><i class="sw" style="background:var(--cb)"></i><span><i>y</i>-intercept (0, <i>b</i>)</span></span>
+      <span><i class="sw mv" style="background:var(--pt-soft)"></i><span>the previous line (dashed)</span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §2 ===================== -->
+<section class="prose">
+  <h2><span class="n">2</span>Slope-intercept form: <i>y</i> = <i>mx</i> + <i>b</i></h2>
+  <p>Every non-vertical line can be written <i>y</i> = <i>mx</i> + <i>b</i>. The <b>slope</b> <i>m</i> is how much <i>y</i> changes per step of <i>x</i>. The number <b><i>b</i></b> is the value of <i>y</i> when <i>x</i> = 0: the height where the line crosses the <i>y</i>-axis, called the <b><i>y</i>-intercept</b>. In the taxi example, <i>y</i> = 2<i>x</i> + 3: $2 per mile, $3 to start. In a story, <i>m</i> is the rate and <i>b</i> is the starting amount.</p>
+  <p>To read <i>m</i> and <i>b</i> from a graph: find where the line crosses the <i>y</i>-axis (that’s <i>b</i>), then from that point walk 1 step right and see how far the line rose or fell (that’s <i>m</i>). If the slope is a fraction like 2/3, it’s easier to walk 3 right and count 2 up.</p>
+</section>
+
+<!-- ===================== §3 ===================== -->
+<section class="prose">
+  <h2><span class="n">3</span>Three ways to write a line</h2>
+  <p><b>Point-slope form</b> <i>y</i> − <i>y</i>₁ = <i>m</i>(<i>x</i> − <i>x</i>₁) is the fastest way to write a line when you know one point (<i>x</i>₁, <i>y</i>₁) and the slope. It says it directly: the rise from your point equals the slope times the run from your point. Through two points? Find the slope first, then use either point.</p>
+  <p><b>Standard form</b> <i>Ax</i> + <i>By</i> = <i>C</i>, with whole numbers, puts <i>x</i> and <i>y</i> on equal footing. It’s the natural form for “mix” problems (3 adult tickets and 2 child tickets cost $40: 3<i>x</i> + 2<i>y</i> = 40) and the only one of the three that can write a vertical line (<i>x</i> = 4 is 1<i>x</i> + 0<i>y</i> = 4). Its intercepts are easy: set <i>y</i> = 0 to get the <b><i>x</i>-intercept</b> <i>C</i>/<i>A</i>, and <i>x</i> = 0 to get the <i>y</i>-intercept <i>C</i>/<i>B</i>.</p>
+  <p>All three describe the same line; converting is just the equation-solving moves from 3.B.2.</p>
+</section>
+<section class="wide">
+  <div class="card" id="forms">
+    <div class="card-h"><span class="tag">Explore</span><h3>Convert between forms</h3>
+      <span class="sub">Choose the form you know, type its numbers, and see the other two worked out step by step. The graph marks what each form shows best.</span></div>
+    <div class="row toggle" id="fTabs"></div>
+    <div class="row" id="fPresets"></div>
+    <div class="desc" id="fDesc"></div>
+    <div class="inputs" id="fIns"></div>
+    <div class="err" id="fErr"></div>
+    <div class="split">
+      <svg id="fSvg" viewBox="0 0 620 440" role="img" aria-label="The line with its intercepts and a chosen point"></svg>
+      <div id="fSteps"></div>
+    </div>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--cb)"></i><span><i>y</i>-intercept: what slope-intercept form shows</span></span>
+      <span><i class="sw" style="background:var(--pt)"></i><span>(<i>x</i>₁, <i>y</i>₁): what point-slope form shows</span></span>
+      <span><i class="sw" style="background:var(--out)"></i><span><i>x</i>-intercept: easy from standard form</span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §4 ===================== -->
+<section class="prose">
+  <h2><span class="n">4</span>Parallel and perpendicular</h2>
+  <p>Two lines with the <b>same slope</b> rise at the same rate, so they never meet: they are <b>parallel</b>. (Unless they also have the same intercept, in which case they are the same line.)</p>
+  <p><b>Perpendicular</b> lines meet at a right angle. Turn a slope staircase a quarter turn: a run of 1 with a rise of <i>m</i> becomes a run of <i>m</i> with a fall of 1 (or a rise of 1 going left). So the new slope is −1/<i>m</i>: flip the fraction and change the sign. Equivalently, the two slopes <b>multiply to −1</b>. A slope of 2/3 is perpendicular to −3/2. The exception: horizontal and vertical lines are perpendicular, but the vertical one has no slope to multiply.</p>
+</section>
+<section class="wide">
+  <div class="card" id="perp">
+    <div class="card-h"><span class="tag">Explore</span><h3>Parallel and perpendicular through a point</h3>
+      <span class="sub">Set the line (<i>m</i>, <i>b</i>) and drag the point Q. The gold line is parallel through Q; the pink line is perpendicular through Q, with its staircase turned a quarter turn. The grid uses equal units across and up, so right angles look right.</span></div>
+    <div class="row" id="pPresets"></div>
+    <div class="desc" id="pDesc"></div>
+    <div class="inputs">
+      <label class="field fo sm"><span>slope <i>m</i></span><input id="pm" type="text" inputmode="decimal" autocomplete="off"></label>
+      <label class="field fb sm"><span><i>b</i></span><input id="pb" type="text" inputmode="decimal" autocomplete="off"></label>
+      <label class="field fp sm"><span>Q <i>x</i></span><input id="pqx" type="text" inputmode="decimal" autocomplete="off"></label>
+      <label class="field fp sm"><span>Q <i>y</i></span><input id="pqy" type="text" inputmode="decimal" autocomplete="off"></label>
+      <div class="row" style="margin:0"><button class="primary" id="pGo">Use these</button></div>
+    </div>
+    <div class="err" id="pErr"></div>
+    <div class="solo"><svg id="pSvg" viewBox="0 0 960 440" role="img" aria-label="A line with a parallel and a perpendicular line through a point" style="touch-action:none"></svg></div>
+    <div class="readout" id="pOut"></div>
+    <div class="legend">
+      <span><i class="sw mv" style="background:var(--pt)"></i><span>the line</span></span>
+      <span><i class="sw mv" style="background:var(--par)"></i><span>parallel through Q</span></span>
+      <span><i class="sw mv" style="background:var(--perp)"></i><span>perpendicular through Q</span></span>
+      <span><i class="sw mv" style="background:var(--in)"></i><span>run</span></span>
+      <span><i class="sw mv" style="background:var(--out)"></i><span>rise</span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §5 ===================== -->
+<section class="prose">
+  <h2><span class="n">5</span>Slope in the world</h2>
+  <p>Builders and road crews talk about slope all the time, in different clothes. A <b>road grade</b> of 6% means 6 m of climb per 100 m across: slope 0.06. A <b>roof pitch</b> of “6 in 12” means 6 inches up per 12 inches across: slope 1/2. A wheelchair ramp may rise at most 1 inch per 12 inches: slope 1/12. They are all rise over run.</p>
+</section>
+<section class="wide">
+  <div class="card" id="ramp">
+    <div class="card-h"><span class="tag">Explore</span><h3>Ramps, roads and roofs</h3>
+      <span class="sub">Every triangle is drawn to scale with the same run, so the steepest one is the tallest. Click one to see its slope four ways, or type your own rise and run.</span></div>
+    <div class="tri" id="rTri"></div>
+    <div class="inputs" style="margin-top:10px">
+      <label class="field fo sm"><span>Rise</span><input id="rR" type="text" inputmode="decimal" autocomplete="off"></label>
+      <label class="field fi sm"><span>Run</span><input id="rU" type="text" inputmode="decimal" autocomplete="off"></label>
+      <div class="row" style="margin:0"><button class="primary" id="rGo">Show my slope</button></div>
+    </div>
+    <div class="err" id="rErr"></div>
+    <div class="readout" id="rOut"></div>
+  </div>
+</section>
+<section class="prose">
+  <p>In a story, the slope is the rate and the intercept is the starting amount. Comparing two plans with different starting fees and rates means comparing two lines: the one with the lower start wins at first, the one with the lower rate wins in the long run, and they cost the same where the lines cross (a system of equations, 3.B.6).</p>
+</section>
+<section class="wide">
+  <div class="card" id="plans">
+    <div class="card-h"><span class="tag">Explore</span><h3>Two plans, two lines</h3>
+      <span class="sub">Each plan is a starting fee <i>b</i> plus a rate <i>m</i> per unit. The graph shows both lines and where they cross.</span></div>
+    <div class="row" id="cPresets"></div>
+    <div class="desc" id="cDesc"></div>
+    <div class="inputs">
+      <div class="grp"><label class="field fb sm"><span>A: fee <i>b</i></span><input id="cb1" type="text" inputmode="decimal" autocomplete="off"></label><label class="field fo sm"><span>A: rate <i>m</i></span><input id="cm1" type="text" inputmode="decimal" autocomplete="off"></label></div>
+      <div class="grp"><label class="field fb sm"><span>B: fee <i>b</i></span><input id="cb2" type="text" inputmode="decimal" autocomplete="off"></label><label class="field fo sm"><span>B: rate <i>m</i></span><input id="cm2" type="text" inputmode="decimal" autocomplete="off"></label></div>
+      <div class="row" style="margin:0"><button class="primary" id="cGo">Compare</button></div>
+    </div>
+    <div class="err" id="cErr"></div>
+    <div class="solo"><svg id="cSvg" viewBox="0 0 960 380" role="img" aria-label="Two pricing lines and their crossing point"></svg></div>
+    <div class="readout" id="cOut"></div>
+    <div class="legend">
+      <span><i class="sw mv" style="background:var(--pt)"></i><span>plan A</span></span>
+      <span><i class="sw mv" style="background:var(--par)"></i><span>plan B</span></span>
+      <span><i class="sw" style="background:var(--no)"></i><span>where they cost the same</span></span>
+    </div>
+  </div>
+</section>
+<section class="wide">
+  <div class="card" id="tank">
+    <div class="card-h"><span class="tag">Explore</span><h3>Filling and burning at a steady rate</h3>
+      <span class="sub">The container on the left and the point on the graph move together. A steady rate draws a straight line; a negative rate slopes down, and where it hits zero is the line’s <i>x</i>-intercept.</span></div>
+    <div class="row" id="tPresets"></div>
+    <div class="desc" id="tDesc"></div>
+    <div class="inputs">
+      <label class="field fb sm"><span>Start <i>b</i></span><input id="tb" type="text" inputmode="decimal" autocomplete="off"></label>
+      <label class="field fo sm"><span>Rate <i>m</i></span><input id="tm" type="text" inputmode="decimal" autocomplete="off"></label>
+      <div class="row" style="margin:0"><button id="tUse">Use these</button><button class="primary" id="tPlay">Play</button><button id="tReset">Reset</button></div>
+    </div>
+    <div class="err" id="tErr"></div>
+    <div class="solo"><svg id="tSvg" viewBox="0 0 960 380" role="img" aria-label="A container filling or a candle burning, with its graph"></svg></div>
+    <div class="readout" id="tOut"></div>
+  </div>
+</section>
+
+<!-- ===================== §6 ===================== -->
+<section class="prose">
+  <h2><span class="n">6</span>Traps and non-examples</h2>
+</section>
+<section class="wide">
+  <div class="card" id="traps">
+    <div class="card-h"><span class="tag">Compare</span><h3>Easy to get wrong</h3></div>
+    <div class="traps">
+      <div class="t"><h4 class="kn">✕ Run over rise</h4><svg id="tr1" viewBox="0 0 300 200"></svg><p>From (0, 1) to (4, 3): rise 2, run 4, slope 2/4 = 1/2. Writing 4/2 = 2 gives a much steeper line. Slope is <b>rise</b> (up) over <b>run</b> (across).</p></div>
+      <div class="t"><h4 class="kn">✕ Mixed-up subtraction order</h4><svg id="tr2" viewBox="0 0 300 200"></svg><p>(<i>y</i>₂ − <i>y</i>₁)/(<i>x</i>₂ − <i>x</i>₁) and (<i>y</i>₁ − <i>y</i>₂)/(<i>x</i>₁ − <i>x</i>₂) both work. Mixing them, (<i>y</i>₂ − <i>y</i>₁)/(<i>x</i>₁ − <i>x</i>₂), flips the sign: an uphill line comes out downhill.</p></div>
+      <div class="t"><h4 class="kn">✕ Not every straight-ish rule is linear</h4><svg id="tr3" viewBox="0 0 300 200"></svg><p>A tank that fills 1, 2, 4, 8 litres in successive minutes doesn’t change by equal amounts per step, so its graph curves. Equal steps in <i>x</i> must give equal changes in <i>y</i>.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §7 ===================== -->
+<section class="prose">
+  <h2><span class="n">7</span>Now, in symbols</h2>
+  <div class="math">\[ m = \frac{\text{rise}}{\text{run}} = \frac{\Delta y}{\Delta x} = \frac{y_2 - y_1}{x_2 - x_1} \quad (x_1 \ne x_2) \]<div class="cap">Δ (delta) means “change in”. The slope is the same for any two points on the line.</div></div>
+  <div class="math">\[ y = mx + b \qquad y - y_1 = m(x - x_1) \qquad Ax + By = C \]<div class="cap">Slope-intercept, point-slope and standard form. From standard form (<i>B</i> ≠ 0): <i>m</i> = −<i>A</i>/<i>B</i>, <i>b</i> = <i>C</i>/<i>B</i>.</div></div>
+  <div class="math">\[ f(x) = mx + b: \qquad f(x + 1) - f(x) = m \]<div class="cap">The defining property of a linear function: each step of 1 in the input adds <i>m</i> to the output.</div></div>
+  <div class="math">\[ \text{parallel: } m_1 = m_2, \qquad \text{perpendicular: } m_1 m_2 = -1 \;\iff\; m_2 = -\frac{1}{m_1} \]</div>
+  <p>Fitting a line to measured data, where points don’t line up perfectly, is a job for a computer. Here it recovers the taxi’s rate and starting fee from a few rides:</p>
+  <pre class="code"><code>import numpy as np                         # numerical arrays
+
+miles = np.array([1, 2.5, 4, 7])            # distances of four rides
+fares = np.array([5, 8, 11, 17])            # what each ride cost
+m, b = np.polyfit(miles, fares, 1)          # best straight line, degree 1: returns slope, intercept
+print(round(m, 2), round(b, 2))             # 2.0 3.0: $2 per mile, $3 to start
+print(m * 10 + b)                           # predicted fare for 10 miles: 23.0</code></pre>
+</section>
+
+<!-- ===================== §8 ===================== -->
+<section class="prose">
+  <h2><span class="n">8</span>Where this goes</h2>
+  <ul class="goes">
+    <li><b>Next (3.B.6):</b> two lines at once: where they cross is the solution of a system of equations.</li>
+    <li><b>Later in this book:</b> the derivative (Chapter 8) is the slope of a curve at a single point, found by zooming in until the curve looks like a line; and linear algebra (Chapter 7) is the study of “linear” in many dimensions.</li>
+    <li><b>In the world:</b> fares and bills with a fixed fee plus a rate, speeds and flow rates, unit conversions like °F = 1.8·°C + 32, road grades and roof pitches, and trend lines through data.</li>
+  </ul>
+</section>
+
+<!-- ===================== §9 ===================== -->
+<section class="prose">
+  <h2><span class="n">9</span>Words to know</h2>
+  <div class="vocab">
+    <div class="term"><b>Slope</b>How steep a line is: rise ÷ run, the change in <i>y</i> per unit change in <i>x</i>. Usually written <i>m</i>.</div>
+    <div class="term"><b>Rise / run</b>The vertical change and the horizontal change between two points.</div>
+    <div class="term"><b>Rate of change</b>A slope with units: dollars per mile, litres per minute.</div>
+    <div class="term"><b>Linear function</b>A function whose output changes by the same amount for every equal step of input; its graph is a straight line.</div>
+    <div class="term"><b><i>y</i>-intercept</b>Where the line crosses the <i>y</i>-axis; the value <i>b</i> = <i>y</i> when <i>x</i> = 0.</div>
+    <div class="term"><b><i>x</i>-intercept</b>Where the line crosses the <i>x</i>-axis; the input that gives output 0 (a zero).</div>
+    <div class="term"><b>Slope-intercept form</b><i>y</i> = <i>mx</i> + <i>b</i>.</div>
+    <div class="term"><b>Point-slope form</b><i>y</i> − <i>y</i>₁ = <i>m</i>(<i>x</i> − <i>x</i>₁): a line through (<i>x</i>₁, <i>y</i>₁) with slope <i>m</i>.</div>
+    <div class="term"><b>Standard form</b><i>Ax</i> + <i>By</i> = <i>C</i>, usually with whole numbers. Can write vertical lines.</div>
+    <div class="term"><b>Zero slope</b>A horizontal line, <i>y</i> = <i>b</i>: no rise.</div>
+    <div class="term"><b>Undefined slope</b>A vertical line, <i>x</i> = <i>c</i>: no run, so no slope.</div>
+    <div class="term"><b>Parallel lines</b>Lines with equal slopes that never meet.</div>
+    <div class="term"><b>Perpendicular lines</b>Lines meeting at a right angle; their slopes multiply to −1.</div>
+    <div class="term"><b>Grade / pitch</b>Slope as builders write it: a percent (road grade) or “rise in 12” (roof pitch).</div>
+  </div>
+</section>
+
+<!-- ===================== Quiz ===================== -->
+<section class="prose"><h2><span class="n">10</span>Check yourself</h2>
+  <p>Four kinds of questions: slope from two points, reading <i>m</i> and <i>b</i> from a graph, writing the equation of a line, and parallel or perpendicular.</p>
+</section>
+<section class="wide">
+  <div class="card" id="quiz">
+    <div class="card-h"><span class="tag">Quiz</span><h3 id="qTitle"></h3><span class="score" id="score">Score: 0 / 0</span></div>
+    <div class="qtext" id="qText"></div>
+    <div class="qvis" id="qVis"></div>
+    <div class="choice" id="qChoice"></div>
+    <div class="inputs" id="qIn">
+      <div id="qBoxes" style="display:flex;gap:10px;align-items:flex-end"></div>
+      <div class="row" style="margin:0"><button class="primary" id="qCheck">Check</button></div>
+    </div>
+    <div class="row" style="margin:10px 0 0"><button id="qShow">Show answer</button><button id="qNew">New question</button></div>
+    <div class="err" id="qErr"></div>
+    <div class="feedback" id="qFb" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ===================== Pager (filled in by the shared navigation) ===================== -->
+<nav class="wide">
+  <div class="pager"></div>
+  <div class="meta">3.B.5 · Prerequisites: 3.B.2 (solving linear equations), 3.B.4 (functions) · Leads to: 3.B.6 (systems), 8.B.2 (derivatives)</div>
+</nav>
+</main>
+
+<script>
+/* =====================================================================
+   1. HELPERS
+   ===================================================================== */
+const NS = 'http://www.w3.org/2000/svg';
+const $ = id => document.getElementById(id);
+function mk(tag, attrs, parent){                           // create an SVG element with attributes
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function txt(parent, x, y, s, cls, extra){                 // create an SVG text element
+  extra = Object.assign({}, extra || {});
+  if (extra['text-anchor']){ extra.style = (extra.style ? extra.style + ';' : '') + 'text-anchor:' + extra['text-anchor']; delete extra['text-anchor']; }
+  const t = mk('text', Object.assign({ x, y, class: cls || '' }, extra), parent);
+  t.textContent = s;
+  return t;
+}
+// round for display, use a true minus sign, never show −0
+function num(x, d){ if (d === undefined) d = 2; const r = Math.round(x * Math.pow(10, d)) / Math.pow(10, d); return r === 0 ? '0' : (r < 0 ? '−' : '') + String(Math.abs(r)); }
+const pn = x => x < 0 ? `(${num(x)})` : num(x);              // wrap negatives in brackets when substituting
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const ri = (a, b) => a + Math.floor(Math.random() * (b - a + 1));   // random whole number from a to b
+const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+function parseNum(s){                                     // integers, decimals, minus, simple fractions
+  s = String(s).trim().replace(/[−–]/g, '-').replace(/\s+/g, '');
+  if (/^-?\d+(\.\d+)?$|^-?\.\d+$/.test(s)) return parseFloat(s);
+  const m = s.match(/^(-?\d+)\/(\d+)$/);
+  if (m && +m[2] !== 0) return +m[1] / +m[2];
+  return NaN;
+}
+function selectOnFocus(ids){ ids.forEach(id => $(id).addEventListener('focus', e => e.target.select())); }
+function buttons(boxId, list, onPick){                    // a row of preset buttons; returns a function that marks one as on
+  list.forEach((p, i) => { const b = document.createElement('button'); b.className = 'preset'; b.textContent = p.n; b.onclick = () => onPick(i); $(boxId).appendChild(b); });
+  return i => [...$(boxId).children].forEach((b, j) => b.classList.toggle('on', j === i));
+}
+function svgPt(svg, ev){                                  // mouse position in the SVG's own coordinates
+  const p = svg.createSVGPoint(); p.x = ev.clientX; p.y = ev.clientY;
+  return p.matrixTransform(svg.getScreenCTM().inverse());
+}
+const svgCss = document.createElement('style');
+svgCss.textContent = `
+  .grid{stroke:var(--line);stroke-width:1}
+  .axis{stroke:var(--ink);stroke-width:1.4;opacity:.7}
+  .tl{fill:var(--muted);font:500 11.5px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:3px}
+  .lab{font:700 14px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:5px}
+  .labS{font:600 12.5px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+  .cap{fill:var(--muted);font:600 12px var(--sans);letter-spacing:.06em;paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+  .oval{fill:var(--paper);stroke:var(--line);stroke-width:1.5}
+`;
+document.head.appendChild(svgCss);
+let clipN = 0;                                            // unique clip-path ids
+
+/* ---------- axes: a coordinate grid inside an SVG, with separate x and y scales ---------- */
+function axes(svg, W, H, b, o){
+  o = o || {};
+  svg.innerHTML = '';
+  const L = o.padL ?? 44, R = o.padR ?? 16, T = o.padT ?? 16, B = o.padB ?? 30;
+  const sx = (W - L - R) / (b.x1 - b.x0), sy = (H - T - B) / (b.y1 - b.y0);   // pixels per unit
+  const X = x => L + (x - b.x0) * sx, Y = y => T + (b.y1 - y) * sy;
+  const step = (s, px) => (o.half ? [0.5, 1, 2, 5, 10, 20, 50, 100] : [1, 2, 5, 10, 20, 50, 100]).find(k => k * s >= px) || 200;   // a round step at least px pixels wide
+  const xg = o.xg || step(sx, 9), yg = o.yg || step(sy, 9);        // grid-line spacing
+  const xt = o.xt || step(sx, 34), yt = o.yt || step(sy, 26);      // tick-label spacing
+  const gGrid = mk('g', {}, svg), id = 'clp' + (++clipN);
+  const cp = mk('clipPath', { id }, svg); mk('rect', { x: L, y: T, width: W - L - R, height: H - T - B }, cp);
+  const cg = mk('g', { 'clip-path': `url(#${id})` }, svg);         // clipped layer for curves
+  const m = mk('g', {}, svg), top = mk('g', {}, svg);              // free layer, then labels on top
+  const near = (v, s) => Math.abs(v / s - Math.round(v / s)) < 1e-6;
+  for (let x = Math.ceil(b.x0 / xg) * xg; x <= b.x1 + 1e-9; x += xg) mk('line', { x1: X(x), y1: T, x2: X(x), y2: H - B, class: 'grid' }, gGrid);
+  for (let y = Math.ceil(b.y0 / yg) * yg; y <= b.y1 + 1e-9; y += yg) mk('line', { x1: L, y1: Y(y), x2: W - R, y2: Y(y), class: 'grid' }, gGrid);
+  const ay = (b.y0 <= 0 && b.y1 >= 0) ? Y(0) : H - B;              // where the x-axis is drawn
+  const ax = (b.x0 <= 0 && b.x1 >= 0) ? X(0) : L;                  // where the y-axis is drawn
+  mk('line', { x1: L, y1: ay, x2: W - R, y2: ay, class: 'axis' }, gGrid);
+  mk('line', { x1: ax, y1: T, x2: ax, y2: H - B, class: 'axis' }, gGrid);
+  const fx = o.fx || (v => num(v)), fy = o.fy || (v => num(v));
+  for (let x = Math.ceil(b.x0 / xt) * xt; x <= b.x1 + 1e-9; x += xt){
+    if (Math.abs(x) < 1e-9 && ax === X(0) && !o.zeroX) continue;
+    txt(top, X(x), ay + 16, fx(x), 'tl', { 'text-anchor': 'middle' });
+  }
+  for (let y = Math.ceil(b.y0 / yt) * yt; y <= b.y1 + 1e-9; y += yt){
+    if (Math.abs(y) < 1e-9 && ay === Y(0)) continue;
+    txt(top, ax - 6, Y(y) + 4, fy(y), 'tl', { 'text-anchor': 'end' });
+  }
+  if (o.xT) txt(top, W - R - 2, ay - 8, o.xT, 'cap', { 'text-anchor': 'end' });
+  if (o.yT) txt(top, ax + 8, T + 12, o.yT, 'cap');
+  return { svg, X, Y, sx, sy, cg, m, top, b, L, R, T, B, W, H, ay, ax,
+           inv: (px, py) => [b.x0 + (px - L) / sx, b.y1 - (py - T) / sy] };
+}
+function dPath(P, pts){ return pts.map((p, i) => (i ? 'L' : 'M') + P.X(p[0]).toFixed(1) + ' ' + P.Y(p[1]).toFixed(1)).join(''); }
+// sample y = f(x) from a to b, breaking the curve where f is undefined or jumps
+function sample(f, a, b, n, ok){
+  const out = []; let cur = [];
+  for (let i = 0; i <= n; i++){
+    const x = a + (b - a) * i / n, y = (ok && !ok(x)) ? NaN : f(x);
+    if (!isFinite(y)){ if (cur.length > 1) out.push(cur); cur = []; continue; }
+    if (cur.length && Math.abs(y - cur[cur.length - 1][1]) > 40){ if (cur.length > 1) out.push(cur); cur = []; }
+    cur.push([x, y]);
+  }
+  if (cur.length > 1) out.push(cur);
+  return out;
+}
+function dot(P, x, y, col, o){                              // a filled (or open) point
+  o = o || {};
+  return mk('circle', { cx: P.X(x), cy: P.Y(y), r: o.r || 6, style: o.open ? `fill:var(--bg);stroke:${col};stroke-width:2.6` : `fill:${col};stroke:var(--bg);stroke-width:1.5` }, o.layer || P.m);
+}
+function vline(P, x, col, o){ o = o || {}; return mk('line', { x1: P.X(x), y1: o.y0 !== undefined ? P.Y(o.y0) : P.T, x2: P.X(x), y2: o.y1 !== undefined ? P.Y(o.y1) : P.H - P.B, style: `stroke:${col};stroke-width:${o.w || 2.5};${o.dash ? 'stroke-dasharray:' + o.dash : ''}` }, o.layer || P.m); }
+function hline(P, y, col, o){ o = o || {}; return mk('line', { x1: o.x0 !== undefined ? P.X(o.x0) : P.L, y1: P.Y(y), x2: o.x1 !== undefined ? P.X(o.x1) : P.W - P.R, y2: P.Y(y), style: `stroke:${col};stroke-width:${o.w || 2.5};${o.dash ? 'stroke-dasharray:' + o.dash : ''}` }, o.layer || P.m); }
+function arrowHead(g, x1, y1, x2, y2, col, size){            // a small triangle at (x2, y2) pointing away from (x1, y1)
+  const a = Math.atan2(y2 - y1, x2 - x1), s = size || 9;
+  const p = [[x2, y2], [x2 - s * Math.cos(a - 0.4), y2 - s * Math.sin(a - 0.4)], [x2 - s * Math.cos(a + 0.4), y2 - s * Math.sin(a + 0.4)]];
+  mk('polygon', { points: p.map(q => q.join(',')).join(' '), style: `fill:${col}` }, g);
+}
+
+/* ---------- arrow diagram: inputs in a left oval, outputs in a right oval, one arrow per pair ---------- */
+// pairs: [[in, out], ...]; o.ins / o.outs give the order (defaults: sorted values); o.fmt formats a value;
+// o.hl = input to highlight (others fade); o.lit = [in, out] arrow drawn thick; o.dead = inputs shown crossed out
+function arrowDiagram(svg, W, H, pairs, o){
+  o = o || {};
+  svg.innerHTML = '';
+  const fmt = o.fmt || (v => typeof v === 'number' ? num(v) : v);
+  const key = v => String(v);
+  const uniq = arr => { const s = new Set(), r = []; arr.forEach(v => { if (!s.has(key(v))){ s.add(key(v)); r.push(v); } }); return r; };
+  const srt = arr => arr.every(v => typeof v === 'number') ? arr.slice().sort((a, b) => a - b) : arr;
+  const ins = o.ins || srt(uniq(pairs.map(p => p[0]))), outs = o.outs || srt(uniq(pairs.map(p => p[1])));
+  const top = o.top ?? 34, bot = H - (o.bottom ?? 14);
+  const lx = W * 0.25, rx = W * 0.75, ow = Math.min(W * 0.17, 90);
+  mk('ellipse', { cx: lx, cy: (top + bot) / 2, rx: ow, ry: (bot - top) / 2, class: 'oval' }, svg);
+  mk('ellipse', { cx: rx, cy: (top + bot) / 2, rx: ow, ry: (bot - top) / 2, class: 'oval' }, svg);
+  txt(svg, lx, 18, o.inLab || 'INPUTS x', 'cap', { 'text-anchor': 'middle', style: 'fill:var(--in)' });
+  txt(svg, rx, 18, o.outLab || 'OUTPUTS y', 'cap', { 'text-anchor': 'middle', style: 'fill:var(--out)' });
+  const ypos = (i, n) => n === 1 ? (top + bot) / 2 : top + 26 + (bot - top - 52) * i / (n - 1);
+  const iy = {}, oy = {};
+  ins.forEach((v, i) => iy[key(v)] = ypos(i, ins.length));
+  outs.forEach((v, i) => oy[key(v)] = ypos(i, outs.length));
+  const cnt = {}; pairs.forEach(p => cnt[key(p[0])] = (cnt[key(p[0])] || 0) + 1);   // how many outputs each input has
+  const dx = Math.min(ow * 0.45, 34), fs = ins.length > 9 || outs.length > 9 ? 'labS' : 'lab';
+  const ga = mk('g', {}, svg), gd = mk('g', {}, svg);
+  pairs.forEach(p => {                                     // arrows
+    const k = key(p[0]), bad = cnt[k] > 1, faded = o.hl !== undefined && o.hl !== null && key(o.hl) !== k;
+    const lit = o.lit && key(o.lit[0]) === k && key(o.lit[1]) === key(p[1]);
+    const col = bad ? 'var(--no)' : 'var(--pt)';
+    const x1 = lx + dx + 8, y1 = iy[k], x2 = rx - dx - 9, y2 = oy[key(p[1])];
+    mk('line', { x1, y1, x2, y2, style: `stroke:${col};stroke-width:${lit ? 4.5 : 2.4};opacity:${faded ? .18 : 1}` }, ga);
+    if (!faded) arrowHead(ga, x1, y1, x2, y2, col, lit ? 12 : 10);
+  });
+  ins.forEach(v => {                                       // input dots and labels
+    const k = key(v), dead = o.dead && o.dead.map(key).includes(k), bad = cnt[k] > 1;
+    const faded = o.hl !== undefined && o.hl !== null && key(o.hl) !== k;
+    const col = dead ? 'var(--muted)' : bad ? 'var(--no)' : 'var(--in)';
+    mk('circle', { cx: lx + dx, cy: iy[k], r: o.hl !== undefined && key(o.hl) === k ? 8 : 6, style: `fill:${col};opacity:${faded ? .35 : 1}` }, gd);
+    const t = txt(gd, lx + dx - 12, iy[k] + 5, fmt(v), fs, { 'text-anchor': 'end', style: `fill:${col};opacity:${faded ? .45 : 1}${dead ? ';text-decoration:line-through' : ''}` });
+  });
+  outs.forEach(v => {                                      // output dots and labels
+    const k = key(v);
+    mk('circle', { cx: rx - dx, cy: oy[k], r: 6, style: 'fill:var(--out)' }, gd);
+    txt(gd, rx - dx + 12, oy[k] + 5, fmt(v), fs, { style: 'fill:var(--out)' });
+  });
+  return { ins, outs };
+}
+// group pairs by input: Map from input to its list of distinct outputs
+function byInput(pairs){
+  const m = new Map();
+  pairs.forEach(([x, y]) => { const k = String(x); if (!m.has(k)) m.set(k, { x, ys: [] }); const e = m.get(k); if (!e.ys.some(v => String(v) === String(y))) e.ys.push(y); });
+  return m;
+}
+const setStr = arr => '{' + arr.map(v => num(v)).join(', ') + '}';
+
+
+/* ---------- extra helpers for this page ---------- */
+const gcd = (a, b) => { a = Math.abs(a); b = Math.abs(b); while (b){ [a, b] = [b, a % b]; } return a; };
+// show a number as a fraction when it is one with a small denominator (2/3, −5/4), else as a decimal
+function fr(x){
+  if (!isFinite(x)) return 'undefined';
+  if (Math.abs(x - Math.round(x)) < 1e-9) return num(Math.round(x));
+  for (let d = 2; d <= 12; d++){ const n = x * d; if (Math.abs(n - Math.round(n)) < 1e-9) return (x < 0 ? '−' : '') + Math.abs(Math.round(n)) + '/' + d; }
+  return num(x);
+}
+const pf = x => x < 0 ? `(${fr(x)})` : fr(x);
+// "2x + 3", "−x", "1/2x − 4", "3" — y = mx + b written tidily
+function mxb(m, b){
+  let s = Math.abs(m) < 1e-12 ? '' : (Math.abs(m - 1) < 1e-12 ? '' : Math.abs(m + 1) < 1e-12 ? '−' : fr(m) + (fr(m).includes('/') ? ' ' : '')) + 'x';
+  if (!s) return fr(b);
+  if (Math.abs(b) > 1e-12) s += (b < 0 ? ' − ' : ' + ') + fr(Math.abs(b));
+  return s;
+}
+// standard form with whole numbers: returns [A, B, C] with A ≥ 0, gcd 1, from a line through two points
+function stdForm(x1, y1, x2, y2){
+  let A = y2 - y1, B = x1 - x2, C = A * x1 + B * y1;
+  // clear decimals/fractions by scaling up to 12×
+  for (let k = 1; k <= 144; k++){ if ([A, B, C].every(v => Math.abs(v * k - Math.round(v * k)) < 1e-9)){ A = Math.round(A * k); B = Math.round(B * k); C = Math.round(C * k); break; } }
+  const g = gcd(gcd(A, B), C) || 1; A /= g; B /= g; C /= g;
+  if (A < 0 || (A === 0 && B < 0)){ A = -A; B = -B; C = -C; }
+  return [A, B, C];
+}
+function stdStr(A, B, C){
+  const t = (c, v, first) => c === 0 ? '' : (first ? (c < 0 ? '−' : '') : (c < 0 ? ' − ' : ' + ')) + (Math.abs(c) === 1 ? '' : Math.abs(c)) + v;
+  const s = t(A, 'x', true) + t(B, 'y', !A);
+  return `${s || '0'} = ${num(C)}`;
+}
+function parseSlope(s){ const t = String(s).trim().toLowerCase(); if (/^(undefined|undef|none|no slope|vertical|∞|inf)$/.test(t)) return Infinity; return parseNum(s); }
+const PRESET = (n, d) => ({ n, d });
+
+/* =====================================================================
+   2. MAIN: slope, equation and table, linked
+   ===================================================================== */
+const mPresets = [
+  { n: 'Taxi: y = 2x + 3', p: [[-1, 1], [1, 5]], d: '$3 to start, $2 per mile. Rise 4 over run 2: slope 2. Drag the points along the line: any two points give the same slope.' },
+  { n: 'Gentle climb', p: [[-4, -1], [2, 2]], d: 'Rise 3 over run 6: slope 1/2. Each step right climbs half a unit.' },
+  { n: 'Downhill', p: [[-3, 4], [3, 0]], d: 'Moving right, the line falls 4 over a run of 6: slope −2/3.' },
+  { n: 'Flat', p: [[-4, 3], [4, 3]], d: 'No rise at all: slope 0. The line is y = 3, a horizontal line.' },
+  { n: 'Vertical', p: [[2, -3], [2, 4]], d: 'No run: rise ÷ 0 is undefined. The line is x = 2, and it is not a function.' },
+  { n: 'Steep', p: [[0, -4], [2, 2]], d: 'Rise 6 over run 2: slope 3. Bigger slope, steeper line.' },
+];
+const MB = { x0: -8, x1: 8, y0: -6, y1: 6 };
+const MS = { p: [[-1, 1], [1, 5]], ghost: null };
+let MP = null;
+function mLine(){ const [[x1, y1], [x2, y2]] = MS.p; if (Math.abs(x2 - x1) < 1e-12) return { vert: true, c: x1 }; const m = (y2 - y1) / (x2 - x1); return { m, b: y1 - m * x1 }; }
+function lineSeg(L){ return L.vert ? [[L.c, -40], [L.c, 40]] : [[-40, L.m * -40 + L.b], [40, L.m * 40 + L.b]]; }
+function mDraw(){
+  const svg = $('mSvg'), P = MP = axes(svg, 620, 440, MB, { padL: 34, padB: 24, padT: 12, padR: 12, xt: 2, yt: 2, xg: 1, yg: 1 });
+  const [[x1, y1], [x2, y2]] = MS.p, L = mLine();
+  // auto-fit the y range so the taxi points show
+  if (MS.ghost) mk('path', { d: dPath(P, lineSeg(MS.ghost)), style: 'stroke:var(--pt-soft);stroke-width:2.5;stroke-dasharray:7 6;fill:none' }, P.cg);
+  mk('path', { d: dPath(P, lineSeg(L)), style: 'stroke:var(--pt);stroke-width:3.5;fill:none' }, P.cg);
+  // unit steps along the line: run 1, rise m
+  if (!L.vert && Math.abs(x2 - x1) <= 16){
+    const a = Math.min(x1, x2), n = Math.floor(Math.abs(x2 - x1) + 1e-9);
+    for (let k = 0; k < n; k++){ const x = a + k, y = L.m * x + L.b; mk('path', { d: dPath(P, [[x, y], [x + 1, y], [x + 1, y + L.m]]), style: 'fill:none;stroke:var(--out);stroke-width:1.2;opacity:.45' }, P.cg); }
+  }
+  // the big staircase: run from P1 across, then rise up to P2
+  if (!(x1 === x2 && y1 === y2)){
+    if (x1 !== x2){ mk('line', { x1: P.X(x1), y1: P.Y(y1), x2: P.X(x2), y2: P.Y(y1), style: 'stroke:var(--in);stroke-width:3.5' }, P.m); txt(P.top, (P.X(x1) + P.X(x2)) / 2, P.Y(y1) + (y2 >= y1 ? 18 : -9), `run ${fr(x2 - x1)}`, 'labS', { 'text-anchor': 'middle', style: 'fill:var(--in)' }); }
+    if (y1 !== y2){ mk('line', { x1: P.X(x2), y1: P.Y(y1), x2: P.X(x2), y2: P.Y(y2), style: 'stroke:var(--out);stroke-width:3.5' }, P.m); txt(P.top, P.X(x2) + (x2 >= x1 ? 8 : -8), (P.Y(y1) + P.Y(y2)) / 2 + 4, `rise ${fr(y2 - y1)}`, 'labS', { 'text-anchor': x2 >= x1 ? 'start' : 'end', style: 'fill:var(--out)' }); }
+  }
+  if (!L.vert && L.b >= MB.y0 && L.b <= MB.y1) dot(P, 0, L.b, 'var(--cb)', { r: 6 });
+  [[x1, y1, 'P₁'], [x2, y2, 'P₂']].forEach(([x, y, n]) => { dot(P, x, y, 'var(--pt)', { r: 8 }); txt(P.top, P.X(x) - 10, P.Y(y) - 10, `${n} (${num(x)}, ${num(y)})`, 'labS', { 'text-anchor': 'end', style: 'fill:var(--pt)' }); });
+  // equation forms
+  let forms;
+  if (x1 === x2 && y1 === y2) forms = '<div>Pick two different points.</div>';
+  else if (L.vert) forms = `<div><small>Equation</small>x = ${num(L.c)}</div><div><small>Slope</small>undefined (run = 0)</div><div><small>Standard form</small>${stdStr(...stdForm(x1, y1, x2, y2))}</div>`;
+  else forms = `<div><small>Slope-intercept</small>y = ${mxb(L.m, L.b).replace(/^([^x]*)x/, (s, c) => `<span class="ko">${c}</span>x`).replace(/([+−] )([\d/.]+)$/, '$1<span class="kb">$2</span>')}</div>` +
+    `<div><small>Point-slope (through P₁)</small>y − ${pf(y1)} = <span class="ko">${fr(L.m)}</span>(x − ${pf(x1)})</div><div><small>Standard</small>${stdStr(...stdForm(x1, y1, x2, y2))}</div>`;
+  $('mForms').innerHTML = forms;
+  // table: each +1 in x adds m
+  if (!L.vert){
+    const xs = [-2, -1, 0, 1, 2, 3];
+    $('mTab').innerHTML = '<tr><th>x</th><th>y</th><th></th></tr>' + xs.map((x, i) => `<tr><td>${x < 0 ? '−' + -x : x}</td><td>${fr(L.m * x + L.b)}</td><td class="d">${i < xs.length - 1 ? '↓ ' + (L.m < 0 ? '−' : '+') + fr(Math.abs(L.m)) : ''}</td></tr>`).join('');
+  } else $('mTab').innerHTML = `<tr><td style="text-align:left">Every point has x = ${num(L.c)}; y can be anything. No table of y-values from x.</td></tr>`;
+  // readout
+  let s = '';
+  if (x1 === x2 && y1 === y2) s = 'The two points are the same: a single point doesn’t decide a line.';
+  else if (L.vert) s = `Rise ${fr(y2 - y1)}, run 0. Rise ÷ 0 is <span class="kn">undefined</span>, so a vertical line has no slope. The input x = ${num(L.c)} has endlessly many outputs, so this is not a function.`;
+  else {
+    s = `<b>Slope</b> = rise ÷ run = <span class="ko">${fr(y2 - y1)}</span> ÷ <span class="ki">${fr(x2 - x1)}</span> = <b>${fr(L.m)}</b>. `;
+    s += L.m > 0 ? `Positive: the line climbs ${fr(L.m)} for every 1 step right.` : L.m < 0 ? `Negative: the line falls ${fr(-L.m)} for every 1 step right.` : 'Zero: the line is flat.';
+    s += ` <b>y-intercept</b> b = <span class="kb">${fr(L.b)}</span>: the line crosses the y-axis at (0, ${fr(L.b)}).`;
+    if (Math.abs(L.m) > 1e-12) s += ` <b>x-intercept</b>: ${fr(-L.b / L.m)}.`;
+  }
+  $('mOut').innerHTML = s;
+  [[0, 0], [0, 1], [1, 0], [1, 1]].forEach(([i, j]) => $(['mx', 'my'][j] + (i + 1)).value = num(MS.p[i][j]).replace('−', '-'));
+  if (!L.vert){ $('mm').value = fr(L.m).replace('−', '-'); $('mb').value = fr(L.b).replace('−', '-'); } else { $('mm').value = 'undefined'; $('mb').value = ''; }
+}
+function mSet(p){ MS.ghost = mLine(); MS.p = p; mDraw(); }
+const mMark = buttons('mPresets', mPresets, i => { mSet(mPresets[i].p.map(q => q.slice())); mMark(i); $('mDesc').textContent = mPresets[i].d; $('mErr').textContent = ''; });
+$('mUseP').onclick = () => { const v = readList(['mx1', 'my1', 'mx2', 'my2'], 'mErr'); if (!v) return; if (v.some(t => Math.abs(t) > 20)){ $('mErr').textContent = 'Keep coordinates between −20 and 20.'; return; } if (v[0] === v[2] && v[1] === v[3]){ $('mErr').textContent = 'Use two different points.'; return; } mSet([[v[0], v[1]], [v[2], v[3]]]); mMark(-1); $('mDesc').textContent = 'Your own points.'; };
+$('mUseM').onclick = () => {
+  const m = parseNum($('mm').value), b = parseNum($('mb').value);
+  if (isNaN(m) || isNaN(b)){ $('mErr').textContent = 'Type numbers for m and b (fractions like 2/3 are fine). For a vertical line, use two points.'; return; }
+  const d = (() => { const t = String($('mm').value).match(/\/\s*(\d+)/); return t ? +t[1] : 1; })();
+  $('mErr').textContent = ''; mSet([[0, b], [d, b + m * d]]); mMark(-1); $('mDesc').textContent = 'Your own m and b: P₁ is the y-intercept, P₂ is one run later.';
+};
+function readList(ids, err){ const v = ids.map(id => parseNum($(id).value)); if (ids.some(id => $(id).value.trim() === '') || v.some(isNaN)){ $(err).textContent = 'Fill in every box with a number.'; return null; } $(err).textContent = ''; return v; }
+(function(){                                                   // drag either point (snaps to whole numbers)
+  const svg = $('mSvg'); let drag = -1, start = null;
+  svg.addEventListener('pointerdown', ev => { const q = svgPt(svg, ev); drag = MS.p.findIndex(([x, y]) => Math.hypot(MP.X(x) - q.x, MP.Y(y) - q.y) < 16); if (drag >= 0){ start = mLine(); svg.setPointerCapture(ev.pointerId); } });
+  svg.addEventListener('pointermove', ev => {
+    if (drag < 0) return;
+    const q = svgPt(svg, ev), [x, y] = MP.inv(q.x, q.y), nx = clamp(Math.round(x), MB.x0, MB.x1), ny = clamp(Math.round(y), MB.y0, MB.y1);
+    if (nx === MS.p[drag][0] && ny === MS.p[drag][1]) return;
+    MS.p[drag] = [nx, ny]; MS.ghost = start; mMark(-1); $('mDesc').textContent = 'Drag the points: the slope is the same whichever two points of the line you use.'; mDraw();
+  });
+  svg.addEventListener('pointerup', () => drag = -1);
+})();
+
+/* =====================================================================
+   3. CONVERT BETWEEN FORMS
+   ===================================================================== */
+const fTabs = ['y = mx + b', 'y − y₁ = m(x − x₁)', 'Ax + By = C'];
+const fPresets = [
+  { n: 'Taxi', f: 0, v: [2, 3], d: 'y = 2x + 3.' },
+  { n: 'Through (2, 1), slope −3/4', f: 1, v: [-0.75, 2, 1], d: 'Point-slope: y − 1 = −3/4 (x − 2).' },
+  { n: 'Tickets: 3x + 2y = 24', f: 2, v: [3, 2, 24], d: '3 adult tickets (x) and 2 child tickets (y) for $24 in total: every (x, y) on this line spends exactly $24.' },
+  { n: 'Vertical: x = 4', f: 2, v: [1, 0, 4], d: 'Only standard form can write it: 1x + 0y = 4. No slope, no y-intercept.' },
+];
+const FS = { f: 0, v: [2, 3] };
+(function(){ fTabs.forEach((t, i) => { const b = document.createElement('button'); b.textContent = t; b.onclick = () => { FS.f = i; FS.v = [[2, 3], [2, 1, 5], [2, -1, -3]][i]; fMark(-1); $('fDesc').textContent = ''; fBuild(); fDraw(); }; $('fTabs').appendChild(b); }); })();
+function fBuild(){
+  const labs = [[['m', 'fo'], ['b', 'fb']], [['m', 'fo'], ['x₁', 'fp'], ['y₁', 'fp']], [['A', ''], ['B', ''], ['C', '']]][FS.f];
+  $('fIns').innerHTML = labs.map(([l, c], k) => `<label class="field sm ${c}"><span>${l}</span><input id="fv${k}" type="text" inputmode="decimal" autocomplete="off"></label>`).join('') + '<div class="row" style="margin:0"><button class="primary" id="fGo">Convert</button></div>';
+  labs.forEach((_, k) => { $('fv' + k).value = fr(FS.v[k]).replace('−', '-'); $('fv' + k).addEventListener('focus', e => e.target.select()); });
+  $('fGo').onclick = () => {
+    const v = readList(labs.map((_, k) => 'fv' + k), 'fErr'); if (!v) return;
+    if (FS.f === 2 && v[0] === 0 && v[1] === 0){ $('fErr').textContent = 'A and B can’t both be 0: that isn’t a line.'; return; }
+    if (v.some(t => Math.abs(t) > 100)){ $('fErr').textContent = 'Keep the numbers between −100 and 100.'; return; }
+    FS.v = v; fMark(-1); $('fDesc').textContent = 'Your own line.'; fDraw();
+  };
+  [...$('fTabs').children].forEach((b, j) => b.classList.toggle('on', j === FS.f));
+}
+function fDraw(){
+  const v = FS.v; let m, b, vert = false, c, x1, y1, A, B, C;
+  if (FS.f === 0){ [m, b] = v; x1 = 1; y1 = m + b; }
+  else if (FS.f === 1){ [m, x1, y1] = v; b = y1 - m * x1; }
+  else { [A, B, C] = v; if (B === 0){ vert = true; c = C / A; } else { m = -A / B; b = C / B; } }
+  if (!vert && FS.f !== 1){ x1 = Math.abs(m) < 1e-12 ? 1 : (Math.abs(b) <= 6 ? 2 : Math.round(-b / m)); y1 = m * x1 + b; }
+  const std = vert ? [1, 0, c] : stdForm(0, b, 1, m + b);
+  const steps = [];
+  if (FS.f === 0){
+    steps.push(['Slope-intercept (given)', `y = ${mxb(m, b)}`]);
+    steps.push(['Point-slope: pick a point, e.g. x = ' + fr(x1), `y − ${pf(y1)} = ${fr(m)}(x − ${pf(x1)})`, `when x = ${fr(x1)}, y = ${fr(m)}·${pf(x1)} + ${pf(b)} = ${fr(y1)}`]);
+    steps.push(['Standard: move the x-term left', `${fr(-m)}x + y = ${fr(b)}`, 'subtract mx from both sides'], ['…and clear fractions', stdStr(...std), 'multiply through, make A positive']);
+  } else if (FS.f === 1){
+    steps.push(['Point-slope (given)', `y − ${pf(y1)} = ${fr(m)}(x − ${pf(x1)})`]);
+    steps.push(['Expand the bracket', `y − ${pf(y1)} = ${mxb(m, -m * x1)}`, `${fr(m)}·x and ${fr(m)}·${pf(-x1)}`]);
+    steps.push(['Slope-intercept: add ' + fr(y1) + ' to both sides', `y = ${mxb(m, b)}`]);
+    steps.push(['Standard form', stdStr(...std), 'x-term left, whole numbers']);
+  } else {
+    steps.push(['Standard (given)', stdStr(A, B, C)]);
+    if (vert) steps.push(['B = 0, so y has vanished', `x = ${fr(c)}`, 'a vertical line: no slope-intercept or point-slope form']);
+    else {
+      steps.push([`Subtract ${fr(A)}x from both sides`, `${B === 1 ? '' : B === -1 ? '−' : fr(B)}y = ${mxb(-A, C)}`], [`Divide by ${fr(B)}`, `y = ${mxb(m, b)}`, `m = −A/B = ${fr(m)}, b = C/B = ${fr(b)}`]);
+      steps.push(['Point-slope, through (' + fr(x1) + ', ' + fr(y1) + ')', `y − ${pf(y1)} = ${fr(m)}(x − ${pf(x1)})`]);
+    }
+  }
+  const xi = vert ? c : (Math.abs(m) > 1e-12 ? -b / m : null);
+  $('fSteps').innerHTML = '<ul class="steps">' + steps.map(([t, e, n]) => `<li><small style="margin:0;display:block">${t}</small>${e}${n ? `<small>${n}</small>` : ''}</li>`).join('') + '</ul>' +
+    `<div class="readout" style="margin-top:10px">${vert ? `Vertical line x = ${fr(c)}: x-intercept ${fr(c)}, no y-intercept, undefined slope.` : `Slope ${fr(m)}, y-intercept <span class="kb">${fr(b)}</span>` + (xi !== null ? `, x-intercept <span class="ko">${fr(xi)}</span> (set y = 0 in standard form: ${fr(std[0])}x = ${fr(std[2])}).` : ', no x-intercept (a flat line that isn’t the x-axis never meets it).')}</div>`;
+  // graph
+  const P = axes($('fSvg'), 620, 440, MB, { padL: 34, padB: 24, padT: 12, padR: 12, xt: 2, yt: 2, xg: 1, yg: 1 });
+  const L = vert ? { vert: true, c } : { m, b };
+  mk('path', { d: dPath(P, lineSeg(L)), style: 'stroke:var(--pt-soft);stroke-width:3.5;fill:none' }, P.cg);
+  if (!vert && b >= MB.y0 && b <= MB.y1){ dot(P, 0, b, 'var(--cb)', { r: 7 }); txt(P.top, P.X(0) + 10, P.Y(b) - 8, `(0, ${fr(b)})`, 'labS', { style: 'fill:var(--cb)' }); }
+  if (xi !== null && xi >= MB.x0 && xi <= MB.x1){ dot(P, xi, 0, 'var(--out)', { r: 7 }); txt(P.top, P.X(xi) + 8, P.Y(0) + 18, `(${fr(xi)}, 0)`, 'labS', { style: 'fill:var(--out)' }); }
+  if (!vert && x1 >= MB.x0 && x1 <= MB.x1 && y1 >= MB.y0 && y1 <= MB.y1){ dot(P, x1, y1, 'var(--pt)', { r: 7 }); txt(P.top, P.X(x1) + 10, P.Y(y1) - 8, `(${fr(x1)}, ${fr(y1)})`, 'labS', { style: 'fill:var(--pt)' }); }
+}
+const fMark = buttons('fPresets', fPresets, i => { FS.f = fPresets[i].f; FS.v = fPresets[i].v.slice(); fMark(i); $('fDesc').textContent = fPresets[i].d; $('fErr').textContent = ''; fBuild(); fDraw(); });
+
+/* =====================================================================
+   4. PARALLEL AND PERPENDICULAR
+   ===================================================================== */
+const pPresets = [
+  { n: 'Slope 2/3', m: 2 / 3, b: -1, q: [-3, 3], d: 'Perpendicular slope: flip 2/3 to 3/2 and change the sign: −3/2. Check: 2/3 × (−3/2) = −1.' },
+  { n: 'Slope 2', m: 2, b: 1, q: [4, -1], d: 'Slope 2 = 2/1, so the perpendicular slope is −1/2.' },
+  { n: 'Slope −1', m: -1, b: 2, q: [3, 3], d: 'Slope −1: perpendicular slope +1. The two lines form an X.' },
+  { n: 'Flat line', m: 0, b: -2, q: [2, 2], d: 'A horizontal line: the perpendicular through Q is vertical, with undefined slope.' },
+  { n: 'Q on the line', m: 0.5, b: 1, q: [2, 2], d: 'Q is already on the line, so the “parallel” through Q is the same line.' },
+];
+const PS = { m: 2 / 3, b: -1, q: [-3, 3] };
+const PB = { x0: -10, x1: 10, y0: -4.5, y1: 4.5 };
+let PP = null;
+function pDraw(){
+  const P = PP = axes($('pSvg'), 960, 440, PB, { padL: 34, padB: 24, padT: 12, padR: 12, xt: 2, yt: 2, xg: 1, yg: 1 });
+  const { m, b, q } = PS, [qx, qy] = q, bp = qy - m * qx;
+  const pm = m === 0 ? Infinity : -1 / m;
+  mk('path', { d: dPath(P, lineSeg({ m, b })), style: 'stroke:var(--pt);stroke-width:3.5;fill:none' }, P.cg);
+  const same = Math.abs(bp - b) < 1e-9;
+  mk('path', { d: dPath(P, lineSeg({ m, b: bp })), style: `stroke:var(--par);stroke-width:3;fill:none${same ? ';stroke-dasharray:8 6' : ''}` }, P.cg);
+  const perp = isFinite(pm) ? { m: pm, b: qy - pm * qx } : { vert: true, c: qx };
+  mk('path', { d: dPath(P, lineSeg(perp)), style: 'stroke:var(--perp);stroke-width:3;fill:none' }, P.cg);
+  // staircases: on the line (run 1, rise m) from its intercept; on the perpendicular from Q (run −m, rise 1)
+  const st = (x, y, run, rise) => { mk('line', { x1: P.X(x), y1: P.Y(y), x2: P.X(x + run), y2: P.Y(y), style: 'stroke:var(--in);stroke-width:3' }, P.m); mk('line', { x1: P.X(x + run), y1: P.Y(y), x2: P.X(x + run), y2: P.Y(y + rise), style: 'stroke:var(--out);stroke-width:3' }, P.m); };
+  const den = (() => { for (let d = 1; d <= 12; d++) if (Math.abs(m * d - Math.round(m * d)) < 1e-9) return d; return 1; })();
+  st(0, b, den, m * den);
+  if (m !== 0) st(qx, qy, m * den, -den);
+  // right-angle marker where the perpendicular meets the line
+  const fx = isFinite(pm) ? (perp.b - b) / (m - pm) : qx, fy = m * fx + b;
+  const u = [1, m].map(t => t / Math.hypot(1, m)), w = [-u[1], u[0]], s = 0.45;
+  mk('path', { d: dPath(P, [[fx + u[0] * s, fy + u[1] * s], [fx + u[0] * s + w[0] * s, fy + u[1] * s + w[1] * s], [fx + w[0] * s, fy + w[1] * s]]), style: 'fill:none;stroke:var(--ink);stroke-width:1.5' }, P.m);
+  dot(P, qx, qy, 'var(--perp)', { r: 8 }); txt(P.top, P.X(qx) + 11, P.Y(qy) - 10, `Q (${fr(qx)}, ${fr(qy)})`, 'lab', { style: 'fill:var(--perp)' });
+  let s2 = `<b>Line:</b> y = ${mxb(m, b)}, slope <span class="kp">${fr(m)}</span>.<br>`;
+  s2 += `<b>Parallel through Q:</b> same slope ${fr(m)}; b = ${fr(qy)} − ${pf(m)}·${pf(qx)} = ${fr(bp)}, so <span class="kpar">y = ${mxb(m, bp)}</span>.` + (same ? ' Q lies on the line, so this is the line itself.' : '') + '<br>';
+  s2 += isFinite(pm) ? `<b>Perpendicular through Q:</b> flip and change sign: slope <span class="kperp">${fr(pm)}</span>. Check: ${pf(m)} × ${pf(pm)} = ${fr(m * pm)}. b = ${fr(qy)} − ${pf(pm)}·${pf(qx)} = ${fr(perp.b)}, so <span class="kperp">y = ${mxb(pm, perp.b)}</span>. Its staircase (from Q) is the line’s staircase turned a quarter turn: run ${fr(m * den)}, rise ${fr(-den)}.`
+    : `<b>Perpendicular through Q:</b> the line is flat, so the perpendicular is vertical: <span class="kperp">x = ${fr(qx)}</span>, undefined slope. (The “multiply to −1” rule doesn’t apply: a vertical line has no slope.)`;
+  $('pOut').innerHTML = s2;
+  $('pm').value = fr(m).replace('−', '-'); $('pb').value = fr(b).replace('−', '-'); $('pqx').value = num(qx).replace('−', '-'); $('pqy').value = num(qy).replace('−', '-');
+}
+const pMark = buttons('pPresets', pPresets, i => { Object.assign(PS, { m: pPresets[i].m, b: pPresets[i].b, q: pPresets[i].q.slice() }); pMark(i); $('pDesc').textContent = pPresets[i].d; $('pErr').textContent = ''; pDraw(); });
+$('pGo').onclick = () => { const v = readList(['pm', 'pb', 'pqx', 'pqy'], 'pErr'); if (!v) return; if (Math.abs(v[0]) > 10 || Math.abs(v[2]) > 10 || Math.abs(v[3]) > 4.5){ $('pErr').textContent = 'Keep the slope between −10 and 10, and Q on the picture (x from −10 to 10, y from −4.5 to 4.5).'; return; } Object.assign(PS, { m: v[0], b: v[1], q: [v[2], v[3]] }); pMark(-1); $('pDesc').textContent = 'Your own line and point.'; pDraw(); };
+(function(){ const svg = $('pSvg'); let drag = false;
+  const set = ev => { const q = svgPt(svg, ev), [x, y] = PP.inv(q.x, q.y); PS.q = [clamp(Math.round(x), PB.x0, PB.x1), clamp(Math.round(y), -4, 4)]; pMark(-1); $('pDesc').textContent = 'Drag Q anywhere.'; pDraw(); };
+  svg.addEventListener('pointerdown', ev => { drag = true; svg.setPointerCapture(ev.pointerId); set(ev); });
+  svg.addEventListener('pointermove', ev => { if (drag) set(ev); });
+  svg.addEventListener('pointerup', () => drag = false); })();
+
+/* =====================================================================
+   5. RAMPS, ROADS AND ROOFS
+   ===================================================================== */
+const RAMPS = [
+  { n: 'Wheelchair ramp', r: 1, u: 12, note: 'the US maximum: 1 inch up per 12 across' },
+  { n: 'Steep road sign', r: 10, u: 100, note: 'a “10% grade” warning sign' },
+  { n: 'Roof, 6 in 12', r: 6, u: 12, note: 'a common roof pitch' },
+  { n: 'Stairs', r: 7, u: 11, note: '7-inch steps, 11 inches deep' },
+  { n: 'Your slope', r: 3, u: 4, note: 'type a rise and run below' },
+];
+const RS = { sel: 2 };
+function rDraw(){
+  $('rTri').innerHTML = '';
+  RAMPS.forEach((R, i) => {
+    const b = document.createElement('button'); b.className = i === RS.sel ? 'on' : '';
+    const s = R.r / R.u, W = 160, H = 100, h = Math.min(H - 10, (W - 20) * s), sv = `<svg viewBox="0 0 ${W} ${H}"><polygon points="10,${H - 5} ${W - 10},${H - 5} ${W - 10},${H - 5 - h}" style="fill:var(--pt);fill-opacity:.25;stroke:var(--pt);stroke-width:2"/><line x1="10" y1="${H - 5}" x2="${W - 10}" y2="${H - 5}" style="stroke:var(--in);stroke-width:3"/><line x1="${W - 10}" y1="${H - 5}" x2="${W - 10}" y2="${H - 5 - h}" style="stroke:var(--out);stroke-width:3"/></svg>`;
+    b.innerHTML = `${sv}<b>${R.n}</b><small>${num(R.r)} / ${num(R.u)} = ${num(s, 3)}</small>`;
+    b.onclick = () => { RS.sel = i; rDraw(); };
+    $('rTri').appendChild(b);
+  });
+  const R = RAMPS[RS.sel], s = R.r / R.u, ang = Math.atan(s) * 180 / Math.PI;
+  const order = RAMPS.map((x, i) => [x.r / x.u, x.n]).sort((a, b) => a[0] - b[0]).map(x => x[1]);
+  $('rOut').innerHTML = `<b>${R.n}</b> (${R.note}): rise <span class="ko">${num(R.r)}</span> over run <span class="ki">${num(R.u)}</span>.<br>` +
+    `As a fraction ${fr(s) === num(s) ? num(R.r) + '/' + num(R.u) : fr(s)}, as a decimal ${num(s, 3)}, as a percent (grade) <b>${num(100 * s, 1)}%</b>, as an angle about <b>${num(ang, 1)}°</b>, and as a roof pitch ${num(12 * s, 1)} in 12.<br>` +
+    `From gentlest to steepest: ${order.join(' < ')}. Percent and angle are not the same scale: a 100% grade is a 45° slope, not a vertical wall.`;
+  $('rR').value = num(RAMPS[4].r); $('rU').value = num(RAMPS[4].u);
+}
+$('rGo').onclick = () => { const v = readList(['rR', 'rU'], 'rErr'); if (!v) return; if (v[1] <= 0 || v[0] < 0){ $('rErr').textContent = 'Use a positive run and a rise of 0 or more.'; return; } if (v[0] / v[1] > 5){ $('rErr').textContent = 'Keep the slope at most 5 so it fits.'; return; } RAMPS[4].r = v[0]; RAMPS[4].u = v[1]; RS.sel = 4; rDraw(); };
+['rR', 'rU'].forEach(id => $(id).addEventListener('focus', e => e.target.select()));
+
+/* =====================================================================
+   6. TWO PLANS, TWO LINES
+   ===================================================================== */
+const cPresets = [
+  { n: 'Taxi vs ride-share', p: [[3, 2], [6, 1.5]], X: 20, ux: 'miles', d: 'Taxi: $3 + $2 per mile. Ride-share: $6 + $1.50 per mile.' },
+  { n: 'Phone: pay-as-you-go vs unlimited', p: [[10, 5], [40, 0]], X: 10, ux: 'GB of data', d: 'Pay-as-you-go: $10 + $5 per GB. Unlimited: $40 flat, slope 0.' },
+  { n: 'Same rate', p: [[5, 2], [8, 2]], X: 20, ux: 'miles', d: 'Equal rates: parallel lines that never cross. B is always $3 more.' },
+];
+const CS = { p: [[3, 2], [6, 1.5]], X: 20, ux: 'miles' };
+function cDraw(){
+  const [[b1, m1], [b2, m2]] = CS.p, X = CS.X, top = Math.max(b1 + m1 * X, b2 + m2 * X, b1, b2) * 1.1 + 2;
+  const P = axes($('cSvg'), 960, 380, { x0: 0, x1: X, y0: 0, y1: top }, { xT: CS.ux, yT: 'cost ($)', fy: v => '$' + v, zeroX: true });
+  [[b1, m1, 'var(--pt)', 'A'], [b2, m2, 'var(--par)', 'B']].forEach(([b, m, c, n]) => { mk('path', { d: dPath(P, [[0, b], [X, b + m * X]]), style: `stroke:${c};stroke-width:3.5;fill:none` }, P.cg); dot(P, 0, b, c, { r: 6 }); txt(P.top, P.X(X) - 6, P.Y(b + m * X) - 8, n, 'lab', { 'text-anchor': 'end', style: `fill:${c}` }); });
+  let s = `Plan A: y = ${mxb(m1, b1)} (start $${num(b1)}, $${num(m1)} per unit). Plan B: y = ${mxb(m2, b2)}.<br>`;
+  if (Math.abs(m1 - m2) < 1e-12){ s += Math.abs(b1 - b2) < 1e-12 ? 'The plans are identical: the same line.' : `Same rate, so the lines are <b>parallel</b>: they never cross, and plan ${b1 < b2 ? 'A' : 'B'} is always $${num(Math.abs(b1 - b2))} cheaper.`; }
+  else {
+    const x = (b2 - b1) / (m1 - m2), y = b1 + m1 * x;
+    if (x > 0 && x <= X){ dot(P, x, y, 'var(--no)', { r: 8 }); vline(P, x, 'var(--no)', { y0: 0, y1: y, dash: '5 5', w: 1.5 }); txt(P.top, P.X(x) + 10, P.Y(y) + 20, `${num(x)} ${CS.ux}, $${num(y)}`, 'labS', { style: 'fill:var(--no)' }); }
+    const cheapFirst = b1 < b2 ? 'A' : 'B', cheapLater = m1 < m2 ? 'A' : 'B';
+    s += x > 0 ? `They cost the same at <b>${num(x)} ${CS.ux}</b> ($${num(y)}): solve ${mxb(m1, b1)} = ${mxb(m2, b2)}. Below that, plan ${cheapFirst} (lower start) is cheaper; above it, plan ${cheapLater} (lower rate) is cheaper.` : `They would cross at x = ${num(x)}, which isn’t a real amount, so plan ${cheapLater} is cheaper everywhere here.`;
+  }
+  $('cOut').innerHTML = s;
+  ['cb1', 'cm1', 'cb2', 'cm2'].forEach((id, k) => $(id).value = num([b1, m1, b2, m2][k]));
+}
+const cMark = buttons('cPresets', cPresets, i => { CS.p = cPresets[i].p.map(q => q.slice()); CS.X = cPresets[i].X; CS.ux = cPresets[i].ux; cMark(i); $('cDesc').textContent = cPresets[i].d; $('cErr').textContent = ''; cDraw(); });
+$('cGo').onclick = () => { const v = readList(['cb1', 'cm1', 'cb2', 'cm2'], 'cErr'); if (!v) return; if (v.some(t => t < 0 || t > 200)){ $('cErr').textContent = 'Use fees and rates from 0 to 200.'; return; } CS.p = [[v[0], v[1]], [v[2], v[3]]]; cMark(-1); $('cDesc').textContent = 'Your own plans.'; cDraw(); };
+
+/* =====================================================================
+   7. FILLING AND BURNING
+   ===================================================================== */
+const tPresets = [
+  { n: 'Filling a tank', b: 10, m: 4, T: 12, kind: 'tank', ux: 'minutes', uy: 'litres', d: 'Starts with 10 L and fills at 4 L per minute: y = 4x + 10.' },
+  { n: 'Burning candle', b: 20, m: -1.5, T: 16, kind: 'candle', ux: 'hours', uy: 'cm tall', d: 'A 20 cm candle burns down 1.5 cm per hour: y = −1.5x + 20. It’s gone when y = 0.' },
+  { n: 'Draining a pool', b: 45, m: -3, T: 18, kind: 'tank', ux: 'minutes', uy: 'cm deep', d: 'Water 45 cm deep drains at 3 cm per minute.' },
+];
+const TS = { b: 10, m: 4, T: 12, kind: 'tank', ux: 'minutes', uy: 'litres', t: 0, anim: null };
+function tDraw(){
+  const svg = $('tSvg'); svg.innerHTML = '';
+  const { b, m, T } = TS, end = m < 0 ? Math.min(T, -b / m) : T, top = Math.max(b, b + m * T) * 1.12 + 1;
+  const t = Math.min(TS.t, end), y = Math.max(0, b + m * t);
+  // container on the left
+  const cx = 40, cw = 110, cy0 = 40, ch = 300, sy = v => cy0 + ch - ch * v / top;
+  if (TS.kind === 'tank'){
+    mk('rect', { x: cx, y: cy0, width: cw, height: ch, rx: 6, style: 'fill:none;stroke:var(--ink);stroke-width:2' }, svg);
+    mk('rect', { x: cx + 2, y: sy(y), width: cw - 4, height: cy0 + ch - sy(y) - 2, style: 'fill:var(--water);opacity:.55' }, svg);
+  } else {
+    mk('rect', { x: cx + 35, y: sy(y), width: 40, height: cy0 + ch - sy(y), rx: 3, style: 'fill:var(--pt-soft);stroke:var(--pt);stroke-width:2' }, svg);
+    if (y > 0) mk('ellipse', { cx: cx + 55, cy: sy(y) - 12, rx: 7, ry: 13, style: 'fill:var(--warm)' }, svg);
+    mk('line', { x1: cx, y1: cy0 + ch, x2: cx + cw, y2: cy0 + ch, style: 'stroke:var(--ink);stroke-width:2' }, svg);
+  }
+  txt(svg, cx + cw / 2, cy0 + ch + 22, `${num(y, 1)} ${TS.uy}`, 'lab', { 'text-anchor': 'middle', style: 'fill:var(--pt)' });
+  // graph on the right
+  const gs = document.createElementNS(NS, 'svg'); gs.setAttribute('x', 190); gs.setAttribute('width', 770); gs.setAttribute('height', 380); gs.setAttribute('viewBox', '0 0 770 380'); svg.appendChild(gs);
+  const P = axes(gs, 770, 380, { x0: 0, x1: T, y0: 0, y1: top }, { xT: TS.ux, yT: TS.uy, zeroX: true });
+  // axes() clears its svg, so redraw the container afterwards is not needed (separate svg)
+  mk('path', { d: dPath(P, [[0, b], [T, b + m * T]]), style: 'stroke:var(--pt-soft);stroke-width:2.5;stroke-dasharray:6 6;fill:none' }, P.cg);
+  mk('path', { d: dPath(P, [[0, b], [t, b + m * t]]), style: 'stroke:var(--pt);stroke-width:4;fill:none' }, P.cg);
+  dot(P, 0, b, 'var(--cb)', { r: 6 }); txt(P.top, P.X(0) + 10, P.Y(b) - 8, `start b = ${num(b)}`, 'labS', { style: 'fill:var(--cb)' });
+  if (m < 0 && -b / m <= T){ dot(P, -b / m, 0, 'var(--no)', { r: 7 }); txt(P.top, P.X(-b / m), P.Y(0) - 12, `empty at ${num(-b / m, 2)}`, 'labS', { 'text-anchor': 'middle', style: 'fill:var(--no)' }); }
+  dot(P, t, y, 'var(--pt)', { r: 7 });
+  // a one-step staircase showing the rate
+  const x0 = Math.min(1, T / 6), y0 = b + m * x0;
+  mk('line', { x1: P.X(x0), y1: P.Y(y0), x2: P.X(x0 + 1), y2: P.Y(y0), style: 'stroke:var(--in);stroke-width:3' }, P.m);
+  mk('line', { x1: P.X(x0 + 1), y1: P.Y(y0), x2: P.X(x0 + 1), y2: P.Y(y0 + m), style: 'stroke:var(--out);stroke-width:3' }, P.m);
+  txt(P.top, P.X(x0 + 1) + 6, (P.Y(y0) + P.Y(y0 + m)) / 2 + 4, `${m > 0 ? '+' : '−'}${num(Math.abs(m))} per ${TS.ux.replace(/s$/, '')}`, 'labS', { style: 'fill:var(--out)' });
+  $('tOut').innerHTML = `y = ${mxb(m, b)}. <b>Slope</b> ${num(m)} ${TS.uy.split(' ')[0]} per ${TS.ux.replace(/s$/, '')}: the rate. <b>Intercept</b> ${num(b)}: the amount at the start. ` +
+    (m < 0 ? `<b>x-intercept</b> ${num(-b / m, 2)} ${TS.ux}: solve 0 = ${mxb(m, b)}, the moment it runs out. After that the formula would go negative, but the real amount stays 0: the domain stops there.` : `After ${num(t, 1)} ${TS.ux}: ${num(b)} + ${num(m)}·${num(t, 1)} = ${num(y, 1)} ${TS.uy}.`);
+}
+function tStop(){ if (TS.anim){ cancelAnimationFrame(TS.anim); TS.anim = null; } $('tPlay').textContent = 'Play'; }
+function tPlay(){
+  if (TS.anim){ tStop(); return; }
+  const end = TS.m < 0 ? Math.min(TS.T, -TS.b / TS.m) : TS.T; if (TS.t >= end - 1e-9) TS.t = 0;
+  $('tPlay').textContent = 'Pause'; let last = performance.now();
+  const step = now => { TS.t = Math.min(end, TS.t + (now - last) / 1000 * TS.T / 5); last = now; tDraw(); if (TS.t < end) TS.anim = requestAnimationFrame(step); else tStop(); };
+  TS.anim = requestAnimationFrame(step);
+}
+const tMark = buttons('tPresets', tPresets, i => { tStop(); Object.assign(TS, tPresets[i], { t: 0 }); tMark(i); $('tDesc').textContent = tPresets[i].d; $('tErr').textContent = ''; $('tb').value = num(TS.b); $('tm').value = num(TS.m); tDraw(); tPlay(); });
+$('tUse').onclick = () => { const v = readList(['tb', 'tm'], 'tErr'); if (!v) return; if (v[0] <= 0 || v[0] > 500 || Math.abs(v[1]) > 100 || v[1] === 0){ $('tErr').textContent = 'Use a start between 0 and 500 and a nonzero rate between −100 and 100.'; return; } tStop(); TS.b = v[0]; TS.m = v[1]; TS.t = 0; tMark(-1); $('tDesc').textContent = 'Your own start and rate.'; tDraw(); tPlay(); };
+$('tPlay').onclick = tPlay;
+$('tReset').onclick = () => { tStop(); TS.t = 0; tDraw(); };
+
+/* =====================================================================
+   8. TRAPS
+   ===================================================================== */
+(function(){
+  const box = { x0: -1, x1: 5, y0: -1, y1: 5 }, o = { padL: 22, padB: 18, padT: 8, padR: 8, xt: 1, yt: 1, xg: 1, yg: 1 };
+  let P = axes($('tr1'), 300, 200, box, o);
+  mk('path', { d: dPath(P, [[-1, 0.5], [5, 3.5]]), style: 'stroke:var(--yes);stroke-width:3;fill:none' }, P.cg);
+  mk('path', { d: dPath(P, [[-1, -1], [5, 11]]), style: 'stroke:var(--no);stroke-width:3;fill:none;stroke-dasharray:6 5' }, P.cg);
+  dot(P, 0, 1, 'var(--pt)', { r: 5 }); dot(P, 4, 3, 'var(--pt)', { r: 5 });
+  txt(P.top, P.X(4.6), P.Y(3.3) + 18, '1/2 ✓', 'labS', { 'text-anchor': 'end', style: 'fill:var(--yes)' }); txt(P.top, P.X(2.3), P.Y(4.6), '2 ✕', 'labS', { style: 'fill:var(--no)' });
+  P = axes($('tr2'), 300, 200, box, o);
+  mk('path', { d: dPath(P, [[-1, 0], [5, 4.5]]), style: 'stroke:var(--yes);stroke-width:3;fill:none' }, P.cg);
+  mk('path', { d: dPath(P, [[-1, 4.25], [5, -0.25]]), style: 'stroke:var(--no);stroke-width:3;fill:none;stroke-dasharray:6 5' }, P.cg);
+  dot(P, 1, 1.5, 'var(--pt)', { r: 5 }); dot(P, 3, 3, 'var(--pt)', { r: 5 });
+  txt(P.top, P.X(4.8), P.Y(4.2), '+3/4 ✓', 'labS', { 'text-anchor': 'end', style: 'fill:var(--yes)' }); txt(P.top, P.X(4.8), P.Y(0.4) - 6, '−3/4 ✕', 'labS', { 'text-anchor': 'end', style: 'fill:var(--no)' });
+  P = axes($('tr3'), 300, 200, { x0: 0, x1: 4, y0: 0, y1: 9 }, { padL: 22, padB: 18, padT: 8, padR: 8, xt: 1, yt: 2, xg: 1, yg: 1, zeroX: true });
+  mk('path', { d: dPath(P, sample(x => Math.pow(2, x), 0, 3.2, 60)[0]), style: 'stroke:var(--no);stroke-width:3;fill:none' }, P.cg);
+  [0, 1, 2, 3].forEach(x => dot(P, x, Math.pow(2, x), 'var(--no)', { r: 5 }));
+  mk('path', { d: dPath(P, [[0, 1], [3, 8]]), style: 'stroke:var(--muted);stroke-width:1.5;fill:none;stroke-dasharray:4 4' }, P.cg);
+})();
+
+/* =====================================================================
+   9. QUIZ
+   ===================================================================== */
+const Q = { right: 0, total: 0 };
+let qq = null;
+const qTitles = { slope: 'Slope from two points', read: 'Read m and b from the graph', write: 'Write the equation', perp: 'Parallel or perpendicular' };
+function qReset(){ ['qVis', 'qChoice', 'qBoxes'].forEach(id => $(id).innerHTML = ''); $('qFb').className = 'feedback'; $('qFb').innerHTML = ''; $('qErr').textContent = ''; $('qIn').style.display = ''; }
+function qScore(ok){ if (qq.counted) return; qq.counted = true; Q.total++; if (ok) Q.right++; $('score').textContent = `Score: ${Q.right} / ${Q.total}`; }
+function qFeedback(ok, html){ $('qFb').className = 'feedback ' + (ok ? 'ok' : 'bad'); $('qFb').innerHTML = (ok ? '<b>Right.</b> ' : '<b>Not quite.</b> ') + html; }
+function qBoxes(labels){ $('qBoxes').innerHTML = labels.map((l, k) => `<label class="field sm"><span>${l}</span><input id="qx${k}" type="text" autocomplete="off"></label>`).join(''); labels.forEach((_, k) => { const i = $('qx' + k); i.addEventListener('focus', e => e.target.select()); i.addEventListener('input', () => $('qErr').textContent = ''); i.addEventListener('keydown', e => { if (e.key === 'Enter') $('qCheck').click(); }); }); }
+function qChoices(list, correctIdx, explain){ $('qIn').style.display = 'none'; qq.correctIdx = correctIdx; qq.explainFn = explain; list.forEach((c, k) => { const b = document.createElement('button'); b.innerHTML = c; b.onclick = () => { const ok = k === correctIdx; qScore(ok); [...$('qChoice').children].forEach((x, j) => { x.classList.remove('right', 'wrong'); if (j === k) x.classList.add(ok ? 'right' : 'wrong'); }); qFeedback(ok, explain(k)); }; $('qChoice').appendChild(b); }); }
+const close = (a, b) => (!isFinite(a) && !isFinite(b)) || Math.abs(a - b) < 1e-6;
+const niceSlope = () => pick([1, 2, 3, -1, -2, -3, 1 / 2, -1 / 2, 2 / 3, -2 / 3, 3 / 2, -3 / 2, 1 / 3, -1 / 3, 3 / 4, -3 / 4]);
+function qGraph(lines, pts){
+  const s = document.createElementNS(NS, 'svg'); s.setAttribute('viewBox', '0 0 460 400'); $('qVis').appendChild(s);
+  const P = axes(s, 460, 400, { x0: -7, x1: 7, y0: -6, y1: 6 }, { padL: 30, padB: 22, padT: 10, padR: 10, xt: 1, yt: 1, xg: 1, yg: 1 });
+  lines.forEach(L => mk('path', { d: dPath(P, lineSeg(L)), style: 'stroke:var(--pt);stroke-width:3;fill:none' }, P.cg));
+  (pts || []).forEach(([x, y]) => dot(P, x, y, 'var(--pt)', { r: 5 }));
+  return P;
+}
+function qSlope(){
+  let x1, y1, x2, y2; do { x1 = ri(-6, 6); y1 = ri(-6, 6); x2 = ri(-6, 6); y2 = ri(-6, 6); } while ((x1 === x2 && Math.random() > 0.12) || (x1 === x2 && y1 === y2) || y1 === y2 && Math.random() < 0.7);
+  const m = x1 === x2 ? Infinity : (y2 - y1) / (x2 - x1);
+  Object.assign(qq, { x1, y1, x2, y2, ans: m });
+  $('qText').innerHTML = `Find the slope of the line through (${num(x1)}, ${num(y1)}) and (${num(x2)}, ${num(y2)}). Fractions are fine; type “undefined” for a vertical line.`;
+  qBoxes(['slope m =']);
+  qq.explain = x1 === x2 ? `Run = ${num(x2)} − ${pn(x1)} = 0, so rise ÷ run divides by zero: the slope is <b>undefined</b> (a vertical line, x = ${num(x1)}).` : `m = (y₂ − y₁)/(x₂ − x₁) = (${num(y2)} − ${pn(y1)}) / (${num(x2)} − ${pn(x1)}) = ${num(y2 - y1)} / ${pn(x2 - x1)} = <b>${fr(m)}</b>.`;
+}
+function qSlopeCheck(v){
+  const ok = close(v, qq.ans); let why = qq.explain;
+  if (!ok){
+    const { x1, y1, x2, y2 } = qq;
+    if (isFinite(qq.ans) && qq.ans !== 0 && close(v, 1 / qq.ans)) why = 'Upside down: that’s run over rise. Slope is rise (change in y) over run (change in x). ' + why;
+    else if (isFinite(qq.ans) && close(v, -qq.ans)) why = 'Sign error: subtract in the same order on top and bottom. ' + why;
+    else if (!isFinite(qq.ans)) why = 'A run of 0 doesn’t give slope 0: dividing by zero is impossible. ' + why;
+    else if (qq.ans === 0 && !isFinite(v)) why = 'The rise is 0, not the run: a horizontal line has slope 0. ' + why;
+  }
+  return [ok, why];
+}
+function qRead(){
+  let m, b; do { m = niceSlope(); b = ri(-4, 4); } while (Math.abs(b) > 5);
+  if (Math.random() < 0.12) m = 0;
+  Object.assign(qq, { m, b, ans: [m, b] });
+  const den = (() => { for (let d = 1; d <= 4; d++) if (Math.abs(m * d - Math.round(m * d)) < 1e-9) return d; return 1; })();
+  qGraph([{ m, b }], [[0, b], [den, b + m * den]]);
+  $('qText').innerHTML = 'Write the line in the form <i>y</i> = <i>mx</i> + <i>b</i>: type <i>m</i> and <i>b</i>. (Two points on whole-number grid crossings are marked.)';
+  qBoxes(['m =', 'b =']);
+  qq.explain = `It crosses the y-axis at (0, ${fr(b)}), so b = ${fr(b)}. From there, a run of ${den} gives a rise of ${fr(m * den)}, so m = ${den > 1 ? num(m * den) + '/' + den + (fr(m) === num(m * den) + '/' + den ? '' : ' = ' + fr(m)) : fr(m)}: y = ${mxb(m, b)}.`;
+}
+function qReadCheck(v){
+  const ok = close(v[0], qq.m) && close(v[1], qq.b); let why = qq.explain;
+  if (!ok){
+    if (close(v[0], qq.b) && close(v[1], qq.m)) why = 'Swapped: m is the slope, b is the y-intercept. ' + why;
+    else if (close(v[1], qq.b) && qq.m && close(v[0], -qq.m)) why = 'Right intercept, wrong sign on the slope: the line ' + (qq.m > 0 ? 'climbs' : 'falls') + ' as you move right. ' + why;
+    else if (close(v[1], qq.b) && qq.m && close(v[0], 1 / qq.m)) why = 'Right intercept, but the slope is upside down: rise over run. ' + why;
+    else if (close(v[0], qq.m)) why = 'Right slope; check where the line crosses the y-axis (x = 0). ' + why;
+  }
+  return [ok, why];
+}
+function qWrite(){
+  let m = niceSlope(), x1 = ri(-4, 4), y1 = ri(-4, 4), b = y1 - m * x1;
+  while (Math.abs(b) > 9 || Math.abs(b * 2 - Math.round(b * 2)) > 1e-9 && Math.abs(b * 3 - Math.round(b * 3)) > 1e-9){ m = niceSlope(); x1 = ri(-4, 4); y1 = ri(-4, 4); b = y1 - m * x1; }
+  const two = Math.random() < 0.5;
+  Object.assign(qq, { m, b, x1, y1, ans: [m, b] });
+  if (two){
+    const den = (() => { for (let d = 1; d <= 4; d++) if (Math.abs(m * d - Math.round(m * d)) < 1e-9) return d; return 1; })(), k = pick([1, 2, -1]), x2 = x1 + den * k, y2 = y1 + m * den * k;
+    $('qText').innerHTML = `Find the line through (${num(x1)}, ${num(y1)}) and (${num(x2)}, ${num(y2)}). Write it as <i>y</i> = <i>mx</i> + <i>b</i>: type <i>m</i> and <i>b</i>.`;
+    qq.explain = `Slope first: (${num(y2)} − ${pn(y1)}) / (${num(x2)} − ${pn(x1)}) = ${fr(m)}. Then point-slope through (${num(x1)}, ${num(y1)}): y − ${pn(y1)} = ${fr(m)}(x − ${pn(x1)}), so b = ${num(y1)} − ${pf(m)}·${pn(x1)} = ${fr(b)}. y = ${mxb(m, b)}.`;
+  } else {
+    $('qText').innerHTML = `Find the line through (${num(x1)}, ${num(y1)}) with slope ${fr(m)}. Write it as <i>y</i> = <i>mx</i> + <i>b</i>: type <i>m</i> and <i>b</i>.`;
+    qq.explain = `Point-slope: y − ${pn(y1)} = ${fr(m)}(x − ${pn(x1)}). Solve for y: b = y₁ − m·x₁ = ${num(y1)} − ${pf(m)}·${pn(x1)} = ${fr(b)}. y = ${mxb(m, b)}.`;
+  }
+  qBoxes(['m =', 'b =']);
+}
+function qWriteCheck(v){
+  const ok = close(v[0], qq.m) && close(v[1], qq.b); let why = qq.explain;
+  if (!ok && close(v[0], qq.m)){
+    if (close(v[1], qq.y1 + qq.m * qq.x1)) why = 'Right slope; b is y₁ − m·x₁, and you added instead of subtracting. ' + why;
+    else if (close(v[1], qq.y1)) why = `Right slope; but ${num(qq.y1)} is the point’s y, not the intercept (the point isn’t on the y-axis unless x = 0). ` + why;
+    else why = 'Right slope; recheck b. ' + why;
+  }
+  return [ok, why];
+}
+function qPerp(){
+  if (Math.random() < 0.5){
+    let m; do { m = niceSlope(); } while (m === 0);
+    Object.assign(qq, { kind: 'find', m, ans: -1 / m });
+    $('qText').innerHTML = `A line has equation <i>y</i> = ${mxb(m, ri(-5, 5))}. What is the slope of a line <b>perpendicular</b> to it?`;
+    qBoxes(['slope =']);
+    qq.explain = `Flip the fraction and change the sign: ${fr(m)} → ${fr(-1 / m)}. Check: ${pf(m)} × ${pf(-1 / m)} = −1.`;
+  } else {
+    const m = niceSlope(), rel = pick(['par', 'perp', 'neither']);
+    const m2 = rel === 'par' ? m : rel === 'perp' ? -1 / m : pick([-m, 1 / m, m + 1].filter(x => !close(x, m) && !close(x * m, -1)));
+    const b1 = ri(-5, 5); let b2; do { b2 = ri(-5, 5); } while (b2 === b1);
+    // write the second line in standard form, to make it a little harder
+    const [A, B, C] = stdForm(0, b2, 1, m2 + b2);
+    qq.kind = 'which';
+    $('qText').innerHTML = `Are these lines parallel, perpendicular, or neither?<br><i>y</i> = ${mxb(m, b1)} &nbsp;&nbsp; and &nbsp;&nbsp; ${stdStr(A, B, C)}`;
+    const why = `Put the second line in slope-intercept form: ${B === 1 ? '' : B === -1 ? '−' : B}y = ${mxb(-A, C)}, so its slope is −A/B = ${fr(m2)}. The first slope is ${fr(m)}. ` + (rel === 'par' ? 'Equal slopes (different intercepts): parallel.' : rel === 'perp' ? `${pf(m)} × ${pf(m2)} = −1: perpendicular.` : `Not equal, and ${pf(m)} × ${pf(m2)} = ${fr(m * m2)}, not −1: neither.`);
+    qChoices(['Parallel', 'Perpendicular', 'Neither'], ['par', 'perp', 'neither'].indexOf(rel), k => (k === 1 && rel === 'neither' && close(m2, -m) ? 'Opposite slopes aren’t enough: perpendicular needs flip and change sign. ' : k === 1 && rel === 'neither' && close(m2, 1 / m) ? 'Flipping alone isn’t enough: the sign must change too. ' : '') + why);
+  }
+}
+function qPerpCheck(v){
+  const ok = close(v, qq.ans); let why = qq.explain;
+  if (!ok){ if (close(v, -qq.m)) why = 'You changed the sign but didn’t flip the fraction. ' + why; else if (close(v, 1 / qq.m)) why = 'You flipped the fraction but didn’t change the sign. ' + why; else if (close(v, qq.m)) why = 'That’s the slope of a parallel line. ' + why; }
+  return [ok, why];
+}
+let lastType = null;
+function qNew(){
+  qReset();
+  let t; do { t = pick(['slope', 'read', 'write', 'perp']); } while (t === lastType);
+  lastType = t; qq = { type: t, counted: false };
+  $('qTitle').textContent = qTitles[t];
+  ({ slope: qSlope, read: qRead, write: qWrite, perp: qPerp })[t]();
+}
+$('qCheck').onclick = () => {
+  const ins = [...$('qBoxes').querySelectorAll('input')], v = ins.map(i => parseSlope(i.value));
+  if (ins.some(i => i.value.trim() === '') || v.some(isNaN)){ $('qErr').textContent = 'Type a number or a fraction like −2/3' + (qq.type === 'slope' ? ', or “undefined”.' : '.'); return; }
+  const r = qq.type === 'slope' ? qSlopeCheck(v[0]) : qq.type === 'read' ? qReadCheck(v) : qq.type === 'write' ? qWriteCheck(v) : qPerpCheck(v[0]);
+  qScore(r[0]); qFeedback(r[0], r[1]);
+};
+$('qShow').onclick = () => {
+  qScore(false);
+  if (qq.correctIdx !== undefined){ [...$('qChoice').children].forEach((b, j) => { if (j === qq.correctIdx) b.classList.add('right'); }); qFeedback(false, qq.explainFn(qq.correctIdx)); return; }
+  const a = Array.isArray(qq.ans) ? qq.ans : [qq.ans];
+  [...$('qBoxes').querySelectorAll('input')].forEach((inp, k) => inp.value = isFinite(a[k]) ? fr(a[k]).replace('−', '-') : 'undefined');
+  $('qFb').className = 'feedback bad'; $('qFb').innerHTML = '<b>Answer filled in.</b> ' + qq.explain;
+};
+$('qNew').onclick = qNew;
+
+/* =====================================================================
+   10. START
+   ===================================================================== */
+selectOnFocus(['mx1', 'my1', 'mx2', 'my2', 'mm', 'mb', 'pm', 'pb', 'pqx', 'pqy', 'cb1', 'cm1', 'cb2', 'cm2', 'tb', 'tm']);
+$('mPresets').children[0].click(); MS.ghost = null; mDraw();
+$('fPresets').children[0].click();
+$('pPresets').children[0].click();
+rDraw();
+$('cPresets').children[0].click();
+tMark(0); Object.assign(TS, tPresets[0], { t: 5 }); $('tDesc').textContent = tPresets[0].d; $('tb').value = '10'; $('tm').value = '4'; tDraw();
+qNew();
+</script>
+</body></html>
