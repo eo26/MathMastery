@@ -1,0 +1,553 @@
+<style>
+/* ===================== Page-specific styles (3.B.2) ===================== */
+/* x-tiles = purple, unit tiles = orange, negative tiles = red (as in 3.B.1); the move just made = blue */
+:root{ --cx:#7F77DD; --c1:#E08A2E; --neg:#D8443A; --mv:#2F6FDB; --yes:#1D9E75; --no:#D8443A; }
+@media (prefers-color-scheme:dark){ :root{ --cx:#AFA9EC; --c1:#F2B266; --neg:#F07B72; --mv:#6EA2F5; --yes:#5DCAA5; --no:#F07B72; } }
+.kx{color:var(--cx);font-weight:700}.k1{color:var(--c1);font-weight:700}.kn{color:var(--neg);font-weight:700}.km{color:var(--mv);font-weight:700}
+.field.fx input{border-color:var(--cx)}.field.f1 input{border-color:var(--c1)}.field.fm input{border-color:var(--mv)}.field.sm input{width:70px}
+.inputs .grp{display:flex;gap:10px;align-items:flex-end;padding-right:12px;border-right:1px dashed var(--line);margin-right:4px}
+.inputs .grp:last-of-type{border-right:none}
+.bigeq{font:600 28px var(--mono);text-align:center;margin:10px 0 4px}
+.bigeq .st{font:600 13px var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:2px}
+.moves{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.moves .lab{font:600 12px var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-right:4px}
+.toggle button.on{background:var(--bad-bg);border-color:var(--bad);color:var(--bad)}
+.log{margin:10px 0 0;padding:0;list-style:none;font:16px var(--mono)}
+.log li{display:grid;grid-template-columns:280px 1fr;gap:16px;align-items:baseline;padding:5px 12px;border-bottom:1px dashed var(--line)}
+.log li .why{font:14px var(--sans);color:var(--mv);min-width:250px}
+.log li.bad .why{color:var(--no)}
+.steps{margin:10px 0;padding:0;list-style:none}
+.steps li{display:grid;grid-template-columns:330px 1fr;gap:16px;align-items:center;padding:8px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);margin-bottom:8px}
+.steps li .e{font:600 19px var(--mono)}.steps li .w{font:15px var(--sans);color:var(--mv)}
+.steps li.hide{display:none}
+.calc{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end;margin-top:8px}
+.result{font:600 20px var(--mono);margin-top:10px}
+.choice{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 0}.choice button{min-width:120px}
+.qtext{font:17px/1.55 var(--serif);margin:4px 0 10px}
+.qexpr{font:600 22px var(--mono);margin:6px 0 10px}
+.qsteps{margin:6px 0 4px;padding:0;list-style:none;font:18px var(--mono)}
+.qsteps li{padding:4px 10px}
+.qsteps li b{font:600 12px var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);display:inline-block;width:70px}
+pre.code{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:12px 16px;overflow-x:auto;font:13.5px/1.6 var(--mono);margin:10px 0 16px}
+</style>
+
+<!-- ===================== Top bar ===================== -->
+<div class="topbar"><div class="topbar-in">
+  <span class="brand">Math<b>Mastery</b></span>
+  <span class="crumbs">Chapter 3 · Algebra › Basics</span>
+  <span class="pid">3.B.2</span>
+</div></div>
+
+<!-- ===================== Hero ===================== -->
+<header class="prose hero">
+  <div class="kicker">Chapter 3 · Algebra</div>
+  <h1>Solving Linear Equations</h1>
+  <p class="dek">An equation is a balance. Do the same thing to both sides and it stays balanced, so you can strip away everything around the unknown until it stands alone.</p>
+  <div class="tiers" aria-label="Tier">
+    <span class="tier on">Basics <small>you are here</small></span>
+    <span class="tier">Undergraduate</span>
+    <span class="tier">Masters</span>
+  </div>
+  <div class="goals">
+    <h3>On this page</h3>
+    <ul>
+      <li>Read an <b>equation</b> as a balance, and find its <b>solution</b>: the value that makes both sides equal.</li>
+      <li>Solve <b>linear equations</b> with <b>inverse operations</b>, done to <b>both sides</b>: one-step, two-step, and with <i>x</i> on both sides.</li>
+      <li>Handle brackets, fractions and decimals, and always <b>check</b> by substituting back.</li>
+      <li>Set up equations from words, and <b>rearrange formulas</b> to solve for any letter.</li>
+    </ul>
+  </div>
+</header>
+
+<main>
+<!-- ===================== §1 ===================== -->
+<section class="prose">
+  <h2><span class="n">1</span>An equation is a balance</h2>
+  <p>An expression, like 3<i>x</i> + 5, is a value. An <b>equation</b> says two expressions are equal: 3<i>x</i> + 5 = <i>x</i> + 13. For most values of <i>x</i> that’s false (with <i>x</i> = 1: 8 ≠ 14). The value that makes it true is the <b>solution</b>, and finding it is <b>solving</b> the equation. Here it’s <i>x</i> = 4: 3·4 + 5 = 17 and 4 + 13 = 17.</p>
+  <p>Think of a balance scale with the two sides on its two pans. It’s level because the sides are equal. You can add or remove the same amount on both pans, or split both into the same number of equal groups and keep one group each, and it stays level. Every legal step does the same thing to <b>both sides</b>. The goal is to leave <i>x</i> alone on one side; then the other side reads off its value. An equation where <i>x</i> appears only to the first power (no <i>x</i>², no 1/<i>x</i>) is called <b>linear</b>, and this always works for it.</p>
+</section>
+
+<section class="wide">
+  <div class="card" id="main">
+    <div class="card-h"><span class="tag">Explore</span><h3>The balance</h3>
+      <span class="sub">Pick an equation or build your own (<i>a</i>x + <i>b</i> = <i>c</i>x + <i>d</i>). Then use the moves to get one x alone. Blue tiles were just added; faded tiles with an ✕ just cancelled or were set aside. Switch on “left side only” to see what happens when you break the rule.</span></div>
+    <div class="row" id="bPresets"></div>
+    <div class="desc" id="bDesc"></div>
+    <div class="inputs">
+      <div class="grp"><label class="field fx sm"><span><i>a</i></span><input id="ba" type="text" inputmode="decimal" autocomplete="off"></label><label class="field f1 sm"><span><i>b</i></span><input id="bb" type="text" inputmode="decimal" autocomplete="off"></label></div>
+      <div class="grp"><label class="field fx sm"><span><i>c</i></span><input id="bc" type="text" inputmode="decimal" autocomplete="off"></label><label class="field f1 sm"><span><i>d</i></span><input id="bd" type="text" inputmode="decimal" autocomplete="off"></label></div>
+      <div class="row" style="margin:0"><button id="bLoad">Use this equation</button></div>
+    </div>
+    <div class="err" id="bErr"></div>
+    <div class="bigeq" id="bEq"></div>
+    <div class="moves" style="margin-top:6px">
+      <span class="lab">Do to both sides:</span>
+      <button id="mP1">+ 1</button><button id="mM1">− 1</button><button id="mPX">+ x</button><button id="mMX">− x</button>
+      <label class="field fm sm" style="flex-direction:row;align-items:center;gap:6px;text-transform:none;letter-spacing:0"><button id="mDiv">÷</button><input id="mK" type="text" inputmode="decimal" autocomplete="off" aria-label="divide by"></label>
+      <span class="row toggle" style="margin:0 0 0 14px"><button id="mLeft">Left side only: off</button><button id="mUndo">Undo</button><button id="mReset">Start over</button></span>
+    </div>
+    <svg class="nl" id="bSvg" viewBox="0 0 1000 380" role="img" aria-label="Balance scale with tiles" style="margin-top:10px"></svg>
+    <div class="readout" id="bOut"></div>
+    <ol class="log" id="bLog"></ol>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--cx);height:12px;width:8px"></i>+x</span>
+      <span><i class="sw" style="background:var(--c1);height:10px;width:10px"></i>+1</span>
+      <span><i class="sw" style="background:var(--neg);height:10px;width:10px;opacity:.6"></i>negative tiles</span>
+      <span><i class="sw" style="background:var(--mv);height:10px;width:10px"></i>just added</span>
+      <span><b style="color:var(--muted)">✕</b> faded: cancelled (zero pair) or set aside (divided away)</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §2 ===================== -->
+<section class="prose">
+  <h2><span class="n">2</span>Undo in reverse order</h2>
+  <p>Each step uses an <b>inverse operation</b>, the move that undoes another: subtracting undoes adding, dividing undoes multiplying. In 2<i>x</i> + 1 = 9, the <i>x</i> was first doubled, then had 1 added. Undo them in reverse, like taking off shoes before socks: subtract 1 (2<i>x</i> = 8), then divide by 2 (<i>x</i> = 4).</p>
+  <p>When <i>x</i> is on <b>both sides</b>, first gather the <i>x</i> terms on one side by subtracting <i>x</i>’s from both, then proceed as before. It’s usually easiest to move the smaller number of <i>x</i>’s, so the coefficient that’s left is positive. Then always <b>check</b>: substitute your answer into the <i>original</i> equation and see that both sides match. A check catches almost every slip.</p>
+</section>
+
+<!-- ===================== §3 ===================== -->
+<section class="prose">
+  <h2><span class="n">3</span>Brackets, fractions and decimals</h2>
+  <p>Brackets: either expand them with the distributive property (3.B.1), or, if a single number multiplies the whole side, divide both sides by it. Fractions and decimals: multiply both sides by a number that clears them all (the <b>least common denominator</b>, or 10 for one decimal place), so you’re back to whole numbers. Step through some examples:</p>
+</section>
+<section class="wide">
+  <div class="card" id="bf">
+    <div class="card-h"><span class="tag">Explore</span><h3>Step by step</h3>
+      <span class="sub">Pick an equation, then press Next step to reveal one move at a time.</span></div>
+    <div class="row" id="fList"></div>
+    <ol class="steps" id="fSteps"></ol>
+    <div class="row"><button class="primary" id="fNext">Next step</button><button id="fBack">Back</button><button id="fAll">Show all</button></div>
+    <div class="readout" id="fOut"></div>
+  </div>
+</section>
+
+<!-- ===================== §4 ===================== -->
+<section class="prose">
+  <h2><span class="n">4</span>From words to an equation</h2>
+  <p>Name the unknown, write each fact as an expression, set them equal, solve, and check the answer against the <i>words</i>.</p>
+  <ul>
+    <li><b>Three consecutive whole numbers add up to 72.</b> Call the smallest <i>n</i>; the others are <i>n</i> + 1 and <i>n</i> + 2. So <i>n</i> + (<i>n</i> + 1) + (<i>n</i> + 2) = 72, which is 3<i>n</i> + 3 = 72, so 3<i>n</i> = 69 and <i>n</i> = 23. The numbers are 23, 24, 25 (check: 72 ✓).</li>
+    <li><b>A taxi charges a 3-dollar pickup fee plus 2 dollars per kilometer, and the ride cost 19 dollars.</b> With <i>k</i> kilometers: 3 + 2<i>k</i> = 19, so 2<i>k</i> = 16 and <i>k</i> = 8 km.</li>
+    <li><b>A rectangle is 5 cm longer than it is wide, and its perimeter is 38 cm.</b> Width <i>w</i>, length <i>w</i> + 5: 2<i>w</i> + 2(<i>w</i> + 5) = 38, so 4<i>w</i> + 10 = 38, 4<i>w</i> = 28, <i>w</i> = 7. It’s 7 cm by 12 cm.</li>
+  </ul>
+</section>
+
+<!-- ===================== §5 ===================== -->
+<section class="prose">
+  <h2><span class="n">5</span>Rearranging formulas</h2>
+  <p>A formula is an equation with several letters. The same balance moves solve it for any one of them: treat the others as if they were numbers. This is called <b>rearranging</b> (or changing the subject of) the formula.</p>
+</section>
+<section class="wide">
+  <div class="card" id="form">
+    <div class="card-h"><span class="tag">Explore</span><h3>Change the subject</h3>
+      <span class="sub">Pick a formula to see it rearranged step by step, then plug in numbers to use it.</span></div>
+    <div class="row" id="rList"></div>
+    <ol class="steps" id="rSteps"></ol>
+    <div class="calc" id="rIn"></div>
+    <div class="err" id="rErr"></div>
+    <div class="result" id="rOut"></div>
+  </div>
+</section>
+
+<!-- ===================== §6 ===================== -->
+<section class="prose">
+  <h2><span class="n">6</span>Now, in symbols</h2>
+  <div class="math">\[ \text{If } A = B \text{ then } A + c = B + c,\quad A - c = B - c,\quad cA = cB,\quad \frac{A}{c} = \frac{B}{c}\ (c \ne 0) \]<div class="cap">The properties of equality: whatever you do to one side, do to the other. Never divide by zero.</div></div>
+  <div class="math">\[ ax + b = cx + d \;\Longrightarrow\; (a - c)\,x = d - b \;\Longrightarrow\; x = \frac{d - b}{a - c} \quad (a \ne c) \]<div class="cap">Every linear equation in one unknown can be put in this form and solved in one line.</div></div>
+  <p>A computer can solve equations symbolically too:</p>
+  <pre class="code"><code>from sympy import symbols, Eq, solve          # SymPy: algebra with symbols
+x = symbols('x')                               # the unknown
+print(solve(Eq(3*x + 5, x + 13), x))           # [4]
+print(solve(Eq(x/3 + 2, 6), x))                # [12]
+F, C = symbols('F C')                          # letters in a formula
+print(solve(Eq(F, 9*C/5 + 32), C))             # [5*F/9 - 160/9]  (= 5/9 (F - 32))</code></pre>
+</section>
+
+<!-- ===================== §7 ===================== -->
+<section class="prose">
+  <h2><span class="n">7</span>Where this goes</h2>
+  <ul class="goes">
+    <li><b>Next (3.B.3):</b> inequalities, where the balance tips on purpose, and one surprise: multiplying by a negative number flips the inequality.</li>
+    <li><b>Later in this book:</b> two equations with two unknowns (3.B.6), equations with <i>x</i>² (3.B.9), and in linear algebra, many equations at once solved by row reduction (7.B.9), which is this page’s balance moves done in bulk.</li>
+    <li><b>In the world:</b> working out how long, how far or how many from a total (trip times, recipe amounts, phone-plan minutes), converting temperatures, and every spreadsheet “goal seek.”</li>
+  </ul>
+</section>
+
+<!-- ===================== §8 ===================== -->
+<section class="prose">
+  <h2><span class="n">8</span>Words to know</h2>
+  <div class="vocab">
+    <div class="term"><b>Equation</b>A statement that two expressions are equal, like 3<i>x</i> + 5 = <i>x</i> + 13.</div>
+    <div class="term"><b>Solution</b>A value of the variable that makes the equation true.</div>
+    <div class="term"><b>Solve</b>Find all the solutions.</div>
+    <div class="term"><b>Linear equation</b>An equation where the variable appears only to the first power.</div>
+    <div class="term"><b>Inverse operation</b>The operation that undoes another: − undoes +, ÷ undoes ×.</div>
+    <div class="term"><b>Both sides</b>The rule of solving: any move must be done to both sides to keep the balance.</div>
+    <div class="term"><b>Check</b>Substitute the answer into the original equation and confirm both sides are equal.</div>
+    <div class="term"><b>Least common denominator</b>The smallest number every denominator divides into; multiplying by it clears the fractions.</div>
+    <div class="term"><b>Rearrange a formula</b>Solve a formula for one of its letters, like <i>t</i> = <i>d</i>/<i>r</i> from <i>d</i> = <i>rt</i>.</div>
+  </div>
+</section>
+
+<!-- ===================== Quiz ===================== -->
+<section class="prose"><h2><span class="n">9</span>Check yourself</h2>
+  <p>Three kinds of questions: solve an equation, check whether a number is a solution, and find the step where a worked solution went wrong.</p>
+</section>
+<section class="wide">
+  <div class="card" id="quiz">
+    <div class="card-h"><span class="tag">Quiz</span><h3 id="qTitle"></h3><span class="score" id="score">Score: 0 / 0</span></div>
+    <div class="qtext" id="qText"></div>
+    <div class="qexpr" id="qExpr"></div>
+    <ol class="qsteps" id="qSteps"></ol>
+    <div class="choice" id="qChoice"></div>
+    <div class="inputs" id="qIn">
+      <label class="field fx sm"><span>x =</span><input id="q1" type="text" inputmode="decimal" autocomplete="off"></label>
+      <div class="row" style="margin:0"><button class="primary" id="qCheck">Check</button></div>
+    </div>
+    <div class="row" style="margin:10px 0 0"><button id="qShow">Show answer</button><button id="qNew">New question</button></div>
+    <div class="err" id="qErr"></div>
+    <div class="feedback" id="qFb" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ===================== Pager (filled in by the shared navigation) ===================== -->
+<nav class="wide">
+  <div class="pager"></div>
+  <div class="meta">3.B.2 · Prerequisites: 3.B.1 (variables and expressions) · Leads to: 3.B.3 (inequalities), 3.B.6 (systems), 7.B.9 (row reduction)</div>
+</nav>
+</main>
+
+<script>
+/* =====================================================================
+   1. HELPERS
+   ===================================================================== */
+const NS = 'http://www.w3.org/2000/svg';
+const $ = id => document.getElementById(id);
+function mk(tag, attrs, parent){                           // create an SVG element with attributes
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function txt(parent, x, y, s, cls, extra){                 // create an SVG text element
+  extra = Object.assign({}, extra || {});
+  // a CSS class's text-anchor beats the attribute, so move a requested anchor into the style
+  if (extra['text-anchor']){ extra.style = (extra.style ? extra.style + ';' : '') + 'text-anchor:' + extra['text-anchor']; delete extra['text-anchor']; }
+  const t = mk('text', Object.assign({ x, y, class: cls || '' }, extra), parent);
+  t.textContent = s;
+  return t;
+}
+function num(x, d){ if (d === undefined) d = 3; const r = Math.round(x * Math.pow(10, d)) / Math.pow(10, d); return r === 0 ? '0' : (r < 0 ? '−' : '') + String(Math.abs(r)); }
+const pn = x => x < 0 ? `(${num(x)})` : num(x);
+function parseNum(s){
+  s = String(s).trim().replace(/[−–]/g, '-').replace(/\s+/g, '');
+  if (/^-?\d+(\.\d+)?$|^-?\.\d+$/.test(s)) return parseFloat(s);
+  const m = s.match(/^(-?\d+)\/(\d+)$/);
+  if (m && +m[2] !== 0) return +m[1] / +m[2];
+  return NaN;
+}
+function readAll(ids, errId, msg){
+  const out = ids.map(id => parseNum($(id).value));
+  if (ids.some(id => $(id).value.trim() === '') || out.some(isNaN)){ $(errId).textContent = msg || 'Fill in every box with a number.'; return null; }
+  $(errId).textContent = ''; return out;
+}
+function selectOnFocus(ids){ ids.forEach(id => $(id).addEventListener('focus', e => e.target.select())); }
+function buttons(boxId, list, onPick){
+  list.forEach((p, i) => { const b = document.createElement('button'); b.className = 'preset'; b.textContent = p.n; b.onclick = () => onPick(i); $(boxId).appendChild(b); });
+  return i => [...$(boxId).children].forEach((b, j) => b.classList.toggle('on', j === i));
+}
+// ax + b in tidy form
+function lin(a, b){
+  const parts = [];
+  if (a) parts.push((a === 1 ? '' : a === -1 ? '−' : num(a)) + 'x');
+  if (b || !a) parts.push(parts.length ? (b < 0 ? '− ' + num(-b) : '+ ' + num(b)) : num(b));
+  return parts.join(' ');
+}
+const gcd = (a, b) => { a = Math.abs(a); b = Math.abs(b); while (b){ [a, b] = [b, a % b]; } return a; };
+function frac(n, d){ if (d < 0){ n = -n; d = -d; } const g = gcd(n, d) || 1; n /= g; d /= g; return d === 1 ? num(n) : `${n < 0 ? '−' : ''}${Math.abs(n)}/${d}`; }
+const svgCss = document.createElement('style');
+svgCss.textContent = `
+  .tl{fill:var(--muted);font:500 11px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:3px}
+  .lab{font:700 15px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:5px}
+  .labS{font:600 12.5px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+  .cap{fill:var(--muted);font:500 12px var(--sans)}
+  .bt{fill:var(--ink);font:600 13px var(--sans)}
+`;
+document.head.appendChild(svgCss);
+
+/* =====================================================================
+   2. THE BALANCE
+   ===================================================================== */
+// The equation is a·x + b = c·x + d. The true solution x* (of the starting equation) sets each pan's weight.
+const BP = [
+  { n: 'x + 3 = 7', e: [1, 3, 0, 7], d: 'One step: take 3 squares off both pans.' },
+  { n: '2x + 1 = 9', e: [2, 1, 0, 9], d: 'Two steps: remove the 1 from both sides, then split both sides into 2 equal groups (÷ 2).' },
+  { n: '3x + 5 = x + 13', e: [3, 5, 1, 13], d: 'x on both sides: take one x off both pans first, then carry on.' },
+  { n: '5x − 4 = 2x + 8', e: [5, -4, 2, 8], d: 'A negative: add 4 to both sides to cancel the −4 (zero pairs).' },
+  { n: '−2x + 9 = x', e: [-2, 9, 1, 0], d: 'Negative x’s: add 2x to both sides so the x’s end up positive.' },
+  { n: '4x + 2 = 2x − 6', e: [4, 2, 2, -6], d: 'The solution is negative. The balance still works.' },
+];
+const bs = { eq: [3, 5, 1, 13], start: [3, 5, 1, 13], xs: 4, hist: [], last: null, left: false, broken: false };
+const markB = buttons('bPresets', BP, i => { loadEq(BP[i].e); markB(i); $('bDesc').textContent = BP[i].d; });
+function loadEq(e){
+  const [a, b, c, d] = e;
+  if (a === c){ $('bErr').textContent = a ? 'The x’s on both sides are equal, so they cancel completely: this leaves no x to solve for (3.B.6 explains these cases).' : 'Put at least one x in the equation.'; return false; }
+  if ([a, b, c, d].some(v => !Number.isInteger(v) || Math.abs(v) > 15)){ $('bErr').textContent = 'Use whole numbers from −15 to 15, so the tiles fit on the pans.'; return false; }
+  $('bErr').textContent = '';
+  Object.assign(bs, { eq: e.slice(), start: e.slice(), xs: (d - b) / (a - c), hist: [], last: null, broken: false });
+  ['ba', 'bb', 'bc', 'bd'].forEach((id, k) => { $(id).value = e[k]; });
+  $('mK').value = Math.abs(a - c) > 1 ? Math.abs(a - c) : 2;
+  drawB(); return true;
+}
+// Apply a move. kind: '1' or 'x' with sign s, or 'div' with k. Returns false if not allowed.
+function move(kind, s){
+  const [a, b, c, d] = bs.eq, sides = bs.left ? [0] : [0, 1];
+  let n = bs.eq.slice(), txtMove;
+  if (kind === 'div'){
+    const k = s;
+    if (!k || !Number.isInteger(k)){ $('bErr').textContent = 'Divide by a whole number other than 0.'; return; }
+    const touched = sides.map(i => i ? [c, d] : [a, b]).flat();
+    if (touched.some(v => v % k !== 0)){ $('bErr').textContent = `Can’t split ${bs.left ? 'the left side' : 'both sides'} into ${Math.abs(k)} equal groups of whole tiles: every count must divide by ${num(k)}. (With fractions you could, but tiles can’t be cut.)`; return; }
+    sides.forEach(i => { n[2 * i] /= k; n[2 * i + 1] /= k; });
+    txtMove = `divide ${bs.left ? 'the left side only' : 'both sides'} by ${num(k)}`;
+  } else {
+    const di = kind === 'x' ? 0 : 1; sides.forEach(i => { n[2 * i + di] += s; });
+    txtMove = `${s > 0 ? 'add' : 'subtract'} ${kind === 'x' ? 'x' : '1'} ${s > 0 ? 'to' : 'from'} ${bs.left ? 'the left side only' : 'both sides'}`;
+    if (n.some(v => Math.abs(v) > 20)){ $('bErr').textContent = 'That would pile up too many tiles. Try moving the other way.'; return; }
+  }
+  $('bErr').textContent = '';
+  bs.hist.push({ eq: bs.eq.slice(), broken: bs.broken, last: bs.last });
+  bs.last = { kind, s, prev: bs.eq.slice(), sides, text: txtMove };
+  if (bs.left) bs.broken = true;
+  bs.eq = n; markB(-1); drawB();
+}
+const W = e => [e[0] * bs.xs + e[1], e[2] * bs.xs + e[3]];   // each pan's weight with x = the true solution
+function drawB(){
+  const [a, b, c, d] = bs.eq, [wl, wr] = W(bs.eq);
+  $('bEq').innerHTML = `<span class="st">${bs.broken ? 'not balanced any more' : bs.hist.length ? 'after ' + bs.hist.length + ' move' + (bs.hist.length > 1 ? 's' : '') : 'start'}</span><span class="kx">${lin(a, b)}</span> ${bs.broken && Math.abs(wl - wr) > 1e-9 ? '≠' : '='} <span class="kx">${lin(c, d)}</span>`;
+  const svg = $('bSvg'); svg.innerHTML = ''; const g = mk('g', {}, svg);
+  const tilt = Math.max(-14, Math.min(14, (wl - wr) * 2)) * Math.PI / 180;   // heavier side goes down
+  const PX = 500, PY = 90, HL = 340, ex = HL * Math.cos(tilt), ey = HL * Math.sin(tilt);
+  // stand and beam
+  mk('polygon', { points: `${PX},${PY} ${PX - 40},${368} ${PX + 40},${368}`, style: 'fill:var(--line2);opacity:.6' }, g);
+  mk('line', { x1: PX - ex, y1: PY + ey, x2: PX + ex, y2: PY - ey, style: `stroke:${bs.broken && Math.abs(wl - wr) > 1e-9 ? 'var(--no)' : 'var(--ink)'};stroke-width:6;stroke-linecap:round` }, g);
+  mk('circle', { cx: PX, cy: PY, r: 7, style: 'fill:var(--ink)' }, g);
+  // one pan per side: hangs from the beam end, stays level
+  const last = bs.last;
+  [[PX - ex, PY + ey, [a, b], 0], [PX + ex, PY - ey, [c, d], 1]].forEach(([hx, hy, [cx, cu], side]) => {
+    const panY = hy + 200;
+    mk('line', { x1: hx, y1: hy, x2: hx - 148, y2: panY, style: 'stroke:var(--muted);stroke-width:1;opacity:.45' }, g);
+    mk('line', { x1: hx, y1: hy, x2: hx + 148, y2: panY, style: 'stroke:var(--muted);stroke-width:1;opacity:.45' }, g);
+    mk('path', { d: `M${hx - 150},${panY} L${hx + 150},${panY} L${hx + 130},${panY + 12} L${hx - 130},${panY + 12} Z`, style: 'fill:var(--line2)' }, g);
+    // tiles: what's on the pan now, plus (faded) what the last move cancelled or set aside, plus (blue) what it just added
+    let gx = hx - 140, gy = panY - 2;
+    const put = (k, sign, mode) => {
+      const w = 18, h = k === 'x' ? 62 : 18;
+      if (gx + w > hx + 142){ gx = hx - 140; gy -= 66; }
+      const col = mode === 'new' ? 'var(--mv)' : sign > 0 ? (k === 'x' ? 'var(--cx)' : 'var(--c1)') : 'var(--neg)';
+      const st = mode === 'ghost' ? `fill:${col};opacity:.18;stroke:${col};stroke-dasharray:3 2` : sign > 0 ? `fill:${col};opacity:.88` : `fill:var(--neg);opacity:.3;stroke:${col};stroke-width:1.8;stroke-dasharray:4 2`;
+      mk('rect', { x: gx, y: gy - h, width: w, height: h, rx: 3, style: st }, g);
+      if (k === 'x') txt(g, gx + w / 2, gy - h / 2 + 4, sign > 0 ? 'x' : '−x', 'labS', { 'text-anchor': 'middle', style: `fill:${sign > 0 && mode !== 'ghost' ? 'var(--paper)' : col};stroke:none;font-size:10px` });
+      else if (sign < 0) txt(g, gx + w / 2, gy - 5, '−', 'labS', { 'text-anchor': 'middle', style: `fill:${col};stroke:none` });
+      if (mode === 'ghost') txt(g, gx + w / 2, gy - h - 3, '✕', 'labS', { 'text-anchor': 'middle', style: 'fill:var(--muted);stroke:none;font-size:11px' });
+      gx += w + 4;
+    };
+    const touched = last && last.sides.includes(side);
+    const prev = touched ? [last.prev[2 * side], last.prev[2 * side + 1]] : [cx, cu];
+    // x tiles
+    const drawKind = (k, nowN, prevN) => {
+      const sNow = Math.sign(nowN) || 1, nNow = Math.abs(nowN);
+      let added = 0, ghosts = 0;
+      if (touched && last.kind === k){ if (Math.sign(last.s) === Math.sign(prevN) || prevN === 0) added = 1; else ghosts = 1; }
+      if (touched && last.kind === 'div'){ ghosts = Math.abs(prevN) - nNow; }
+      for (let i = 0; i < nNow - added; i++) put(k, sNow, '');
+      for (let i = 0; i < added; i++) put(k, sNow, 'new');
+      // a cancelled zero pair: the tile that was there, and the one that cancelled it
+      if (ghosts && touched && last.kind === k){ put(k, Math.sign(prevN), 'ghost'); put(k, -Math.sign(prevN), 'ghost'); }
+      else for (let i = 0; i < ghosts; i++) put(k, Math.sign(prevN), 'ghost');
+      if (nNow || ghosts) { gx += 10; }
+    };
+    drawKind('x', cx, prev[0]);
+    drawKind('1', cu, prev[1]);   // squares continue on the same row, wrapping only when the pan is full
+    txt(g, hx, panY + 34, `${side ? 'right' : 'left'}: ${lin(cx, cu)} = ${num(side ? wr : wl)}`, 'labS', { 'text-anchor': 'middle', style: 'fill:var(--ink)' });
+  });
+  txt(g, PX, 24, `weights shown with x = ${frac(bs.start[3] - bs.start[1], bs.start[0] - bs.start[2])}, the solution of the starting equation`, 'cap', { 'text-anchor': 'middle' });
+  // the readout
+  let h;
+  const solved = (a === 1 && c === 0 && !b) ? d : (c === 1 && a === 0 && !d) ? b : null;
+  const st = bs.start;
+  if (bs.broken && Math.abs(wl - wr) > 1e-9) h = `<b style="color:var(--no)">The balance is broken.</b> You changed only the left side, so it now weighs ${num(wl)} against ${num(wr)}: the new equation is false for the real answer x = ${frac(st[3] - st[1], st[0] - st[2])}. Press Undo.`;
+  else if (solved !== null && !bs.broken) h = `<b style="color:var(--yes)">Solved: x = ${num(solved)}.</b> Check in the original: ${lin(st[0], st[1])} → ${num(st[0])}·${pn(solved)} ${st[1] < 0 ? '− ' + num(-st[1]) : '+ ' + num(st[1])} = ${num(st[0] * solved + st[1])}, and ${lin(st[2], st[3])} → ${num(st[2] * solved + st[3])}. ✓`;
+  else if ((a === -1 && c === 0 && !b) || (c === -1 && a === 0 && !d)) h = 'Almost: you have −x. Divide both sides by −1 (flip every tile) to get x.';
+  else if (a && c) h = 'x is on both sides. Remove x’s from both sides until one side has none.';
+  else if ((a && b) || (c && d)) h = `Now ${a ? 'the left' : 'the right'} side has x’s and squares. Remove the squares from both sides (cancel with zero pairs if they’re negative).`;
+  else h = `One side is only x’s. Split both sides into ${Math.abs(a || c)} equal groups: divide both sides by ${num(a || c)}.`;
+  if (bs.broken && Math.abs(wl - wr) < 1e-9) h = 'You changed one side only, but by luck the weights still match (for instance, adding x and adding 1 when x = 1). In general, doing different things to the two sides breaks the balance.';
+  $('bOut').innerHTML = h;
+  // the log of moves
+  let html = `<li><span>${lin(st[0], st[1])} = ${lin(st[2], st[3])}</span><span class="why">start</span></li>`;
+  // each move k produced state k: history[k] holds the state and the move that led to it (the newest pair is the current one)
+  const states = bs.hist.map(h2 => h2.eq).concat([bs.eq]).slice(1), tmp = bs.hist.map(h2 => h2.last).slice(1).concat([bs.last]);
+  states.forEach((s2, i) => { const m = tmp[i]; html += `<li class="${m && m.sides.length === 1 ? 'bad' : ''}"><span>${lin(s2[0], s2[1])} ${m && m.sides.length === 1 && Math.abs(W(s2)[0] - W(s2)[1]) > 1e-9 ? '≠' : '='} ${lin(s2[2], s2[3])}</span><span class="why">${m ? m.text : ''}</span></li>`; });
+  $('bLog').innerHTML = html;
+}
+$('mP1').onclick = () => move('1', 1); $('mM1').onclick = () => move('1', -1); $('mPX').onclick = () => move('x', 1); $('mMX').onclick = () => move('x', -1);
+$('mDiv').onclick = () => { const k = parseNum($('mK').value); if (isNaN(k)){ $('bErr').textContent = 'Type the number to divide by.'; return; } move('div', k); };
+$('mLeft').onclick = () => { bs.left = !bs.left; $('mLeft').textContent = `Left side only: ${bs.left ? 'ON' : 'off'}`; $('mLeft').classList.toggle('on', bs.left); };
+$('mUndo').onclick = () => { const h = bs.hist.pop(); if (!h) return; bs.eq = h.eq; bs.broken = h.broken; bs.last = h.last; $('bErr').textContent = ''; drawB(); };
+$('mReset').onclick = () => loadEq(bs.start);
+$('bLoad').onclick = () => { const r = readAll(['ba', 'bb', 'bc', 'bd'], 'bErr'); if (!r) return; if (loadEq(r)){ markB(-1); $('bDesc').textContent = 'Your own equation.'; } };
+selectOnFocus(['ba', 'bb', 'bc', 'bd', 'mK']);
+
+/* =====================================================================
+   3. STEP BY STEP (brackets, fractions, decimals)
+   ===================================================================== */
+const FS = [
+  { n: '2(x − 1) = 10', s: [['2(x − 1) = 10', ''], ['x − 1 = 5', 'divide both sides by 2 (the 2 multiplies the whole bracket)'], ['x = 6', 'add 1 to both sides']], ck: '2(6 − 1) = 2·5 = 10 ✓', note: 'Or expand first: 2x − 2 = 10, so 2x = 12 and x = 6. Same answer.' },
+  { n: 'x/3 + 2 = 6', s: [['x/3 + 2 = 6', ''], ['x/3 = 4', 'subtract 2 from both sides'], ['x = 12', 'multiply both sides by 3 (undoes ÷ 3)']], ck: '12/3 + 2 = 4 + 2 = 6 ✓' },
+  { n: '3(x + 2) = 2(x + 5)', s: [['3(x + 2) = 2(x + 5)', ''], ['3x + 6 = 2x + 10', 'expand both brackets'], ['x + 6 = 10', 'subtract 2x from both sides'], ['x = 4', 'subtract 6 from both sides']], ck: '3(4 + 2) = 18 and 2(4 + 5) = 18 ✓' },
+  { n: '(x + 4)/2 = x − 1', s: [['(x + 4)/2 = x − 1', ''], ['x + 4 = 2x − 2', 'multiply both sides by 2 (the whole right side gets doubled)'], ['4 = x − 2', 'subtract x from both sides'], ['6 = x', 'add 2 to both sides']], ck: '(6 + 4)/2 = 5 and 6 − 1 = 5 ✓', note: 'Common slip: doubling only the x on the right (giving 2x − 1).' },
+  { n: 'x/2 + x/3 = 5', s: [['x/2 + x/3 = 5', ''], ['3x + 2x = 30', 'multiply every term by 6, the least common denominator of 2 and 3'], ['5x = 30', 'combine like terms'], ['x = 6', 'divide both sides by 5']], ck: '6/2 + 6/3 = 3 + 2 = 5 ✓' },
+  { n: '0.5x + 1.5 = 4', s: [['0.5x + 1.5 = 4', ''], ['5x + 15 = 40', 'multiply every term by 10 to clear the decimals'], ['5x = 25', 'subtract 15 from both sides'], ['x = 5', 'divide both sides by 5']], ck: '0.5·5 + 1.5 = 2.5 + 1.5 = 4 ✓' },
+  { n: '7 − 2x = 1', s: [['7 − 2x = 1', ''], ['−2x = −6', 'subtract 7 from both sides'], ['x = 3', 'divide both sides by −2 (a negative divided by a negative is positive)']], ck: '7 − 2·3 = 1 ✓', note: 'Or add 2x to both sides first: 7 = 1 + 2x, so 6 = 2x and x = 3, with no negatives.' },
+];
+const fs = { i: 0, k: 1 };
+const markF = buttons('fList', FS, i => { fs.i = i; fs.k = 1; markF(i); drawF(); });
+function drawF(){
+  const f = FS[fs.i];
+  $('fSteps').innerHTML = f.s.map(([e, w], k) => `<li class="${k < fs.k ? '' : 'hide'}"><span class="e">${e}</span><span class="w">${w ? '↓ ' + w : 'the equation'}</span></li>`).join('');
+  const done = fs.k >= f.s.length;
+  $('fOut').innerHTML = done ? `<b>Check:</b> ${f.ck}${f.note ? `<br>${f.note}` : ''}` : `Step ${fs.k} of ${f.s.length}: what would you do next?`;
+  $('fNext').disabled = done; $('fBack').disabled = fs.k <= 1;
+}
+$('fNext').onclick = () => { fs.k++; drawF(); }; $('fBack').onclick = () => { fs.k--; drawF(); }; $('fAll').onclick = () => { fs.k = FS[fs.i].s.length; drawF(); };
+
+/* =====================================================================
+   4. CHANGE THE SUBJECT (rearranging formulas)
+   ===================================================================== */
+const RF = [
+  { n: 'd = r·t, for t', s: [['d = r t', 'distance = rate × time'], ['d / r = t', 'divide both sides by r'], ['t = d / r', 'swap sides to read it left to right']], ins: [['d', 'distance d (km)', 150], ['r', 'speed r (km/h)', 60]], f: v => v.d / v.r, out: 't', unit: 'hours' },
+  { n: 'F = 9/5·C + 32, for C', s: [['F = (9/5)C + 32', 'Fahrenheit from Celsius'], ['F − 32 = (9/5)C', 'subtract 32 from both sides'], ['(5/9)(F − 32) = C', 'multiply both sides by 5/9 (undoes × 9/5)']], ins: [['F', 'temperature F (°F)', 98.6]], f: v => 5 / 9 * (v.F - 32), out: 'C', unit: '°C' },
+  { n: 'P = 2l + 2w, for l', s: [['P = 2l + 2w', 'perimeter of a rectangle'], ['P − 2w = 2l', 'subtract 2w from both sides'], ['l = (P − 2w) / 2', 'divide both sides by 2 (the whole left side)']], ins: [['P', 'perimeter P (cm)', 38], ['w', 'width w (cm)', 7]], f: v => (v.P - 2 * v.w) / 2, out: 'l', unit: 'cm' },
+  { n: 'A = ½·b·h, for h', s: [['A = (1/2) b h', 'area of a triangle'], ['2A = b h', 'multiply both sides by 2'], ['h = 2A / b', 'divide both sides by b']], ins: [['A', 'area A (m²)', 24], ['b', 'base b (m)', 8]], f: v => 2 * v.A / v.b, out: 'h', unit: 'm' },
+  { n: 'v = u + a·t, for t', s: [['v = u + a t', 'speed after speeding up steadily'], ['v − u = a t', 'subtract u from both sides'], ['t = (v − u) / a', 'divide both sides by a']], ins: [['v', 'final speed v (m/s)', 25], ['u', 'start speed u (m/s)', 5], ['a', 'acceleration a (m/s²)', 4]], f: v => (v.v - v.u) / v.a, out: 't', unit: 's' },
+];
+const rf = { i: 0 };
+const markR = buttons('rList', RF, i => { rf.i = i; markR(i); buildR(); });
+function buildR(){
+  const f = RF[rf.i];
+  $('rSteps').innerHTML = f.s.map(([e, w], k) => `<li><span class="e">${e}</span><span class="w">${k ? '↓ ' + w : w}</span></li>`).join('');
+  $('rIn').innerHTML = f.ins.map(([id, l, v]) => `<label class="field fm sm"><span>${l}</span><input id="r_${id}" type="text" inputmode="decimal" autocomplete="off" value="${v}"></label>`).join('');
+  f.ins.forEach(([id]) => $('r_' + id).addEventListener('input', calcR)); selectOnFocus(f.ins.map(([id]) => 'r_' + id));
+  calcR();
+}
+function calcR(){
+  const f = RF[rf.i], r = readAll(f.ins.map(([id]) => 'r_' + id), 'rErr'); if (!r) return;
+  const v = {}; f.ins.forEach(([id], k) => { v[id] = r[k]; });
+  const out = f.f(v);
+  if (!isFinite(out)){ $('rErr').textContent = 'That would divide by zero.'; $('rOut').textContent = ''; return; }
+  $('rOut').innerHTML = `${f.out} = <span class="km">${num(out, 3)}</span> ${f.unit}`;
+}
+
+/* =====================================================================
+   5. QUIZ
+   ===================================================================== */
+const rnd = arr => arr[Math.floor(Math.random() * arr.length)];
+const randInt = (lo, hi) => lo + Math.floor(Math.random() * (hi - lo + 1));
+const nz = (lo, hi) => { let v; do { v = randInt(lo, hi); } while (!v); return v; };
+const qz = { counted: false, done: false, right: 0, total: 0 };
+const eqStr = e => `${lin(e[0], e[1])} = ${lin(e[2], e[3])}`;
+function setMode(kind, labels){
+  $('qChoice').style.display = kind === 'choice' ? '' : 'none'; $('qIn').style.display = kind === 'choice' ? 'none' : '';
+  if (kind === 'choice'){ $('qChoice').innerHTML = ''; labels.forEach((l, i) => { const b = document.createElement('button'); b.textContent = l; b.onclick = () => answerChoice(i); $('qChoice').appendChild(b); }); }
+}
+// A random equation ax + b = cx + d with a whole-number solution
+function randEq(both){
+  let a, b, c, d, x;
+  do { x = nz(-6, 9); a = nz(-5, 7); c = both ? nz(-4, 5) : 0; b = randInt(-12, 12); d = (a - c) * x + b; } while (a === c || Math.abs(d) > 40 || (!both && !b));
+  return { e: [a, b, c, d], x };
+}
+function newQuestion(){
+  Object.assign(qz, { counted: false, done: false });
+  $('qErr').textContent = ''; $('qFb').className = 'feedback'; $('qFb').innerHTML = ''; $('q1').value = ''; $('qSteps').innerHTML = ''; $('qExpr').textContent = '';
+  qz.type = rnd(['solve', 'solve', 'check', 'wrong']);
+  if (qz.type === 'solve'){
+    const kind = rnd(['two', 'both', 'both', 'brack', 'frac']); let show, ans, alt = [];
+    if (kind === 'two' || kind === 'both'){ const { e, x } = randEq(kind === 'both'); show = eqStr(e); ans = x; const [a, b, c, d] = e; alt = [[(d + b) / (a - c), 'sign'], [(d - b) / (a + c), 'xsign'], [d - b, 'nodiv'], [d / (a - c) - b, 'order']]; qz.e = e; }
+    else if (kind === 'brack'){ const m = nz(2, 5), b = nz(-6, 6), x = nz(-5, 9), c = m * (x + b); show = `${m}(x ${b < 0 ? '− ' + (-b) : '+ ' + b}) = ${num(c)}`; ans = x; alt = [[c / m + b, 'sign'], [(c - b) / m, 'dist']]; }
+    else { const m = rnd([2, 3, 4, 5]), b = nz(-6, 8), x = m * nz(-4, 6), c = x / m + b; show = `x/${m} ${b < 0 ? '− ' + (-b) : '+ ' + b} = ${num(c)}`; ans = x; alt = [[(c - b) / m, 'divfrac'], [(c + b) * m, 'sign'], [c * m - b, 'order']]; }
+    Object.assign(qz, { kind, show, ans, alt });
+    $('qTitle').textContent = 'Solve the equation'; $('qText').innerHTML = 'Find x.'; $('qExpr').textContent = show; setMode('field');
+  } else if (qz.type === 'check'){
+    const { e, x } = randEq(Math.random() < .6), cand = Math.random() < .5 ? x : x + rnd([-2, -1, 1, 2]);
+    Object.assign(qz, { e, x, cand, yes: cand === x });
+    $('qTitle').textContent = 'Is it a solution?'; $('qText').innerHTML = `Is <b>x = ${num(cand)}</b> a solution of this equation?`; $('qExpr').textContent = eqStr(e);
+    setMode('choice', ['Yes', 'No']);
+  } else {
+    // a 3-step worked solution of ax + b = cx + d (a > c > 0) with one step done wrong
+    let a, b, c, d, x; do { x = nz(-4, 8); c = randInt(1, 4); a = c + randInt(2, 5); b = nz(-9, 9); d = (a - c) * x + b; } while (Math.abs(d) > 40 || d === b);
+    const bad = randInt(1, 3); let A = a - c, B = b, D = d;
+    const s1 = bad === 1 ? [a + c, b, d] : [a - c, b, d];
+    const s2 = bad === 2 ? [s1[0], d + b] : [s1[0], s1[2] - s1[1]];
+    const s3 = bad === 3 ? frac(s2[0], s2[1]) : frac(s2[1], s2[0]);
+    const lines = [`${lin(s1[0], s1[1])} = ${num(s1[2])}`, `${lin(s2[0], 0)} = ${num(s2[1])}`, `x = ${s3}`];
+    const why = ['subtract ' + (c === 1 ? 'x' : c + 'x') + ' from both sides', (b < 0 ? 'add ' + num(-b) + ' to both sides' : 'subtract ' + num(b) + ' from both sides'), 'divide both sides by ' + num(s2[0])];
+    Object.assign(qz, { e: [a, b, c, d], x, bad, lines });
+    $('qTitle').textContent = 'Spot the wrong step';
+    $('qText').innerHTML = `Someone solved <b>${eqStr([a, b, c, d])}</b> and got the wrong answer. Which step broke the balance?`;
+    $('qSteps').innerHTML = lines.map((l, k) => `<li><b>Step ${k + 1}</b>${l} <span style="font:14px var(--sans);color:var(--muted)">  (${why[k]})</span></li>`).join('');
+    setMode('choice', ['Step 1', 'Step 2', 'Step 3']);
+  }
+}
+function countQ(ok){ if (qz.counted) return; qz.counted = true; qz.total++; if (ok) qz.right++; $('score').textContent = `Score: ${qz.right} / ${qz.total}`; }
+function checkQ(){
+  const r = readAll(['q1'], 'qErr', 'Type a number.'); if (!r) return;
+  const v = r[0], ok = Math.abs(v - qz.ans) < 1e-9; let msg;
+  const hit = qz.alt.find(([w]) => Math.abs(v - w) < 1e-9);
+  if (ok) msg = `<b>Right: x = ${num(qz.ans)}.</b> Check it in ${qz.show}.`;
+  else if (hit && hit[1] === 'sign') msg = '<b>Sign slip.</b> To remove a term, do the opposite operation to both sides: subtracting removes a + term, adding removes a − term.';
+  else if (hit && hit[1] === 'xsign') msg = '<b>When you moved the x term, its sign should change.</b> Subtract it from both sides: ax − cx = (a − c)x.';
+  else if (hit && hit[1] === 'nodiv') msg = '<b>One more step:</b> you still have a number times x. Divide both sides by it.';
+  else if (hit && hit[1] === 'order') msg = '<b>Undo in reverse order.</b> Remove the added number first, then divide (or multiply).';
+  else if (hit && hit[1] === 'divfrac') msg = '<b>x/' + qz.show.split('/')[1][0] + ' means x divided by that number.</b> Undo it by multiplying both sides, not dividing.';
+  else if (hit && hit[1] === 'dist') msg = '<b>Divide the whole right side</b> by the number outside the bracket first (or expand both terms of the bracket).';
+  else msg = '<b>Not quite.</b> Substitute your answer back in: the two sides should match. Then check each move was done to both sides.';
+  countQ(ok); if (ok) qz.done = true;
+  $('qFb').className = 'feedback ' + (ok ? 'ok' : 'bad'); $('qFb').innerHTML = msg;
+}
+function answerChoice(i){
+  if (qz.done) return; qz.done = true; let ok, msg;
+  if (qz.type === 'check'){
+    const [a, b, c, d] = qz.e, L = a * qz.cand + b, R = c * qz.cand + d; ok = (i === 0) === qz.yes;
+    const tm = (k, v) => k === 1 ? pn(v) : k === -1 ? '−' + pn(v) : num(k) + '·' + pn(v);   // a·x with the number substituted
+    const sideStr = (k, m) => k ? tm(k, qz.cand) + (m ? (m < 0 ? ' − ' + num(-m) : ' + ' + num(m)) : '') : num(m);
+    msg = `<b>${ok ? 'Right' : 'Not this time'}: ${qz.yes ? 'yes' : 'no'}.</b> Substitute x = ${num(qz.cand)}: left side ${sideStr(a, b)} = ${num(L)}, right side ${sideStr(c, d)} = ${num(R)}${L === R ? ': equal ✓' : `: not equal. (The solution is x = ${num(qz.x)}.)`}`;
+  } else {
+    ok = i + 1 === qz.bad; const [a, b, c, d] = qz.e;
+    const why = { 1: `Step 1 should subtract ${c === 1 ? 'x' : c + 'x'} from both sides, leaving ${a - c}x on the left. It added instead, giving ${a + c}x.`, 2: `Step 2 should ${b < 0 ? 'add ' + num(-b) + ' to' : 'subtract ' + num(b) + ' from'} both sides, making the right side ${num(d - b)}. Moving the ${num(b)} across without switching the operation gave ${num(d + b)}.`, 3: `Step 3 divided the wrong way round: from ${a - c}x = ${num(d - b)}, x = ${num(d - b)} ÷ ${a - c}, not ${a - c} ÷ ${num(d - b)}.` };
+    msg = `<b>${ok ? 'Right' : 'Not this time'}: step ${qz.bad}.</b> ${why[qz.bad]} The correct answer is x = ${num(qz.x)}.`;
+  }
+  countQ(ok); $('qFb').className = 'feedback ' + (ok ? 'ok' : 'bad'); $('qFb').innerHTML = msg;
+}
+function showQ(){
+  countQ(false); qz.done = true; $('qErr').textContent = '';
+  const fb = $('qFb'); fb.className = 'feedback info';
+  if (qz.type === 'solve') fb.innerHTML = `<b>x = ${num(qz.ans)}</b>.`;
+  else if (qz.type === 'check') fb.innerHTML = `<b>${qz.yes ? 'Yes' : 'No'}</b>: the solution is x = ${num(qz.x)}.`;
+  else fb.innerHTML = `<b>Step ${qz.bad}</b> is wrong; the correct answer is x = ${num(qz.x)}.`;
+}
+$('qCheck').onclick = checkQ; $('qShow').onclick = showQ; $('qNew').onclick = newQuestion;
+$('q1').addEventListener('input', () => { $('qErr').textContent = ''; }); $('q1').addEventListener('keydown', e => { if (e.key === 'Enter') checkQ(); });
+selectOnFocus(['q1']);
+
+/* =====================================================================
+   6. START
+   ===================================================================== */
+$('bPresets').children[2].click();
+markF(0); drawF();
+markR(0); buildR();
+newQuestion();
+</script>
+</body>
+</html>
