@@ -283,7 +283,7 @@ pre.code{background:var(--paper);border:1px solid var(--line);border-radius:10px
     <div class="inputs" id="wIn"></div>
     <div class="err" id="wErr"></div>
     <div class="split" style="margin-top:12px">
-      <svg id="wSvg" viewBox="0 0 560 360" role="img" aria-label="The story's two lines"></svg>
+      <svg id="wSvg" viewBox="0 0 560 460" role="img" aria-label="The story's two lines"></svg>
       <div><ol class="msteps" id="wSteps"></ol></div>
     </div>
   </div>
@@ -410,7 +410,7 @@ function sysHTML(e1, e2, cls, vx, vy){ return `<span class="sys ${cls || ''}"><s
 const line = (g, x1, y1, x2, y2, style) => mk('line', { x1, y1, x2, y2, style }, g);
 const svgCss = document.createElement('style');
 svgCss.textContent = `
-  .tl{fill:var(--muted);font:500 11px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:3px}
+  .tl{fill:var(--muted);font:500 12.5px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:3px}
   .lab{font:700 15px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:5px}
   .labS{font:600 12.5px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:4px}
   .cap{fill:var(--muted);font:500 12px var(--sans)}
@@ -489,25 +489,45 @@ function readS(){
   ms.e1 = r.slice(0, 3); ms.e2 = r.slice(3); return true;
 }
 // Draw the lines of a system in a box; returns the screen mapping. vline: x value of the one-variable equation to show
-function drawLines(svg, W, H, e1, e2, sol, vline){
+// box (optional): { x0, x1, y0, y1 } to show just that region (word problems use the first quadrant); names: axis titles
+function drawLines(svg, W, H, e1, e2, sol, vline, box, names){
   svg.innerHTML = ''; const g = mk('g', {}, svg);
-  let R = 8; if (sol.kind === 'one') R = Math.max(8, Math.ceil(Math.max(Math.abs(sol.x.v), Math.abs(sol.y.v)) + 2));
-  const u = Math.min((W - 30) / (2 * R), (H - 30) / (2 * R * H / W)), cx = W / 2, cy = H / 2, X = x => cx + x * u, Y = y => cy - y * u;
-  const step = R <= 10 ? 1 : R <= 25 ? 5 : 10;
-  for (let k = -Math.ceil(W / u); k <= Math.ceil(W / u); k++) if (k % step === 0){ line(g, X(k), 0, X(k), H, 'stroke:var(--line);stroke-width:1'); line(g, 0, Y(k), W, Y(k), 'stroke:var(--line);stroke-width:1'); }
-  line(g, 0, Y(0), W, Y(0), 'stroke:var(--ink);stroke-width:1.5;opacity:.7'); line(g, X(0), 0, X(0), H, 'stroke:var(--ink);stroke-width:1.5;opacity:.7');
-  for (let k = -R; k <= R; k += step) if (k && X(k) > 10 && X(k) < W - 10){ txt(g, X(k), Y(0) + 14, num(k), 'tl', { 'text-anchor': 'middle' }); }
-  for (let k = -R; k <= R; k += step) if (k && Y(k) > 10 && Y(k) < H - 6){ txt(g, X(0) - 5, Y(k) + 4, num(k), 'tl', { 'text-anchor': 'end' }); }
-  const xr = (W / 2) / u + 1, yr = (H / 2) / u + 1;
+  if (!box){ let R = 8; if (sol.kind === 'one') R = Math.max(8, Math.ceil(Math.max(Math.abs(sol.x.v), Math.abs(sol.y.v)) + 2)); const ry = R * H / W; box = { x0: -R, x1: R, y0: -ry, y1: ry }; }
+  const L = names ? 52 : 14, B = names ? 44 : 14;                // room on the left and bottom for tick labels and axis titles
+  // the main graph keeps equal scales (so slopes look right); a word-problem graph stretches each axis to fill the panel
+  const u0 = Math.min((W - L - 14) / (box.x1 - box.x0), (H - B - 14) / (box.y1 - box.y0));
+  const ux = names ? (W - L - 14) / (box.x1 - box.x0) : u0, uy = names ? (H - B - 14) / (box.y1 - box.y0) : u0, u = u0;
+  const X = x => L + (x - box.x0) * ux, Y = y => H - B - (y - box.y0) * uy;
+  const span = Math.max(box.x1 - box.x0, box.y1 - box.y0), stepOf = r => [1, 2, 5, 10, 20, 50, 100].find(s2 => r / s2 <= 12) || 100;
+  const sx = names ? stepOf(box.x1 - box.x0) : stepOf(span), sy = names ? stepOf(box.y1 - box.y0) : stepOf(span);
+  const xa = Math.ceil(box.x0 / sx) * sx, ya = Math.ceil(box.y0 / sy) * sy, xMax = box.x0 + (W - L) / ux, yMax = box.y0 + (H - B) / uy;
+  for (let k = xa; k <= xMax; k += sx) line(g, X(k), 0, X(k), Y(box.y0), 'stroke:var(--line);stroke-width:1');
+  for (let k = ya; k <= yMax; k += sy) line(g, X(box.x0), Y(k), W, Y(k), 'stroke:var(--line);stroke-width:1');
+  if (box.y0 <= 0) line(g, X(box.x0), Y(0), W, Y(0), 'stroke:var(--ink);stroke-width:1.5;opacity:.7');
+  if (box.x0 <= 0) line(g, X(0), 0, X(0), Y(box.y0), 'stroke:var(--ink);stroke-width:1.5;opacity:.7');
+  const tx = names ? Y(box.y0) + 18 : Y(0) + 16, ty = names ? X(box.x0) - 7 : X(0) - 6;   // tick labels along the bottom/left edge for word problems, on the axes otherwise
+  for (let k = xa; k <= xMax; k += sx) if (k && X(k) > 14 && X(k) < W - 10) txt(g, X(k), tx, num(k), 'tl', { 'text-anchor': 'middle' });
+  for (let k = ya; k <= yMax; k += sy) if (k && Y(k) > 12 && Y(k) < H - 8) txt(g, ty, Y(k) + 4, num(k), 'tl', { 'text-anchor': 'end' });
+  if (names){ txt(g, (L + W) / 2, H - 6, names[0], 'labS', { 'text-anchor': 'middle', style: 'fill:var(--ink)' }); txt(g, 14, (H - B) / 2, names[1], 'labS', { 'text-anchor': 'middle', style: 'fill:var(--ink)', transform: `rotate(-90 14 ${(H - B) / 2})` }); }
+  const xr = Math.max(Math.abs(box.x0), Math.abs(xMax)) + 2, yr = Math.max(Math.abs(box.y0), Math.abs(yMax)) + 2;
+  // lines are clipped to the plotting area, so nothing spills into the tick-label margins
+  const cid = svg.id + 'Clip'; const cp = mk('clipPath', { id: cid }, mk('defs', {}, svg)); mk('rect', { x: X(box.x0), y: 0, width: W - X(box.x0), height: Y(box.y0) }, cp);
+  const pg = mk('g', { 'clip-path': `url(#${cid})` }, svg);
+  const wx = xMax - box.x0, wy = yMax - box.y0, inside = (x, y) => x > box.x0 + .06 * wx && x < xMax - .3 * wx && y > box.y0 + .06 * wy && y < yMax - .06 * wy;   // room for the label text
   const drawEq = ([a, b, c], col, w, dash, lab, labT) => {
     let p1, p2;
     if (b){ p1 = [-xr, (c - a * -xr) / b]; p2 = [xr, (c - a * xr) / b]; } else { p1 = [c / a, -yr]; p2 = [c / a, yr]; }
-    line(g, X(p1[0]), Y(p1[1]), X(p2[0]), Y(p2[1]), `stroke:${col};stroke-width:${w}${dash ? ';stroke-dasharray:' + dash : ''}`);
-    if (lab){ let t = labT, lx = p1[0] + (p2[0] - p1[0]) * t, ly = p1[1] + (p2[1] - p1[1]) * t; for (let k = 0; k < 20 && (Math.abs(lx) > xr - 2 || Math.abs(ly) > yr - 1.2); k++){ t = .5 + (t - .5) * .8; lx = p1[0] + (p2[0] - p1[0]) * t; ly = p1[1] + (p2[1] - p1[1]) * t; } txt(g, X(lx) + 8, Y(ly) - 8, lab, 'labS', { 'text-anchor': 'start', style: `fill:${col}` }); }
+    line(pg, X(p1[0]), Y(p1[1]), X(p2[0]), Y(p2[1]), `stroke:${col};stroke-width:${w}${dash ? ';stroke-dasharray:' + dash : ''}`);
+    if (lab){
+      // walk along the line from labT toward the middle until the label's spot is inside the visible area
+      let best = null; for (let k = 0; k <= 40 && !best; k++){ for (const t of [labT + (.5 - labT) * k / 40]){ const lx = p1[0] + (p2[0] - p1[0]) * t, ly = p1[1] + (p2[1] - p1[1]) * t; if (inside(lx, ly)) best = [lx, ly]; } }
+      if (!best) for (let t = 0; t <= 1 && !best; t += .01){ const lx = p1[0] + (p2[0] - p1[0]) * t, ly = p1[1] + (p2[1] - p1[1]) * t; if (inside(lx, ly)) best = [lx, ly]; }
+      if (best) txt(g, X(best[0]) + 8, Y(best[1]) - 8, lab, 'labS', { 'text-anchor': 'start', style: `fill:${col}` });
+    }
   };
   if (vline !== undefined && vline !== null) drawEq([1, 0, vline], 'var(--ok2)', 2, '6 4', `x = ${num(vline, 3)}`, .85);
-  drawEq(e1, 'var(--e1)', 3, '', eqStr(...e1), .8);
-  drawEq(e2, 'var(--e2)', sol.kind === 'many' ? 7 : 3, sol.kind === 'many' ? '2 9' : '', eqStr(...e2), .2);
+  drawEq(e1, 'var(--e1)', 3, '', eqStr(...e1, box.vx, box.vy), .8);   // word problems label lines with the story's letters
+  drawEq(e2, 'var(--e2)', sol.kind === 'many' ? 7 : 3, sol.kind === 'many' ? '2 9' : '', eqStr(...e2, box.vx, box.vy), .2);
   if (sol.kind === 'one'){
     mk('circle', { cx: X(sol.x.v), cy: Y(sol.y.v), r: 8, style: 'fill:var(--pt);stroke:var(--paper);stroke-width:2.5' }, g);
     txt(g, X(sol.x.v) + 12, Y(sol.y.v) + 20, `(${sol.x}, ${sol.y})`, 'lab', { 'text-anchor': 'start', style: 'fill:var(--pt)' });
@@ -574,15 +594,15 @@ $('tSame').onclick = () => { stopT(); $('tm').value = 0.5; $('tk').value = 1; dr
    ===================================================================== */
 const WM = [
   { n: 'Chickens and cows', f: [['wH', 'heads', 20], ['wL', 'legs', 56]],
-    sys: v => [[1, 1, v.wH], [2, 4, v.wL]], vars: ['chickens c', 'cows w'],
+    sys: v => [[1, 1, v.wH], [2, 4, v.wL]], vars: ['chickens c', 'cows w'], lt: ['c', 'w'],
     tell: v => ['Let c = chickens, w = cows (x = c, y = w on the graph).', `Heads: c + w = ${v.wH}`, `Legs: 2c + 4w = ${v.wL} (chickens have 2 legs, cows 4)`],
     check: (v, x, y) => `${x} chickens and ${y} cows: ${x + y} heads, ${2 * x + 4 * y} legs ✓` },
   { n: 'Concert tickets', f: [['wA', 'adult price', 12], ['wC', 'child price', 7], ['wT', 'tickets sold', 9], ['wP', 'total paid', 88]],
-    sys: v => [[1, 1, v.wT], [v.wA, v.wC, v.wP]], vars: ['adults a', 'children k'],
+    sys: v => [[1, 1, v.wT], [v.wA, v.wC, v.wP]], vars: ['adults a', 'children k'], lt: ['a', 'k'],
     tell: v => ['Let a = adult tickets, k = child tickets (x = a, y = k on the graph).', `Tickets: a + k = ${v.wT}`, `Total: ${v.wA}a + ${v.wC}k = ${v.wP}`],
     check: (v, x, y) => `${x} adults and ${y} children: ${x + y} tickets, ${v.wA}·${x} + ${v.wC}·${y} = ${v.wA * x + v.wC * y} ✓` },
   { n: 'Basketball points', f: [['wS', 'baskets made', 13], ['wP2', 'points scored', 31]],
-    sys: v => [[1, 1, v.wS], [2, 3, v.wP2]], vars: ['2-pointers t', '3-pointers h'],
+    sys: v => [[1, 1, v.wS], [2, 3, v.wP2]], vars: ['2-pointers t', '3-pointers h'], lt: ['t', 'h'],
     tell: v => ['Let t = 2-point baskets, h = 3-point baskets (x = t, y = h on the graph).', `Baskets: t + h = ${v.wS}`, `Points: 2t + 3h = ${v.wP2}`],
     check: (v, x, y) => `${x} two-pointers and ${y} three-pointers: ${x + y} baskets, ${2 * x + 3 * y} points ✓` },
 ];
@@ -598,7 +618,10 @@ function drawW(){
   if (r.some(v => !Number.isInteger(v) || v < 0 || v > 500)){ $('wErr').textContent = 'Use whole numbers from 0 to 500.'; return; }
   const v = {}; M.f.forEach(([id], k) => { v[id] = r[k]; });
   const [e1, e2] = M.sys(v), sol = solveSys(e1, e2);
-  drawLines($('wSvg'), 560, 360, e1, e2, sol);
+  // show the first quadrant, out to where the lines cross the axes (counts can't be negative)
+  const xi = [e1, e2].map(([a, b, c]) => a ? c / a : 0).filter(v2 => isFinite(v2) && v2 > 0), yi = [e1, e2].map(([a, b, c]) => b ? c / b : 0).filter(v2 => isFinite(v2) && v2 > 0);
+  const xTop = Math.max(4, ...xi, sol.kind === 'one' ? sol.x.v : 0) * 1.1, yTop = Math.max(4, ...yi, sol.kind === 'one' ? sol.y.v : 0) * 1.1;
+  drawLines($('wSvg'), 560, 460, e1, e2, sol, null, { x0: 0, x1: xTop, y0: 0, y1: yTop, vx: M.lt[0], vy: M.lt[1] }, M.vars);
   let out = M.tell(v).map(t => `<li><span class="e" style="font-size:15px">${t}</span></li>`).join('');
   if (sol.kind !== 'one') out += `<li><div class="verdict n">${sol.kind === 'none' ? 'These numbers have no solution: the two facts contradict each other.' : 'These facts say the same thing twice: not enough information.'}</div></li>`;
   else {
