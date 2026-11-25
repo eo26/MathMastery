@@ -57,7 +57,7 @@ window.MM_TOC = [
     { id: '8.B.2', title: 'Derivatives', url: 'https://claude.ai/artifact/5WnUWrkeKmTLe4sVP4S884', built: true },
     { id: '8.B.3', title: 'Integrals', url: 'https://claude.ai/artifact/JvwEgjNqHfuVvxDpxzNZH9', built: true },
     { id: '8.U.1', title: 'Infinite Series', url: 'https://claude.ai/artifact/RT5XL4SNFJ841QbHQozsqL', built: true },
-    { id: '8.U.2', title: 'Power Series' },
+    { id: '8.U.2', title: 'Power Series', url: 'https://claude.ai/artifact/WeHrjY1brY3EK8pqNygSEU', built: true },
     { id: '8.U.3', title: 'Taylor Approximations', url: 'https://claude.ai/artifact/3NrwDZET35q3HvkjCBMBMo', built: true },
   ]},
 ];

@@ -1,0 +1,845 @@
+<style>
+/* ===================== Page-specific styles (8.U.2) ===================== */
+/* the function f = purple, partial sums Sₙ(x) = orange, the probe point x₀ = blue, radius / interval = gold, converges = green, diverges = red */
+:root{ --cv:#7F77DD; --tp:#E08A2E; --tps:#F2C48D; --pa:#2F6FDB; --rad:#B86E00; --tol:#1D9E75; --err:#D8443A; --yes:#1D9E75; --no:#D8443A; }
+@media (prefers-color-scheme:dark){ :root{ --cv:#AFA9EC; --tp:#F2B266; --tps:#8a6a3f; --pa:#6EA2F5; --rad:#FFB547; --tol:#5DCAA5; --err:#F07B72; --yes:#5DCAA5; --no:#F07B72; } }
+.kv{color:var(--cv);font-weight:700}.kt{color:var(--tp);font-weight:700}.ka{color:var(--pa);font-weight:700}.kr{color:var(--rad);font-weight:700}.kg{color:var(--tol);font-weight:700}.kn{color:var(--no);font-weight:700}
+svg{user-select:none;-webkit-user-select:none}
+.stack svg{width:100%;height:auto;display:block;background:var(--bg);border:1px solid var(--line);border-radius:10px;margin-top:6px}
+#mF{cursor:crosshair}
+.split{display:grid;grid-template-columns:600px 1fr;gap:14px;margin-top:10px;align-items:start}
+.split svg{width:100%;height:auto;display:block;background:var(--bg);border:1px solid var(--line);border-radius:10px}
+.field.sm input{width:76px}
+.toggle button.on{background:var(--accent-bg);border-color:var(--accent);color:var(--accent)}
+.ctab{border-collapse:collapse;font:13.5px var(--mono);width:100%}
+.ctab th,.ctab td{border-bottom:1px dashed var(--line);padding:3px 8px;text-align:right}
+.ctab th{font:600 12px var(--sans);color:var(--muted)}
+.bigpoly{font:600 16px var(--mono);margin:10px 0 0;padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);overflow-x:auto;white-space:nowrap}
+.verdict{display:inline-block;font:600 15px var(--sans);padding:6px 12px;border-radius:8px;margin:8px 8px 0 0}
+.verdict.info{background:var(--accent-bg);color:var(--accent)}.verdict.ok{background:var(--ok-bg);color:var(--ok)}.verdict.bad{background:var(--bad-bg);color:var(--bad)}
+.legend span span{display:inline}
+.steps{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin:10px 0 0}
+.steps button.on{background:var(--accent-bg);border-color:var(--accent);color:var(--accent)}
+.steps .arr{color:var(--muted);font:600 15px var(--sans)}
+.traps{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:8px}
+.traps .t{border:1px solid var(--line);border-radius:10px;background:var(--bg);padding:10px}
+.traps .t h4{margin:0 0 4px;font:600 15px var(--sans)}
+.traps .t p{margin:6px 0 0;font-size:14.5px;line-height:1.5;color:var(--muted)}
+.traps svg{width:100%;height:auto;display:block}
+.qtext{font:17px/1.55 var(--serif);margin:4px 0 10px}
+.qexpr{font:600 22px var(--mono);margin:4px 0 10px}
+.choice{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 0}.choice button{min-width:120px;font-family:var(--mono)}
+.choice button.right{border-color:var(--ok);background:var(--ok-bg);color:var(--ok)}.choice button.wrong{border-color:var(--bad);background:var(--bad-bg);color:var(--bad)}
+.sg{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;line-height:1;margin:0 4px 0 0}
+.sg b{font-size:1.35em;font-weight:400}.sg small{font-size:.5em;font-weight:500}
+pre.code{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:12px 16px;overflow-x:auto;font:13.5px/1.6 var(--mono);margin:10px 0 16px}
+</style>
+
+<!-- ===================== Top bar ===================== -->
+<div class="topbar"><div class="topbar-in">
+  <span class="brand">Math<b>Mastery</b></span>
+  <span class="crumbs">Chapter 8 · Calculus › Undergraduate</span>
+  <span class="pid">8.U.2</span>
+</div></div>
+
+<!-- ===================== Hero ===================== -->
+<header class="prose hero">
+  <div class="kicker">Chapter 8 · Calculus</div>
+  <h1>Power Series</h1>
+  <p class="dek">A polynomial that never ends. For some values of x the sum makes sense, for others it doesn’t, and where it does you can treat it like any other function: plug in, differentiate, integrate, even solve equations with it.</p>
+  <div class="tiers" aria-label="Tier">
+    <span class="tier">Basics</span>
+    <span class="tier on">Undergraduate <small>you are here</small></span>
+    <span class="tier">Masters</span>
+  </div>
+  <div class="goals">
+    <h3>On this page</h3>
+    <ul>
+      <li>Read a <b>power series</b> Σ <i>c<sub>k</sub></i>(<i>x</i> − <i>a</i>)<sup><i>k</i></sup> as a function of <i>x</i>, and see that it converges on an interval around its <b>centre</b>.</li>
+      <li>Find the <b>radius of convergence</b> with the ratio or root test, then check the two <b>endpoints</b> separately to get the <b>interval of convergence</b>.</li>
+      <li><b>Differentiate and integrate term by term</b>, and build new series by <b>substitution</b> and multiplication.</li>
+      <li>Use series to compute π, to count with <b>generating functions</b>, and to solve differential equations, including the <b>Bessel function</b> behind a drum’s sound.</li>
+    </ul>
+  </div>
+</header>
+
+<main>
+<!-- ===================== §1 ===================== -->
+<section class="prose">
+  <h2><span class="n">1</span>A polynomial that goes on forever</h2>
+  <p>A <b>power series</b> centred at <i>a</i> is</p>
+  <div class="math">\[ \sum_{k=0}^{\infty} c_k (x - a)^k = c_0 + c_1(x - a) + c_2(x - a)^2 + \cdots \]</div>
+  <p>The numbers <i>c<sub>k</sub></i> are its <b>coefficients</b>. Pick a value of <i>x</i> and you get an ordinary series of numbers (8.U.1), which converges or doesn’t. So a power series defines a function, but only on the set of <i>x</i> where it converges. The simplest example is the geometric series: 1 + <i>x</i> + <i>x</i>² + … = 1/(1 − <i>x</i>) for −1 &lt; <i>x</i> &lt; 1, and nonsense elsewhere.</p>
+  <p>The set where a power series converges is always an interval centred at <i>a</i>. The reason: if it converges at some point at distance <i>d</i> from <i>a</i>, its terms there stay bounded, and at any point closer than <i>d</i> the terms are smaller by a geometric factor, so they converge too (absolutely). The half-width of that interval is the <b>radius of convergence</b> <i>R</i>: the series converges absolutely for |<i>x</i> − <i>a</i>| &lt; <i>R</i>, diverges for |<i>x</i> − <i>a</i>| &gt; <i>R</i>, and the two <b>endpoints</b> <i>a</i> ± <i>R</i> have to be checked one at a time. <i>R</i> can be 0 (only the centre works) or ∞ (every <i>x</i> works).</p>
+</section>
+<section class="wide">
+  <div class="card" id="main">
+    <div class="card-h"><span class="tag">Explore</span><h3>Where does it converge?</h3>
+      <span class="sub">Top: the function (purple, when it has a name) and the partial sums <i>S<sub>n</sub></i>(<i>x</i>) (orange; faint for fewer terms). Gold marks the radius; the endpoint dots are filled if the series converges there, hollow if not. Click or drag on the top picture to move the probe point <i>x</i>₀ (blue). Bottom: the running total at <i>x</i>₀, term by term.</span></div>
+    <div class="row" id="mPresets"></div>
+    <div class="desc" id="mDesc"></div>
+    <div class="inputs">
+      <label class="field sm"><span>probe <i>x</i>₀</span><input id="mX" type="text" inputmode="decimal" autocomplete="off" style="border-color:var(--pa)"></label>
+      <label class="field sm"><span>terms <i>n</i></span><input id="mN" type="text" inputmode="numeric" autocomplete="off"></label>
+      <div class="row" style="margin:0"><button id="mUse">Use these</button><button id="mMinus">− term</button><button class="primary" id="mPlus">+ term</button><button id="mPlay">Play</button></div>
+    </div>
+    <div class="err" id="mErr"></div>
+    <div class="bigpoly" id="mEq"></div>
+    <div class="stack"><svg id="mF" viewBox="0 0 960 320" role="img" aria-label="The function and its partial sums, with the interval of convergence"></svg><svg id="mP" viewBox="0 0 960 210" role="img" aria-label="Partial sums at the probe point"></svg></div>
+    <div><span class="verdict" id="mV"></span></div>
+    <div class="split" style="grid-template-columns:1fr 1fr"><div class="readout" id="mOut" style="margin:0"></div><table class="ctab" id="mTab"></table></div>
+    <div class="legend">
+      <span><i class="sw mv" style="background:var(--cv)"></i><span>the function</span></span>
+      <span><i class="sw mv" style="background:var(--tp)"></i><span>partial sum <i>S<sub>n</sub></i>(<i>x</i>)</span></span>
+      <span><i class="sw" style="background:var(--pa)"></i><span>probe <i>x</i>₀</span></span>
+      <span><i class="sw mv" style="background:var(--rad)"></i><span>edge of the radius</span></span>
+      <span><i class="sw" style="background:var(--tol);opacity:.4"></i><span>interval of convergence</span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §2 ===================== -->
+<section class="prose">
+  <h2><span class="n">2</span>Finding the radius, then the endpoints</h2>
+  <p>Apply the ratio test from 8.U.1 to the terms <i>c<sub>k</sub></i>(<i>x</i> − <i>a</i>)<sup><i>k</i></sup>: the ratio of neighbours is |<i>c</i><sub><i>k</i>+1</sub>/<i>c<sub>k</sub></i>|·|<i>x</i> − <i>a</i>|. If |<i>c</i><sub><i>k</i>+1</sub>/<i>c<sub>k</sub></i>| → <i>L</i>, the series converges when <i>L</i>|<i>x</i> − <i>a</i>| &lt; 1, so</p>
+  <div class="math">\[ R = \lim_{k\to\infty}\left|\frac{c_k}{c_{k+1}}\right| \quad\text{(ratio)}, \qquad \frac1R = \limsup_{k\to\infty}|c_k|^{1/k} \quad\text{(root, which always works)}. \]</div>
+  <p>Examples: for Σ <i>x<sup>k</sup></i>/<i>k</i>!, |<i>c<sub>k</sub></i>/<i>c</i><sub><i>k</i>+1</sub>| = <i>k</i> + 1 → ∞, so <i>R</i> = ∞. For Σ <i>k</i>!·<i>x<sup>k</sup></i> it’s 1/(<i>k</i> + 1) → 0, so <i>R</i> = 0. For Σ (<i>x</i> − 1)<sup><i>k</i></sup>/(<i>k</i>·3<sup><i>k</i></sup>) it’s 3(<i>k</i> + 1)/<i>k</i> → 3. The table in the explorer shows both ratios homing in on <i>R</i>.</p>
+  <p>The tests say nothing at |<i>x</i> − <i>a</i>| = <i>R</i>, so plug each endpoint in and use the series tests directly. Σ <i>x<sup>k</sup></i>/<i>k</i> at <i>x</i> = 1 is the harmonic series (diverges) and at <i>x</i> = −1 the alternating harmonic series (converges): interval [−1, 1). Σ <i>x<sup>k</sup></i>/<i>k</i>² converges at both ends: [−1, 1]. Σ <i>x<sup>k</sup></i> converges at neither: (−1, 1).</p>
+</section>
+
+<!-- ===================== §3 ===================== -->
+<section class="prose">
+  <h2><span class="n">3</span>Calculus one term at a time</h2>
+  <p>Inside its radius a power series can be treated like a polynomial: <b>differentiate term by term</b> or <b>integrate term by term</b>, and the new series has the <b>same radius</b> and equals the derivative or integral of the function. (Endpoints can change: differentiating can lose one, integrating can gain one.) Combined with <b>substitution</b> (replace <i>x</i> by −<i>x</i>, <i>x</i>², 2<i>x</i>, …) and multiplying by powers of <i>x</i>, the geometric series alone gives a whole family:</p>
+  <div class="math">\[ \frac{1}{(1-x)^2} = \sum (k+1)x^k, \qquad \ln(1+x) = \sum_{k\ge1} \frac{(-1)^{k+1}x^k}{k}, \qquad \arctan x = \sum \frac{(-1)^k x^{2k+1}}{2k+1}. \]</div>
+  <p>This is also how to get series for functions with no elementary antiderivative. The bell-curve area ∫₀<sup><i>x</i></sup> <i>e</i><sup>−<i>t</i>²</sup> d<i>t</i> has no formula in elementary functions, but substituting −<i>t</i>² into the series for <i>e<sup>t</sup></i> and integrating term by term gives <i>x</i> − <i>x</i>³/3 + <i>x</i>⁵/10 − …, which converges everywhere. Two series can also be multiplied like polynomials (the <b>Cauchy product</b>): (1 + <i>x</i> + <i>x</i>² + …)² collects 1, 2, 3, … ways of making each power, giving Σ(<i>k</i> + 1)<i>x<sup>k</sup></i> again.</p>
+</section>
+<section class="wide">
+  <div class="card" id="ops">
+    <div class="card-h"><span class="tag">Explore</span><h3>Build a series step by step</h3>
+      <span class="sub">Choose a chain, then click through its steps. Each step changes the coefficients by a simple rule; the plot compares the new function (purple) with its partial sum of 12 terms (orange) and marks the radius, which never changes along a chain.</span></div>
+    <div class="row" id="oPresets"></div>
+    <div class="steps" id="oSteps"></div>
+    <div class="bigpoly" id="oEq"></div>
+    <div class="split"><svg id="oSvg" viewBox="0 0 600 320" role="img" aria-label="The function and its partial sum"></svg><div class="readout" id="oOut" style="margin:0"></div></div>
+  </div>
+</section>
+
+<!-- ===================== §4 ===================== -->
+<section class="prose">
+  <h2><span class="n">4</span>Series as unknowns: solving differential equations</h2>
+  <p>Suppose you didn’t know <i>e<sup>x</sup></i> and wanted a function with <i>y</i>′ = <i>y</i> and <i>y</i>(0) = 1. Guess <i>y</i> = Σ <i>c<sub>k</sub>x<sup>k</sup></i>. Then <i>y</i>′ = Σ (<i>k</i> + 1)<i>c</i><sub><i>k</i>+1</sub><i>x<sup>k</sup></i>, and matching the coefficient of each power gives the <b>recurrence relation</b> <i>c</i><sub><i>k</i>+1</sub> = <i>c<sub>k</sub></i>/(<i>k</i> + 1). Starting from <i>c</i><sub>0</sub> = 1 it gives <i>c<sub>k</sub></i> = 1/<i>k</i>!: the exponential series, found from the equation alone. The same trick on <i>y</i>″ = −<i>y</i> produces cos and sin.</p>
+  <p>Some important functions are <i>defined</i> this way, because their equation has no solution in familiar functions. When a round drumhead vibrates, the shape across its radius follows <b>Bessel’s equation</b> <i>x</i><i>y</i>″ + <i>y</i>′ + <i>x</i><i>y</i> = 0. The series solution is the Bessel function <i>J</i>₀(<i>x</i>) = 1 − <i>x</i>²/4 + <i>x</i>⁴/64 − …. Its zeros 2.405, 5.520, 8.654, … set the drum’s pitches, and because they are not evenly spaced (unlike a guitar string’s 1 : 2 : 3), a drum sounds less like a definite note.</p>
+</section>
+<section class="wide">
+  <div class="card" id="ode">
+    <div class="card-h"><span class="tag">Explore</span><h3>Solve by matching coefficients</h3>
+      <span class="sub">Pick an equation and its starting values. The recurrence fills in the coefficients one by one; the plot compares the series solution (orange, 40 terms) with the known solution (purple).</span></div>
+    <div class="row" id="dPresets"></div>
+    <div class="inputs" id="dIns">
+      <label class="field sm"><span><i>y</i>(0)</span><input id="dY0" type="text" inputmode="decimal" autocomplete="off"></label>
+      <label class="field sm" id="dY1Box"><span><i>y</i>′(0)</span><input id="dY1" type="text" inputmode="decimal" autocomplete="off"></label>
+      <div class="row" style="margin:0"><button class="primary" id="dGo">Solve</button></div>
+    </div>
+    <div class="err" id="dErr"></div>
+    <div class="bigpoly" id="dEq"></div>
+    <div class="split"><svg id="dSvg" viewBox="0 0 600 320" role="img" aria-label="Series solution against the known solution"></svg><div><table class="ctab" id="dTab"></table><div class="readout" id="dOut"></div></div></div>
+  </div>
+</section>
+
+<!-- ===================== §5 ===================== -->
+<section class="prose">
+  <h2><span class="n">5</span>Computing π</h2>
+  <p>Put <i>x</i> = 1 in the arctan series (an endpoint, where it still converges, just barely) and you get Leibniz’s formula π/4 = 1 − ⅓ + ⅕ − …. It is beautiful and hopeless: the error after <i>n</i> terms is about 1/(2<i>n</i>), so a million terms give only six correct digits. The fix is to evaluate arctan <b>closer to the centre</b>, where the powers shrink fast. Abraham Sharp used π = 6 arctan(1/√3), and John Machin in 1706 found <b>Machin’s formula</b> π/4 = 4 arctan(1/5) − arctan(1/239), which gains about 1.4 digits per term. Formulas like his computed π by hand to 100 digits, and versions of them broke records into the computer age.</p>
+</section>
+<section class="wide">
+  <div class="card" id="pi">
+    <div class="card-h"><span class="tag">Explore</span><h3>Three ways to π</h3>
+      <span class="sub">Choose how many terms of each arctan series to use. The plot shows how many digits are right (− log₁₀ of the error) against the number of terms.</span></div>
+    <div class="inputs"><label class="field sm"><span>terms <i>n</i></span><input id="piN" type="text" inputmode="numeric" autocomplete="off"></label><div class="row" style="margin:0"><button class="primary" id="piGo">Compute</button></div><div class="row" id="piPresets" style="margin:0"></div></div>
+    <div class="err" id="piErr"></div>
+    <div class="split" style="grid-template-columns:520px 1fr"><svg id="piSvg" viewBox="0 0 600 320" role="img" aria-label="Correct digits against number of terms"></svg><table class="ctab" id="piTab"></table></div>
+    <div class="readout" id="piOut"></div>
+    <div class="legend">
+      <span><i class="sw mv" style="background:var(--err)"></i><span>Leibniz: 4 arctan 1</span></span>
+      <span><i class="sw mv" style="background:var(--tp)"></i><span>Sharp: 6 arctan(1/√3)</span></span>
+      <span><i class="sw mv" style="background:var(--tol)"></i><span>Machin: 16 arctan(1/5) − 4 arctan(1/239)</span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §6 ===================== -->
+<section class="prose">
+  <h2><span class="n">6</span>Generating functions: counting with series</h2>
+  <p>Turn the idea around: instead of studying a function through its coefficients, study a sequence of numbers by packing it into a function. The <b>generating function</b> of a sequence <i>a</i>₀, <i>a</i>₁, <i>a</i>₂, … is Σ <i>a<sub>k</sub>x<sup>k</sup></i>. Take the Fibonacci numbers 1, 1, 2, 3, 5, 8, …, where each is the sum of the two before. If <i>F</i>(<i>x</i>) is their generating function, the rule says <i>F</i> − <i>xF</i> − <i>x</i>²<i>F</i> = 1, so</p>
+  <div class="math">\[ F(x) = \frac{1}{1 - x - x^2} = 1 + x + 2x^2 + 3x^3 + 5x^4 + 8x^5 + \cdots \]</div>
+  <p>The radius of convergence now carries information. The denominator vanishes at <i>x</i> = (√5 − 1)/2 ≈ 0.618, so <i>R</i> ≈ 0.618, and the coefficients must grow like (1/<i>R</i>)<sup><i>k</i></sup> = φ<sup><i>k</i></sup>, with φ ≈ 1.618 the golden ratio. That is why the ratio of neighbouring Fibonacci numbers tends to φ.</p>
+</section>
+<section class="wide">
+  <div class="card" id="gen">
+    <div class="card-h"><span class="tag">Explore</span><h3>Unpack a generating function</h3>
+      <span class="sub">Pick a function. Its coefficients (found by dividing the series out) count something; the ratio of neighbouring coefficients tends to 1/<i>R</i>.</span></div>
+    <div class="row" id="gPresets"></div>
+    <div class="desc" id="gDesc"></div>
+    <div class="split"><svg id="gSvg" viewBox="0 0 600 300" role="img" aria-label="Coefficients of the generating function"></svg><table class="ctab" id="gTab"></table></div>
+    <div class="readout" id="gOut"></div>
+  </div>
+</section>
+
+<!-- ===================== §7 ===================== -->
+<section class="prose">
+  <h2><span class="n">7</span>Traps and non-examples</h2>
+</section>
+<section class="wide">
+  <div class="card" id="traps">
+    <div class="card-h"><span class="tag">Compare</span><h3>Easy to get wrong</h3></div>
+    <div class="traps">
+      <div class="t"><h4 class="kn">✕ “Same radius, so same interval”</h4><svg id="tr1" viewBox="0 0 300 200"></svg><p>ln(1 + <i>x</i>) = <i>x</i> − <i>x</i>²/2 + … converges at <i>x</i> = 1 (blue, settles on ln 2). Its derivative series 1 − <i>x</i> + <i>x</i>² − … has the same <i>R</i> = 1 but diverges at <i>x</i> = 1 (red, 1, 0, 1, 0, …).</p></div>
+      <div class="t"><h4 class="kn">✕ Checking only one endpoint</h4><svg id="tr2" viewBox="0 0 300 200"></svg><p>Σ <i>x<sup>k</sup></i>/<i>k</i>: at <i>x</i> = −1 the partial sums settle (green), at <i>x</i> = 1 they climb forever (red). The radius is symmetric; the endpoint behaviour need not be.</p></div>
+      <div class="t"><h4 class="kn">✕ Ratio of coefficients when powers skip</h4><svg id="tr3" viewBox="0 0 300 200"></svg><p>Σ <i>x</i><sup>2<i>k</i></sup>/4<sup><i>k</i></sup> = Σ (<i>x</i>²/4)<sup><i>k</i></sup>: geometric in <i>x</i>², so it needs <i>x</i>² &lt; 4. <i>R</i> = 2, not 4. Apply the ratio test to whole terms, not to the listed numbers.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §8 ===================== -->
+<section class="prose">
+  <h2><span class="n">8</span>Now, in symbols</h2>
+  <div class="math">\[ f(x) = \sum_{k=0}^{\infty} c_k (x-a)^k, \qquad \frac1R = \limsup_{k\to\infty} |c_k|^{1/k}, \qquad \text{converges absolutely for } |x-a|<R \]</div>
+  <div class="math">\[ f'(x) = \sum_{k=1}^{\infty} k\,c_k (x-a)^{k-1}, \qquad \int_a^x f = \sum_{k=0}^{\infty} \frac{c_k}{k+1}(x-a)^{k+1}, \qquad \text{same } R \]</div>
+  <div class="math">\[ \Big(\sum a_k x^k\Big)\Big(\sum b_k x^k\Big) = \sum_k \Big(\sum_{j=0}^{k} a_j b_{k-j}\Big) x^k \quad\text{(Cauchy product)}, \qquad c_k = \frac{f^{(k)}(a)}{k!} \text{ (8.U.3)} \]</div>
+  <div class="math">\[ \frac{\pi}{4} = 4\arctan\frac15 - \arctan\frac1{239}, \qquad J_0(x) = \sum_{k=0}^{\infty} \frac{(-1)^k}{(k!)^2}\Big(\frac{x}{2}\Big)^{2k}, \qquad \sum_{k} F_{k+1} x^k = \frac{1}{1-x-x^2} \]</div>
+  <p>A computer algebra system handles all of this, including reading counts off a generating function:</p>
+  <pre class="code"><code>import sympy as sp                                         # symbolic maths
+
+x, k = sp.symbols('x k')                                   # the variable and an index
+print(sp.series(sp.atan(x), x, 0, 9))                      # x - x**3/3 + x**5/5 - x**7/7 + O(x**9)
+print(sp.series(1 / (1 - x - x**2), x, 0, 10))             # 1 + x + 2x² + 3x³ + 5x⁴ + …: Fibonacci numbers
+c = 1 / sp.factorial(k)                                    # coefficients of the exponential series
+print(sp.limit(sp.Abs(c / c.subs(k, k + 1)), k, sp.oo))     # ratio |c_k / c_(k+1)| → oo, so R = ∞
+
+y = sp.Function('y')                                       # an unknown function
+print(sp.dsolve(y(x).diff(x, 2) + y(x), hint='2nd_power_series_ordinary', n=8))  # power-series solution of y'' = -y</code></pre>
+</section>
+
+<!-- ===================== §9 ===================== -->
+<section class="prose">
+  <h2><span class="n">9</span>Where this goes</h2>
+  <ul class="goes">
+    <li><b>Next:</b> 8.U.3, Taylor approximations: every smooth function’s own power series, with <i>c<sub>k</sub></i> = <i>f</i><sup>(<i>k</i>)</sup>(<i>a</i>)/<i>k</i>!, and how good its first few terms are.</li>
+    <li><b>Later in this book:</b> complex analysis, where the radius of convergence is the distance to the nearest singularity; differential equations, where series solutions give Bessel, Legendre and Airy functions; and combinatorics and probability, where generating functions count and compute expected values.</li>
+    <li><b>In the world:</b> how computers evaluate special functions, drum and antenna design (Bessel functions), counting problems in computer science, and record computations of π.</li>
+  </ul>
+</section>
+
+<!-- ===================== §10 ===================== -->
+<section class="prose">
+  <h2><span class="n">10</span>Words to know</h2>
+  <div class="vocab">
+    <div class="term"><b>Power series</b>A series Σ <i>c<sub>k</sub></i>(<i>x</i> − <i>a</i>)<sup><i>k</i></sup>: a function of <i>x</i> wherever it converges.</div>
+    <div class="term"><b>Coefficient</b>The number <i>c<sub>k</sub></i> multiplying (<i>x</i> − <i>a</i>)<sup><i>k</i></sup>.</div>
+    <div class="term"><b>Centre</b>The point <i>a</i> the series is built around; it always converges there.</div>
+    <div class="term"><b>Radius of convergence</b><i>R</i>: converges for |<i>x</i> − <i>a</i>| &lt; <i>R</i>, diverges for |<i>x</i> − <i>a</i>| &gt; <i>R</i>. Can be 0 or ∞.</div>
+    <div class="term"><b>Interval of convergence</b>All <i>x</i> where it converges: (<i>a</i> − <i>R</i>, <i>a</i> + <i>R</i>) plus whichever endpoints work.</div>
+    <div class="term"><b>Endpoint</b><i>a</i> ± <i>R</i>; must be tested separately.</div>
+    <div class="term"><b>Ratio formula for <i>R</i></b><i>R</i> = lim |<i>c<sub>k</sub></i>/<i>c</i><sub><i>k</i>+1</sub>|, when the limit exists.</div>
+    <div class="term"><b>Root formula for <i>R</i></b>1/<i>R</i> = lim sup |<i>c<sub>k</sub></i>|<sup>1/<i>k</i></sup> (Cauchy–Hadamard); always works.</div>
+    <div class="term"><b>Term-by-term differentiation</b>Differentiate each power; same radius.</div>
+    <div class="term"><b>Term-by-term integration</b>Integrate each power; same radius.</div>
+    <div class="term"><b>Substitution</b>Replacing <i>x</i> by an expression such as −<i>x</i>² in a known series.</div>
+    <div class="term"><b>Cauchy product</b>Multiplying two power series by collecting equal powers.</div>
+    <div class="term"><b>Analytic function</b>A function equal to its power series near each point.</div>
+    <div class="term"><b>Recurrence relation</b>A rule giving each coefficient from earlier ones, such as <i>c</i><sub><i>k</i>+1</sub> = <i>c<sub>k</sub></i>/(<i>k</i> + 1).</div>
+    <div class="term"><b>Bessel function</b><i>J</i>₀, the series solution of <i>xy</i>″ + <i>y</i>′ + <i>xy</i> = 0; describes drumheads and waves in cylinders.</div>
+    <div class="term"><b>Leibniz series</b>π/4 = 1 − ⅓ + ⅕ − …: arctan at its endpoint; very slow.</div>
+    <div class="term"><b>Machin’s formula</b>π/4 = 4 arctan(1/5) − arctan(1/239): fast because both arguments are near 0.</div>
+    <div class="term"><b>Generating function</b>Σ <i>a<sub>k</sub>x<sup>k</sup></i>: a function that packs a sequence into its coefficients.</div>
+  </div>
+</section>
+
+<!-- ===================== Quiz ===================== -->
+<section class="prose"><h2><span class="n">11</span>Check yourself</h2>
+  <p>Four kinds of questions: find the radius, pick the interval of convergence, find a coefficient of a new series, and evaluate a series. Type ∞ (or “inf”) for an infinite radius; fractions like 1/2 are fine.</p>
+</section>
+<section class="wide">
+  <div class="card" id="quiz">
+    <div class="card-h"><span class="tag">Quiz</span><h3 id="qTitle"></h3><span class="score" id="score">Score: 0 / 0</span></div>
+    <div class="qtext" id="qText"></div>
+    <div class="qexpr" id="qExpr"></div>
+    <div class="choice" id="qChoice"></div>
+    <div class="inputs" id="qIn">
+      <label class="field"><span id="qLab">Answer</span><input id="q1" type="text" autocomplete="off" style="width:160px"></label>
+      <div class="row" style="margin:0"><button class="primary" id="qCheck">Check</button></div>
+    </div>
+    <div class="row" style="margin:10px 0 0"><button id="qShow">Show answer</button><button id="qNew">New question</button></div>
+    <div class="err" id="qErr"></div>
+    <div class="feedback" id="qFb" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ===================== Pager (filled in by the shared navigation) ===================== -->
+<nav class="wide">
+  <div class="pager"></div>
+  <div class="meta">8.U.2 · Prerequisites: 8.U.1 (infinite series), 8.B.2 (derivatives), 8.B.3 (integrals) · Leads to: 8.U.3 (Taylor approximations), complex analysis, series solutions of differential equations</div>
+</nav>
+</main>
+
+<script>
+/* =====================================================================
+   1. HELPERS
+   ===================================================================== */
+const NS = 'http://www.w3.org/2000/svg';
+const $ = id => document.getElementById(id);
+function mk(tag, attrs, parent){                           // create an SVG element with attributes
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function txt(parent, x, y, s, cls, extra){                 // create an SVG text element
+  extra = Object.assign({}, extra || {});
+  if (extra['text-anchor']){ extra.style = (extra.style ? extra.style + ';' : '') + 'text-anchor:' + extra['text-anchor']; delete extra['text-anchor']; }
+  const t = mk('text', Object.assign({ x, y, class: cls || '' }, extra), parent);
+  t.textContent = s;
+  return t;
+}
+// round for display, use a true minus sign, never show −0
+function num(x, d){ if (d === undefined) d = 2; const r = Math.round(x * Math.pow(10, d)) / Math.pow(10, d); return r === 0 ? '0' : (r < 0 ? '−' : '') + String(Math.abs(r)); }
+const pn = x => x < 0 ? `(${num(x)})` : num(x);              // wrap negatives in brackets when substituting
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const ri = (a, b) => a + Math.floor(Math.random() * (b - a + 1));   // random whole number from a to b
+const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+function parseNum(s){                                     // integers, decimals, minus, simple fractions
+  s = String(s).trim().replace(/[−–]/g, '-').replace(/\s+/g, '');
+  if (/^-?\d+(\.\d+)?$|^-?\.\d+$/.test(s)) return parseFloat(s);
+  const m = s.match(/^(-?\d+)\/(\d+)$/);
+  if (m && +m[2] !== 0) return +m[1] / +m[2];
+  return NaN;
+}
+function selectOnFocus(ids){ ids.forEach(id => $(id).addEventListener('focus', e => e.target.select())); }
+function buttons(boxId, list, onPick){                    // a row of preset buttons; returns a function that marks one as on
+  list.forEach((p, i) => { const b = document.createElement('button'); b.className = 'preset'; b.textContent = p.n; b.onclick = () => onPick(i); $(boxId).appendChild(b); });
+  return i => [...$(boxId).children].forEach((b, j) => b.classList.toggle('on', j === i));
+}
+function svgPt(svg, ev){                                  // mouse position in the SVG's own coordinates
+  const p = svg.createSVGPoint(); p.x = ev.clientX; p.y = ev.clientY;
+  return p.matrixTransform(svg.getScreenCTM().inverse());
+}
+const svgCss = document.createElement('style');
+svgCss.textContent = `
+  .grid{stroke:var(--line);stroke-width:1}
+  .axis{stroke:var(--ink);stroke-width:1.4;opacity:.7}
+  .tl{fill:var(--muted);font:500 11.5px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:3px}
+  .lab{font:700 14px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:5px}
+  .labS{font:600 12.5px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+  .cap{fill:var(--muted);font:600 12px var(--sans);letter-spacing:.06em;paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+  .oval{fill:var(--paper);stroke:var(--line);stroke-width:1.5}
+`;
+document.head.appendChild(svgCss);
+let clipN = 0;                                            // unique clip-path ids
+
+/* ---------- axes: a coordinate grid inside an SVG, with separate x and y scales ---------- */
+function axes(svg, W, H, b, o){
+  o = o || {};
+  svg.innerHTML = '';
+  const L = o.padL ?? 44, R = o.padR ?? 16, T = o.padT ?? 16, B = o.padB ?? 30;
+  const sx = (W - L - R) / (b.x1 - b.x0), sy = (H - T - B) / (b.y1 - b.y0);   // pixels per unit
+  const X = x => L + (x - b.x0) * sx, Y = y => T + (b.y1 - y) * sy;
+  const step = (s, px) => (o.half ? [0.5, 1, 2, 5, 10, 20, 50, 100] : [1, 2, 5, 10, 20, 50, 100]).find(k => k * s >= px) || 200;   // a round step at least px pixels wide
+  const xg = o.xg || step(sx, 9), yg = o.yg || step(sy, 9);        // grid-line spacing
+  const xt = o.xt || step(sx, 34), yt = o.yt || step(sy, 26);      // tick-label spacing
+  const gGrid = mk('g', {}, svg), id = 'clp' + (++clipN);
+  const cp = mk('clipPath', { id }, svg); mk('rect', { x: L, y: T, width: W - L - R, height: H - T - B }, cp);
+  const cg = mk('g', { 'clip-path': `url(#${id})` }, svg);         // clipped layer for curves
+  const m = mk('g', {}, svg), top = mk('g', {}, svg);              // free layer, then labels on top
+  const near = (v, s) => Math.abs(v / s - Math.round(v / s)) < 1e-6;
+  for (let x = Math.ceil(b.x0 / xg) * xg; x <= b.x1 + 1e-9; x += xg) mk('line', { x1: X(x), y1: T, x2: X(x), y2: H - B, class: 'grid' }, gGrid);
+  for (let y = Math.ceil(b.y0 / yg) * yg; y <= b.y1 + 1e-9; y += yg) mk('line', { x1: L, y1: Y(y), x2: W - R, y2: Y(y), class: 'grid' }, gGrid);
+  const ay = (b.y0 <= 0 && b.y1 >= 0) ? Y(0) : H - B;              // where the x-axis is drawn
+  const ax = (b.x0 <= 0 && b.x1 >= 0) ? X(0) : L;                  // where the y-axis is drawn
+  mk('line', { x1: L, y1: ay, x2: W - R, y2: ay, class: 'axis' }, gGrid);
+  mk('line', { x1: ax, y1: T, x2: ax, y2: H - B, class: 'axis' }, gGrid);
+  const fx = o.fx || (v => num(v)), fy = o.fy || (v => num(v));
+  for (let x = Math.ceil(b.x0 / xt) * xt; x <= b.x1 + 1e-9; x += xt){
+    if (Math.abs(x) < 1e-9 && ax === X(0) && !o.zeroX) continue;
+    txt(top, X(x), ay + 16, fx(x), 'tl', { 'text-anchor': 'middle' });
+  }
+  for (let y = Math.ceil(b.y0 / yt) * yt; y <= b.y1 + 1e-9; y += yt){
+    if (Math.abs(y) < 1e-9 && ay === Y(0)) continue;
+    txt(top, ax - 6, Y(y) + 4, fy(y), 'tl', { 'text-anchor': 'end' });
+  }
+  if (o.xT) txt(top, W - R - 2, ay - 8, o.xT, 'cap', { 'text-anchor': 'end' });
+  if (o.yT) txt(top, ax + 8, T + 12, o.yT, 'cap');
+  return { svg, X, Y, sx, sy, cg, m, top, b, L, R, T, B, W, H, ay, ax,
+           inv: (px, py) => [b.x0 + (px - L) / sx, b.y1 - (py - T) / sy] };
+}
+function dPath(P, pts){ return pts.map((p, i) => (i ? 'L' : 'M') + P.X(p[0]).toFixed(1) + ' ' + P.Y(p[1]).toFixed(1)).join(''); }
+// sample y = f(x) from a to b, breaking the curve where f is undefined or jumps
+function sample(f, a, b, n, ok){
+  const out = []; let cur = [];
+  for (let i = 0; i <= n; i++){
+    const x = a + (b - a) * i / n, y = (ok && !ok(x)) ? NaN : f(x);
+    if (!isFinite(y)){ if (cur.length > 1) out.push(cur); cur = []; continue; }
+    if (cur.length && Math.abs(y - cur[cur.length - 1][1]) > 40){ if (cur.length > 1) out.push(cur); cur = []; }
+    cur.push([x, y]);
+  }
+  if (cur.length > 1) out.push(cur);
+  return out;
+}
+function dot(P, x, y, col, o){                              // a filled (or open) point
+  o = o || {};
+  return mk('circle', { cx: P.X(x), cy: P.Y(y), r: o.r || 6, style: o.open ? `fill:var(--bg);stroke:${col};stroke-width:2.6` : `fill:${col};stroke:var(--bg);stroke-width:1.5` }, o.layer || P.m);
+}
+function vline(P, x, col, o){ o = o || {}; return mk('line', { x1: P.X(x), y1: o.y0 !== undefined ? P.Y(o.y0) : P.T, x2: P.X(x), y2: o.y1 !== undefined ? P.Y(o.y1) : P.H - P.B, style: `stroke:${col};stroke-width:${o.w || 2.5};${o.dash ? 'stroke-dasharray:' + o.dash : ''}` }, o.layer || P.m); }
+function hline(P, y, col, o){ o = o || {}; return mk('line', { x1: o.x0 !== undefined ? P.X(o.x0) : P.L, y1: P.Y(y), x2: o.x1 !== undefined ? P.X(o.x1) : P.W - P.R, y2: P.Y(y), style: `stroke:${col};stroke-width:${o.w || 2.5};${o.dash ? 'stroke-dasharray:' + o.dash : ''}` }, o.layer || P.m); }
+function arrowHead(g, x1, y1, x2, y2, col, size){            // a small triangle at (x2, y2) pointing away from (x1, y1)
+  const a = Math.atan2(y2 - y1, x2 - x1), s = size || 9;
+  const p = [[x2, y2], [x2 - s * Math.cos(a - 0.4), y2 - s * Math.sin(a - 0.4)], [x2 - s * Math.cos(a + 0.4), y2 - s * Math.sin(a + 0.4)]];
+  mk('polygon', { points: p.map(q => q.join(',')).join(' '), style: `fill:${col}` }, g);
+}
+
+/* ---------- arrow diagram: inputs in a left oval, outputs in a right oval, one arrow per pair ---------- */
+// pairs: [[in, out], ...]; o.ins / o.outs give the order (defaults: sorted values); o.fmt formats a value;
+// o.hl = input to highlight (others fade); o.lit = [in, out] arrow drawn thick; o.dead = inputs shown crossed out
+function arrowDiagram(svg, W, H, pairs, o){
+  o = o || {};
+  svg.innerHTML = '';
+  const fmt = o.fmt || (v => typeof v === 'number' ? num(v) : v);
+  const key = v => String(v);
+  const uniq = arr => { const s = new Set(), r = []; arr.forEach(v => { if (!s.has(key(v))){ s.add(key(v)); r.push(v); } }); return r; };
+  const srt = arr => arr.every(v => typeof v === 'number') ? arr.slice().sort((a, b) => a - b) : arr;
+  const ins = o.ins || srt(uniq(pairs.map(p => p[0]))), outs = o.outs || srt(uniq(pairs.map(p => p[1])));
+  const top = o.top ?? 34, bot = H - (o.bottom ?? 14);
+  const lx = W * 0.25, rx = W * 0.75, ow = Math.min(W * 0.17, 90);
+  mk('ellipse', { cx: lx, cy: (top + bot) / 2, rx: ow, ry: (bot - top) / 2, class: 'oval' }, svg);
+  mk('ellipse', { cx: rx, cy: (top + bot) / 2, rx: ow, ry: (bot - top) / 2, class: 'oval' }, svg);
+  txt(svg, lx, 18, o.inLab || 'INPUTS x', 'cap', { 'text-anchor': 'middle', style: 'fill:var(--in)' });
+  txt(svg, rx, 18, o.outLab || 'OUTPUTS y', 'cap', { 'text-anchor': 'middle', style: 'fill:var(--out)' });
+  const ypos = (i, n) => n === 1 ? (top + bot) / 2 : top + 26 + (bot - top - 52) * i / (n - 1);
+  const iy = {}, oy = {};
+  ins.forEach((v, i) => iy[key(v)] = ypos(i, ins.length));
+  outs.forEach((v, i) => oy[key(v)] = ypos(i, outs.length));
+  const cnt = {}; pairs.forEach(p => cnt[key(p[0])] = (cnt[key(p[0])] || 0) + 1);   // how many outputs each input has
+  const dx = Math.min(ow * 0.45, 34), fs = ins.length > 9 || outs.length > 9 ? 'labS' : 'lab';
+  const ga = mk('g', {}, svg), gd = mk('g', {}, svg);
+  pairs.forEach(p => {                                     // arrows
+    const k = key(p[0]), bad = cnt[k] > 1, faded = o.hl !== undefined && o.hl !== null && key(o.hl) !== k;
+    const lit = o.lit && key(o.lit[0]) === k && key(o.lit[1]) === key(p[1]);
+    const col = bad ? 'var(--no)' : 'var(--pt)';
+    const x1 = lx + dx + 8, y1 = iy[k], x2 = rx - dx - 9, y2 = oy[key(p[1])];
+    mk('line', { x1, y1, x2, y2, style: `stroke:${col};stroke-width:${lit ? 4.5 : 2.4};opacity:${faded ? .18 : 1}` }, ga);
+    if (!faded) arrowHead(ga, x1, y1, x2, y2, col, lit ? 12 : 10);
+  });
+  ins.forEach(v => {                                       // input dots and labels
+    const k = key(v), dead = o.dead && o.dead.map(key).includes(k), bad = cnt[k] > 1;
+    const faded = o.hl !== undefined && o.hl !== null && key(o.hl) !== k;
+    const col = dead ? 'var(--muted)' : bad ? 'var(--no)' : 'var(--in)';
+    mk('circle', { cx: lx + dx, cy: iy[k], r: o.hl !== undefined && key(o.hl) === k ? 8 : 6, style: `fill:${col};opacity:${faded ? .35 : 1}` }, gd);
+    const t = txt(gd, lx + dx - 12, iy[k] + 5, fmt(v), fs, { 'text-anchor': 'end', style: `fill:${col};opacity:${faded ? .45 : 1}${dead ? ';text-decoration:line-through' : ''}` });
+  });
+  outs.forEach(v => {                                      // output dots and labels
+    const k = key(v);
+    mk('circle', { cx: rx - dx, cy: oy[k], r: 6, style: 'fill:var(--out)' }, gd);
+    txt(gd, rx - dx + 12, oy[k] + 5, fmt(v), fs, { style: 'fill:var(--out)' });
+  });
+  return { ins, outs };
+}
+// group pairs by input: Map from input to its list of distinct outputs
+function byInput(pairs){
+  const m = new Map();
+  pairs.forEach(([x, y]) => { const k = String(x); if (!m.has(k)) m.set(k, { x, ys: [] }); const e = m.get(k); if (!e.ys.some(v => String(v) === String(y))) e.ys.push(y); });
+  return m;
+}
+const setStr = arr => '{' + arr.map(v => num(v)).join(', ') + '}';
+
+
+/* ---------- helpers for zoomable graphs (any scale) ---------- */
+const niceStep = raw => { const p = Math.pow(10, Math.floor(Math.log10(raw))), m = raw / p; return (m <= 1 ? 1 : m <= 2 ? 2 : m <= 5 ? 5 : 10) * p; };
+const decs = st => Math.max(0, -Math.floor(Math.log10(st) + 1e-9));
+function fmt(v, st){ const d = decs(st); const r = Number(v.toFixed(d)); return r === 0 ? '0' : (r < 0 ? '−' : '') + Math.abs(r).toFixed(d); }
+// a coordinate system with any box (tiny or huge), labelled ticks, a clipped layer for curves
+function ax2(svg, W, H, b, o){
+  o = o || {}; svg.innerHTML = '';
+  const L = o.padL ?? 52, R = o.padR ?? 14, T = o.padT ?? 14, B = o.padB ?? 28;
+  const sx = (W - L - R) / (b.x1 - b.x0), sy = (H - T - B) / (b.y1 - b.y0), X = x => L + (x - b.x0) * sx, Y = y => T + (b.y1 - y) * sy;
+  const gx = niceStep((b.x1 - b.x0) / 8), gy = niceStep((b.y1 - b.y0) / 7);
+  const g = mk('g', {}, svg), id = 'c' + Math.random().toString(36).slice(2);
+  const cp = mk('clipPath', { id }, svg); mk('rect', { x: L, y: T, width: W - L - R, height: H - T - B }, cp);
+  const cg = mk('g', { 'clip-path': `url(#${id})` }, svg), m = mk('g', {}, svg), top = mk('g', {}, svg);
+  for (let v = Math.ceil(b.x0 / gx) * gx; v <= b.x1 + gx * 1e-6; v += gx){ mk('line', { x1: X(v), y1: T, x2: X(v), y2: H - B, class: 'grid' }, g); txt(top, X(v), H - B + 16, o.fx ? o.fx(v) : fmt(v, gx), 'tl', { 'text-anchor': 'middle' }); }
+  for (let v = Math.ceil(b.y0 / gy) * gy; v <= b.y1 + gy * 1e-6; v += gy){ mk('line', { x1: L, y1: Y(v), x2: W - R, y2: Y(v), class: 'grid' }, g); txt(top, L - 6, Y(v) + 4, fmt(v, gy), 'tl', { 'text-anchor': 'end' }); }
+  if (b.y0 < 0 && b.y1 > 0) mk('line', { x1: L, y1: Y(0), x2: W - R, y2: Y(0), class: 'axis' }, g);
+  if (b.x0 < 0 && b.x1 > 0) mk('line', { x1: X(0), y1: T, x2: X(0), y2: H - B, class: 'axis' }, g);
+  mk('rect', { x: L, y: T, width: W - L - R, height: H - T - B, style: 'fill:none;stroke:var(--line2)' }, g);
+  if (o.xT) txt(top, W - R - 4, H - B - 6, o.xT, 'cap', { 'text-anchor': 'end' });
+  if (o.yT) txt(top, L + 6, T + 14, o.yT, 'cap');
+  return { X, Y, sx, sy, cg, m, top, b, L, R, T, B, W, H, inv: (px, py) => [b.x0 + (px - L) / sx, b.y1 - (py - T) / sy] };
+}
+// sample a curve across the box, breaking at undefined points, at listed jumps, and at big leaps
+function curve(P, f, o){
+  o = o || {}; const b = P.b, n = o.n || 900, brk = o.breaks || [], polys = []; let cur = [];
+  const lim = (b.y1 - b.y0) * 3;
+  for (let i = 0; i <= n; i++){
+    const x = b.x0 + (b.x1 - b.x0) * i / n, y = f(x);
+    const crossed = cur.length && brk.some(c => (cur[cur.length - 1][0] - c) * (x - c) <= 0);
+    if (!isFinite(y) || crossed || (cur.length && Math.abs(y - cur[cur.length - 1][1]) > lim)){ if (cur.length > 1) polys.push(cur); cur = []; if (!isFinite(y)) continue; }
+    cur.push([x, Math.max(b.y0 - lim, Math.min(b.y1 + lim, y))]);
+  }
+  if (cur.length > 1) polys.push(cur);
+  polys.forEach(p => mk('path', { d: dPath(P, p), style: `fill:none;stroke:${o.col || 'var(--cv)'};stroke-width:${o.w || 3};${o.dash ? 'stroke-dasharray:' + o.dash : ''}` }, P.cg));
+}
+const holeAt = (P, x, y, col) => mk('circle', { cx: P.X(x), cy: P.Y(y), r: 6, style: `fill:var(--bg);stroke:${col || 'var(--cv)'};stroke-width:2.5` }, P.m);
+const dotAt = (P, x, y, col, r) => mk('circle', { cx: P.X(x), cy: P.Y(y), r: r || 6, style: `fill:${col || 'var(--cv)'};stroke:var(--bg);stroke-width:1.5` }, P.m);
+const sig = v => !isFinite(v) ? (v > 0 ? '∞' : v < 0 ? '−∞' : 'undefined') : Math.abs(v) >= 1e5 ? v.toExponential(2).replace('-', '−') : num(v, 6);
+function parseLim(s){
+  const t = String(s).trim().toLowerCase().replace(/\s+/g, '').replace(/[−–]/g, '-');
+  if (/^(dne|none|doesnotexist|noLimit|nolimit|no)$/i.test(t)) return 'DNE';
+  if (/^\+?(inf|infinity|∞|oo)$/.test(t)) return Infinity;
+  if (/^-(inf|infinity|∞|oo)$/.test(t)) return -Infinity;
+  return parseNum(s);
+}
+
+const minus = s => String(s).replace(/(^|[\s(,=>→\/·+\[])-(\d)/g, '$1−$2');
+const r4 = v => Number((Math.abs(v) < 1e-300 ? 0 : v).toPrecision(5));
+const sci = v => { if (v === 0) return '0'; if (!isFinite(v)) return v > 0 ? '∞' : '−∞'; const a = Math.abs(v); if (a >= 1e-3 && a < 1e6) return minus(String(r4(v))); let e = Math.floor(Math.log10(a)); if (Math.abs(v / Math.pow(10, e)) >= 9.995) e++; const m = v / Math.pow(10, e); return minus(`${m.toFixed(2)}×10${String(e).replace(/-/g, '⁻').replace(/\d/g, d => '⁰¹²³⁴⁵⁶⁷⁸⁹'[d])}`); };
+const fact = k => { let r = 1; for (let i = 2; i <= k; i++) r *= i; return r; };
+const gcd = (a, b) => b ? gcd(b, a % b) : Math.abs(a);
+function frc(x, maxD){ if (Math.abs(x - Math.round(x)) < 1e-12) return num(Math.round(x)); for (let d = 2; d <= (maxD || 5040); d++){ const n = x * d; if (Math.abs(n - Math.round(n)) < 1e-12 * d && gcd(Math.round(n), d) === 1) return (x < 0 ? '−' : '') + Math.abs(Math.round(n)) + '/' + d; } return String(r4(x)).replace('-', '−'); }
+const SUP = k => String(k).replace(/\d/g, d => '⁰¹²³⁴⁵⁶⁷⁸⁹'[d]);
+const SUB = k => String(k).replace(/\d/g, d => '₀₁₂₃₄₅₆₇₈₉'[d]);
+const sigma = (lo, body) => `<span class="sg"><small>∞</small><b>Σ</b><small>k=${lo}</small></span>${body}`;
+// write the first few nonzero terms of a coefficient list c (powers of (x − a)) as text
+function seriesStr(c, a, many){
+  const sh = !a ? 'x' : `(x ${a < 0 ? '+' : '−'} ${num(Math.abs(a))})`, out = [];
+  for (let k = 0; k < c.length && out.length < (many || 5); k++){
+    if (Math.abs(c[k]) < 1e-15) continue;
+    const f = frc(Math.abs(c[k]), 200000), pw = k === 0 ? '' : sh + (k > 1 ? SUP(k) : '');
+    out.push([c[k] < 0, k === 0 ? f : (f === '1' ? pw : f + '·' + pw)]);
+  }
+  return out.map(([neg, s], j) => (j ? (neg ? ' − ' : ' + ') : (neg ? '−' : '')) + s).join('') + ' + …';
+}
+
+/* =====================================================================
+   1. MAIN: where does it converge?
+   ===================================================================== */
+// each preset: coefficient c(k) of (x − a)^k, centre a, radius R, endpoint behaviour [left, right], the function f (or null), the plot box
+const MP = [
+  { n: 'Σ xᵏ', c: k => 1, a: 0, R: 1, ends: [false, false], f: x => 1 / (1 - x), name: '1/(1 − x)', box: [-2, 2, -3, 6], x0: 0.5, d: 'The geometric series. R = 1: at x = 1 it’s 1 + 1 + 1 + …, at x = −1 it’s 1 − 1 + 1 − …, so neither endpoint works. Interval (−1, 1).' },
+  { n: 'Σ xᵏ/k', c: k => k ? 1 / k : 0, a: 0, R: 1, ends: [true, false], f: x => x < 1 ? -Math.log(1 - x) : NaN, name: '−ln(1 − x)', box: [-2, 2, -2, 4], x0: -1, d: 'R = 1. At x = 1 it’s the harmonic series (diverges); at x = −1 the alternating harmonic series (converges). Interval [−1, 1).' },
+  { n: 'Σ xᵏ/k²', c: k => k ? 1 / (k * k) : 0, a: 0, R: 1, ends: [true, true], f: null, name: 'no elementary name (the dilogarithm)', box: [-2, 2, -1.5, 2.5], x0: 1, d: 'R = 1 again, but now both endpoints converge (compare with Σ1/k²). Interval [−1, 1]. This function has no elementary formula: the series is its definition.' },
+  { n: 'arctan x', c: k => k % 2 ? ((k - 1) / 2 % 2 ? -1 : 1) / k : 0, a: 0, R: 1, ends: [true, true], f: Math.atan, name: 'arctan x', box: [-2, 2, -2, 2], x0: 1, d: 'x − x³/3 + x⁵/5 − …: R = 1, and both endpoints converge (alternating series test). At x = 1 this gives Leibniz’s formula for π/4.' },
+  { n: 'Σ (x−1)ᵏ/(k·3ᵏ)', c: k => k ? 1 / (k * 3 ** k) : 0, a: 1, R: 3, ends: [true, false], f: x => x < 4 ? -Math.log(1 - (x - 1) / 3) : NaN, name: '−ln(1 − (x − 1)/3)', box: [-3.5, 5.5, -2, 4], x0: 3, d: 'Centred at 1 with R = 3: the interval runs from −2 to 4. At x = 4 it’s harmonic (diverges); at x = −2 alternating harmonic (converges). Interval [−2, 4).' },
+  { n: 'Σ xᵏ/k!', c: k => 1 / fact(k), a: 0, R: Infinity, ends: null, f: Math.exp, name: 'eˣ', box: [-5, 5, -2, 30], x0: 4, d: 'The factorials win against any power: R = ∞. The series converges for every x, but far out it needs many terms.' },
+  { n: 'Σ k!·xᵏ', c: k => fact(k), a: 0, R: 0, ends: null, f: null, name: 'no function: converges only at 0', box: [-0.5, 0.5, -2, 4], x0: 0.1, d: 'R = 0: for any x ≠ 0 the terms k!·xᵏ eventually grow without bound. The series converges only at its centre.' },
+  { n: 'Bessel J₀', c: k => k % 2 ? 0 : ((k / 2) % 2 ? -1 : 1) / (fact(k / 2) ** 2 * 2 ** k), a: 0, R: Infinity, ends: null, f: null, name: 'J₀(x)', box: [-12, 12, -1, 1.5], x0: 8, d: 'J₀(x) = Σ (−1)ᵏ(x/2)²ᵏ/(k!)², defined by its series. R = ∞. Its zeros 2.405, 5.520, 8.654 set a drum’s pitches.' },
+];
+const MS = { i: 0, x0: 0.5, n: 6, anim: null };
+const Sn = (p, x, n) => { let s = 0, t = 1; for (let k = 0; k <= n; k++){ s += p.c(k) * t; t *= (x - p.a); } return s; };
+// a long partial sum stands in for f when it has no closed form (inside the radius only)
+const fOf = p => p.f || (p.R === 0 ? null : (x => Math.abs(x - p.a) < (isFinite(p.R) ? p.R : 1e9) || (p.ends && Math.abs(x - p.a) === p.R && p.ends[x > p.a ? 1 : 0]) ? Sn(p, x, p.R === Infinity ? 120 : 4000) : NaN));
+let mP = null;
+function mDraw(){
+  const p = MP[MS.i], [x0, x1, y0, y1] = p.box, n = MS.n, X0 = MS.x0, f = fOf(p);
+  const P = ax2($('mF'), 960, 320, { x0, x1, y0, y1 }, { xT: 'x' }); mP = P;
+  // interval of convergence shading, radius lines and endpoint dots
+  if (p.R > 0){
+    const lo = isFinite(p.R) ? p.a - p.R : x0 - 1, hi = isFinite(p.R) ? p.a + p.R : x1 + 1;
+    mk('rect', { x: P.X(lo), y: P.T, width: P.X(hi) - P.X(lo), height: P.H - P.T - P.B, style: 'fill:var(--tol);opacity:.1' }, P.cg);
+    if (isFinite(p.R)) [lo, hi].forEach(v => mk('line', { x1: P.X(v), y1: P.T, x2: P.X(v), y2: P.H - P.B, style: 'stroke:var(--rad);stroke-width:2;stroke-dasharray:7 5' }, P.cg));
+  }
+  if (y0 < 0 && y1 > 0) mk('line', { x1: P.L, y1: P.Y(0), x2: P.W - P.R, y2: P.Y(0), style: 'stroke:var(--ink);stroke-width:1.2;opacity:.5' }, P.cg);
+  if (f) curve(P, f, { n: 900, w: 3.5 });
+  for (let m = Math.max(0, n - 3); m < n; m++) curve(P, x => Sn(p, x, m), { n: 700, col: 'var(--tps)', w: 1.5 });
+  curve(P, x => Sn(p, x, n), { n: 900, col: 'var(--tp)', w: 2.6 });
+  if (p.ends && isFinite(p.R) && p.R > 0) [p.a - p.R, p.a + p.R].forEach((v, j) => { const ok = p.ends[j]; const y = ok && f ? f(v) : 0; mk('circle', { cx: P.X(v), cy: P.Y(isFinite(y) && y > y0 && y < y1 ? y : 0), r: 7, style: `fill:${ok ? 'var(--tol)' : 'var(--bg)'};stroke:${ok ? 'var(--tol)' : 'var(--err)'};stroke-width:2.5` }, P.m); });
+  dotAt(P, p.a, Sn(p, p.a, 0), 'var(--ink)', 4.5);
+  mk('line', { x1: P.X(X0), y1: P.T, x2: P.X(X0), y2: P.H - P.B, style: 'stroke:var(--pa);stroke-width:2' }, P.m);
+  txt(P.top, P.X(X0) + 6, P.T + 14, 'x₀ = ' + minus(String(r4(X0))), 'labS', { style: 'fill:var(--pa)' });
+  // ---------- running totals at x₀ ----------
+  const K = 40, S = []; let s = 0, t = 1;
+  for (let k = 0; k <= K; k++){ s += p.c(k) * t; t *= (X0 - p.a); S.push(s); }
+  const fx = f ? f(X0) : NaN, d = Math.abs(X0 - p.a);
+  const inside = d < p.R || (p.R === Infinity), onEdge = isFinite(p.R) && p.R > 0 && Math.abs(d - p.R) < 1e-12;
+  const conv = inside || (onEdge && p.ends && p.ends[X0 > p.a ? 1 : 0]) || d === 0;
+  const fin = S.filter(isFinite); let lo = Math.min(...fin), hi = Math.max(...fin);
+  if (isFinite(fx)){ lo = Math.min(lo, fx); hi = Math.max(hi, fx); }
+  const cap = isFinite(fx) ? Math.max(4 * Math.abs(fx), 5) : 50; lo = Math.max(lo, -cap); hi = Math.min(hi, cap); const pad = (hi - lo) * 0.1 || 0.5;
+  const Q = ax2($('mP'), 960, 210, { x0: 0, x1: K, y0: lo - pad, y1: hi + pad }, { xT: 'number of terms n', yT: 'Sₙ(x₀)' });
+  if (isFinite(fx) && conv) mk('line', { x1: Q.L, y1: Q.Y(fx), x2: Q.W - Q.R, y2: Q.Y(fx), style: 'stroke:var(--cv);stroke-width:2;stroke-dasharray:7 5' }, Q.cg);
+  mk('path', { d: dPath(Q, S.map((v, k) => [k, Math.max(lo - 3 * pad, Math.min(hi + 3 * pad, v))])), style: 'fill:none;stroke:var(--pa);stroke-width:1.8;opacity:.6' }, Q.cg);
+  S.forEach((v, k) => { if (v >= lo - pad && v <= hi + pad) dotAt(Q, k, v, k === n ? 'var(--tp)' : 'var(--pa)', k === n ? 6 : 3.2); });
+  // ---------- equation, verdict, ratio table ----------
+  const cs = Array.from({ length: 16 }, (_, k) => p.c(k));
+  $('mEq').textContent = minus(`${p.name.startsWith('no') ? 'f(x)' : p.name} = ${seriesStr(cs, p.a, 5)}`);
+  const Rt = p.R === Infinity ? '∞' : r4(p.R);
+  const iv = p.R === 0 ? `only x = ${p.a}` : p.R === Infinity ? 'every x' : `${p.ends[0] ? '[' : '('}${r4(p.a - p.R)}, ${r4(p.a + p.R)}${p.ends[1] ? ']' : ')'}`;
+  $('mV').className = 'verdict ' + (conv ? 'ok' : 'bad');
+  $('mV').textContent = minus(`at x₀ = ${r4(X0)}: ${conv ? 'converges' : 'diverges'} · R = ${Rt} · interval of convergence ${iv}`);
+  let o = `|x₀ − a| = ${r4(d)} ${p.R === Infinity ? 'is finite, and R = ∞' : onEdge ? '= R: an endpoint, so test it directly. ' + (conv ? 'It converges here' : 'It diverges here') : d < p.R ? '&lt; R = ' + Rt + ': inside, so it converges absolutely' : '&gt; R = ' + Rt + ': outside, so the terms grow and it diverges'}.`;
+  if (conv && isFinite(fx)) o += ` S${SUB(n)}(x₀) = ${sci(S[n])}; the sum is ${sci(fx)}${p.f ? ' (' + p.name + ' at x₀)' : ''} (gap ${sci(Math.abs(fx - S[n]))}).`;
+  else if (!conv) o += ` The term at n = ${K} is ${sci(S[K] - S[K - 1])}${p.R > 0 && !onEdge ? ': the terms behave like (|x₀ − a|/R)ⁿ = ' + sci((d / p.R) ** K) + ', a geometric series with ratio above 1' : ''}.`;
+  $('mOut').innerHTML = minus(o);
+  const rows = []; for (let k = 1; k <= 30 && rows.length < 9; k++){ const c = p.c(k); if (!c) continue; let k2 = k + 1; while (!p.c(k2) && k2 < k + 4) k2++; const c2 = p.c(k2); rows.push([k, c, Math.pow(Math.abs(c / c2), 1 / (k2 - k)), Math.pow(Math.abs(c), -1 / k)]); }
+  $('mTab').innerHTML = '<tr><th>k</th><th>cₖ</th><th>|cₖ/cₖ₊₁|</th><th>|cₖ|^(−1/k)</th></tr>' + rows.map(([k, c, r1, r2]) => `<tr><td>${k}</td><td>${sci(c)}</td><td>${sci(r1)}</td><td>${sci(r2)}</td></tr>`).join('') + `<tr><td colspan="4" style="text-align:center;color:var(--muted)">both columns → R = ${Rt}${p.c(1) === 0 || p.c(2) === 0 ? ' (ratios taken across the missing powers)' : ''}</td></tr>`;
+  $('mX').value = String(r4(X0)).replace('−', '-'); $('mN').value = String(n);
+}
+function mStop(){ if (MS.anim){ clearTimeout(MS.anim); MS.anim = null; } $('mPlay').textContent = 'Play'; }
+const mMark = buttons('mPresets', MP, i => { mStop(); Object.assign(MS, { i, x0: MP[i].x0, n: 6 }); mMark(i); $('mDesc').textContent = MP[i].d; $('mErr').textContent = ''; mDraw(); });
+$('mPlus').onclick = () => { mStop(); if (MS.n < 40){ MS.n++; mDraw(); } };
+$('mMinus').onclick = () => { mStop(); if (MS.n > 0){ MS.n--; mDraw(); } };
+$('mPlay').onclick = () => { if (MS.anim){ mStop(); return; } MS.n = 0; $('mPlay').textContent = 'Pause'; const step = () => { mDraw(); if (MS.n < 30){ MS.n++; MS.anim = setTimeout(step, 400); } else mStop(); }; step(); };
+$('mUse').onclick = () => {
+  const x = parseNum($('mX').value), n = parseNum($('mN').value), p = MP[MS.i];
+  if (isNaN(x) || isNaN(n)){ $('mErr').textContent = 'Type numbers for x₀ and the number of terms.'; return; }
+  if (x < p.box[0] || x > p.box[1]){ $('mErr').textContent = `Choose x₀ inside the picture, between ${minus(String(p.box[0]))} and ${p.box[1]}.`; return; }
+  if (!Number.isInteger(n) || n < 0 || n > 40){ $('mErr').textContent = 'Use a whole number of terms from 0 to 40.'; return; }
+  $('mErr').textContent = ''; mStop(); MS.x0 = x; MS.n = n; mDraw();
+};
+// click or drag on the top picture to move the probe
+(function(){ let drag = false; const svg = $('mF');
+  const set = ev => { if (!mP) return; const q = svgPt(svg, ev), [x] = mP.inv(q.x, q.y), b = MP[MS.i].box; MS.x0 = Math.max(b[0], Math.min(b[1], Math.round(x * 100) / 100)); $('mErr').textContent = ''; mDraw(); };
+  svg.addEventListener('pointerdown', ev => { drag = true; svg.setPointerCapture(ev.pointerId); set(ev); });
+  svg.addEventListener('pointermove', ev => { if (drag) set(ev); });
+  svg.addEventListener('pointerup', () => drag = false);
+})();
+
+/* =====================================================================
+   2. BUILD A SERIES STEP BY STEP
+   ===================================================================== */
+const NC = 40;
+const OP = {
+  d: c => c.map((_, k) => k + 1 < NC ? (k + 1) * c[k + 1] : 0),
+  int: c => c.map((_, k) => k ? c[k - 1] / k : 0),
+  neg: c => c.map((v, k) => k % 2 ? -v : v),
+  negsq: c => { const o = new Array(NC).fill(0); for (let k = 0; 2 * k < NC; k++) o[2 * k] = (k % 2 ? -1 : 1) * c[k]; return o; },
+  mulx: c => c.map((_, k) => k ? c[k - 1] : 0),
+};
+const GEO = Array(NC).fill(1), EXP = Array.from({ length: NC }, (_, k) => 1 / fact(k));
+const OC = [
+  { n: '1/(1 − x) → 1/(1 − x)²', start: GEO, steps: [['start', null, x => 1 / (1 - x), '1/(1 − x)', 'The geometric series: every coefficient is 1.'], ['d/dx', 'd', x => 1 / (1 - x) ** 2, '1/(1 − x)²', 'Differentiate each xᵏ to k·xᵏ⁻¹: coefficients become 1, 2, 3, …. Same as squaring the geometric series (Cauchy product).'], ['× x', 'mulx', x => x / (1 - x) ** 2, 'x/(1 − x)²', 'Multiply by x: every power moves up one. So Σ k·xᵏ = x/(1 − x)², and at x = ½: Σ k/2ᵏ = 2.']], R: 1 },
+  { n: '1/(1 − x) → ln(1 + x)', start: GEO, steps: [['start', null, x => 1 / (1 - x), '1/(1 − x)', 'The geometric series.'], ['x → −x', 'neg', x => 1 / (1 + x), '1/(1 + x)', 'Substitute −x: the signs alternate.'], ['∫₀ˣ', 'int', x => x > -1 ? Math.log(1 + x) : NaN, 'ln(1 + x)', 'Integrate term by term from 0: xᵏ becomes xᵏ⁺¹/(k + 1). The radius stays 1, but the new series also converges at x = 1, giving ln 2 = 1 − ½ + ⅓ − ….']], R: 1 },
+  { n: '1/(1 − x) → arctan x', start: GEO, steps: [['start', null, x => 1 / (1 - x), '1/(1 − x)', 'The geometric series.'], ['x → −x²', 'negsq', x => 1 / (1 + x * x), '1/(1 + x²)', 'Substitute −x²: only even powers, alternating signs. Smooth everywhere, yet R = 1 (the complex poles ±i, as in 8.U.3).'], ['∫₀ˣ', 'int', Math.atan, 'arctan x', 'Integrate: x − x³/3 + x⁵/5 − …, the arctan series. Converges at both endpoints.']], R: 1 },
+  { n: 'eˣ → bell-curve area', start: EXP, steps: [['start', null, Math.exp, 'eˣ', 'The exponential series, R = ∞.'], ['x → −x²', 'negsq', x => Math.exp(-x * x), 'e^(−x²)', 'Substitute −x²: 1 − x² + x⁴/2 − x⁶/6 + …, the bell curve.'], ['∫₀ˣ', 'int', x => { let s = 0, h = x / 400; for (let i = 0; i < 400; i++){ const t = (i + 0.5) * h; s += Math.exp(-t * t) * h; } return s; }, '∫₀ˣ e^(−t²) dt', 'Integrate: x − x³/3 + x⁵/10 − …. This function has no formula in elementary terms, but its series converges for every x. (Statisticians know it as (√π/2)·erf x.)']], R: Infinity },
+];
+const OS = { i: 0, s: 0 };
+function oDraw(){
+  const ch = OC[OS.i]; let c = ch.start.slice();
+  for (let j = 1; j <= OS.s; j++) c = OP[ch.steps[j][1]](c);
+  const [, , f, name, why] = ch.steps[OS.s], R = ch.R;
+  $('oSteps').innerHTML = '';
+  ch.steps.forEach((st, j) => { if (j){ const a = document.createElement('span'); a.className = 'arr'; a.textContent = '→'; $('oSteps').appendChild(a); } const b = document.createElement('button'); b.textContent = j ? `${st[0]}: ${st[3]}` : st[3]; b.classList.toggle('on', j === OS.s); b.onclick = () => { OS.s = j; oDraw(); }; $('oSteps').appendChild(b); });
+  $('oEq').textContent = minus(`${name} = ${seriesStr(c, 0, 6)}`);
+  const box = R === Infinity ? [-3, 3, -1.5, 3] : [-1.6, 1.6, -2.5, 5];
+  const P = ax2($('oSvg'), 600, 320, { x0: box[0], x1: box[1], y0: box[2], y1: box[3] }, { xT: 'x', padL: 40 });
+  if (isFinite(R)) [-R, R].forEach(v => mk('line', { x1: P.X(v), y1: P.T, x2: P.X(v), y2: P.H - P.B, style: 'stroke:var(--rad);stroke-width:2;stroke-dasharray:7 5' }, P.cg));
+  mk('line', { x1: P.L, y1: P.Y(0), x2: P.W - P.R, y2: P.Y(0), style: 'stroke:var(--ink);stroke-width:1.2;opacity:.5' }, P.cg);
+  curve(P, f, { n: 600, w: 3.5 });
+  curve(P, x => { let s = 0, t = 1; for (let k = 0; k < 12; k++){ s += c[k] * t; t *= x; } return s; }, { n: 600, col: 'var(--tp)', w: 2.2 });
+  $('oOut').innerHTML = minus(`<b>${name}</b>. ${why}<br>Coefficients c₀…c₇: ${c.slice(0, 8).map(v => frc(v)).join(', ')}.<br>Radius: <span class="kr">R = ${R === Infinity ? '∞' : R}</span>, unchanged by every step. ${isFinite(R) ? 'Outside |x| &lt; 1 the orange partial sum peels away from the function.' : ''}`);
+}
+buttons('oPresets', OC, i => { OS.i = i; OS.s = 0; oDraw(); });
+
+/* =====================================================================
+   3. SOLVE BY MATCHING COEFFICIENTS
+   ===================================================================== */
+// rec(c, k) returns c_k from the earlier coefficients; sol(y0, y1) is the known solution
+const DE = [
+  { n: 'y′ = y', eq: 'y′ = y', rec: 'c₍ₖ₊₁₎ = cₖ/(k + 1)', one: true, step: (c, k) => c[k - 1] / k, sol: (A) => x => A * Math.exp(x), solT: 'y(0)·eˣ', box: [-3, 3, -2, 12] },
+  { n: 'y″ = −y', eq: 'y″ = −y', rec: 'c₍ₖ₊₂₎ = −cₖ/((k + 2)(k + 1))', one: false, step: (c, k) => -c[k - 2] / (k * (k - 1)), sol: (A, B) => x => A * Math.cos(x) + B * Math.sin(x), solT: 'y(0)·cos x + y′(0)·sin x', box: [-8, 8, -2.5, 2.5] },
+  { n: 'y′ = 2xy', eq: 'y′ = 2xy', rec: 'c₍ₖ₊₁₎ = 2cₖ₋₁/(k + 1)', one: true, step: (c, k) => k >= 2 ? 2 * c[k - 2] / k : 0, sol: (A) => x => A * Math.exp(x * x), solT: 'y(0)·e^(x²)', box: [-2, 2, -1, 12] },
+  { n: 'Bessel: xy″ + y′ + xy = 0', eq: 'xy″ + y′ + xy = 0', rec: 'k²·cₖ = −cₖ₋₂', one: true, bessel: true, step: (c, k) => k >= 2 ? -c[k - 2] / (k * k) : 0, sol: A => x => { let s = 0; const m = 200; for (let i = 0; i < m; i++) s += Math.cos(x * Math.sin(Math.PI * (i + 0.5) / m)); return A * s / m; }, solT: 'y(0)·J₀(x)', box: [-12, 12, -1.2, 1.5] },
+];
+const DS = { i: 0, y0: 1, y1: 0 };
+function dDraw(){
+  const d = DE[DS.i], N = 60, c = new Array(N).fill(0);
+  c[0] = DS.y0; c[1] = d.one ? (d.bessel ? 0 : d.step([DS.y0], 1)) : DS.y1;
+  for (let k = 2; k < N; k++) c[k] = d.step(c, k);
+  if (d.n === 'y′ = y'){ for (let k = 1; k < N; k++) c[k] = c[k - 1] / k; }
+  const y = x => { let s = 0, t = 1; for (let k = 0; k < N; k++){ s += c[k] * t; t *= x; } return s; };
+  $('dY1Box').style.display = d.one ? 'none' : '';
+  $('dEq').textContent = minus(`${d.eq}  ⇒  ${d.rec}  ⇒  y = ${seriesStr(c, 0, 5)}`);
+  const [x0, x1, y0, y1] = d.box, sc = Math.max(1, Math.abs(DS.y0), Math.abs(DS.y1));
+  const P = ax2($('dSvg'), 600, 320, { x0, x1, y0: y0 * sc, y1: y1 * sc }, { xT: 'x', padL: 44 });
+  mk('line', { x1: P.L, y1: P.Y(0), x2: P.W - P.R, y2: P.Y(0), style: 'stroke:var(--ink);stroke-width:1.2;opacity:.5' }, P.cg);
+  if (d.sol) curve(P, d.sol(DS.y0, DS.y1), { n: 600, w: 4 });
+  curve(P, y, { n: 600, col: 'var(--tp)', w: 2.2 });
+  let extra = '';
+  if (d.bessel){
+    const zs = [2.4048, 5.5201, 8.6537, 11.7915].filter(z => z < x1 - 1);
+    zs.forEach(z => [z, -z].forEach(v => mk('circle', { cx: P.X(v), cy: P.Y(0), r: 5, style: 'fill:var(--rad)' }, P.m)));
+    zs.forEach((z, j) => txt(P.top, P.X(z), P.Y(0) + (j % 2 ? -10 : 18), r4(z), 'labS', { 'text-anchor': 'middle', style: 'fill:var(--rad)' }));
+    extra = `<br>The zeros (gold) are where a drumhead of radius 1 can stay still in its simplest ring patterns. Pitches are proportional to the zeros: ratios 1 : ${r4(5.5201 / 2.4048)} : ${r4(8.6537 / 2.4048)}, not 1 : 2 : 3, which is why a drum doesn’t sound like a clear musical note.`;
+  }
+  $('dTab').innerHTML = '<tr><th>k</th><th>cₖ</th><th>as a fraction</th></tr>' + c.slice(0, 9).map((v, k) => `<tr><td>${k}</td><td>${sci(v)}</td><td>${minus(frc(v, 200000))}</td></tr>`).join('');
+  $('dOut').innerHTML = minus(`Plug y = Σ cₖxᵏ into ${d.eq} and match powers of x: <b>${d.rec}</b>. Starting from ${d.one ? `c₀ = y(0) = ${r4(DS.y0)}` : `c₀ = y(0) = ${r4(DS.y0)} and c₁ = y′(0) = ${r4(DS.y1)}`}, every other coefficient follows.<br>The series is ${d.solT}${d.bessel ? '' : ', which you may recognise'}. Its radius is ∞, so it works for every x.` + extra);
+  $('dY0').value = String(DS.y0); $('dY1').value = String(DS.y1);
+}
+const dMark = buttons('dPresets', DE, i => { DS.i = i; dMark(i); $('dErr').textContent = ''; dDraw(); });
+$('dGo').onclick = () => { const a = parseNum($('dY0').value), b = parseNum($('dY1').value); if (isNaN(a) || (!DE[DS.i].one && isNaN(b))){ $('dErr').textContent = 'Fill in the starting values with numbers.'; return; } if (Math.abs(a) > 5 || Math.abs(b) > 5){ $('dErr').textContent = 'Use starting values between −5 and 5.'; return; } if (a === 0 && (DE[DS.i].one || b === 0)){ $('dErr').textContent = 'With all starting values 0 the solution is just y = 0; try something else.'; return; } $('dErr').textContent = ''; DS.y0 = a; if (!isNaN(b)) DS.y1 = b; dDraw(); };
+
+/* =====================================================================
+   4. THREE WAYS TO π
+   ===================================================================== */
+const at = (x, n) => { let s = 0, p = x; for (let k = 0; k < n; k++){ s += (k % 2 ? -1 : 1) * p / (2 * k + 1); p *= x * x; } return s; };   // first n terms of the arctan series
+const PI3 = [n => 4 * at(1, n), n => 6 * at(1 / Math.sqrt(3), n), n => 16 * at(1 / 5, n) - 4 * at(1 / 239, n)];
+const PIN = { n: 10 };
+function piDraw(){
+  const n = PIN.n, digs = v => Math.min(16, -Math.log10(Math.max(Math.abs(v - Math.PI), 1e-16)));
+  const P = ax2($('piSvg'), 600, 320, { x0: 0, x1: 30, y0: 0, y1: 16.5 }, { xT: 'terms n', yT: 'correct digits', padL: 40 });
+  ['var(--err)', 'var(--tp)', 'var(--tol)'].forEach((col, j) => { const pts = []; for (let m = 1; m <= 30; m++) pts.push([m, digs(PI3[j](m))]); mk('path', { d: dPath(P, pts), style: `fill:none;stroke:${col};stroke-width:2.5` }, P.cg); if (n <= 30) dotAt(P, n, digs(PI3[j](n)), col, 5); });
+  if (n <= 30) mk('line', { x1: P.X(n), y1: P.T, x2: P.X(n), y2: P.H - P.B, style: 'stroke:var(--pa);stroke-width:1.5;stroke-dasharray:4 4' }, P.cg);
+  const names = ['Leibniz', 'Sharp', 'Machin'];
+  $('piTab').innerHTML = '<tr><th>method</th><th>value after n terms</th><th>error</th><th>digits</th></tr>' + PI3.map((g, j) => { const v = g(n); return `<tr><td>${names[j]}</td><td>${v.toFixed(10)}</td><td>${sci(Math.abs(v - Math.PI))}</td><td>${Math.floor(digs(v))}</td></tr>`; }).join('') + `<tr><td>true π</td><td>${Math.PI.toFixed(10)}</td><td></td><td></td></tr>`;
+  $('piOut').innerHTML = `With n = <b>${n.toLocaleString()}</b> terms. Leibniz evaluates arctan at x = 1, the very edge of the radius, so its terms shrink only like 1/(2k + 1). Sharp uses x = 1/√3 ≈ 0.577, so each term is about 3 times smaller than the last (about half a digit per term). Machin uses x = 1/5, where each term is 25 times smaller (about 1.4 digits per term), plus a tiny correction at 1/239. Ordinary computer arithmetic stops at about 16 digits.`;
+  $('piN').value = String(n);
+}
+buttons('piPresets', [{ n: '1' }, { n: '5' }, { n: '10' }, { n: '1,000' }, { n: '1,000,000' }], i => { PIN.n = [1, 5, 10, 1000, 1000000][i]; $('piErr').textContent = ''; piDraw(); });
+$('piGo').onclick = () => { const n = parseNum($('piN').value); if (isNaN(n) || !Number.isInteger(n) || n < 1 || n > 1e7){ $('piErr').textContent = 'Use a whole number of terms from 1 to 10,000,000.'; return; } $('piErr').textContent = ''; PIN.n = n; piDraw(); };
+
+/* =====================================================================
+   5. GENERATING FUNCTIONS
+   ===================================================================== */
+// rational generating functions num/den, unpacked by long division of series; R = nearest root of the denominator
+const divide = (nu, de, K) => { const c = []; for (let k = 0; k < K; k++){ let s = nu[k] || 0; for (let j = 1; j <= k && j < de.length; j++) s -= de[j] * c[k - j]; c.push(s / de[0]); } return c; };
+const GF = [
+  { n: '1/(1 − x − x²)', nu: [1], de: [1, -1, -1], R: (Math.sqrt(5) - 1) / 2, Rt: '(√5 − 1)/2 ≈ 0.618', d: 'Fibonacci numbers: each is the sum of the two before. Counts the ways to climb k stairs taking 1 or 2 steps at a time.' },
+  { n: '1/(1 − 2x)', nu: [1], de: [1, -2], R: 0.5, Rt: '1/2', d: 'Powers of 2: the number of yes/no answer sheets for k questions.' },
+  { n: '1/(1 − x)²', nu: [1], de: [1, -2, 1], R: 1, Rt: '1', d: 'Counting numbers 1, 2, 3, …: the square of the geometric series. Ways to split k sweets between 2 children.' },
+  { n: '1/((1 − x)(1 − x²))', nu: [1], de: [1, -1, -1, 1], R: 1, Rt: '1', d: 'Ways to pay k cents with 1-cent and 2-cent coins: one factor for each coin, 1/(1 − x) = 1 + x + x² + … for the 1s and 1/(1 − x²) for the 2s.' },
+  { n: 'x/(1 − 3x + x²)', nu: [0, 1], de: [1, -3, 1], R: (3 - Math.sqrt(5)) / 2, Rt: '(3 − √5)/2 ≈ 0.382', d: 'Every other Fibonacci number: 1, 3, 8, 21, …. The radius is 0.382 = 0.618², so they grow like φ²ᵏ.' },
+];
+const GS = { i: 0 };
+function genDraw(){
+  const g = GF[GS.i], K = 14, c = divide(g.nu, g.de, K).map(v => Math.round(v));
+  const P = ax2($('gSvg'), 600, 300, { x0: -0.5, x1: K - 0.5, y0: 0, y1: Math.max(...c) * 1.12 }, { xT: 'k', yT: 'coefficient aₖ', padL: 48 });
+  c.forEach((v, k) => { mk('rect', { x: P.X(k) - P.sx * 0.32, y: P.Y(v), width: P.sx * 0.64, height: P.Y(0) - P.Y(v), rx: 2, style: 'fill:var(--cv);opacity:.8' }, P.cg); if (k >= K - 5 || v < Math.max(...c) * 0.9) txt(P.top, P.X(k), Math.min(P.Y(v) - 5, P.Y(0) - 5), String(v), 'labS', { 'text-anchor': 'middle' }); });
+  $('gTab').innerHTML = '<tr><th>k</th><th>aₖ</th><th>aₖ/aₖ₋₁</th></tr>' + c.slice(0, 13).map((v, k) => `<tr><td>${k}</td><td>${v}</td><td>${k && c[k - 1] ? r4(v / c[k - 1]) : ''}</td></tr>`).join('');
+  $('gDesc').textContent = g.d;
+  const r = c[K - 1] / c[K - 2];
+  $('gOut').innerHTML = minus(`${g.n} = ${c.slice(0, 8).map((v, k) => (k ? (v === 1 ? '' : v) + 'x' + (k > 1 ? SUP(k) : '') : v)).filter((s, k) => c[k] !== 0).join(' + ')} + …<br>The nearest zero of the denominator is at x = ${g.Rt}, so <span class="kr">R = ${r4(g.R)}</span>. The coefficients grow roughly like (1/R)ᵏ = ${r4(1 / g.R)}ᵏ${g.R === 1 ? ' (here R = 1, so only polynomially: the double root makes them grow like k)' : ''}: the last ratio in the table is ${r4(r)}.`);
+}
+const gMark = buttons('gPresets', GF, i => { GS.i = i; gMark(i); genDraw(); });
+
+/* =====================================================================
+   6. TRAPS
+   ===================================================================== */
+(function(){
+  let P = ax2($('tr1'), 300, 200, { x0: 0, x1: 16, y0: -0.2, y1: 1.3 }, { padL: 30, padB: 22, padT: 8, padR: 8, xT: 'n' });
+  const a = [], b = []; let s1 = 0, s2 = 0; for (let k = 1; k <= 16; k++){ s1 += (k % 2 ? 1 : -1) / k; s2 += (k % 2 ? 1 : -1); a.push([k, s1]); b.push([k, s2]); }
+  mk('line', { x1: P.L, y1: P.Y(Math.LN2), x2: P.W - P.R, y2: P.Y(Math.LN2), style: 'stroke:var(--rad);stroke-width:1.5;stroke-dasharray:5 4' }, P.cg);
+  [[b, 'var(--err)'], [a, 'var(--pa)']].forEach(([pts, col]) => { mk('path', { d: dPath(P, pts), style: `fill:none;stroke:${col};stroke-width:1.8;opacity:.7` }, P.cg); pts.forEach(([k, v]) => dotAt(P, k, v, col, 3)); });
+  P = ax2($('tr2'), 300, 200, { x0: 0, x1: 40, y0: -1, y1: 4.5 }, { padL: 30, padB: 22, padT: 8, padR: 8, xT: 'n' });
+  const u = [], w = []; s1 = 0; s2 = 0; for (let k = 1; k <= 40; k++){ s1 += 1 / k; s2 += (k % 2 ? -1 : 1) / k; u.push([k, s1]); w.push([k, s2]); }
+  mk('path', { d: dPath(P, u), style: 'fill:none;stroke:var(--err);stroke-width:2.2' }, P.cg); mk('path', { d: dPath(P, w), style: 'fill:none;stroke:var(--tol);stroke-width:2.2' }, P.cg);
+  txt(P.top, P.X(22), P.Y(3.7), 'x = 1', 'labS', { style: 'fill:var(--err)' }); txt(P.top, P.X(22), P.Y(-0.69) - 8, 'x = −1', 'labS', { style: 'fill:var(--tol)' });
+  P = ax2($('tr3'), 300, 200, { x0: -3, x1: 3, y0: -0.5, y1: 4 }, { padL: 30, padB: 22, padT: 8, padR: 8, xT: 'x' });
+  curve(P, x => Math.abs(x) < 2 ? 1 / (1 - x * x / 4) : NaN, { w: 2.5 });
+  curve(P, x => { let s = 0; for (let k = 0; k <= 8; k++) s += (x * x / 4) ** k; return s; }, { col: 'var(--tp)', w: 2 });
+  [-2, 2].forEach(v => mk('line', { x1: P.X(v), y1: P.T, x2: P.X(v), y2: P.H - P.B, style: 'stroke:var(--rad);stroke-width:1.8;stroke-dasharray:5 4' }, P.cg));
+  txt(P.top, P.X(2) + 4, P.T + 14, 'R = 2', 'labS', { style: 'fill:var(--rad)' });
+})();
+
+/* =====================================================================
+   7. QUIZ
+   ===================================================================== */
+const Q = { right: 0, total: 0 };
+let qq = null;
+const qTitles = { rad: 'Find the radius', ivl: 'Interval of convergence', coef: 'Coefficient of a new series', eval: 'Evaluate a series' };
+function qReset(){ ['qChoice', 'qExpr'].forEach(id => $(id).innerHTML = ''); $('qFb').className = 'feedback'; $('qFb').innerHTML = ''; $('qErr').textContent = ''; $('qIn').style.display = ''; $('q1').value = ''; }
+function qScore(ok){ if (qq.counted) return; qq.counted = true; Q.total++; if (ok) Q.right++; $('score').textContent = `Score: ${Q.right} / ${Q.total}`; }
+function qFeedback(ok, html){ $('qFb').className = 'feedback ' + (ok ? 'ok' : 'bad'); $('qFb').innerHTML = (ok ? '<b>Right.</b> ' : '<b>Not quite.</b> ') + minus(html); }
+function qChoices(list, correctIdx, explain){ $('qIn').style.display = 'none'; qq.correctIdx = correctIdx; qq.explainFn = explain; list.forEach((c, k) => { const b = document.createElement('button'); b.innerHTML = minus(c); b.onclick = () => { const ok = k === correctIdx; qScore(ok); [...$('qChoice').children].forEach((x, j) => { x.classList.remove('right', 'wrong'); if (j === k) x.classList.add(ok ? 'right' : 'wrong'); }); qFeedback(ok, explain(k)); }; $('qChoice').appendChild(b); }); }
+const parseR = s => { s = String(s).trim().toLowerCase(); if (['∞', 'inf', 'infinity', 'oo'].includes(s)) return Infinity; return parseNum(s); };
+function qRad(){
+  const c = pick([
+    () => { const b = pick([2, 3, 4, 5]); return { e: `xᵏ/${b}ᵏ`, R: b, why: `|cₖ/cₖ₊₁| = ${b}ᵏ⁺¹/${b}ᵏ = ${b}. (It is geometric in x/${b}.)`, trap: 1 / b }; },
+    () => { const b = pick([2, 3]); return { e: `k·xᵏ/${b}ᵏ`, R: b, why: `|cₖ/cₖ₊₁| = ${b}k/(k + 1) → ${b}. The factor k doesn’t change the radius.`, trap: 1 / b }; },
+    () => ({ e: 'xᵏ/k!', R: Infinity, why: '|cₖ/cₖ₊₁| = (k + 1)!/k! = k + 1 → ∞, so R = ∞.', trap: 0 }),
+    () => ({ e: 'k!·xᵏ', R: 0, why: '|cₖ/cₖ₊₁| = 1/(k + 1) → 0, so R = 0: it converges only at x = 0.', trap: Infinity }),
+    () => { const b = pick([2, 3, 4]); return { e: `${b}ᵏ·xᵏ/k²`, R: 1 / b, why: `|cₖ/cₖ₊₁| = (k + 1)²/(${b}k²) → 1/${b}.`, trap: b }; },
+    () => { const b = pick([4, 9]); return { e: `x²ᵏ/${b}ᵏ`, R: Math.sqrt(b), why: `It is Σ(x²/${b})ᵏ, geometric in x²: converges when x² &lt; ${b}, so R = ${Math.sqrt(b)}, not ${b}.`, trap: b }; },
+    () => { const [a, b] = [pick([1, 2, -1, 3]), pick([2, 5])]; return { e: `(x ${a < 0 ? '+' : '−'} ${Math.abs(a)})ᵏ/(k·${b}ᵏ)`, R: b, why: `|cₖ/cₖ₊₁| = ${b}(k + 1)/k → ${b}. The centre ${a} doesn’t affect the radius.`, trap: a }; },
+  ])();
+  Object.assign(qq, { ans: c.R, explain: c.why, trap: c.trap, ansT: c.R === Infinity ? '∞' : frc(c.R) });
+  $('qText').innerHTML = 'Find the radius of convergence R.'; $('qExpr').innerHTML = minus(sigma(1, c.e)); $('qLab').textContent = 'R =';
+}
+function qIvl(){
+  const c = pick([
+    () => ({ e: 'xᵏ/k', a: 0, R: 1, ends: [1, 0], why: 'R = 1. At x = 1: harmonic, diverges. At x = −1: alternating harmonic, converges.' }),
+    () => ({ e: '(−1)ᵏxᵏ/k', a: 0, R: 1, ends: [0, 1], why: 'R = 1. At x = 1: alternating harmonic, converges. At x = −1: (−1)ᵏ(−1)ᵏ/k = 1/k, harmonic, diverges.' }),
+    () => ({ e: 'xᵏ/k²', a: 0, R: 1, ends: [1, 1], why: 'R = 1, and at both endpoints |terms| = 1/k², a convergent p-series.' }),
+    () => ({ e: 'k·xᵏ', a: 0, R: 1, ends: [0, 0], why: 'R = 1. At x = ±1 the terms ±k don’t go to 0: both diverge.' }),
+    () => { const a = pick([2, 3, -1]), b = pick([2, 4]); return { e: `(x ${a < 0 ? '+' : '−'} ${Math.abs(a)})ᵏ/(k·${b}ᵏ)`, a, R: b, ends: [1, 0], why: `Centre ${a}, R = ${b}. At x = ${a + b}: Σ1/k, diverges. At x = ${a - b}: Σ(−1)ᵏ/k, converges.` }; },
+    () => { const b = pick([3, 5]); return { e: `xᵏ/${b}ᵏ`, a: 0, R: b, ends: [0, 0], why: `Geometric with ratio x/${b}: needs |x| &lt; ${b}. At x = ±${b} the terms are ±1, which don’t go to 0.` }; },
+  ])();
+  const lo = c.a - c.R, hi = c.a + c.R, show = (L, Rr) => `${L ? '[' : '('}${lo}, ${hi}${Rr ? ']' : ')'}`;
+  const opts = [[1, 0], [0, 1], [0, 0], [1, 1]], corr = opts.findIndex(o => o[0] === c.ends[0] && o[1] === c.ends[1]);
+  $('qText').innerHTML = 'Which is the interval of convergence?'; $('qExpr').innerHTML = minus(sigma(1, c.e));
+  qChoices(opts.map(o => show(o[0], o[1])), corr, k => (k === corr ? '' : 'Answer ' + show(...c.ends) + '. ') + c.why);
+}
+function qCoef(){
+  const c = pick([
+    () => { const n = pick([4, 6, 8]); return { e: `1/(1 + x²): coefficient of x${SUP(n)}`, ans: (n / 2) % 2 ? -1 : 1, why: `Substitute −x² into Σxᵏ: Σ(−1)ᵏx²ᵏ. x${SUP(n)} is k = ${n / 2}, sign (−1)${SUP(n / 2)}.` }; },
+    () => ({ e: `1/(1 + x²): coefficient of x${SUP(5)}`, ans: 0, why: 'Only even powers appear, so the coefficient of x⁵ is 0.' }),
+    () => { const n = ri(3, 8); return { e: `1/(1 − x)²: coefficient of x${SUP(n)}`, ans: n + 1, why: `Differentiate Σxᵏ: Σ k·xᵏ⁻¹ = Σ(k + 1)xᵏ, so the coefficient of x${SUP(n)} is ${n + 1}.` }; },
+    () => { const n = ri(2, 6); return { e: `ln(1 + x): coefficient of x${SUP(n)}`, ans: (n % 2 ? 1 : -1) / n, why: `Integrate 1/(1 + x) = Σ(−1)ᵏxᵏ: Σ(−1)ᵏxᵏ⁺¹/(k + 1). The x${SUP(n)} coefficient is ${frc((n % 2 ? 1 : -1) / n)}.` }; },
+    () => { const n = pick([3, 5, 7]); return { e: `arctan x: coefficient of x${SUP(n)}`, ans: ((n - 1) / 2 % 2 ? -1 : 1) / n, why: `Integrate 1/(1 + x²) = Σ(−1)ᵏx²ᵏ: Σ(−1)ᵏx²ᵏ⁺¹/(2k + 1). The x${SUP(n)} coefficient is ${frc(((n - 1) / 2 % 2 ? -1 : 1) / n)}.` }; },
+    () => { const n = pick([4, 6]); return { e: `e^(−x²): coefficient of x${SUP(n)}`, ans: ((n / 2) % 2 ? -1 : 1) / fact(n / 2), why: `Substitute −x² into Σxᵏ/k!: Σ(−1)ᵏx²ᵏ/k!. x${SUP(n)} is k = ${n / 2}: ${frc(((n / 2) % 2 ? -1 : 1) / fact(n / 2))}.` }; },
+    () => { const n = ri(2, 4); return { e: `e^(2x): coefficient of x${SUP(n)}`, ans: 2 ** n / fact(n), why: `Substitute 2x: (2x)ᵏ/k!, so the coefficient is 2${SUP(n)}/${n}! = ${frc(2 ** n / fact(n))}.` }; },
+    () => { const n = ri(2, 6); return { e: `x/(1 − x): coefficient of x${SUP(n)}`, ans: 1, why: 'Multiply Σxᵏ by x: x + x² + x³ + …; every coefficient from x¹ on is 1.' }; },
+  ])();
+  Object.assign(qq, { ans: c.ans, explain: c.why, ansT: frc(c.ans) });
+  $('qText').innerHTML = 'Start from 1/(1 − x) = Σ xᵏ or eˣ = Σ xᵏ/k!. Find the coefficient.'; $('qExpr').innerHTML = minus(c.e); $('qLab').textContent = 'coefficient =';
+}
+function qEval(){
+  const c = pick([
+    () => { const x = pick([1, 2, 3]); return { e: sigma(0, `${x}ᵏ/k!`), ans: Math.exp(x), why: `This is Σxᵏ/k! = eˣ at x = ${x}: e${SUP(x)} ≈ ${r4(Math.exp(x))}.` }; },
+    () => { const r = pick([1 / 2, 1 / 3, 2 / 3, 1 / 4]); return { e: sigma(0, `(${frc(r)})ᵏ`), ans: 1 / (1 - r), why: `Σxᵏ = 1/(1 − x) at x = ${frc(r)}: ${frc(1 / (1 - r))}.` }; },
+    () => { const r = pick([1 / 2, 1 / 3]); return { e: sigma(1, `k·(${frc(r)})ᵏ`), ans: r / (1 - r) ** 2, why: `Σk·xᵏ = x/(1 − x)² (differentiate the geometric series, multiply by x) at x = ${frc(r)}: ${frc(r / (1 - r) ** 2)}.` }; },
+    () => ({ e: sigma(1, '1/(k·2ᵏ)'), ans: Math.LN2, why: 'Σxᵏ/k = −ln(1 − x) at x = ½: −ln(½) = ln 2 ≈ 0.69315.' }),
+    () => ({ e: sigma(0, '(−1)ᵏ/(2k + 1)'), ans: Math.PI / 4, why: 'The arctan series at x = 1: arctan 1 = π/4 ≈ 0.78540.' }),
+    () => ({ e: sigma(0, '(−1)ᵏπ²ᵏ/(2k)!'), ans: -1, why: 'The cosine series Σ(−1)ᵏx²ᵏ/(2k)! at x = π: cos π = −1.' }),
+    () => ({ e: sigma(0, '(−1)ᵏ/k!'), ans: 1 / Math.E, why: 'Σxᵏ/k! at x = −1: e⁻¹ ≈ 0.36788.' }),
+  ])();
+  Object.assign(qq, { ans: c.ans, explain: c.why, ansT: (() => { const f = frc(c.ans, 100); return /\//.test(f) || Number.isInteger(c.ans) ? f : c.ans.toFixed(5); })() });
+  $('qText').innerHTML = 'Recognise the power series and its x, then give the value (fraction, or decimal to 4 places).'; $('qExpr').innerHTML = minus(c.e); $('qLab').textContent = 'value =';
+}
+let lastType = null;
+function qNew(){
+  qReset();
+  let t; do { t = pick(['rad', 'ivl', 'coef', 'eval']); } while (t === lastType);
+  lastType = t; qq = { type: t, counted: false };
+  $('qTitle').textContent = qTitles[t];
+  ({ rad: qRad, ivl: qIvl, coef: qCoef, eval: qEval })[t]();
+}
+$('qCheck').onclick = () => {
+  const raw = $('q1').value, v = qq.type === 'rad' ? parseR(raw) : parseNum(raw);
+  if (raw.trim() === '' || (typeof v === 'number' && isNaN(v))){ $('qErr').textContent = qq.type === 'rad' ? 'Type a number, a fraction like 1/2, or ∞ (inf).' : 'Type a number (fractions like 1/2 are fine).'; return; }
+  let ok, why = qq.explain;
+  if (qq.ans === Infinity) ok = v === Infinity;
+  else ok = isFinite(v) && Math.abs(v - qq.ans) < (qq.type === 'eval' ? 5e-5 : 1e-9) * Math.max(1, Math.abs(qq.ans));
+  if (!ok && qq.type === 'rad' && qq.trap !== undefined && (v === qq.trap || Math.abs(v - qq.trap) < 1e-9)) why = (qq.trap === Infinity || qq.trap === 0 ? 'You have it upside down: ' : (Number.isInteger(qq.trap) && qq.explain.includes('centre') ? 'That’s the centre, not the radius. ' : 'Check which way the ratio goes: R = lim |cₖ/cₖ₊₁|. ')) + why;
+  if (!ok && qq.type === 'coef' && isFinite(v) && Math.abs(v + qq.ans) < 1e-9 && qq.ans !== 0) why = 'Check the sign. ' + why;
+  $('qErr').textContent = ''; qScore(ok); qFeedback(ok, why);
+};
+$('q1').addEventListener('keydown', e => { if (e.key === 'Enter') $('qCheck').click(); });
+$('q1').addEventListener('input', () => $('qErr').textContent = '');
+$('qShow').onclick = () => {
+  qScore(false);
+  if (qq.correctIdx !== undefined){ [...$('qChoice').children].forEach((b, j) => { if (j === qq.correctIdx) b.classList.add('right'); }); qFeedback(false, qq.explainFn(qq.correctIdx)); return; }
+  $('q1').value = qq.ansT.replace('−', '-');
+  $('qFb').className = 'feedback bad'; $('qFb').innerHTML = '<b>Answer filled in.</b> ' + minus(qq.explain);
+};
+$('qNew').onclick = qNew;
+
+/* =====================================================================
+   8. START
+   ===================================================================== */
+selectOnFocus(['mX', 'mN', 'dY0', 'dY1', 'piN', 'q1']);
+$('mPresets').children[0].click();
+$('oPresets').children[2].click();
+$('dPresets').children[1].click();
+piDraw();
+$('gPresets').children[0].click();
+qNew();
+</script>
+</body></html>
