@@ -39,10 +39,6 @@
   "Variables and Expressions",
   "2dd48e1c-c756-4222-99ed-01497ec5a430"
  ],
- "3-B-14": [
-  "Logarithms",
-  "1013baf7-955f-4a57-b11d-38639b886c84"
- ],
  "3-B-2": [
   "Solving Linear Equations",
   "b4550920-83b4-454c-b5b8-073e6a5190b6"
@@ -50,6 +46,10 @@
  "3-B-6": [
   "Systems of Linear Equations",
   "a0cfda2c-b68c-4310-98c4-dcb85d1b0426"
+ ],
+ "3-B-14": [
+  "Logarithms",
+  "1013baf7-955f-4a57-b11d-38639b886c84"
  ],
  "5-B-1": [
   "5.B.1 Angles and Radians · MathMastery",
@@ -90,5 +90,9 @@
  "7-B-6": [
   "The Determinant",
   "ab868267-2123-4e7a-b632-a850e4732fef"
+ ],
+ "7-B-7": [
+  "Inverse Matrices",
+  "ed87faf0-3625-46e6-b7df-b0693a869e14"
  ]
 }

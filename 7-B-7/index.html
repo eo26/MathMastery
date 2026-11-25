@@ -1,0 +1,1137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>7.B.7 Inverse Matrices · MathMastery</title>
+<!-- Fonts: a book serif for prose, a clean sans for UI, a mono for numbers -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<!-- MathJax renders the few formulas on the page (SVG output needs no external stylesheet) -->
+<script>
+  window.MathJax = { tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] }, svg: { fontCache: 'global' } };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<style>
+/* ===================== Theme ===================== */
+:root{
+  --bg:#f7f5ef; --paper:#ffffff; --ink:#1f1e1d; --muted:#6b6a66; --line:#e4e0d5; --line2:#c9c5b8;
+  --accent:#534AB7; --accent-bg:#EEEDFE;
+  --pos:#1D9E75; --neg:#D85A30; --pt:#7F77DD; --pt-soft:#AFA9EC; --pt-dark:#534AB7;
+  --pos-new:#9FE1CB; --neg-new:#F0997B; --ok:#3B6D11; --ok-bg:#EAF3DE; --bad:#A32D2D; --bad-bg:#FCEBEB; --note-bg:#FAF3E3; --note-line:#E7C98A;
+  --serif:"Source Serif 4", Georgia, "Times New Roman", serif;
+  --sans:"IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#191817; --paper:#232220; --ink:#ecebe6; --muted:#a3a29c; --line:#383733; --line2:#55534e;
+    --accent:#AFA9EC; --accent-bg:#2c2852; --pt-dark:#CECBF6; --pt-soft:#6f68b8; --pos-new:#5DCAA5; --neg-new:#F5C4B3;
+    --ok:#C0DD97; --ok-bg:#24400d; --bad:#F7C1C1; --bad-bg:#5a1c1c; --note-bg:#2b261b; --note-line:#6b5626;
+  }
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.7 var(--serif);-webkit-font-smoothing:antialiased}
+
+/* ===================== Layout ===================== */
+.topbar{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1000px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:14px;font:500 13px/1 var(--sans);color:var(--muted)}
+.brand{color:var(--ink);font-weight:600;letter-spacing:.02em}
+.brand b{color:var(--accent)}
+.crumbs{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pid{font-family:var(--mono);color:var(--accent);background:var(--accent-bg);padding:4px 8px;border-radius:6px}
+.prose{max-width:720px;margin:0 auto;padding:0 20px}
+.wide{max-width:1000px;margin:0 auto;padding:0 20px}
+
+/* ===================== Hero ===================== */
+.hero{padding:48px 0 12px}
+.kicker{font:600 13px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1{font:700 46px/1.1 var(--serif);margin:12px 0 14px;letter-spacing:-.01em}
+.dek{font-size:21px;color:var(--muted);margin:0 0 22px;font-style:italic}
+.tiers{display:flex;gap:6px;flex-wrap:wrap;font:500 13px/1 var(--sans);margin-bottom:8px}
+.tier{padding:7px 12px;border-radius:999px;border:1px solid var(--line2);color:var(--muted)}
+.tier.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.tier small{opacity:.7;margin-left:4px}
+
+/* ===================== Text elements ===================== */
+h2{font:700 28px/1.25 var(--serif);margin:56px 0 10px;display:flex;gap:12px;align-items:baseline}
+h2 .n{font:600 14px/1 var(--mono);color:var(--accent);min-width:28px}
+p{margin:0 0 16px}
+em.key{font-style:normal;background:linear-gradient(transparent 62%,var(--accent-bg) 62%);padding:0 2px}
+.goals{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:18px 22px;margin:22px 0 0;font:15.5px/1.6 var(--sans)}
+.goals h3{font:600 12px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
+.goals ul{margin:0;padding-left:20px}
+.note{background:var(--note-bg);border-left:4px solid var(--note-line);border-radius:0 10px 10px 0;padding:14px 18px;margin:20px 0;font:15.5px/1.6 var(--sans)}
+.note b{font-weight:600}
+.notice{list-style:none;padding:0;margin:8px 0 18px;counter-reset:n}
+.notice li{position:relative;padding:12px 0 12px 46px;border-top:1px solid var(--line)}
+.notice li:last-child{border-bottom:1px solid var(--line)}
+.notice li::before{counter-increment:n;content:counter(n);position:absolute;left:4px;top:13px;width:26px;height:26px;border-radius:50%;background:var(--accent-bg);color:var(--accent);font:600 13px/26px var(--mono);text-align:center}
+.goes{list-style:none;padding:0;margin:8px 0 18px}
+.goes li{padding:12px 0;border-top:1px solid var(--line)}
+.goes li:last-child{border-bottom:1px solid var(--line)}
+.math{overflow-x:auto;margin:12px 0 18px;padding:14px 18px;background:var(--paper);border:1px solid var(--line);border-radius:12px}
+.math .cap{font:14px/1.5 var(--sans);color:var(--muted);margin-top:4px}
+.mono{font-family:var(--mono);font-size:.92em;white-space:nowrap}
+.pos{color:var(--pos);font-weight:600}.neg{color:var(--neg);font-weight:600}.pt{color:var(--pt-dark);font-weight:600}
+
+/* ===================== Vocabulary ===================== */
+.vocab{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin:14px 0 8px}
+.term{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font:14.5px/1.5 var(--sans)}
+.term b{display:block;font:600 15px/1.3 var(--serif);margin-bottom:4px}
+
+/* ===================== Interactive cards ===================== */
+.card{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:18px 20px 20px;margin:26px 0;box-shadow:0 1px 0 var(--line),0 12px 32px -22px rgba(0,0,0,.25);font-family:var(--sans)}
+.card-h{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.card-h .tag{font:600 11px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--accent);background:var(--accent-bg);padding:5px 8px;border-radius:6px}
+.card-h h3{font:600 18px/1.3 var(--sans);margin:0}
+.card-h .sub{color:var(--muted);font-size:14.5px;flex-basis:100%}
+.panel-label{font:600 11px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:12px 0 4px;display:flex;justify-content:space-between}
+.panel-label span:last-child{letter-spacing:0;text-transform:none;font-weight:500}
+svg.nl{display:block;width:100%;height:auto;border:1px solid var(--line);border-radius:12px;background:var(--bg);touch-action:manipulation}
+svg.clickable{cursor:pointer}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:12px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0}
+button{font:500 14px/1 var(--sans);padding:9px 14px;border-radius:9px;border:1px solid var(--line2);background:var(--paper);color:var(--ink);cursor:pointer;transition:background .15s,border-color .15s}
+button:hover{border-color:var(--ink)}
+button.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+button.preset.on{background:var(--accent-bg);border-color:var(--accent);color:var(--accent)}
+button:disabled{opacity:.45;cursor:default}
+.desc{min-height:24px;color:var(--muted);font-size:14.5px;margin:2px 0 6px}
+.inputs{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;margin:12px 0 4px}
+.field{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.field input{width:92px;font:500 18px/1 var(--mono);padding:9px 10px;border-radius:9px;border:2px solid var(--line2);background:var(--bg);color:var(--ink);text-align:center}
+.field input:focus{outline:none;border-color:var(--accent)}
+.field i,.eq i,.sym{font:italic 600 1.15em var(--serif);text-transform:none;letter-spacing:0;color:var(--pt-dark)}
+.field.start input{border-color:var(--pt-soft)}
+.field.slide input{border-color:var(--pt)}
+.eq{font:500 20px/1 var(--mono);padding:10px 14px;background:var(--bg);border-radius:10px;border:1px solid var(--line)}
+.err{color:var(--bad);font-size:14px;min-height:20px;margin:2px 0}
+.readout{margin-top:12px;padding:12px 14px;background:var(--bg);border-radius:10px;border:1px solid var(--line);font-size:15px;line-height:1.55;min-height:48px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:12px;font-size:13px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{display:inline-block;width:14px;height:14px;border-radius:50%}
+.sw.pos{background:var(--pos)}.sw.neg{border:2.4px solid var(--neg)}
+.sw.x{position:relative;background:var(--pos);opacity:.45}.sw.x::after{content:'✕';position:absolute;inset:-1px 0 0 0;color:var(--neg);font:700 13px/1 var(--sans);text-align:center}
+.sw.posnew{background:var(--pos-new);border:1.5px solid var(--pos)}.sw.negnew{border:2.4px solid var(--neg-new)}.sw.pt{background:var(--pt)}
+.sw.mv{width:22px;height:4px;border-radius:2px;background:var(--pt-soft)}
+.sw.rl{width:22px;height:0;border-top:2px dashed var(--ink);border-radius:0;opacity:.7}
+.feedback{margin-top:10px;padding:12px 14px;border-radius:10px;font-size:15px;line-height:1.55;display:none}
+.feedback.ok{display:block;background:var(--ok-bg);color:var(--ok)}
+.feedback.bad{display:block;background:var(--bad-bg);color:var(--bad)}
+.feedback.info{display:block;background:var(--accent-bg);color:var(--accent)}
+.score{margin-left:auto;font:600 14px/1 var(--mono);color:var(--muted)}
+
+/* ===================== Footer nav ===================== */
+.pager{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:56px 0 18px;font-family:var(--sans)}
+.pager a,.pager div{display:block;padding:16px 18px;border:1px solid var(--line);border-radius:14px;background:var(--paper);color:var(--ink);text-decoration:none}
+.pager small{display:block;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.pager .next{text-align:right}
+.pager .soon{opacity:.6}
+.meta{font:13px/1.6 var(--sans);color:var(--muted);text-align:center;padding:10px 0 50px}
+
+@media (max-width:720px){
+  body{font-size:17px}
+  h1{font-size:34px}
+  .dek{font-size:18px}
+  h2{font-size:24px}
+  .card{padding:14px 12px 16px;border-radius:14px}
+  .crumbs{display:none}
+  svg.nl{min-width:640px}
+}
+</style>
+<meta name="mm-site" content="1">
+<link rel="stylesheet" href="../shared/nav.css">
+</head>
+<body>
+<style>
+/* ===================== Page-specific styles (7.B.7) ===================== */
+/* î = green, ĵ = orange, F = purple, the tracked point x / b = blue, the undo (A⁻¹ and your U) = amber, A = blue, B = pink */
+:root{ --ci:#1D9E75; --cj:#D85A30; --cp:#7F77DD; --cs:#AFA9EC; --cr:#2F6FDB; --ca:#2F6FDB; --cb:#C2417D; --cu:#B86E00; --berry:#C2417D; --trop:#D99A00; --good:#1D9E75; --wrong:#D8443A; }
+@media (prefers-color-scheme:dark){ :root{ --ci:#5DCAA5; --cj:#F0997B; --cp:#AFA9EC; --cs:#6F67C9; --cr:#6EA2F5; --ca:#6EA2F5; --cb:#EE7FB0; --cu:#FFB547; --berry:#EE7FB0; --trop:#FFD44D; --good:#5DCAA5; --wrong:#F07B72; } }
+.ki{color:var(--ci);font-weight:700}.kj{color:var(--cj);font-weight:700}.kp{color:var(--cp);font-weight:700}.kr{color:var(--cr);font-weight:700}
+.ka{color:var(--ca);font-weight:700}.kb{color:var(--cb);font-weight:700}.ku{color:var(--cu);font-weight:700}
+.kberry{color:var(--berry);font-weight:700}.ktrop{color:var(--trop);font-weight:700}
+.field.fp input{border-color:var(--cp)}.field.sm input{width:70px}.field.fr input{border-color:var(--cr)}
+.inputs .grp{display:flex;gap:10px;align-items:flex-end;padding-right:12px;border-right:1px dashed var(--line);margin-right:4px}
+.inputs .grp:last-of-type{border-right:none}
+.matw{display:flex;flex-direction:column;gap:4px}
+.mhead{display:grid;grid-template-columns:repeat(2,70px);gap:6px;padding:0 12px;font:600 11px var(--sans);letter-spacing:.05em;text-transform:uppercase;text-align:center}
+.mlab{font:600 11px var(--sans);letter-spacing:.05em;text-transform:uppercase;padding-left:12px}
+.mat{display:grid;grid-template-columns:repeat(2,70px);gap:6px;padding:6px 10px;border-left:2.5px solid var(--ink);border-right:2.5px solid var(--ink);border-radius:7px}
+.mat input{width:100%;font:500 17px/1 var(--mono);padding:8px 2px;text-align:center;border-radius:9px;border:2px solid var(--line2);background:var(--bg);color:var(--ink)}
+.mat input:focus{outline:none;box-shadow:0 0 0 2px var(--accent)}
+.mat input.ci{border-color:var(--ci)}.mat input.cj{border-color:var(--cj)}
+.mat.mA input{border-color:var(--ca)}.mat.mB input{border-color:var(--cb)}.mat.mU input{border-color:var(--cu)}
+.mshow{display:inline-grid;grid-template-columns:auto auto;gap:2px 14px;padding:3px 9px;border-left:2px solid currentColor;border-right:2px solid currentColor;border-radius:5px;font:600 15px var(--mono);vertical-align:middle;margin:0 3px}
+.mshow .c1{color:var(--ci);text-align:center}.mshow .c2{color:var(--cj);text-align:center}
+.mshow span{text-align:center}.mshow.a{color:var(--ca)}.mshow.b{color:var(--cb)}.mshow.u{color:var(--cu)}
+.mshow .hl{background:color-mix(in srgb, var(--cu) 22%, transparent);border-radius:4px;padding:0 3px}
+.split{display:grid;gap:0;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--paper)}
+.split.s3{grid-template-columns:repeat(3,1fr)}.split.s4{grid-template-columns:repeat(4,1fr)}
+.split svg{display:block;width:100%;height:auto;border:none;border-radius:0}
+svg{-webkit-user-select:none;user-select:none}
+.split > * + *{border-left:1px solid var(--line)}
+.eqs{font:14.5px/1.9 var(--mono);margin:10px 0 6px;padding:10px 16px;border:1px solid var(--line);border-radius:12px;background:var(--bg)}
+.eqs .lbl{display:inline-block;min-width:150px;font:600 12px var(--sans);letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+pre.code{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:12px 16px;overflow-x:auto;font:13.5px/1.6 var(--mono);margin:10px 0 16px}
+.choice{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 0}.choice button{min-width:170px;text-align:left}
+.qtext{font:17px/1.55 var(--serif);margin:4px 0 10px}
+.fsteps{display:flex;flex-direction:column;gap:12px;margin:12px 0 4px;padding:14px 16px;border:1px solid var(--line);border-radius:12px;background:var(--bg);font:15px/1.6 var(--mono)}
+.fsteps .st{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.fsteps .st .lbl{min-width:190px;font:600 12px var(--sans);letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+.fsteps .st.off{opacity:.25}
+.ctab{border-collapse:collapse;font:14px/1.35 var(--mono);margin:12px 0 4px;width:100%}
+.ctab td,.ctab th{border:1px solid var(--line);padding:6px 8px;text-align:center}
+.ctab th{font:600 11.5px var(--sans);text-transform:uppercase;letter-spacing:.04em;color:var(--muted);text-align:left;width:190px;background:var(--bg)}
+.ctab td.lt{font:700 17px var(--mono);letter-spacing:.12em}
+.ctab td.code{color:var(--cu);font-weight:700}
+.ctab td.bad{color:var(--wrong);font-weight:700}
+.two{display:grid;grid-template-columns:1.15fr 1fr;gap:16px;align-items:start;margin-top:10px}
+.two .eqs{margin:0;font-size:14px;line-height:1.7}
+.two .eqs .lbl{display:block;min-width:0;margin-top:6px}
+.two .eqs .lbl:first-child{margin-top:0}
+#cMsg{width:260px;font:600 16px var(--mono);letter-spacing:.08em;text-transform:uppercase}
+</style>
+
+<!-- ===================== Top bar ===================== -->
+<div class="topbar"><div class="topbar-in">
+  <span class="brand">Math<b>Mastery</b></span>
+  <span class="crumbs">Chapter 7 · Linear Algebra › Basics</span>
+  <span class="pid">7.B.7</span>
+</div></div>
+
+<!-- ===================== Hero ===================== -->
+<header class="prose hero">
+  <div class="kicker">Chapter 7 · Linear Algebra</div>
+  <h1>Inverse Matrices</h1>
+  <p class="dek">Every move that doesn’t squash the plane has an undo move, and finding it lets you run any matrix backwards.</p>
+  <div class="tiers" aria-label="Tier">
+    <span class="tier on">Basics <small>you are here</small></span>
+    <span class="tier">Undergraduate</span>
+    <span class="tier">Masters</span>
+  </div>
+  <div class="goals">
+    <h3>On this page</h3>
+    <ul>
+      <li>See the <b>inverse</b> <i>A</i><sup>−1</sup> as the move that brings every point back where it started, so <i>A</i><sup>−1</sup><i>A</i> = <i>I</i>.</li>
+      <li>Find a 2×2 inverse in three steps: swap <i>a</i> and <i>d</i>, change the signs of <i>b</i> and <i>c</i>, divide by the determinant.</li>
+      <li>Know when there is no inverse: when det = 0, the move is <b>singular</b> and can’t be undone.</li>
+      <li>Undo two moves in reverse order, (<i>BA</i>)<sup>−1</sup> = <i>A</i><sup>−1</sup><i>B</i><sup>−1</sup>, and run a matrix backwards to solve <i>A</i><b>x</b> = <b>b</b>.</li>
+    </ul>
+  </div>
+</header>
+
+<main>
+<!-- ===================== §1 ===================== -->
+<section class="prose">
+  <h2><span class="n">1</span>Every good move has an undo</h2>
+  <p>With numbers, ×3 is undone by ×⅓: triple something, then take a third, and you’re back where you started. The number ⅓ is the <b>inverse</b> of 3, because ⅓ × 3 = 1, and multiplying by 1 changes nothing.</p>
+  <p>Matrices work the same way. A matrix <i>A</i> moves every point of the plane (7.B.4). Its <b>inverse matrix</b>, written <i>A</i><sup>−1</sup> and read “<i>A</i> inverse,” is the move that puts every point back. Doing <i>A</i> and then <i>A</i><sup>−1</sup> is the same as not moving at all, which is the <b>identity matrix</b> <i>I</i>, the matrix version of ×1:</p>
+  <p style="text-align:center;font:17px var(--mono)"><i>A</i><sup>−1</sup><i>A</i> = <i>I</i> &nbsp;and&nbsp; <i>A</i><i>A</i><sup>−1</sup> = <i>I</i></p>
+  <p>Watch it below: the F leaves home under <span class="ka">A</span>, then <span class="ku">A<sup>−1</sup></span> brings it back to the dashed outline. Drag the tips of <b class="ki">î</b> and <b class="kj">ĵ</b> to change <i>A</i>, or drag the blue point <b class="kr">b</b> to see where it must have started.</p>
+</section>
+
+<section class="wide">
+  <div class="card" id="main">
+    <div class="card-h"><span class="tag">Explore</span><h3>Do, then undo</h3>
+      <span class="sub">Pick a move or type it. Press Play to watch <span class="ka">A</span> move everything, then <span class="ku">A⁻¹</span> bring it all home. In the middle panel you can drag the tips of î and ĵ, or the landed point <b class="kr">b</b>.</span></div>
+    <div class="row" id="xPresets"></div>
+    <div class="desc" id="xDesc"></div>
+    <div class="inputs">
+      <div class="grp"><div class="matw">
+        <div class="mhead"><span class="ki">î lands at</span><span class="kj">ĵ lands at</span></div>
+        <div class="mat">
+          <input id="xa" class="ci" type="text" inputmode="decimal" autocomplete="off" aria-label="a"><input id="xb" class="cj" type="text" inputmode="decimal" autocomplete="off" aria-label="b">
+          <input id="xc" class="ci" type="text" inputmode="decimal" autocomplete="off" aria-label="c"><input id="xd" class="cj" type="text" inputmode="decimal" autocomplete="off" aria-label="d">
+        </div></div></div>
+      <div class="row" style="margin:0"><button class="primary" id="xPlay">Play</button><button id="xReset">Reset</button></div>
+    </div>
+    <div class="err" id="xErr"></div>
+    <div class="split s3">
+      <svg id="xS" viewBox="0 0 340 320" role="img" aria-label="Start"></svg>
+      <svg id="xA" viewBox="0 0 340 320" role="img" aria-label="After A" style="cursor:grab;touch-action:none"></svg>
+      <svg id="xU" viewBox="0 0 340 320" role="img" aria-label="After A, then A inverse"></svg>
+    </div>
+    <div class="eqs" id="xEqs"></div>
+    <div class="readout" id="xOut"></div>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--ci)"></i>î and where it lands</span>
+      <span><i class="sw" style="background:var(--cj)"></i>ĵ and where it lands</span>
+      <span><i class="sw" style="background:var(--cp)"></i>the F and the square, and the moved grid</span>
+      <span><i class="sw" style="background:var(--cr)"></i>the start point <b>x</b> and where it lands, <b>b</b></span>
+      <span><svg width="26" height="12" viewBox="0 0 26 12" aria-hidden="true"><rect x="2" y="2" width="22" height="8" fill="none" stroke="var(--ink)" stroke-dasharray="4 3"/></svg>home: where the F started</span>
+    </div>
+  </div>
+</section>
+
+<section class="prose">
+  <p>A few things to notice as you click through the presets:</p>
+  <ul>
+    <li>The undo of a stretch is a shrink, the undo of a turn is the opposite turn, and the undo of a shear leans the other way. A mirror is its own undo: mirror twice and you’re home.</li>
+    <li>If <i>A</i> multiplies every area by det <i>A</i> (7.B.6), the undo must divide every area by the same amount, so det(<i>A</i><sup>−1</sup>) = 1 / det <i>A</i>.</li>
+    <li>“Almost flat” squeezes the plane into a thin sliver, so its undo has to pull hard, and its entries are big. “Collapse” squeezes it all the way flat, and then nothing can pull it back: three different start points (1, 2, 3) land on the same spot, and the undo would have to send one spot to three places at once.</li>
+  </ul>
+  <p>A matrix that has an inverse is <b>invertible</b>. One that doesn’t (det = 0) is <b>singular</b>.</p>
+</section>
+
+<!-- ===================== §2 ===================== -->
+<section class="prose">
+  <h2><span class="n">2</span>Build the undo yourself</h2>
+  <p>Before any formula, try finding an undo by hand. The left panel shows where <span class="ka">A</span> sent everything. Your job: set the matrix <span class="ku">U</span> so that doing <span class="ka">A</span> and then <span class="ku">U</span> puts the F back on its dashed outline. One idea makes it doable: <span class="ka">A</span> sent <b class="ki">î</b> to its first column, so <span class="ku">U</span> must send that column back to [1, 0]. In the same way, it must send <span class="ka">A</span>’s second column back to [0, 1].</p>
+</section>
+<section class="wide">
+  <div class="card" id="puzzle">
+    <div class="card-h"><span class="tag">Puzzle</span><h3>Undo it yourself</h3>
+      <span class="sub">Pick a move <span class="ka">A</span>. Then type the entries of <span class="ku">U</span>, or drag the tips of its î and ĵ in the middle panel (they snap to halves), until the F lands home.</span></div>
+    <div class="row" id="zPresets"></div>
+    <div class="inputs">
+      <div class="grp"><div class="matw"><span class="mlab ka">A · the move</span><div id="zAshow" style="padding:6px 0"></div></div></div>
+      <div class="grp"><div class="matw"><span class="mlab ku">U · your undo</span>
+        <div class="mat mU"><input id="zu0" type="text" inputmode="decimal" autocomplete="off"><input id="zu1" type="text" inputmode="decimal" autocomplete="off"><input id="zu2" type="text" inputmode="decimal" autocomplete="off"><input id="zu3" type="text" inputmode="decimal" autocomplete="off"></div></div></div>
+      <div class="row" style="margin:0"><button id="zHint">Hint</button><button id="zShow">Show the undo</button><button id="zReset">Start over</button></div>
+    </div>
+    <div class="err" id="zErr"></div>
+    <div class="split s3">
+      <svg id="zA" viewBox="0 0 340 320" role="img" aria-label="After A"></svg>
+      <svg id="zU" viewBox="0 0 340 320" role="img" aria-label="Your U on its own" style="cursor:grab;touch-action:none"></svg>
+      <svg id="zR" viewBox="0 0 340 320" role="img" aria-label="After A, then U"></svg>
+    </div>
+    <div class="eqs" id="zEqs"></div>
+    <div class="feedback" id="zFb" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ===================== §3 ===================== -->
+<section class="prose">
+  <h2><span class="n">3</span>The 2×2 formula: swap, change signs, divide</h2>
+  <p>For a 2×2 matrix the undo can always be written down in three steps. Start with <i>a</i>, <i>b</i> on top and <i>c</i>, <i>d</i> underneath:</p>
+  <ol>
+    <li><b>Swap</b> <i>a</i> and <i>d</i> (the main diagonal trades places).</li>
+    <li><b>Change the signs</b> of <i>b</i> and <i>c</i> (they stay where they are).</li>
+    <li><b>Divide</b> every entry by the determinant, det = <i>ad</i> − <i>bc</i>.</li>
+  </ol>
+  <p>Why does that work? Multiply <i>A</i> by the matrix from steps 1 and 2 and something tidy falls out: <i>ad</i> − <i>bc</i> on the diagonal and 0 everywhere else. That’s det × <i>I</i>, a plain zoom by the determinant. Step 3 divides the zoom away, leaving <i>I</i>. Step through it with your own numbers:</p>
+</section>
+<section class="wide">
+  <div class="card" id="formula">
+    <div class="card-h"><span class="tag">Explore</span><h3>Swap, change signs, divide</h3>
+      <span class="sub">Type a matrix, then press the steps one at a time. Try one with det = 0, such as 2, 4, 1, 2.</span></div>
+    <div class="inputs">
+      <div class="grp"><div class="matw"><span class="mlab ka">A</span>
+        <div class="mat mA"><input id="fa" type="text" inputmode="decimal" autocomplete="off" aria-label="a"><input id="fb" type="text" inputmode="decimal" autocomplete="off" aria-label="b"><input id="fc" type="text" inputmode="decimal" autocomplete="off" aria-label="c"><input id="fd" type="text" inputmode="decimal" autocomplete="off" aria-label="d"></div></div></div>
+      <div class="row" style="margin:0" id="fSteps"></div>
+    </div>
+    <div class="err" id="fErr"></div>
+    <div class="fsteps" id="fOut"></div>
+  </div>
+</section>
+<section class="prose">
+  <p>Step 3 is where a <b>singular</b> matrix gets stuck: when det = 0 there’s nothing to divide by. That matches the picture. A det of 0 means the plane was squashed flat, and a squash can’t be undone. So a 2×2 matrix is <b>invertible</b> exactly when det ≠ 0. Since the undo divides areas by det <i>A</i>, det(<i>A</i><sup>−1</sup>) = 1/det <i>A</i>.</p>
+  <p>One warning: the inverse is <b>not</b> “1 over each entry.” The inverse of the matrix with rows 2, 1 and 1, 1 is the matrix with rows 1, −1 and −1, 2, not ½, 1, 1, 1. Undoing a move means undoing the whole move at once, and the entries are tangled together.</p>
+</section>
+
+<!-- ===================== §4 ===================== -->
+<section class="prose">
+  <h2><span class="n">4</span>Socks and shoes: undo in reverse order</h2>
+  <p>In the morning you put on your socks, then your shoes. At night you undo that, but not in the same order: shoes come off first, then socks. The last thing you did is the first thing you undo.</p>
+  <p>Moves are the same. If you do <span class="ka">A</span> first and then <span class="kb">B</span>, the combined move is <span class="kb">B</span><span class="ka">A</span> (the right-hand matrix acts first, 7.B.5). To undo it, take off <span class="kb">B</span> first, then <span class="ka">A</span>: do <span class="kb">B</span><sup>−1</sup> first and then <span class="ka">A</span><sup>−1</sup>. Written as one matrix that’s <span class="ka">A</span><sup>−1</sup><span class="kb">B</span><sup>−1</sup>, so</p>
+  <p style="text-align:center;font:17px var(--mono)">(<span class="kb">B</span><span class="ka">A</span>)<sup>−1</sup> = <span class="ka">A</span><sup>−1</sup><span class="kb">B</span><sup>−1</sup>.</p>
+  <p>This is the <b>reverse-order rule</b>. Below, the third panel undoes in reverse order and the F lands home. The fourth tries the same order as before, and usually misses.</p>
+</section>
+<section class="wide">
+  <div class="card" id="socks">
+    <div class="card-h"><span class="tag">Explore</span><h3>Taking off the shoes first</h3>
+      <span class="sub">Pick two moves, or type them. Both must be invertible.</span></div>
+    <div class="row" id="sPresets"></div>
+    <div class="inputs">
+      <div class="grp"><div class="matw"><span class="mlab ka">A · socks (first)</span>
+        <div class="mat mA"><input id="sa0" type="text" inputmode="decimal" autocomplete="off"><input id="sa1" type="text" inputmode="decimal" autocomplete="off"><input id="sa2" type="text" inputmode="decimal" autocomplete="off"><input id="sa3" type="text" inputmode="decimal" autocomplete="off"></div></div></div>
+      <div class="grp"><div class="matw"><span class="mlab kb">B · shoes (second)</span>
+        <div class="mat mB"><input id="sb0" type="text" inputmode="decimal" autocomplete="off"><input id="sb1" type="text" inputmode="decimal" autocomplete="off"><input id="sb2" type="text" inputmode="decimal" autocomplete="off"><input id="sb3" type="text" inputmode="decimal" autocomplete="off"></div></div></div>
+    </div>
+    <div class="err" id="sErr"></div>
+    <div class="split s4" style="margin-top:12px">
+      <svg id="s1" viewBox="0 0 280 290" role="img" aria-label="Start"></svg>
+      <svg id="s2" viewBox="0 0 280 290" role="img" aria-label="After A, then B"></svg>
+      <svg id="s3" viewBox="0 0 280 290" role="img" aria-label="Undo B, then A"></svg>
+      <svg id="s4" viewBox="0 0 280 290" role="img" aria-label="Undo A, then B"></svg>
+    </div>
+    <div class="eqs" id="sEqs"></div>
+  </div>
+</section>
+
+<!-- ===================== §5 ===================== -->
+<section class="prose">
+  <h2><span class="n">5</span>Secret codes</h2>
+  <p>Here’s a classic use of a matrix and its inverse. Turn letters into numbers (A = 1, B = 2, …, Z = 26, a space = 0), group them in pairs, and multiply each pair by a <b>key</b> matrix <i>K</i>. Out come numbers that look like nonsense. Your friend, who knows the key, multiplies by <i>K</i><sup>−1</sup> and gets the message back. Encoding is <i>K</i>, decoding is its undo.</p>
+  <p>Choosing a key takes care. A key with det = 0 sends different pairs to the same code numbers, so even someone who knows the key can’t tell which pair was meant. Try the bad key.</p>
+</section>
+<section class="wide">
+  <div class="card" id="codes">
+    <div class="card-h"><span class="tag">Explore</span><h3>Encode with K, decode with K⁻¹</h3>
+      <span class="sub">Type a message (letters and spaces, up to 16 characters) and pick a key.</span></div>
+    <div class="row" id="cKeys"></div>
+    <div class="inputs">
+      <label class="field"><span>Message</span><input id="cMsg" type="text" autocomplete="off" maxlength="16"></label>
+      <div id="cKshow" style="font:14.5px var(--mono)"></div>
+    </div>
+    <div class="err" id="cErr"></div>
+    <div id="cTab"></div>
+    <div class="readout" id="cOut"></div>
+  </div>
+</section>
+
+<!-- ===================== §6 ===================== -->
+<section class="prose">
+  <h2><span class="n">6</span>Running a matrix backwards: solving <i>A</i><b>x</b> = <b>b</b></h2>
+  <p>Most of the time a matrix tells you where things go: start at <b class="kr">x</b>, and <i>A</i> sends you to <b class="kr">b</b> = <i>A</i><b class="kr">x</b>. Often the real question is backwards: you know where you ended up, <b class="kr">b</b>, and want to know where you started. That’s solving the equation <i>A</i><b>x</b> = <b>b</b> for the <b>unknown vector</b> <b>x</b>, and the inverse answers it in one step:</p>
+  <p style="text-align:center;font:17px var(--mono)"><b>x</b> = <i>A</i><sup>−1</sup><b>b</b>.</p>
+  <p>It’s the same move as solving 3<i>x</i> = 12 by multiplying both sides by ⅓. You already did it in “Do, then undo”: dragging <b class="kr">b</b> in the middle panel moved its start <b class="kr">x</b> = <i>A</i><sup>−1</sup><b class="kr">b</b>. Here’s a kitchen version.</p>
+  <p>A smoothie bar makes two drinks. A <b class="kberry">Berry Blast</b> takes 2 cups of strawberries and 1 banana. A <b class="ktrop">Tropical</b> takes 1 cup of strawberries and 3 bananas. Put each recipe in a column and you have a matrix <i>R</i>. If the bar makes <i>n</i><sub>1</sub> Berry Blasts and <i>n</i><sub>2</sub> Tropicals, the fruit used is <i>R</i><b>n</b> (7.B.4). At closing time the owner only knows how much fruit is gone. How many of each drink were sold? Run <i>R</i> backwards.</p>
+</section>
+<section class="wide">
+  <div class="card" id="recipe">
+    <div class="card-h"><span class="tag">Explore</span><h3>From fruit used back to drinks sold</h3>
+      <span class="sub">Pick a day or type the fruit used. Each slanted grid line is one more drink of a kind, so the drinks sold are the slanted-grid coordinates of the fruit used.</span></div>
+    <div class="row" id="rPresets"></div>
+    <div class="inputs">
+      <label class="field fr sm"><span>Strawberries (cups)</span><input id="rS" type="text" inputmode="decimal" autocomplete="off"></label>
+      <label class="field fr sm"><span>Bananas</span><input id="rB" type="text" inputmode="decimal" autocomplete="off"></label>
+    </div>
+    <div class="err" id="rErr"></div>
+    <div class="two">
+      <svg class="nl" id="rSvg" viewBox="0 0 560 470" role="img" aria-label="Fruit used, on the recipe grid"></svg>
+      <div class="eqs" id="rEqs"></div>
+    </div>
+  </div>
+</section>
+<section class="prose">
+  <p>Every system of two linear equations in two unknowns can be written as one matrix equation <i>A</i><b>x</b> = <b>b</b>. That’s the subject of the next section (7.B.8), and it’s why “does <i>A</i> have an inverse?” and “does the system have exactly one solution?” are the same question.</p>
+</section>
+
+<!-- ===================== §7 ===================== -->
+<section class="prose">
+  <h2><span class="n">7</span>Now, in symbols</h2>
+  <div class="math">\[ A^{-1}A = AA^{-1} = I = \begin{bmatrix} 1 & 0 \\ 0 & 1 \end{bmatrix} \]<div class="cap">The inverse undoes the move from either side.</div></div>
+  <div class="math">\[ \begin{bmatrix} a & b \\ c & d \end{bmatrix}^{-1} = \frac{1}{ad - bc}\begin{bmatrix} d & -b \\ -c & a \end{bmatrix} \qquad (ad - bc \neq 0) \]<div class="cap">Swap a and d, change the signs of b and c, divide by the determinant.</div></div>
+  <div class="math">\[ \det(A^{-1}) = \frac{1}{\det A}, \qquad (A^{-1})^{-1} = A, \qquad (BA)^{-1} = A^{-1}B^{-1} \]<div class="cap">The undo divides areas; undoing the undo is the move itself; chained moves are undone in reverse order.</div></div>
+  <div class="math">\[ A\mathbf{x} = \mathbf{b} \;\Longrightarrow\; \mathbf{x} = A^{-1}\mathbf{b} \]<div class="cap">When A is invertible, the system has exactly one solution.</div></div>
+  <p>For bigger matrices there’s no short formula. A computer uses row reduction (7.B.9). In practice it rarely builds <i>A</i><sup>−1</sup> at all: to solve <i>A</i><b>x</b> = <b>b</b> it goes straight for <b>x</b>, which is faster and more accurate:</p>
+  <pre class="code"><code>import numpy as np                              # NumPy: arrays of numbers
+R = np.array([[2, 1], [1, 3]])                  # smoothie recipes as columns
+used = np.array([11, 13])                       # cups of strawberries, bananas used today
+print(np.linalg.inv(R))                         # [[ 0.6 -0.2] [-0.2  0.4]] = (1/5)[[3, -1], [-1, 2]]
+print(np.linalg.inv(R) @ used)                  # [4. 3.]: 4 Berry Blasts, 3 Tropicals
+print(np.linalg.solve(R, used))                 # [4. 3.] again, without forming the inverse (preferred)
+bad = np.array([[2, 4], [1, 2]])                # det = 2*2 - 4*1 = 0
+try:
+    np.linalg.inv(bad)                          # a singular matrix has no inverse...
+except np.linalg.LinAlgError as e:
+    print(e)                                    # ...so NumPy says "Singular matrix"</code></pre>
+</section>
+
+<!-- ===================== §8 ===================== -->
+<section class="prose">
+  <h2><span class="n">8</span>Where this goes</h2>
+  <ul class="goes">
+    <li><b>Next (7.B.8):</b> writing a whole system of equations as one matrix equation <i>A</i><b>x</b> = <b>b</b>, and reading from det <i>A</i> whether it has one solution, none, or infinitely many.</li>
+    <li><b>Later in this book:</b> row reduction finds inverses of any size (7.B.9), 3×3 inverses undo moves of space (7.B.10), and the Undergraduate tier uses inverses to change coordinates (change of basis) and to undo transformations in calculus.</li>
+    <li><b>In the world:</b> video games and phone cameras undo moves to work out where a pixel came from, GPS solves equations like <i>A</i><b>x</b> = <b>b</b> to pin down your position, and engineers solve huge systems of this kind to design bridges and circuits.</li>
+  </ul>
+</section>
+
+<!-- ===================== §9 ===================== -->
+<section class="prose">
+  <h2><span class="n">9</span>Words to know</h2>
+  <div class="vocab">
+    <div class="term"><b>Inverse matrix</b><i>A</i><sup>−1</sup>: the move that undoes <i>A</i>, so <i>A</i><sup>−1</sup><i>A</i> = <i>A</i><i>A</i><sup>−1</sup> = <i>I</i>.</div>
+    <div class="term"><b>Identity matrix</b><i>I</i>: the “do nothing” move, with 1s on the diagonal and 0s elsewhere. The matrix version of ×1.</div>
+    <div class="term"><b>Invertible</b>Has an inverse. A 2×2 matrix is invertible exactly when det ≠ 0.</div>
+    <div class="term"><b>Singular</b>Has no inverse: det = 0, so the move squashes the plane flat and different points land on the same spot.</div>
+    <div class="term"><b>Swap, change signs, divide</b>The 2×2 inverse: swap <i>a</i> and <i>d</i>, negate <i>b</i> and <i>c</i>, divide by <i>ad</i> − <i>bc</i>.</div>
+    <div class="term"><b>Reverse-order rule</b>(<i>BA</i>)<sup>−1</sup> = <i>A</i><sup>−1</sup><i>B</i><sup>−1</sup>: undo the last move first, like shoes before socks.</div>
+    <div class="term"><b>Key (in a code)</b>The matrix <i>K</i> that encodes a message. Decoding uses <i>K</i><sup>−1</sup>, so a key must be invertible.</div>
+    <div class="term"><b>Unknown vector</b>The <b>x</b> in <i>A</i><b>x</b> = <b>b</b>: the start point you’re solving for. If <i>A</i> is invertible, <b>x</b> = <i>A</i><sup>−1</sup><b>b</b>.</div>
+  </div>
+</section>
+
+<!-- ===================== Quiz ===================== -->
+<section class="prose"><h2><span class="n">10</span>Check yourself</h2>
+  <p>Four kinds of questions: find an inverse, decide whether a move can be undone, find where a point started, and undo two moves in the right order.</p>
+</section>
+<section class="wide">
+  <div class="card" id="quiz">
+    <div class="card-h"><span class="tag">Quiz</span><h3 id="qTitle"></h3><span class="score" id="score">Score: 0 / 0</span></div>
+    <div class="qtext" id="qText"></div>
+    <svg class="nl" id="qSvg" viewBox="0 0 1000 380" role="img" aria-label="Quiz picture"></svg>
+    <div class="choice" id="qChoice"></div>
+    <div class="inputs" id="qIn">
+      <div class="grp" id="qMat"><div class="matw"><span class="mlab ku">A⁻¹</span>
+        <div class="mat mU"><input id="qm0" type="text" inputmode="decimal" autocomplete="off" aria-label="top left"><input id="qm1" type="text" inputmode="decimal" autocomplete="off" aria-label="top right"><input id="qm2" type="text" inputmode="decimal" autocomplete="off" aria-label="bottom left"><input id="qm3" type="text" inputmode="decimal" autocomplete="off" aria-label="bottom right"></div></div></div>
+      <div class="grp" id="qVec"><label class="field fr sm"><span><b>x</b>: first</span><input id="qv0" type="text" inputmode="decimal" autocomplete="off"></label><label class="field fr sm"><span>second</span><input id="qv1" type="text" inputmode="decimal" autocomplete="off"></label></div>
+      <div class="row" style="margin:0"><button class="primary" id="qCheck">Check</button></div>
+    </div>
+    <div class="row" style="margin:10px 0 0"><button id="qShow">Show answer</button><button id="qReplay">Replay move</button><button id="qNew">New question</button></div>
+    <div class="err" id="qErr"></div>
+    <div class="feedback" id="qFb" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ===================== Pager (filled in by the shared navigation) ===================== -->
+<nav class="wide">
+  <div class="pager"></div>
+  <div class="meta">7.B.7 · Prerequisites: 7.B.4 (a matrix is a move), 7.B.5 (matrix multiplication), 7.B.6 (the determinant) · Leads to: 7.B.8 (systems of equations as matrices), 7.B.9 (row reduction)</div>
+</nav>
+</main>
+
+<script>
+/* =====================================================================
+   1. HELPERS
+   ===================================================================== */
+const NS = 'http://www.w3.org/2000/svg';
+const $ = id => document.getElementById(id);
+function mk(tag, attrs, parent){                           // create an SVG element with attributes
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function txt(parent, x, y, s, cls, extra){                 // create an SVG text element
+  extra = Object.assign({}, extra || {});
+  // a CSS class's text-anchor beats the attribute, so move a requested anchor into the style
+  if (extra['text-anchor']){ extra.style = (extra.style ? extra.style + ';' : '') + 'text-anchor:' + extra['text-anchor']; delete extra['text-anchor']; }
+  const t = mk('text', Object.assign({ x, y, class: cls || '' }, extra), parent);
+  t.textContent = s;
+  return t;
+}
+function num(x, d){ if (d === undefined) d = 2; const r = Math.round(x * Math.pow(10, d)) / Math.pow(10, d); return r === 0 ? '0' : (r < 0 ? '−' : '') + String(Math.abs(r)); }
+// A number as a fraction when it is one with a small bottom (3/5, −1/2), otherwise a rounded decimal
+function fr(x){
+  if (!isFinite(x)) return '—';
+  if (Math.abs(x) < 1e-12) return '0';
+  if (Math.abs(x * 10 - Math.round(x * 10)) < 1e-9) return num(x, 1);   // whole numbers and one-decimal values (1.5, 0.4) read best as decimals
+  for (let q = 1; q <= 40; q++){ const p = Math.round(x * q); if (Math.abs(p / q - x) < 1e-9) return (p < 0 ? '−' : '') + (q === 1 ? Math.abs(p) : Math.abs(p) + '/' + q); }
+  return num(x, 3);
+}
+const pn = x => /[−\/]/.test(fr(x)) ? `(${fr(x)})` : fr(x);   // a number, in parentheses when negative or a fraction
+// Parse typed input: integers, decimals, a leading minus, fractions a/b (also -a/b and a/-b)
+function parseNum(s){
+  s = String(s).trim().replace(/[−–]/g, '-').replace(/\s+/g, '');
+  if (/^-?\d+(\.\d+)?$|^-?\.\d+$/.test(s)) return parseFloat(s);
+  const m = s.match(/^(-?\d*\.?\d+)\/(-?\d*\.?\d+)$/);
+  if (m && +m[2] !== 0) return +m[1] / +m[2];
+  return NaN;
+}
+const ease = t => t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+const C = { i: 'var(--ci)', j: 'var(--cj)', p: 'var(--cp)', s: 'var(--cs)', r: 'var(--cr)', a: 'var(--ca)', b: 'var(--cb)', u: 'var(--cu)' };
+const DEG = 180 / Math.PI;
+function readAll(ids, errId, msg){
+  const out = ids.map(id => parseNum($(id).value));
+  if (ids.some(id => $(id).value.trim() === '') || out.some(isNaN)){ $(errId).textContent = msg || 'Fill in every box with a number.'; return null; }
+  $(errId).textContent = ''; return out;
+}
+// A matrix is stored as [a, b, c, d] = top row a b, bottom row c d. Column 1 = [a, c] (where î lands), column 2 = [b, d].
+const ap = (M, p) => [M[0] * p[0] + M[1] * p[1], M[2] * p[0] + M[3] * p[1]];   // where the point p lands
+const det = M => M[0] * M[3] - M[1] * M[2];
+const blend = (M, e) => [1 + e * (M[0] - 1), e * M[1], e * M[2], 1 + e * (M[3] - 1)];   // from "no move" (e = 0) to M (e = 1)
+const mul = (B, A) => [B[0] * A[0] + B[1] * A[2], B[0] * A[1] + B[1] * A[3], B[2] * A[0] + B[3] * A[2], B[2] * A[1] + B[3] * A[3]];   // B·A: do A, then B
+const inv = M => { const D = det(M); return Math.abs(D) < 1e-12 ? null : [M[3] / D, -M[1] / D, -M[2] / D, M[0] / D]; };   // swap, change signs, divide
+const same = (M, N, tol) => M.every((v, k) => Math.abs(v - N[k]) < (tol || 1e-9));
+const ID = [1, 0, 0, 1];
+const vstr = p => `(${p.map(x => fr(x)).join(', ')})`;
+// Printed matrices: colored columns (î green, ĵ orange), or one color (A blue, B pink, undo amber)
+const mshow = M => `<span class="mshow"><span class="c1">${fr(M[0])}</span><span class="c2">${fr(M[1])}</span><span class="c1">${fr(M[2])}</span><span class="c2">${fr(M[3])}</span></span>`;
+const ms = (M, cls) => `<span class="mshow ${cls || ''}">${M.map(v => `<span>${fr(v)}</span>`).join('')}</span>`;
+function selectOnFocus(ids){ ids.forEach(id => $(id).addEventListener('focus', e => e.target.select())); }
+const rot = deg => { const t = deg / DEG; return [Math.cos(t), -Math.sin(t), Math.sin(t), Math.cos(t)]; };
+
+const svgCss = document.createElement('style');
+svgCss.textContent = `
+  .grid{stroke:var(--line);stroke-width:1} .axis{stroke:var(--ink);stroke-width:1.6;opacity:.7}
+  .ref{stroke:var(--muted);stroke-width:1;stroke-dasharray:3 4;opacity:.6} .refaxis{stroke:var(--muted);stroke-width:1.5;stroke-dasharray:6 4}
+  .tl{fill:var(--muted);font:500 11px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:3px}
+  .tlb{fill:var(--muted);font:500 12.5px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:3px}
+  .lab{font:700 15px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:5px}
+  .labS{font:600 12.5px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+  .cap{fill:var(--muted);font:500 12px var(--sans)}
+  .pl{fill:var(--ink);font:700 13px var(--sans);paint-order:stroke;stroke:var(--bg);stroke-width:5px;letter-spacing:.06em;text-transform:uppercase}
+  .note{fill:var(--ink);font:600 13px var(--sans);paint-order:stroke;stroke:var(--bg);stroke-width:5px}
+  .big{font:800 22px var(--sans);paint-order:stroke;stroke:var(--bg);stroke-width:6px}
+`;
+document.head.appendChild(svgCss);
+
+/* =====================================================================
+   2. THE PLANE (grid, axes, arrows, labels, the F)
+   ===================================================================== */
+// Draw a fixed grid that fits the box. o.dashed = the dashed fixed ruler for an After panel; o.noLabels hides tick labels.
+function plane(svg, W, H, box, maxU, o){
+  o = o || {};
+  svg.innerHTML = ''; const g = mk('g', {}, svg);
+  const pad = 1;
+  const u = Math.min(maxU || 44, (W - 40) / (box.x1 - box.x0 + 2 * pad), (H - 30) / (box.y1 - box.y0 + 2 * pad));
+  const cx = W / 2 - u * (box.x0 + box.x1) / 2, cy = H / 2 + u * (box.y0 + box.y1) / 2;   // pixel position of the origin
+  const X = x => cx + x * u, Y = y => cy - y * u;
+  const xa = Math.ceil((0 - cx) / u), xb = Math.floor((W - cx) / u), ya = Math.ceil((cy - H) / u), yb = Math.floor(cy / u);
+  const gc = o.dashed ? 'ref' : 'grid', ac = o.dashed ? 'refaxis' : 'axis';
+  for (let k = xa; k <= xb; k++) if (k) mk('line', { x1: X(k), y1: 0, x2: X(k), y2: H, class: gc }, g);
+  for (let k = ya; k <= yb; k++) if (k) mk('line', { x1: 0, y1: Y(k), x2: W, y2: Y(k), class: gc }, g);
+  mk('line', { x1: 0, y1: Y(0), x2: W, y2: Y(0), class: ac }, g);
+  mk('line', { x1: X(0), y1: 0, x2: X(0), y2: H, class: ac }, g);
+  const P = { g, X, Y, u, W, H, inv: (px, py) => [(px - cx) / u, (cy - py) / u] };
+  P.ticks = (cls) => {                                       // tick labels, drawn last so they sit on top
+    if (o.noLabels) return;
+    const step = u >= 30 ? 1 : u >= 15 ? 2 : 5;
+    for (let k = xa; k <= xb; k++) if (k && k % step === 0 && X(k) > 12 && X(k) < W - 12) txt(g, X(k), Y(0) + 15, k < 0 ? '−' + (-k) : String(k), cls || 'tl', { 'text-anchor': 'middle' });
+    for (let k = ya; k <= yb; k++) if (k && k % step === 0 && Y(k) > 10 && Y(k) < H - 6) txt(g, X(0) - 6, Y(k) + 4, k < 0 ? '−' + (-k) : String(k), cls || 'tl', { 'text-anchor': 'end' });
+  };
+  return P;
+}
+function arrow(P, p, q, col, o){
+  o = o || {};
+  const x1 = P.X(p[0]), y1 = P.Y(p[1]), x2 = P.X(q[0]), y2 = P.Y(q[1]), L = Math.hypot(x2 - x1, y2 - y1), w = o.w || 3, op = o.op === undefined ? 1 : o.op;
+  const st = `stroke:${col};stroke-width:${w};opacity:${op}${o.dash ? ';stroke-dasharray:' + o.dash : ''}`;
+  if (L < 2){ mk('circle', { cx: x1, cy: y1, r: 5, style: `fill:${col};opacity:${op}` }, P.g); return; }
+  const ux = (x2 - x1) / L, uy = (y2 - y1) / L, h = Math.min(11 + w, L * 0.45);
+  mk('line', { x1, y1, x2: x2 - ux * h * 0.8, y2: y2 - uy * h * 0.8, style: st + ';stroke-linecap:round' }, P.g);
+  mk('polygon', { points: `${x2},${y2} ${x2 - ux * h - uy * h * .45},${y2 - uy * h + ux * h * .45} ${x2 - ux * h + uy * h * .45},${y2 - uy * h - ux * h * .45}`, style: `fill:${col};opacity:${op}` }, P.g);
+}
+// A label beside the middle of an arrow from the origin, on the side away from the other arrow (pref breaks ties when they're parallel)
+function armLabel(P, q, other, str, col, pref){
+  const sx = P.X(q[0]) - P.X(0), sy = P.Y(q[1]) - P.Y(0), L = Math.hypot(sx, sy);
+  if (L < 4){ txt(P.g, P.X(0) + 12 * (pref || 1), P.Y(0) + 20, str, 'lab', { 'text-anchor': 'middle', style: `fill:${col}` }); return; }
+  let nx = -sy / L, ny = sx / L;                               // a screen-space perpendicular
+  const ox = P.X(other[0]) - P.X(0), oy = P.Y(other[1]) - P.Y(0), side = nx * ox + ny * oy;
+  if (Math.abs(side) < 1e-6 * (Math.hypot(ox, oy) + 1)){ if ((pref || 1) < 0){ nx = -nx; ny = -ny; } }
+  else if (side > 0){ nx = -nx; ny = -ny; }
+  txt(P.g, P.X(0) + sx * .5 + nx * 15, P.Y(0) + sy * .5 + ny * 15 + 5, str, 'lab', { 'text-anchor': 'middle', style: `fill:${col}` });
+}
+// î and ĵ after the move M, with their labels
+function arms(P, M, w){
+  const i2 = [M[0], M[2]], j2 = [M[1], M[3]];
+  arrow(P, [0, 0], i2, C.i, { w: w || 3.5 }); arrow(P, [0, 0], j2, C.j, { w: w || 3.5 });
+  armLabel(P, i2, j2, 'î', C.i, 1); armLabel(P, j2, i2, 'ĵ', C.j, -1);
+}
+// The moved grid: the images of the lines x = k and y = k under M (purple; the image of each axis darker)
+function movedGrid(P, M, R){
+  R = R || 16; const g = mk('g', {}, P.g);
+  for (let k = -R; k <= R; k++){
+    const st = k ? 'stroke:var(--cs);stroke-width:1.1;opacity:.85' : 'stroke:var(--cp);stroke-width:2;opacity:.75';
+    [[[k, -R], [k, R]], [[-R, k], [R, k]]].forEach(([p, q]) => { const a = ap(M, p), b = ap(M, q); mk('line', { x1: P.X(a[0]), y1: P.Y(a[1]), x2: P.X(b[0]), y2: P.Y(b[1]), style: st }, g); });
+  }
+}
+function poly(P, pts, M, style){ return mk('polygon', { points: pts.map(p => { const q = M ? ap(M, p) : p; return P.X(q[0]).toFixed(1) + ',' + P.Y(q[1]).toFixed(1); }).join(' '), style }, P.g); }
+// The F marker (asymmetric, so flips and turns can't hide) and the unit square
+const FP = [[.3, .3], [.7, .3], [.7, 1.1], [1.3, 1.1], [1.3, 1.5], [.7, 1.5], [.7, 1.9], [1.7, 1.9], [1.7, 2.3], [.3, 2.3]];
+const US = [[0, 0], [1, 0], [1, 1], [0, 1]];
+function drawSquareAndF(P, M){
+  poly(P, US, M, 'fill:var(--cs);opacity:.45;stroke:var(--cp);stroke-width:1.2');
+  poly(P, FP, M, 'fill:var(--cp);opacity:.85;stroke:var(--cp);stroke-width:1.5;stroke-linejoin:round');
+}
+// The dashed outline of "home": where the F and the square started
+function home(P){
+  poly(P, US, null, 'fill:none;stroke:var(--ink);stroke-width:1.4;stroke-dasharray:4 3;opacity:.55');
+  poly(P, FP, null, 'fill:none;stroke:var(--ink);stroke-width:1.6;stroke-dasharray:4 3;opacity:.7');
+}
+const origin = P => mk('circle', { cx: P.X(0), cy: P.Y(0), r: 4.5, style: 'fill:var(--ink)' }, P.g);
+// A blue point with a label up and to the right (or wherever the caller says)
+function dot(P, q, lab, o){
+  o = o || {};
+  mk('circle', { cx: P.X(q[0]), cy: P.Y(q[1]), r: o.r || 6.5, style: o.hollow ? 'fill:var(--paper);stroke:var(--cr);stroke-width:2.5' : 'fill:var(--cr);stroke:var(--paper);stroke-width:2' }, P.g);
+  if (lab) txt(P.g, P.X(q[0]) + (o.dx === undefined ? 10 : o.dx), P.Y(q[1]) + (o.dy === undefined ? -9 : o.dy), lab, 'labS', { 'text-anchor': o.anchor || 'start', style: 'fill:var(--cr)' });
+}
+// A one-line verdict badge in a panel corner
+function badge(P, ok, s){ txt(P.g, P.W - 12, 26, s, 'big', { 'text-anchor': 'end', style: `fill:${ok ? 'var(--good)' : 'var(--wrong)'}` }); }
+
+/* =====================================================================
+   3. DO, THEN UNDO (main explorer)
+   ===================================================================== */
+const XP = [
+  { n: 'Stretch', A: [2, 0, 0, 1.5], d: '×2 sideways and ×1.5 up. The undo shrinks: ×½ sideways and ×⅔ up.' },
+  { n: 'Shear', A: [1, 1, 0, 1], d: 'Each point slides right by its height. The undo slides it back left by the same amount, so its ĵ tips the other way, to [−1, 1].' },
+  { n: 'Turn 90°', A: [0, -1, 1, 0], d: 'A quarter turn counterclockwise. The undo is a quarter turn clockwise.' },
+  { n: 'Mirror', A: [-1, 0, 0, 1], d: 'A mirror across the vertical axis. Mirroring again brings everything back, so this move is its own undo: A⁻¹ = A.' },
+  { n: 'General', A: [2, 1, 1, 2], d: 'det = 2·2 − 1·1 = 3, so A triples every area, and the undo must shrink every area to a third.' },
+  { n: 'Almost flat', A: [2, 1, 1.6, 1], d: 'ĵ lands almost on î’s line (det = 0.4). The undo has to pull a thin sliver back open, so its entries are big.' },
+  { n: 'Collapse', A: [2, 1, 2, 1], x: [-1.5, 1], d: 'det = 0: the plane is squashed onto a line. Points 1, 2 and 3 start in different places but land on the same spot, so there is no way back.' },
+];
+const XIDS = ['xa', 'xb', 'xc', 'xd'];
+const mx = { A: [2, 1, 1, 2], x: [-1, -1], t: 2, raf: 0, playing: false, drag: null };
+const XB = { x0: -3.6, x1: 3.6, y0: -3, y1: 3.6 };
+XP.forEach(p => { const b = document.createElement('button'); b.className = 'preset'; b.textContent = p.n; b.onclick = () => { stopX(); mx.A = p.A.slice(); mx.x = (p.x || [-1, -1]).slice(); fillX(); markX(); playX(true); }; $('xPresets').appendChild(b); });
+function markX(){ const i = XP.findIndex(p => same(p.A, mx.A)); [...$('xPresets').children].forEach((b, j) => b.classList.toggle('on', j === i)); $('xDesc').textContent = i < 0 ? 'Your own matrix.' : XP[i].d; }
+function fillX(){ XIDS.forEach((id, k) => { $(id).value = num(mx.A[k], 3); }); }
+function readX(){
+  const r = readAll(XIDS, 'xErr'); if (!r) return false;
+  if (r.some(x => Math.abs(x) > 3.5)){ $('xErr').textContent = 'Keep every entry between −3.5 and 3.5, so the moved arrows stay in view.'; return false; }
+  mx.A = r; return true;
+}
+// For a collapsing matrix: a direction that gets squashed to nothing (the matrix sends it to the origin)
+function squashDir(A){
+  let k = Math.hypot(A[0], A[1]) > 1e-9 ? [-A[1], A[0]] : [-A[3], A[2]];
+  if (Math.hypot(...k) < 1e-9) k = [1, 0];                     // the zero matrix squashes every direction
+  const L = Math.hypot(...k); return [k[0] / L * 1.2, k[1] / L * 1.2];
+}
+function drawX(){
+  const A = mx.A, Ai = inv(A), t = mx.t;
+  const e1 = ease(Math.min(1, t)), e2 = ease(Math.max(0, Math.min(1, t - 1)));
+  const M2 = blend(A, e1);                                     // the middle panel: A, growing in
+  const M3 = (!Ai || t <= 1) ? M2 : mul(blend(Ai, e2), A);     // the right panel: A, then the undo growing in
+  const x = mx.x, k = Ai ? null : squashDir(A), trio = k ? [[x[0] + k[0], x[1] + k[1]], x, [x[0] - k[0], x[1] - k[1]]] : null;
+  // Start
+  const S = plane($('xS'), 340, 320, XB, 40);
+  drawSquareAndF(S, ID); S.ticks(); arms(S, ID);
+  if (trio){ mk('line', { x1: S.X(trio[2][0]), y1: S.Y(trio[2][1]), x2: S.X(trio[1][0]), y2: S.Y(trio[1][1]), style: 'stroke:var(--cr);stroke-width:1.5;stroke-dasharray:4 3' }, S.g); trio.forEach((q, n) => dot(S, q, String(n + 1), { dx: -10, dy: 5, anchor: 'end' })); }
+  else dot(S, x, 'x', { dy: 18 });
+  origin(S); txt(S.g, 12, 22, 'Start', 'pl');
+  // After A
+  const Q = plane($('xA'), 340, 320, XB, 40, { dashed: true });
+  movedGrid(Q, M2); drawSquareAndF(Q, M2); Q.ticks(); arms(Q, M2);
+  const b = ap(M2, x); dot(Q, b, trio ? 'b: 1, 2, 3 all land here' : 'b', { anchor: b[0] > 0 ? 'end' : 'start', dx: b[0] > 0 ? -10 : 10, dy: 18 });
+  if (t >= 1 && !mx.playing){ const r = [[A[0], A[2]], [A[1], A[3]]].concat(Ai ? [b] : []); r.forEach((q, n) => mk('circle', { cx: Q.X(q[0]), cy: Q.Y(q[1]), r: 11, style: `fill:${[C.i, C.j, C.r][n]};opacity:.22` }, Q.g)); }
+  origin(Q); txt(Q.g, 12, 22, t < 1 ? 'Doing A…' : 'After A', 'pl', { style: 'fill:var(--ca)' });
+  mx.Q = Q;
+  // After A, then A⁻¹
+  const U = plane($('xU'), 340, 320, XB, 40, { dashed: true });
+  home(U); movedGrid(U, M3); drawSquareAndF(U, M3); U.ticks(); arms(U, M3); dot(U, ap(M3, x), Ai ? 'x' : '?', { dy: 18 });
+  origin(U);
+  if (!Ai){
+    txt(U.g, 12, 22, 'Then A⁻¹?', 'pl', { style: 'fill:var(--wrong)' });
+    txt(U.g, 170, 268, 'No undo: one landing spot,', 'note', { 'text-anchor': 'middle', style: 'fill:var(--wrong)' });
+    txt(U.g, 170, 287, 'three possible starts.', 'note', { 'text-anchor': 'middle', style: 'fill:var(--wrong)' });
+  } else {
+    txt(U.g, 12, 22, t <= 1 ? 'Then A⁻¹' : t < 2 ? 'Undoing…' : 'Back home', 'pl', { style: 'fill:var(--cu)' });
+    if (t >= 2) badge(U, true, '✓');
+  }
+  writeX();
+}
+function writeX(){
+  const A = mx.A, Ai = inv(A), D = det(A), [a, b, c, d] = A, x = mx.x, bb = ap(A, x);
+  let h = `<span class="lbl">The move A</span>${mshow(A)} &nbsp; det = ${fr(a)}·${pn(d)} − ${pn(b)}·${pn(c)} = <b>${fr(D)}</b><br>`;
+  if (Ai){
+    h += `<span class="lbl">The undo A⁻¹</span>1/${pn(D)} × ${ms([d, -b, -c, a])} = ${ms(Ai, 'u')}<br>`;
+    h += `<span class="lbl">Check</span>A⁻¹A = ${ms(mul(Ai, A).map(v => Math.round(v * 1e9) / 1e9))} = <i>I</i> &nbsp; det A⁻¹ = 1/det A = ${fr(1 / D)}<br>`;
+    h += `<span class="lbl">The point</span><b class="kr">x</b> = ${vstr(x)} → A<b class="kr">x</b> = <b class="kr">b</b> = ${vstr(bb)} → A⁻¹<b class="kr">b</b> = ${vstr(x)}`;
+  } else {
+    h += `<span class="lbl">The undo A⁻¹</span>doesn’t exist: step 3 would divide by det = 0<br>`;
+    h += `<span class="lbl">The points</span>1, 2 and 3 all land on <b class="kr">b</b> = ${vstr(bb)}, so A⁻¹<b class="kr">b</b> would have to be three points at once`;
+  }
+  $('xEqs').innerHTML = h;
+  $('xOut').innerHTML = !Ai ? '<b>Singular: there is no undo.</b> The move squashed the plane flat, and many points share each landing spot.'
+    : same(Ai, A) ? '<b>This move is its own undo</b>: doing it twice changes nothing, so A⁻¹ = A.'
+    : `<b>A multiplies every area by ${fr(Math.abs(D))}${D < 0 ? ' and flips the plane' : ''}; A⁻¹ multiplies every area by ${fr(1 / Math.abs(D))}${D < 0 ? ' and flips it back' : ''}.</b> Their determinants multiply to ${fr(D)} × ${pn(1 / D)} = 1, the determinant of <i>I</i>.`;
+}
+function playX(restart){
+  if (mx.playing && !restart){ stopX(); return; }
+  if (!readX()) return;
+  if (restart || mx.t >= 2) mx.t = 0;
+  mx.playing = true; $('xPlay').textContent = 'Pause'; let last = performance.now(); cancelAnimationFrame(mx.raf);
+  const step = now => { mx.t = Math.min(2, mx.t + (now - last) / 2200); last = now; drawX(); if (mx.t < 2 && mx.playing) mx.raf = requestAnimationFrame(step); else stopX(); };
+  mx.raf = requestAnimationFrame(step);
+}
+function stopX(){ cancelAnimationFrame(mx.raf); const was = mx.playing; mx.playing = false; $('xPlay').textContent = 'Play'; if (was) drawX(); }
+$('xPlay').onclick = () => playX(false);
+$('xReset').onclick = () => { stopX(); mx.t = 0; drawX(); };
+XIDS.forEach(id => $(id).addEventListener('input', () => { stopX(); if (readX()){ mx.t = 2; markX(); drawX(); } }));
+selectOnFocus(XIDS);
+// Dragging in the middle panel: the tips of î and ĵ, or the landed point b (snap to halves)
+function svgPt(svg, P, ev){ const pt = svg.createSVGPoint(); pt.x = ev.clientX; pt.y = ev.clientY; const q = pt.matrixTransform(svg.getScreenCTM().inverse()); return P.inv(q.x, q.y); }
+const snap = (v, lo, hi) => Math.max(lo, Math.min(hi, Math.round(v * 2) / 2));
+$('xA').addEventListener('pointerdown', ev => {
+  stopX(); mx.t = 2; drawX();
+  const q = svgPt($('xA'), mx.Q, ev), A = mx.A, b = ap(A, mx.x);
+  const cands = [['i', A[0], A[2]], ['j', A[1], A[3]]].concat(inv(A) ? [['b', b[0], b[1]]] : []);
+  let best = null, bd = 1;
+  cands.forEach(([n, px, py]) => { const dd = Math.hypot(q[0] - px, q[1] - py); if (dd < bd){ bd = dd; best = n; } });
+  if (!best) return;
+  mx.drag = best; $('xA').setPointerCapture(ev.pointerId);
+});
+$('xA').addEventListener('pointermove', ev => {
+  if (!mx.drag) return;
+  const q = svgPt($('xA'), mx.Q, ev), px = snap(q[0], -3.5, 3.5), py = snap(q[1], -3, 3.5);
+  if (mx.drag === 'b'){
+    const s = ap(inv(mx.A), [px, py]);                         // where b must have started: x = A⁻¹b
+    if (Math.abs(s[0]) > 3.4 || s[1] < -2.9 || s[1] > 3.4) return;   // keep the start point in view
+    mx.x = s;
+  } else { if (mx.drag === 'i'){ mx.A[0] = px; mx.A[2] = py; } else { mx.A[1] = px; mx.A[3] = py; } fillX(); markX(); }
+  $('xErr').textContent = ''; drawX();
+});
+$('xA').addEventListener('pointerup', () => { mx.drag = null; drawX(); });
+
+/* =====================================================================
+   4. UNDO IT YOURSELF (puzzle)
+   ===================================================================== */
+const ZP = [
+  { n: 'Stretch ×2', A: [2, 0, 0, 1], h: 'A stretched sideways by 2. What shrinks sideways by the same amount?' },
+  { n: 'Tall ×2', A: [1, 0, 0, 2], h: 'A stretched up–down by 2. Which arrow of U has to shrink?' },
+  { n: 'Shear', A: [1, 1, 0, 1], h: 'A tipped ĵ over to the right. U has to tip it back the other way.' },
+  { n: 'Turn 90°', A: [0, -1, 1, 0], h: 'A turned everything a quarter turn counterclockwise. Where does a quarter turn clockwise send î and ĵ?' },
+  { n: 'Mirror', A: [-1, 0, 0, 1], h: 'A mirrored across the vertical axis. What does mirroring a second time do?' },
+  { n: 'Mixed', A: [2, 1, 1, 1], h: 'No single word describes this one. Use the columns: U must send [2, 1] to [1, 0] and [1, 1] to [0, 1].' },
+  { n: 'Tricky', A: [1, 2, 0, 2], h: 'U must send [1, 0] to [1, 0] (so its î stays home) and [2, 2] to [0, 1].' },
+];
+const ZIDS = ['zu0', 'zu1', 'zu2', 'zu3'];
+const zz = { A: [2, 0, 0, 1], U: [1, 0, 0, 1], k: 0, drag: null, hint: false };
+const ZB = { x0: -2.6, x1: 2.6, y0: -2.3, y1: 2.8 };
+ZP.forEach((p, i) => { const b = document.createElement('button'); b.className = 'preset'; b.textContent = p.n; b.onclick = () => { zz.k = i; zz.A = p.A.slice(); zz.U = [1, 0, 0, 1]; zz.hint = false; fillZ(); drawZ(); }; $('zPresets').appendChild(b); });
+function fillZ(){ ZIDS.forEach((id, k) => { $(id).value = num(zz.U[k], 3); }); }
+function drawZ(){
+  [...$('zPresets').children].forEach((b, j) => b.classList.toggle('on', j === zz.k));
+  $('zAshow').innerHTML = ms(zz.A, 'a');
+  const A = zz.A, U = zz.U, UA = mul(U, A), ok = same(UA, ID, 1e-6);
+  // After A (fixed)
+  const P1 = plane($('zA'), 340, 320, ZB, 50, { dashed: true });
+  home(P1); movedGrid(P1, A); drawSquareAndF(P1, A); P1.ticks(); arms(P1, A); origin(P1); txt(P1.g, 12, 22, 'After A', 'pl', { style: 'fill:var(--ca)' });
+  // Your U on its own: where U sends î and ĵ (drag these tips)
+  const P2 = plane($('zU'), 340, 320, ZB, 50, { dashed: true });
+  movedGrid(P2, U); P2.ticks(); arms(P2, U);
+  [[U[0], U[2]], [U[1], U[3]]].forEach((q, n) => mk('circle', { cx: P2.X(q[0]), cy: P2.Y(q[1]), r: 11, style: `fill:${n ? C.j : C.i};opacity:.22` }, P2.g));
+  origin(P2); txt(P2.g, 12, 22, 'Your U on its own', 'pl', { style: 'fill:var(--cu)' });
+  zz.P2 = P2;
+  // After A, then U
+  const P3 = plane($('zR'), 340, 320, ZB, 50, { dashed: true });
+  home(P3); movedGrid(P3, UA); drawSquareAndF(P3, UA); P3.ticks(); arms(P3, UA); origin(P3);
+  txt(P3.g, 12, 22, 'After A, then U', 'pl'); badge(P3, ok, ok ? 'Home!' : '');
+  const ci = [UA[0], UA[2]], cj = [UA[1], UA[3]], okI = same(ci, [1, 0], 1e-6), okJ = same(cj, [0, 1], 1e-6);
+  $('zEqs').innerHTML =
+    `<span class="lbl">U after A</span>UA = ${ms(U, 'u')} ${ms(A, 'a')} = ${mshow(UA)}<br>` +
+    `<span class="lbl">î ends at</span>${vstr(ci)} ${okI ? '<b style="color:var(--good)">✓ home</b>' : '<span style="color:var(--muted)">needs to be (1, 0)</span>'}<br>` +
+    `<span class="lbl">ĵ ends at</span>${vstr(cj)} ${okJ ? '<b style="color:var(--good)">✓ home</b>' : '<span style="color:var(--muted)">needs to be (0, 1)</span>'}`;
+  const fb = $('zFb');
+  if (ok){ fb.className = 'feedback ok'; fb.innerHTML = `<b>Home!</b> Your U is A⁻¹ = ${ms(U, 'u')}, and UA = <i>I</i>. ${same(U, A) ? 'This move is its own undo. ' : ''}Check the formula from §3: swap, change signs, divide by det = ${fr(det(A))}.`; }
+  else if (zz.hint){ fb.className = 'feedback info'; fb.innerHTML = `<b>Hint.</b> ${ZP[zz.k].h}`; }
+  else { fb.className = 'feedback'; fb.innerHTML = ''; }
+}
+ZIDS.forEach(id => $(id).addEventListener('input', () => { const r = readAll(ZIDS, 'zErr'); if (!r) return; if (r.some(v => Math.abs(v) > 4)){ $('zErr').textContent = 'Keep every entry between −4 and 4.'; return; } zz.U = r; drawZ(); }));
+selectOnFocus(ZIDS);
+$('zHint').onclick = () => { zz.hint = true; drawZ(); };
+$('zShow').onclick = () => { zz.U = inv(zz.A); fillZ(); $('zErr').textContent = ''; drawZ(); };
+$('zReset').onclick = () => { zz.U = [1, 0, 0, 1]; zz.hint = false; fillZ(); $('zErr').textContent = ''; drawZ(); };
+$('zU').addEventListener('pointerdown', ev => {
+  const q = svgPt($('zU'), zz.P2, ev), U = zz.U, di = Math.hypot(q[0] - U[0], q[1] - U[2]), dj = Math.hypot(q[0] - U[1], q[1] - U[3]);
+  if (Math.min(di, dj) > 1) return;
+  zz.drag = di <= dj ? 'i' : 'j'; $('zU').setPointerCapture(ev.pointerId);
+});
+$('zU').addEventListener('pointermove', ev => {
+  if (!zz.drag) return;
+  const q = svgPt($('zU'), zz.P2, ev), x = snap(q[0], -2.5, 2.5), y = snap(q[1], -2, 2.5);
+  if (zz.drag === 'i'){ zz.U[0] = x; zz.U[2] = y; } else { zz.U[1] = x; zz.U[3] = y; }
+  fillZ(); $('zErr').textContent = ''; drawZ();
+});
+$('zU').addEventListener('pointerup', () => { zz.drag = null; });
+
+/* =====================================================================
+   5. SWAP, CHANGE SIGNS, DIVIDE (formula stepper)
+   ===================================================================== */
+const FIDS = ['fa', 'fb', 'fc', 'fd'];
+[3, 1, 4, 2].forEach((v, k) => { $(FIDS[k]).value = v; });
+const fs = { step: 4 };
+['1. Swap a and d', '2. Change signs of b, c', '3. Divide by det', '4. Check'].forEach((t, i) => { const b = document.createElement('button'); b.className = 'preset'; b.textContent = t; b.onclick = () => { fs.step = i + 1; drawF(); }; $('fSteps').appendChild(b); });
+// A printed matrix where chosen entries (by index 0..3) are highlighted
+const mhl = (M, hl, cls) => `<span class="mshow ${cls || ''}">${M.map((v, k) => `<span class="${hl.includes(k) ? 'hl' : ''}">${fr(v)}</span>`).join('')}</span>`;
+function drawF(){
+  [...$('fSteps').children].forEach((b, j) => b.classList.toggle('on', j === fs.step - 1));
+  const r = readAll(FIDS, 'fErr'); if (!r) return;
+  const [a, b, c, d] = r, D = a * d - b * c, sw = [d, b, c, a], adj = [d, -b, -c, a], Ai = inv(r);
+  const row = (n, lab, body) => `<div class="st${fs.step >= n ? '' : ' off'}"><span class="lbl">${lab}</span>${body}</div>`;
+  let h = row(0, 'Start', `A = ${ms(r, 'a')} &nbsp; det = ${fr(a)}·${pn(d)} − ${pn(b)}·${pn(c)} = <b>${fr(D)}</b>`);
+  h += row(1, '1 · Swap a and d', `${mhl(sw, [0, 3])}`);
+  h += row(2, '2 · Change signs of b, c', `${mhl(adj, [1, 2])}`);
+  if (Math.abs(D) < 1e-12){
+    h += row(3, '3 · Divide by det', `<b style="color:var(--wrong)">÷ 0 is impossible.</b> det = 0, so A is singular: it squashes the plane flat and has no inverse.`);
+    h += row(4, '4 · Check', `A × ${ms(adj)} = ${ms(mul(r, adj))} = 0 × <i>I</i>: the zoom is a zoom by 0, which can’t be divided away.`);
+  } else {
+    h += row(3, '3 · Divide by det', `1/${pn(D)} × ${ms(adj)} = A⁻¹ = ${mhl(Ai, [0, 1, 2, 3], 'u')}`);
+    h += row(4, '4 · Check', `A × ${ms(adj)} = ${ms(mul(r, adj))} = ${fr(D)} × <i>I</i>, &nbsp; so &nbsp; A × A⁻¹ = ${ms(mul(r, Ai).map(v => Math.round(v * 1e9) / 1e9))} = <i>I</i> ✓`);
+  }
+  $('fOut').innerHTML = h;
+}
+FIDS.forEach(id => $(id).addEventListener('input', drawF)); selectOnFocus(FIDS);
+
+/* =====================================================================
+   6. SOCKS AND SHOES (reverse-order rule)
+   ===================================================================== */
+const SP = [
+  { n: 'Shear, then turn 90°', A: [1, 1, 0, 1], B: [0, -1, 1, 0] },
+  { n: 'Stretch, then turn 90°', A: [2, 0, 0, 1], B: [0, -1, 1, 0] },
+  { n: 'Turn 90°, then mirror', A: [0, -1, 1, 0], B: [-1, 0, 0, 1] },
+  { n: 'Stretch, then shear', A: [1.5, 0, 0, 1], B: [1, 1, 0, 1] },
+  { n: 'Two stretches', A: [2, 0, 0, 1], B: [1, 0, 0, 1.5] },
+];
+const SIDS = ['sa0', 'sa1', 'sa2', 'sa3', 'sb0', 'sb1', 'sb2', 'sb3'];
+SP.forEach(p => { const b = document.createElement('button'); b.className = 'preset'; b.textContent = p.n; b.onclick = () => { p.A.concat(p.B).forEach((v, k) => { $(SIDS[k]).value = num(v); }); drawS(); }; $('sPresets').appendChild(b); });
+const SB = { x0: -2.6, x1: 2.6, y0: -2.3, y1: 2.6 };
+function spanel(id, M, title, col, verdict){
+  const P = plane($(id), 280, 290, SB, 40, { dashed: !!M });
+  const T = M || ID;
+  if (M){ home(P); movedGrid(P, M); }
+  drawSquareAndF(P, T); P.ticks(); arms(P, T, 3); origin(P);
+  txt(P.g, 10, 20, title, 'pl', { style: `fill:${col || 'var(--ink)'};font-size:11.5px` });
+  if (verdict !== undefined) badge(P, verdict, verdict ? '✓' : '✕');
+}
+function drawS(){
+  [...$('sPresets').children].forEach(b => b.classList.remove('on'));
+  const r = readAll(SIDS, 'sErr'); if (!r) return;
+  if (r.some(x => Math.abs(x) > 3)){ $('sErr').textContent = 'Keep every entry between −3 and 3.'; return; }
+  const A = r.slice(0, 4), B = r.slice(4), Ai = inv(A), Bi = inv(B);
+  if (!Ai || !Bi){ $('sErr').textContent = `${!Ai ? 'A' : 'B'} has det = 0, so it can’t be undone at all. Pick two invertible moves.`; return; }
+  const i = SP.findIndex(p => same(p.A.concat(p.B), r)); if (i >= 0) $('sPresets').children[i].classList.add('on');
+  const BA = mul(B, A), right = mul(Ai, mul(Bi, BA)), wrong = mul(Bi, mul(Ai, BA)), wOk = same(wrong, ID, 1e-6);
+  spanel('s1', null, 'Start');
+  spanel('s2', BA, 'After A, then B', 'var(--cb)');
+  spanel('s3', right, 'Undo B, then A', 'var(--good)', true);
+  spanel('s4', wrong, 'Undo A, then B', wOk ? 'var(--good)' : 'var(--wrong)', wOk);
+  $('sEqs').innerHTML =
+    `<span class="lbl">On</span>socks <span class="ka">A</span>, then shoes <span class="kb">B</span>: &nbsp;<span class="kb">B</span><span class="ka">A</span> = ${ms(B, 'b')} ${ms(A, 'a')} = ${mshow(BA)}<br>` +
+    `<span class="lbl">Off, right order</span>shoes first, then socks: &nbsp;<span class="ka">A</span>⁻¹<span class="kb">B</span>⁻¹ = ${ms(Ai, 'a')} ${ms(Bi, 'b')} = ${ms(mul(Ai, Bi), 'u')}; times <span class="kb">B</span><span class="ka">A</span> gives <i>I</i> ✓<br>` +
+    `<span class="lbl">Off, same order</span>socks first, then shoes: &nbsp;<span class="kb">B</span>⁻¹<span class="ka">A</span>⁻¹ = ${ms(mul(Bi, Ai))}; times <span class="kb">B</span><span class="ka">A</span> gives ${mshow(wrong)} ${wOk ? '✓' : '✕ not <i>I</i>'}` + (wOk ? '<br><span class="lbl"></span>These two moves happen to commute, so here the order doesn’t matter. Try a shear and a turn.' : '');
+}
+SIDS.forEach(id => $(id).addEventListener('input', drawS)); selectOnFocus(SIDS);
+
+/* =====================================================================
+   7. SECRET CODES (encode with K, decode with K⁻¹)
+   ===================================================================== */
+const KEYS = [
+  { n: 'Key 1', K: [2, 1, 1, 1] },
+  { n: 'Key 2', K: [3, 2, 1, 1] },
+  { n: 'Key 3', K: [1, 2, 1, 3] },
+  { n: 'Bad key', K: [2, 4, 1, 2] },
+];
+const cs = { k: 0 };
+$('cMsg').value = 'MEET AT NOON';
+KEYS.forEach((p, i) => { const b = document.createElement('button'); b.className = 'preset'; b.textContent = p.n; b.onclick = () => { cs.k = i; drawC(); }; $('cKeys').appendChild(b); });
+const L2N = ch => ch === ' ' ? 0 : ch.charCodeAt(0) - 64;      // A = 1 … Z = 26, space = 0
+const N2L = n => n === 0 ? '␣' : String.fromCharCode(64 + n);
+function drawC(){
+  [...$('cKeys').children].forEach((b, j) => b.classList.toggle('on', j === cs.k));
+  const raw = $('cMsg').value.toUpperCase();
+  if (!/^[A-Z ]*$/.test(raw)){ $('cErr').textContent = 'Use only letters and spaces.'; return; }
+  if (raw.trim() === ''){ $('cErr').textContent = 'Type a message.'; return; }
+  $('cErr').textContent = '';
+  const K = KEYS[cs.k].K, Ki = inv(K), m = raw.length % 2 ? raw + ' ' : raw;   // pad to an even length with a space
+  const pairs = []; for (let i = 0; i < m.length; i += 2) pairs.push([L2N(m[i]), L2N(m[i + 1])]);
+  const codes = pairs.map(p => ap(K, p)), back = Ki ? codes.map(c => ap(Ki, c).map(v => Math.round(v))) : null;
+  $('cKshow').innerHTML = `K = ${ms(K, 'a')} &nbsp; det = ${fr(det(K))} &nbsp; ` + (Ki ? `K⁻¹ = ${ms(Ki, 'u')}` : '<b style="color:var(--wrong)">K⁻¹ doesn’t exist</b>');
+  const cell = (v, cls) => `<td class="${cls || ''}">${v}</td>`;
+  let h = '<table class="ctab">';
+  h += '<tr><th>Message, in pairs</th>' + pairs.map(p => cell(N2L(p[0]) + N2L(p[1]), 'lt')).join('') + '</tr>';
+  h += '<tr><th>As numbers <b>v</b></th>' + pairs.map(p => cell(p.join('<br>'))).join('') + '</tr>';
+  h += '<tr><th>Sent: K<b>v</b></th>' + codes.map(c => cell(c.join('<br>'), 'code')).join('') + '</tr>';
+  if (Ki){
+    h += '<tr><th>Decoded: K⁻¹(K<b>v</b>)</th>' + back.map(c => cell(c.join('<br>'))).join('') + '</tr>';
+    h += '<tr><th>Back to letters</th>' + back.map(c => cell(c.map(N2L).join(''), 'lt')).join('') + '</tr>';
+  } else h += '<tr><th>Decoded</th>' + codes.map(() => cell('?', 'bad')).join('') + '</tr>';
+  $('cTab').innerHTML = h + '</table>';
+  if (Ki){ $('cOut').innerHTML = `<b>The message comes back exactly.</b> Each pair was multiplied by K and then by K⁻¹, and K⁻¹K = <i>I</i>. Someone without the key sees only the numbers. (Real codes use much bigger keys and wrap the numbers around, but the undo idea is the same.)`; return; }
+  // Bad key: find other pairs that give exactly the same code numbers as the first pair
+  const c0 = codes[0], twins = [];
+  for (let x = 0; x <= 26; x++) for (let y = 0; y <= 26; y++){ const c = ap(K, [x, y]); if (c[0] === c0[0] && c[1] === c0[1]) twins.push(N2L(x) + N2L(y)); }
+  $('cOut').innerHTML = `<b>This key can’t be undone</b>: det = 2·2 − 4·1 = 0. The code for “${N2L(pairs[0][0]) + N2L(pairs[0][1])}” is ${c0.join(', ')}, but ${twins.length} different pairs give exactly that code: ${twins.slice(0, 8).join(', ')}${twins.length > 8 ? ' and more' : ''}. Your friend can’t tell which one you meant.`;
+}
+$('cMsg').addEventListener('input', drawC);
+
+/* =====================================================================
+   8. FROM FRUIT USED BACK TO DRINKS SOLD (solving R n = t)
+   ===================================================================== */
+const R = [2, 1, 1, 3], Ri = inv(R);                            // columns: Berry Blast [2, 1], Tropical [1, 3]
+const RP = [{ n: 'Monday', t: [11, 13] }, { n: 'Tuesday', t: [8, 9] }, { n: 'Wednesday', t: [7, 11] }, { n: 'Thursday', t: [10, 15] }, { n: 'Mystery', t: [9, 8] }];
+$('rS').value = 11; $('rB').value = 13;
+RP.forEach(p => { const b = document.createElement('button'); b.className = 'preset'; b.textContent = p.n; b.onclick = () => { $('rS').value = p.t[0]; $('rB').value = p.t[1]; drawR(); }; $('rPresets').appendChild(b); });
+function drawR(){
+  const r = readAll(['rS', 'rB'], 'rErr'); if (!r) return;
+  [...$('rPresets').children].forEach((b, j) => b.classList.toggle('on', same(RP[j].t, r)));
+  if (r.some(v => v < 0 || v > 15)){ $('rErr').textContent = 'Use amounts from 0 to 15.'; return; }
+  const n = ap(Ri, r), whole = n.every(v => Math.abs(v - Math.round(v)) < 1e-9), neg = n.some(v => v < -1e-9);
+  const P = plane($('rSvg'), 560, 470, { x0: -.4, x1: 15, y0: -.4, y1: 16.5 }, 40);
+  // the recipe grid: lines of "one more Berry Blast" and "one more Tropical"
+  const g = mk('g', {}, P.g);
+  for (let k = 0; k <= 16; k++){
+    [[[k, 0], [k, 16]], [[0, k], [16, k]]].forEach(([p, q], m) => { const a = ap(R, p), b = ap(R, q); mk('line', { x1: P.X(a[0]), y1: P.Y(a[1]), x2: P.X(b[0]), y2: P.Y(b[1]), style: `stroke:${m ? 'var(--trop)' : 'var(--berry)'};stroke-width:1;opacity:.35` }, g); });
+  }
+  P.ticks('tlb');
+  txt(P.g, P.W - 8, P.Y(0) - 8, 'strawberries (cups) →', 'cap', { 'text-anchor': 'end' });
+  txt(P.g, P.X(0) + 8, 16, '↑ bananas', 'cap');
+  // the path: n1 Berry Blasts end to end, then n2 Tropicals
+  if (!neg){
+    let at = [0, 0];
+    const walk = (cnt, col, v) => { const full = Math.floor(cnt + 1e-9); for (let s = 0; s < full; s++){ const to = [at[0] + v[0], at[1] + v[1]]; arrow(P, at, to, col, { w: 3 }); at = to; } const part = cnt - full; if (part > 1e-9){ const to = [at[0] + v[0] * part, at[1] + v[1] * part]; arrow(P, at, to, col, { w: 3, dash: '5 4' }); at = to; } };
+    walk(n[0], 'var(--berry)', [2, 1]); walk(n[1], 'var(--trop)', [1, 3]);
+  }
+  dot(P, r, `used (${fr(r[0])}, ${fr(r[1])})`, { anchor: 'end', dx: -12, dy: -8 });
+  origin(P);
+  $('rEqs').innerHTML =
+    `<span class="lbl">Recipes R</span>${ms(R)} &nbsp; columns: <span class="kberry">Berry</span>, <span class="ktrop">Tropical</span><br>` +
+    `<span class="lbl">The equation</span>R<b>n</b> = ${vstr(r)}<br>` +
+    `<span class="lbl">The undo</span>R⁻¹ = 1/5 × ${ms([3, -1, -1, 2])} = ${ms(Ri, 'u')}<br>` +
+    `<span class="lbl">Drinks sold</span><b>n</b> = R⁻¹${vstr(r)} = <b>${vstr(n)}</b><br>` +
+    `<span class="lbl">Check</span>${fr(n[0])}·(2, 1) + ${pn(n[1])}·(1, 3) = ${vstr(ap(R, n))} ✓<br><br><span style="font-family:var(--sans)">` +
+    (neg ? '<b style="color:var(--wrong)">A negative number of drinks: these amounts can’t come from these two recipes alone.</b>'
+      : whole ? `<b>${fr(n[0])} <span class="kberry">Berry Blast${n[0] === 1 ? '' : 's'}</span> and ${fr(n[1])} <span class="ktrop">Tropical${n[1] === 1 ? '' : 's'}</span>.</b> On the picture: ${fr(n[0])} pink steps, then ${fr(n[1])} yellow steps, land exactly on the fruit used.`
+      : '<b style="color:var(--wrong)">Not whole numbers of drinks.</b> The math is fine (R is invertible, so there’s exactly one answer), but nobody sells part of a smoothie: some fruit was spilled, or someone miscounted. On the picture, the point sits between the grid crossings.') + '</span>';
+}
+['rS', 'rB'].forEach(id => $(id).addEventListener('input', drawR)); selectOnFocus(['rS', 'rB']);
+
+/* =====================================================================
+   9. QUIZ
+   ===================================================================== */
+const rnd = arr => arr[Math.floor(Math.random() * arr.length)];
+const randInt = (lo, hi) => lo + Math.floor(Math.random() * (hi - lo + 1));
+const shuffle = a => { for (let i = a.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const qz = { counted: false, done: false, right: 0, total: 0, raf: 0, e: 1 };
+const QM = ['qm0', 'qm1', 'qm2', 'qm3'], QV = ['qv0', 'qv1'];
+const PIC_SING = [[1, 2, 1, 2], [2, 1, 0, 0], [1, -1, -1, 1], [0, 0, 1, 2], [2, 1, 2, 1], [1, 0, 1, 0], [2, -1, 2, -1]];
+const PIC_INV = [[1, 1, 0, 1], [0, -1, 1, 0], [2, 0, 0, .5], [-1, 0, 0, 1], [1, 2, 1, 1], [2, 1, 1, 2], [1, .5, 1, 1], [2, 1, 1.5, 1]];
+const MOVES = [
+  { n: 'turn 90° counterclockwise', u: 'turn 90° clockwise' },
+  { n: 'stretch ×2 sideways', u: 'shrink ×½ sideways' },
+  { n: 'shear: slide right by your height', u: 'shear back: slide left by your height' },
+];
+function setMode(kind, labels){
+  $('qChoice').style.display = kind === 'choice' ? '' : 'none'; $('qIn').style.display = kind === 'choice' ? 'none' : '';
+  $('qMat').style.display = kind === 'mat' ? '' : 'none'; $('qVec').style.display = kind === 'vec' ? '' : 'none';
+  if (kind === 'choice'){ $('qChoice').innerHTML = ''; labels.forEach((l, i) => { const b = document.createElement('button'); b.innerHTML = l; b.onclick = () => answerChoice(i); $('qChoice').appendChild(b); }); }
+}
+function newQuestion(){
+  Object.assign(qz, { counted: false, done: false });
+  $('qErr').textContent = ''; $('qFb').className = 'feedback'; $('qFb').innerHTML = ''; QM.concat(QV).forEach(id => { $(id).value = ''; }); cancelAnimationFrame(qz.raf);
+  qz.type = rnd(['inv', 'inv', 'can', 'point', 'two']);
+  qz.pic = false; $('qReplay').disabled = true; $('qSvg').style.display = 'none';
+  if (qz.type === 'inv'){
+    let A; do { A = [0, 0, 0, 0].map(() => randInt(-4, 4)); } while (A.filter(v => v).length < 3 || det(A) === 0 || Math.abs(det(A)) > 6);
+    Object.assign(qz, { A, ans: inv(A) });
+    $('qTitle').textContent = 'Find the inverse';
+    $('qText').innerHTML = `Find the inverse of A = ${ms(A, 'a')}. Fractions like 3/5 or −1/2 are fine.`;
+    setMode('mat');
+  } else if (qz.type === 'can'){
+    qz.sing = Math.random() < .5; qz.pic = Math.random() < .5;
+    let A;
+    if (qz.pic) A = rnd(qz.sing ? PIC_SING : PIC_INV);
+    else do { A = [0, 0, 0, 0].map(() => randInt(-4, 4));
+      if (qz.sing){ const k = rnd([1, 2, -1, -2, 3]), col = [randInt(-3, 3) || 1, randInt(-3, 3)]; A = rnd([true, false]) ? [col[0], col[0] * k, col[1], col[1] * k] : [col[0] * k, col[0], col[1] * k, col[1]]; }
+    } while (A.filter(v => v).length < 3 || (qz.sing ? det(A) !== 0 : det(A) === 0));
+    qz.A = A;
+    $('qTitle').textContent = 'Can it be undone?';
+    $('qText').innerHTML = qz.pic ? 'Watch the move. Can it be undone? (Look at what happens to the grid and the F.)' : `Is A = ${ms(A, 'a')} invertible?`;
+    setMode('choice', ['<b>Invertible:</b> it can be undone', '<b>Singular:</b> it can’t be undone']);
+    if (qz.pic){ $('qSvg').style.display = ''; $('qReplay').disabled = false; replayQ(); }
+  } else if (qz.type === 'point'){
+    let A, x, b; do { A = [0, 0, 0, 0].map(() => randInt(-3, 3)); x = [randInt(-3, 3), randInt(-3, 3)]; b = ap(A, x); }
+    while (det(A) === 0 || Math.abs(det(A)) > 5 || A.filter(v => v).length < 3 || (x[0] === 0 && x[1] === 0) || Math.abs(b[0]) > 9 || Math.abs(b[1]) > 9 || same(A, ID));
+    Object.assign(qz, { A, x, b });
+    $('qTitle').textContent = 'Where did it start?';
+    $('qText').innerHTML = `The move A = ${ms(A, 'a')} sent a point <b class="kr">x</b> to <b class="kr">b</b> = ${vstr(b)}. Where did <b class="kr">x</b> start?`;
+    setMode('vec');
+  } else {
+    const words = Math.random() < .5; qz.words = words;
+    if (words){
+      const [m1, m2] = shuffle(MOVES.slice()).slice(0, 2);
+      const opts = [`${m2.u}, then ${m1.u}`, `${m1.u}, then ${m2.u}`, `${m2.n}, then ${m1.n}`, `${m1.n}, then ${m2.n}`];
+      qz.why = ['', 'Right undo moves, wrong order. Undo the last move first.', 'Those moves are in the right order, but they repeat the moves instead of undoing them.', 'That does the whole thing again, so everything moves twice as far from home.'];
+      qz.order = shuffle([0, 1, 2, 3]);
+      $('qText').innerHTML = `First you <b>${m1.n}</b>, then you <b>${m2.n}</b>. Which gets everything back home?`;
+      setMode('choice', qz.order.map(k => opts[k][0].toUpperCase() + opts[k].slice(1)));
+    } else {
+      const [P1, Q1] = rnd([['A', 'B'], ['B', 'A']]); Object.assign(qz, { P1, Q1 });
+      const k = s => `<span class="${s === 'A' ? 'ka' : 'kb'}">${s}</span>`;
+      const opts = [`${k(P1)}⁻¹${k(Q1)}⁻¹`, `${k(Q1)}⁻¹${k(P1)}⁻¹`, `${k(Q1)}${k(P1)}`, `${k(P1)}${k(Q1)}`];
+      qz.why = ['', `That one does ${P1}⁻¹ first (the right-hand matrix acts first), but ${Q1} was the last move, so it has to be undone first.`, 'That multiplies the moves again instead of undoing them.', `That just does both moves, in the opposite order.`];
+      qz.order = shuffle([0, 1, 2, 3]);
+      $('qText').innerHTML = `You do ${k(P1)} first, then ${k(Q1)}, so the combined move is ${k(Q1)}${k(P1)}. Which matrix undoes it? (Remember: the right-hand matrix acts first.)`;
+      setMode('choice', qz.order.map(i => opts[i]));
+    }
+    $('qTitle').textContent = 'Undo two moves';
+  }
+}
+function drawQ(){
+  if (qz.type === 'can'){
+    const M = blend(qz.A, qz.e);
+    const P = plane($('qSvg'), 1000, 380, { x0: -4.6, x1: 4.6, y0: -3.3, y1: 3.4 }, 44, { dashed: true });
+    movedGrid(P, M); drawSquareAndF(P, M); P.ticks(); arms(P, M, 4); origin(P);
+  } else if (qz.type === 'point'){
+    const { A, x, b } = qz;
+    const xs = [x[0], b[0], 0], ys = [x[1], b[1], 0];
+    const P = plane($('qSvg'), 1000, 380, { x0: Math.min(-3, ...xs) - .5, x1: Math.max(3, ...xs) + .5, y0: Math.min(-2.5, ...ys) - .5, y1: Math.max(2.5, ...ys) + .5 }, 44, { dashed: true });
+    movedGrid(P, A, 20); P.ticks(); arms(P, A, 4);
+    mk('line', { x1: P.X(x[0]), y1: P.Y(x[1]), x2: P.X(b[0]), y2: P.Y(b[1]), style: 'stroke:var(--cr);stroke-width:2;stroke-dasharray:5 4' }, P.g);
+    dot(P, x, `x = ${vstr(x)} (start)`, { hollow: true }); dot(P, b, `b = ${vstr(b)}`); origin(P);
+    txt(P.g, 14, 24, `x is ${fr(x[0])} steps of î and ${fr(x[1])} of ĵ; b is the same count of moved î and moved ĵ (on the purple grid).`, 'note');
+  }
+}
+function replayQ(){
+  cancelAnimationFrame(qz.raf); const t0 = performance.now();
+  const step = now => { const t = Math.min(1, (now - t0) / 2200); qz.e = ease(t); drawQ(); if (t < 1) qz.raf = requestAnimationFrame(step); };
+  qz.raf = requestAnimationFrame(step);
+}
+function countQ(ok){ if (qz.counted) return; qz.counted = true; qz.total++; if (ok) qz.right++; $('score').textContent = `Score: ${qz.right} / ${qz.total}`; }
+const near = (u, v) => u.every((s, k) => Math.abs(s - v[k]) < 2e-3);   // accept rounded decimals like 0.333
+function checkQ(){
+  const ids = qz.type === 'inv' ? QM : QV;
+  const X = ids.map(id => parseNum($(id).value));
+  if (ids.some(id => $(id).value.trim() === '') || X.some(isNaN)){ $('qErr').textContent = 'Fill in every box with a number (fractions like 2/3 are fine).'; return; }
+  $('qErr').textContent = ''; let ok, msg;
+  if (qz.type === 'inv'){
+    const A = qz.A, [a, b, c, d] = A, D = det(A), Ai = qz.ans, adj = [d, -b, -c, a];
+    ok = near(X, Ai);
+    const work = `swap a and d, change the signs of b and c: ${ms(adj)}, then divide by det = ${fr(a)}·${pn(d)} − ${pn(b)}·${pn(c)} = ${fr(D)}`;
+    if (ok) msg = `<b>Right: A⁻¹ = ${ms(Ai, 'u')}.</b> ${work}. Check: A⁻¹A = <i>I</i>.`;
+    else if (near(X, adj)) msg = `<b>You swapped and changed signs, but didn’t divide.</b> That matrix times A gives ${fr(D)} × <i>I</i>, not <i>I</i>. Divide every entry by det = ${fr(D)}.`;
+    else if (near(X, adj.map(v => -v / D))) msg = `<b>Check the sign of the determinant.</b> det = ${fr(a)}·${pn(d)} − ${pn(b)}·${pn(c)} = ${fr(D)}.`;
+    else if (near(X, [d, b, c, a].map(v => v / D))) msg = '<b>You swapped a and d but forgot to change the signs of b and c.</b>';
+    else if (near(X, [a, -b, -c, d].map(v => v / D))) msg = '<b>You changed the signs of b and c but forgot to swap a and d.</b>';
+    else if (near(X, [-d, b, c, -a].map(v => v / D)) || near(X, [-a, b, c, -d].map(v => v / D))) msg = '<b>Wrong pair changes sign.</b> a and d swap places; it’s b and c (the off-diagonal pair) that change sign.';
+    else if (A.every(v => v !== 0) && near(X, A.map(v => 1 / v))) msg = '<b>The inverse isn’t 1 over each entry.</b> Use swap, change signs, divide by det.';
+    else { const rightK = X.map((v, k) => Math.abs(v - Ai[k]) < 2e-3); msg = `<b>Not quite.</b> ${rightK.filter(Boolean).length} of the 4 entries are right. ${work}.`; }
+  } else {
+    const { A, x, b } = qz, back = ap(A, X); ok = near(X, x);
+    if (ok) msg = `<b>Right: x = ${vstr(x)}.</b> Undo the move: x = A⁻¹b = ${ms(inv(A), 'u')}${vstr(b)} = ${vstr(x)}. Check: A${vstr(x)} = ${vstr(b)}.`;
+    else if (near(X, ap(A, b))) msg = '<b>You moved b again with A.</b> To find where it started, undo the move: multiply b by A⁻¹.';
+    else if (near(X, b)) msg = '<b>That’s where the point landed, not where it started.</b> Multiply b by A⁻¹.';
+    else if (near(X, ap([A[3], -A[1], -A[2], A[0]], b))) msg = `<b>Almost: you forgot to divide by det = ${fr(det(A))}.</b>`;
+    else msg = `<b>Not quite.</b> Check: A${vstr(X)} = ${vstr(back)}, not ${vstr(b)}. Use x = A⁻¹b with A⁻¹ = ${ms(inv(A), 'u')}.`;
+  }
+  countQ(ok); if (ok){ qz.done = true; if (qz.type === 'point'){ $('qSvg').style.display = ''; drawQ(); } }
+  $('qFb').className = 'feedback ' + (ok ? 'ok' : 'bad'); $('qFb').innerHTML = msg;
+}
+function answerChoice(i){
+  if (qz.done) return; qz.done = true; let ok, msg;
+  if (qz.type === 'can'){
+    const A = qz.A, D = det(A), [a, b, c, d] = A; ok = (i === 1) === qz.sing;
+    msg = `<b>${ok ? 'Right' : 'Not this time'}: ${qz.sing ? 'singular' : 'invertible'}.</b> det = ${fr(a)}·${pn(d)} − ${pn(b)}·${pn(c)} = ${fr(D)}. ` +
+      (qz.sing ? `The columns ${vstr([a, c])} and ${vstr([b, d])} lie on one line, so the plane is squashed flat and many points land on each spot.` : `det ≠ 0, so A⁻¹ = ${ms(inv(A), 'u')} exists${Math.abs(D) < 1 ? ' (the plane gets thin, but not flat)' : ''}.`);
+  } else {
+    const k = qz.order[i]; ok = k === 0;
+    msg = ok ? '<b>Right.</b> The last move is undone first, like taking off shoes before socks.' : `<b>Not this one.</b> ${qz.why[k]}`;
+    if (!qz.words && ok) msg += ` In symbols: (${qz.Q1}${qz.P1})⁻¹ = ${qz.P1}⁻¹${qz.Q1}⁻¹. The right-hand matrix acts first, so ${qz.Q1}⁻¹ goes on the right.`;
+  }
+  countQ(ok);
+  $('qFb').className = 'feedback ' + (ok ? 'ok' : 'bad'); $('qFb').innerHTML = msg;
+}
+function showQ(){
+  countQ(false); qz.done = true; $('qErr').textContent = '';
+  const fb = $('qFb'); fb.className = 'feedback info';
+  if (qz.type === 'inv'){ const [a, b, c, d] = qz.A; fb.innerHTML = `<b>A⁻¹ = ${ms(qz.ans, 'u')}</b>: swap, change signs → ${ms([d, -b, -c, a])}, then divide by det = ${fr(det(qz.A))}.`; }
+  else if (qz.type === 'point'){ fb.innerHTML = `<b>x = ${vstr(qz.x)}</b> = A⁻¹b = ${ms(inv(qz.A), 'u')}${vstr(qz.b)}.`; $('qSvg').style.display = ''; drawQ(); }
+  else if (qz.type === 'can') fb.innerHTML = `<b>${qz.sing ? 'Singular: it can’t be undone' : 'Invertible: it can be undone'}</b>: det = ${fr(det(qz.A))}.`;
+  else { const i = qz.order.indexOf(0); fb.innerHTML = `<b>${$('qChoice').children[i].innerHTML}</b>: undo the last move first.`; }
+}
+$('qCheck').onclick = checkQ; $('qShow').onclick = showQ; $('qNew').onclick = newQuestion; $('qReplay').onclick = replayQ;
+QM.concat(QV).forEach(id => { $(id).addEventListener('input', () => { $('qErr').textContent = ''; }); $(id).addEventListener('keydown', e => { if (e.key === 'Enter') checkQ(); }); });
+selectOnFocus(QM.concat(QV));
+
+/* =====================================================================
+   10. START
+   ===================================================================== */
+fillX(); markX(); drawX();
+fillZ(); drawZ();
+drawF();
+$('sPresets').children[0].click();
+drawC();
+drawR();
+newQuestion();
+</script>
+<script src="../shared/toc.js"></script>
+<script src="../shared/nav.js"></script>
+</body>
+</html>

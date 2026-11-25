@@ -45,7 +45,7 @@ window.MM_TOC = [
     { id: '7.B.4', title: 'A Matrix Is a Move', url: 'https://claude.ai/artifact/ELcqpcxsc7H6S6b6VHPA47', built: true },
     { id: '7.B.5', title: 'Matrix Multiplication: One Move After Another', url: 'https://claude.ai/artifact/QW7X2CWcpVQAa1QPBKbsVp', built: true },
     { id: '7.B.6', title: 'The Determinant', url: 'https://claude.ai/artifact/NBUqz8sJc6mH9YiYrCEzwQ', built: true },
-    { id: '7.B.7', title: 'Inverse Matrices' },
+    { id: '7.B.7', title: 'Inverse Matrices', url: 'https://claude.ai/artifact/WLDhgCHWGAq9cuKNFCUBbH', built: true },
     { id: '7.B.8', title: 'Systems of Equations as Matrices' },
     { id: '7.B.9', title: 'Solving Systems by Row Reduction' },
     { id: '7.B.10', title: 'Into 3D: Vectors and 3×3 Matrices' },
