@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>7.B.8 Systems of Equations as Matrices · MathMastery</title>
+<!-- Fonts: a book serif for prose, a clean sans for UI, a mono for numbers -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<!-- MathJax renders the few formulas on the page (SVG output needs no external stylesheet) -->
+<script>
+  window.MathJax = { tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] }, svg: { fontCache: 'global' } };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<style>
+/* ===================== Theme ===================== */
+:root{
+  --bg:#f7f5ef; --paper:#ffffff; --ink:#1f1e1d; --muted:#6b6a66; --line:#e4e0d5; --line2:#c9c5b8;
+  --accent:#534AB7; --accent-bg:#EEEDFE;
+  --pos:#1D9E75; --neg:#D85A30; --pt:#7F77DD; --pt-soft:#AFA9EC; --pt-dark:#534AB7;
+  --pos-new:#9FE1CB; --neg-new:#F0997B; --ok:#3B6D11; --ok-bg:#EAF3DE; --bad:#A32D2D; --bad-bg:#FCEBEB; --note-bg:#FAF3E3; --note-line:#E7C98A;
+  --serif:"Source Serif 4", Georgia, "Times New Roman", serif;
+  --sans:"IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#191817; --paper:#232220; --ink:#ecebe6; --muted:#a3a29c; --line:#383733; --line2:#55534e;
+    --accent:#AFA9EC; --accent-bg:#2c2852; --pt-dark:#CECBF6; --pt-soft:#6f68b8; --pos-new:#5DCAA5; --neg-new:#F5C4B3;
+    --ok:#C0DD97; --ok-bg:#24400d; --bad:#F7C1C1; --bad-bg:#5a1c1c; --note-bg:#2b261b; --note-line:#6b5626;
+  }
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.7 var(--serif);-webkit-font-smoothing:antialiased}
+
+/* ===================== Layout ===================== */
+.topbar{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1000px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:14px;font:500 13px/1 var(--sans);color:var(--muted)}
+.brand{color:var(--ink);font-weight:600;letter-spacing:.02em}
+.brand b{color:var(--accent)}
+.crumbs{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pid{font-family:var(--mono);color:var(--accent);background:var(--accent-bg);padding:4px 8px;border-radius:6px}
+.prose{max-width:720px;margin:0 auto;padding:0 20px}
+.wide{max-width:1000px;margin:0 auto;padding:0 20px}
+
+/* ===================== Hero ===================== */
+.hero{padding:48px 0 12px}
+.kicker{font:600 13px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1{font:700 46px/1.1 var(--serif);margin:12px 0 14px;letter-spacing:-.01em}
+.dek{font-size:21px;color:var(--muted);margin:0 0 22px;font-style:italic}
+.tiers{display:flex;gap:6px;flex-wrap:wrap;font:500 13px/1 var(--sans);margin-bottom:8px}
+.tier{padding:7px 12px;border-radius:999px;border:1px solid var(--line2);color:var(--muted)}
+.tier.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.tier small{opacity:.7;margin-left:4px}
+
+/* ===================== Text elements ===================== */
+h2{font:700 28px/1.25 var(--serif);margin:56px 0 10px;display:flex;gap:12px;align-items:baseline}
+h2 .n{font:600 14px/1 var(--mono);color:var(--accent);min-width:28px}
+p{margin:0 0 16px}
+em.key{font-style:normal;background:linear-gradient(transparent 62%,var(--accent-bg) 62%);padding:0 2px}
+.goals{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:18px 22px;margin:22px 0 0;font:15.5px/1.6 var(--sans)}
+.goals h3{font:600 12px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
+.goals ul{margin:0;padding-left:20px}
+.note{background:var(--note-bg);border-left:4px solid var(--note-line);border-radius:0 10px 10px 0;padding:14px 18px;margin:20px 0;font:15.5px/1.6 var(--sans)}
+.note b{font-weight:600}
+.notice{list-style:none;padding:0;margin:8px 0 18px;counter-reset:n}
+.notice li{position:relative;padding:12px 0 12px 46px;border-top:1px solid var(--line)}
+.notice li:last-child{border-bottom:1px solid var(--line)}
+.notice li::before{counter-increment:n;content:counter(n);position:absolute;left:4px;top:13px;width:26px;height:26px;border-radius:50%;background:var(--accent-bg);color:var(--accent);font:600 13px/26px var(--mono);text-align:center}
+.goes{list-style:none;padding:0;margin:8px 0 18px}
+.goes li{padding:12px 0;border-top:1px solid var(--line)}
+.goes li:last-child{border-bottom:1px solid var(--line)}
+.math{overflow-x:auto;margin:12px 0 18px;padding:14px 18px;background:var(--paper);border:1px solid var(--line);border-radius:12px}
+.math .cap{font:14px/1.5 var(--sans);color:var(--muted);margin-top:4px}
+.mono{font-family:var(--mono);font-size:.92em;white-space:nowrap}
+.pos{color:var(--pos);font-weight:600}.neg{color:var(--neg);font-weight:600}.pt{color:var(--pt-dark);font-weight:600}
+
+/* ===================== Vocabulary ===================== */
+.vocab{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin:14px 0 8px}
+.term{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font:14.5px/1.5 var(--sans)}
+.term b{display:block;font:600 15px/1.3 var(--serif);margin-bottom:4px}
+
+/* ===================== Interactive cards ===================== */
+.card{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:18px 20px 20px;margin:26px 0;box-shadow:0 1px 0 var(--line),0 12px 32px -22px rgba(0,0,0,.25);font-family:var(--sans)}
+.card-h{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.card-h .tag{font:600 11px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--accent);background:var(--accent-bg);padding:5px 8px;border-radius:6px}
+.card-h h3{font:600 18px/1.3 var(--sans);margin:0}
+.card-h .sub{color:var(--muted);font-size:14.5px;flex-basis:100%}
+.panel-label{font:600 11px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:12px 0 4px;display:flex;justify-content:space-between}
+.panel-label span:last-child{letter-spacing:0;text-transform:none;font-weight:500}
+svg.nl{display:block;width:100%;height:auto;border:1px solid var(--line);border-radius:12px;background:var(--bg);touch-action:manipulation}
+svg.clickable{cursor:pointer}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:12px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0}
+button{font:500 14px/1 var(--sans);padding:9px 14px;border-radius:9px;border:1px solid var(--line2);background:var(--paper);color:var(--ink);cursor:pointer;transition:background .15s,border-color .15s}
+button:hover{border-color:var(--ink)}
+button.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+button.preset.on{background:var(--accent-bg);border-color:var(--accent);color:var(--accent)}
+button:disabled{opacity:.45;cursor:default}
+.desc{min-height:24px;color:var(--muted);font-size:14.5px;margin:2px 0 6px}
+.inputs{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;margin:12px 0 4px}
+.field{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.field input{width:92px;font:500 18px/1 var(--mono);padding:9px 10px;border-radius:9px;border:2px solid var(--line2);background:var(--bg);color:var(--ink);text-align:center}
+.field input:focus{outline:none;border-color:var(--accent)}
+.field i,.eq i,.sym{font:italic 600 1.15em var(--serif);text-transform:none;letter-spacing:0;color:var(--pt-dark)}
+.field.start input{border-color:var(--pt-soft)}
+.field.slide input{border-color:var(--pt)}
+.eq{font:500 20px/1 var(--mono);padding:10px 14px;background:var(--bg);border-radius:10px;border:1px solid var(--line)}
+.err{color:var(--bad);font-size:14px;min-height:20px;margin:2px 0}
+.readout{margin-top:12px;padding:12px 14px;background:var(--bg);border-radius:10px;border:1px solid var(--line);font-size:15px;line-height:1.55;min-height:48px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:12px;font-size:13px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{display:inline-block;width:14px;height:14px;border-radius:50%}
+.sw.pos{background:var(--pos)}.sw.neg{border:2.4px solid var(--neg)}
+.sw.x{position:relative;background:var(--pos);opacity:.45}.sw.x::after{content:'✕';position:absolute;inset:-1px 0 0 0;color:var(--neg);font:700 13px/1 var(--sans);text-align:center}
+.sw.posnew{background:var(--pos-new);border:1.5px solid var(--pos)}.sw.negnew{border:2.4px solid var(--neg-new)}.sw.pt{background:var(--pt)}
+.sw.mv{width:22px;height:4px;border-radius:2px;background:var(--pt-soft)}
+.sw.rl{width:22px;height:0;border-top:2px dashed var(--ink);border-radius:0;opacity:.7}
+.feedback{margin-top:10px;padding:12px 14px;border-radius:10px;font-size:15px;line-height:1.55;display:none}
+.feedback.ok{display:block;background:var(--ok-bg);color:var(--ok)}
+.feedback.bad{display:block;background:var(--bad-bg);color:var(--bad)}
+.feedback.info{display:block;background:var(--accent-bg);color:var(--accent)}
+.score{margin-left:auto;font:600 14px/1 var(--mono);color:var(--muted)}
+
+/* ===================== Footer nav ===================== */
+.pager{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:56px 0 18px;font-family:var(--sans)}
+.pager a,.pager div{display:block;padding:16px 18px;border:1px solid var(--line);border-radius:14px;background:var(--paper);color:var(--ink);text-decoration:none}
+.pager small{display:block;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.pager .next{text-align:right}
+.pager .soon{opacity:.6}
+.meta{font:13px/1.6 var(--sans);color:var(--muted);text-align:center;padding:10px 0 50px}
+
+@media (max-width:720px){
+  body{font-size:17px}
+  h1{font-size:34px}
+  .dek{font-size:18px}
+  h2{font-size:24px}
+  .card{padding:14px 12px 16px;border-radius:14px}
+  .crumbs{display:none}
+  svg.nl{min-width:640px}
+}
+</style>
+<meta name="mm-site" content="1">
+<link rel="stylesheet" href="../shared/nav.css">
+</head>
+<body>
+<style>
+/* ===================== Page-specific styles (7.B.8) ===================== */
+/* rows (equations): blue and pink; columns: green (col 1, where î lands) and orange (col 2); the solution (x, y): purple; the target b: brown */
+:root{ --ci:#1D9E75; --cj:#D85A30; --cp:#7F77DD; --cs:#AFA9EC; --cr:#7F77DD; --r1:#2F6FDB; --r2:#C2417D; --ct:#8A5A3B; --ca:#2F6FDB; --cb:#C2417D; --cu:#B86E00; --good:#1D9E75; --wrong:#D8443A; --red:#D8443A; --yel:#E9B200; }
+@media (prefers-color-scheme:dark){ :root{ --ci:#5DCAA5; --cj:#F0997B; --cp:#AFA9EC; --cs:#6F67C9; --cr:#AFA9EC; --r1:#6EA2F5; --r2:#EE7FB0; --ct:#D9A67E; --ca:#6EA2F5; --cb:#EE7FB0; --cu:#FFB547; --good:#5DCAA5; --wrong:#F07B72; --red:#F07B72; --yel:#FFD44D; } }
+.ki{color:var(--ci);font-weight:700}.kj{color:var(--cj);font-weight:700}.kp{color:var(--cp);font-weight:700}
+.k1{color:var(--r1);font-weight:700}.k2{color:var(--r2);font-weight:700}.kt{color:var(--ct);font-weight:700}.ku{color:var(--cu);font-weight:700}
+.field.fp input{border-color:var(--cp)}.field.sm input{width:70px}.field.ft input{border-color:var(--ct)}
+.inputs .grp{display:flex;gap:10px;align-items:flex-end;padding-right:12px;border-right:1px dashed var(--line);margin-right:4px}
+.inputs .grp:last-of-type{border-right:none}
+.matw{display:flex;flex-direction:column;gap:4px}
+.mhead{display:grid;grid-template-columns:repeat(2,70px);gap:6px;padding:0 12px;font:600 11px var(--sans);letter-spacing:.05em;text-transform:uppercase;text-align:center}
+.mlab{font:600 11px var(--sans);letter-spacing:.05em;text-transform:uppercase;padding-left:12px}
+.mat{display:grid;grid-template-columns:repeat(2,70px);gap:6px;padding:6px 10px;border-left:2.5px solid var(--ink);border-right:2.5px solid var(--ink);border-radius:7px}
+.mat.v1{grid-template-columns:70px}
+.mat input{width:100%;font:500 17px/1 var(--mono);padding:8px 2px;text-align:center;border-radius:9px;border:2px solid var(--line2);background:var(--bg);color:var(--ink)}
+.mat input:focus{outline:none;box-shadow:0 0 0 2px var(--accent)}
+.mat input.ci{border-color:var(--ci)}.mat input.cj{border-color:var(--cj)}.mat input.ct{border-color:var(--ct)}
+.mat.mT input{border-color:var(--ct)}.mat.mP input{border-color:var(--cp)}
+.mshow{display:inline-grid;grid-template-columns:auto auto;gap:2px 14px;padding:3px 9px;border-left:2px solid currentColor;border-right:2px solid currentColor;border-radius:5px;font:600 15px var(--mono);vertical-align:middle;margin:0 3px}
+.mshow.v{grid-template-columns:auto}.mshow.c3{grid-template-columns:auto auto auto}.mshow.aug{grid-template-columns:auto auto auto}
+.mshow.aug span:nth-child(3n){border-left:1.5px solid currentColor;padding-left:10px}
+.mshow.aug4{grid-template-columns:auto auto auto auto}.mshow.aug4 span:nth-child(4n){border-left:1.5px solid currentColor;padding-left:10px}
+.mshow .c1{color:var(--ci)}.mshow .c2{color:var(--cj)}.mshow .ct{color:var(--ct)}.mshow .r1{color:var(--r1)}.mshow .r2{color:var(--r2)}
+.mshow span{text-align:center}.mshow.u{color:var(--cu)}.mshow.t{color:var(--ct)}.mshow.p{color:var(--cp)}
+.split{display:grid;gap:0;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--paper)}
+.split.s2{grid-template-columns:1fr 1fr}
+.split svg{display:block;width:100%;height:auto;border:none;border-radius:0}
+svg{-webkit-user-select:none;user-select:none}
+.split > * + *{border-left:1px solid var(--line)}
+.eqs{font:14.5px/1.9 var(--mono);margin:10px 0 6px;padding:10px 16px;border:1px solid var(--line);border-radius:12px;background:var(--bg)}
+.eqs .lbl{display:inline-block;min-width:160px;font:600 12px var(--sans);letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+pre.code{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:12px 16px;overflow-x:auto;font:13.5px/1.6 var(--mono);margin:10px 0 16px}
+.choice{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 0}.choice button{min-width:170px}
+.qtext{font:17px/1.55 var(--serif);margin:4px 0 10px}
+.sys{display:inline-block;font:16px/1.6 var(--mono);padding:4px 12px;border-left:2.5px solid var(--ink);border-radius:6px;vertical-align:middle;margin:2px 0}
+.two{display:grid;grid-template-columns:1.1fr 1fr;gap:16px;align-items:start;margin-top:10px}
+.two .eqs{margin:0;font-size:14px;line-height:1.75}
+.two .eqs .lbl{display:block;min-width:0;margin-top:6px}.two .eqs .lbl:first-child{margin-top:0}
+.swatch{display:inline-block;width:46px;height:30px;border-radius:7px;border:1px solid var(--line2);vertical-align:middle;margin:0 6px}
+</style>
+
+<!-- ===================== Top bar ===================== -->
+<div class="topbar"><div class="topbar-in">
+  <span class="brand">Math<b>Mastery</b></span>
+  <span class="crumbs">Chapter 7 · Linear Algebra › Basics</span>
+  <span class="pid">7.B.8</span>
+</div></div>
+
+<!-- ===================== Hero ===================== -->
+<header class="prose hero">
+  <div class="kicker">Chapter 7 · Linear Algebra</div>
+  <h1>Systems of Equations as Matrices</h1>
+  <p class="dek">A whole system of equations fits in one line, <i>A</i><b>x</b> = <b>b</b>, and it can be read as two pictures: lines that cross, or arrows that add up.</p>
+  <div class="tiers" aria-label="Tier">
+    <span class="tier on">Basics <small>you are here</small></span>
+    <span class="tier">Undergraduate</span>
+    <span class="tier">Masters</span>
+  </div>
+  <div class="goals">
+    <h3>On this page</h3>
+    <ul>
+      <li>Write any system of linear equations as one matrix equation <i>A</i><b>x</b> = <b>b</b>, and as an <b>augmented matrix</b> [<i>A</i> | <b>b</b>].</li>
+      <li>See the same system two ways: the <b>row picture</b> (one line per equation, the answer is where they cross) and the <b>column picture</b> (the answer is how much of each column it takes to reach <b>b</b>).</li>
+      <li>Tell from det <i>A</i> how many solutions there are: exactly one when det ≠ 0; none or infinitely many when det = 0.</li>
+      <li>Solve with <b>x</b> = <i>A</i><sup>−1</sup><b>b</b>, or with <b>Cramer’s rule</b>, a ratio of two areas.</li>
+    </ul>
+  </div>
+</header>
+
+<main>
+<!-- ===================== §1 ===================== -->
+<section class="prose">
+  <h2><span class="n">1</span>One equation per row</h2>
+  <p>In 3.B.6 you solved systems like this one:</p>
+  <p style="text-align:center"><span class="sys"><span class="k1">2<i>x</i> + <i>y</i> = 5</span><br><span class="k2"><i>x</i> − <i>y</i> = 1</span></span></p>
+  <p>Look only at the numbers. Put the numbers in front of <i>x</i> and <i>y</i> into a matrix, the <b>coefficient matrix</b> <i>A</i>; stack the unknowns into the <b>unknown vector</b> <b>x</b>; stack the right-hand sides into the <b>right-hand side</b> vector <b>b</b>. The whole system becomes</p>
+  <p style="text-align:center;font:16px var(--mono)"><span class="mshow"><span class="r1">2</span><span class="r1">1</span><span class="r2">1</span><span class="r2">−1</span></span><span class="mshow v"><span><i>x</i></span><span><i>y</i></span></span> = <span class="mshow v t"><span>5</span><span>1</span></span> &nbsp; or &nbsp; <i>A</i><b>x</b> = <b>b</b>.</p>
+  <p>Why does that work? Multiplying a matrix by a vector (7.B.5) takes each row of <i>A</i> times the vector: the top row gives 2<i>x</i> + 1<i>y</i>, the bottom row gives 1<i>x</i> − 1<i>y</i>. So each <b>row of <i>A</i> is one equation</b>. A missing variable gets a 0, and every variable must stay in its own column (all the <i>x</i>’s on the left, all the <i>y</i>’s on the right).</p>
+  <p>When you only want the numbers, drop the letters and keep <b>b</b> next to <i>A</i> behind a bar. That’s the <b>augmented matrix</b> [<i>A</i> | <b>b</b>], the form row reduction works on in 7.B.9:</p>
+  <p style="text-align:center;font:16px var(--mono)"><span class="mshow aug"><span class="r1">2</span><span class="r1">1</span><span class="ct">5</span><span class="r2">1</span><span class="r2">−1</span><span class="ct">1</span></span></p>
+</section>
+
+<!-- ===================== §2 ===================== -->
+<section class="prose">
+  <h2><span class="n">2</span>Two pictures of the same system</h2>
+  <p>Read <i>A</i> by <b>rows</b> and each equation is a line; a solution is a point on both lines, so it’s where they cross. That’s the <b>row picture</b>, the one from 3.B.6.</p>
+  <p>Read <i>A</i> by <b>columns</b> and you get something new. <i>A</i><b>x</b> means “<i>x</i> times column 1 plus <i>y</i> times column 2” (7.B.4), so the system asks: <b>how much of each column does it take to reach b?</b> Adding stretched copies of vectors is called a <b>linear combination</b>, and this is the <b>column picture</b>. On the moved grid of <i>A</i>, the answer is simply the grid coordinates of <b>b</b>.</p>
+</section>
+<section class="wide">
+  <div class="card" id="main">
+    <div class="card-h"><span class="tag">Explore</span><h3>Row picture and column picture</h3>
+      <span class="sub">Pick a system or type <i>A</i> and <b>b</b>. Drag the brown point <b class="kt">b</b> in the column picture, and watch the crossing point move in the row picture.</span></div>
+    <div class="row" id="xPresets"></div>
+    <div class="desc" id="xDesc"></div>
+    <div class="inputs">
+      <div class="grp"><div class="matw">
+        <div class="mhead"><span class="ki">column 1 (x)</span><span class="kj">column 2 (y)</span></div>
+        <div class="mat">
+          <input id="xa" class="ci" type="text" inputmode="decimal" autocomplete="off" aria-label="row 1, x"><input id="xb" class="cj" type="text" inputmode="decimal" autocomplete="off" aria-label="row 1, y">
+          <input id="xc" class="ci" type="text" inputmode="decimal" autocomplete="off" aria-label="row 2, x"><input id="xd" class="cj" type="text" inputmode="decimal" autocomplete="off" aria-label="row 2, y">
+        </div></div></div>
+      <div class="grp"><div class="matw"><span class="mlab kt">b</span>
+        <div class="mat v1 mT"><input id="xe" type="text" inputmode="decimal" autocomplete="off" aria-label="b, row 1"><input id="xf" type="text" inputmode="decimal" autocomplete="off" aria-label="b, row 2"></div></div></div>
+      <div id="xSys"></div>
+    </div>
+    <div class="err" id="xErr"></div>
+    <div class="split s2">
+      <svg id="xR" viewBox="0 0 480 420" role="img" aria-label="Row picture"></svg>
+      <svg id="xC" viewBox="0 0 480 420" role="img" aria-label="Column picture" style="cursor:grab;touch-action:none"></svg>
+    </div>
+    <div class="eqs" id="xEqs"></div>
+    <div class="readout" id="xOut"></div>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--r1);width:14px;height:4px;margin:0"></i>row 1: the first equation</span>
+      <span><i class="sw" style="background:var(--r2);width:14px;height:4px;margin:0"></i>row 2: the second equation</span>
+      <span><i class="sw" style="background:var(--ci);width:14px;height:4px;margin:0"></i>column 1 (the <i>x</i> column)</span>
+      <span><i class="sw" style="background:var(--cj);width:14px;height:4px;margin:0"></i>column 2 (the <i>y</i> column)</span>
+      <span><i class="sw" style="background:var(--cp);width:12px;height:12px;border-radius:50%;margin:0"></i>the solution (<i>x</i>, <i>y</i>)</span>
+      <span><i class="sw" style="background:var(--ct);width:12px;height:12px;border-radius:50%;margin:0"></i>the target <b>b</b></span>
+    </div>
+  </div>
+</section>
+<section class="prose">
+  <p>The two pictures always agree, because they’re the same arithmetic read two ways. The row picture lives in the plane of <b>answers</b> (<i>x</i>, <i>y</i>). The column picture lives in the plane of <b>targets</b> <b>b</b>, and the matrix <i>A</i> carries one plane to the other: it sends the answer (<i>x</i>, <i>y</i>) to the target <b>b</b>. Solving the system means running <i>A</i> backwards, which is exactly what <i>A</i><sup>−1</sup> does (7.B.7).</p>
+</section>
+
+<!-- ===================== §3 ===================== -->
+<section class="prose">
+  <h2><span class="n">3</span>The determinant decides how many</h2>
+  <p>Try the last three presets above.</p>
+  <ul>
+    <li><b>det ≠ 0: exactly one solution</b>, for every <b>b</b>. The two lines cross at one point. The columns point in different directions, so their moved grid covers the whole plane and every <b>b</b> sits on exactly one pair of grid coordinates. In symbols, <b>x</b> = <i>A</i><sup>−1</sup><b>b</b>.</li>
+    <li><b>det = 0 and b off the line: no solution.</b> The two equations describe parallel lines that never meet. In the column picture both columns lie on one line, and no amount of them can leave it, so a <b>b</b> off that line can’t be reached.</li>
+    <li><b>det = 0 and b on the line: infinitely many solutions.</b> The two equations describe the same line, so every point on it works. In the column picture, there are endless ways to mix the two columns to reach <b>b</b>.</li>
+  </ul>
+  <p>So when det = 0 the matrix alone can’t tell you which: you have to look at <b>b</b>. And “Nearly parallel” shows a practical warning: when det is close to 0, a tiny nudge to <b>b</b> sends the crossing point flying, so measured data can give wildly wrong answers.</p>
+</section>
+
+<!-- ===================== §4 ===================== -->
+<section class="prose">
+  <h2><span class="n">4</span>Solving: the inverse, or Cramer’s rule</h2>
+  <p>When det ≠ 0, the answer is <b>x</b> = <i>A</i><sup>−1</sup><b>b</b>, using swap, change signs, divide (7.B.7). For the system in §1, det = 2·(−1) − 1·1 = −3 and</p>
+  <p style="text-align:center;font:15px var(--mono)"><b>x</b> = (1/−3) <span class="mshow"><span>−1</span><span>−1</span><span>−1</span><span>2</span></span><span class="mshow v t"><span>5</span><span>1</span></span> = (1/−3)<span class="mshow v"><span>−6</span><span>−3</span></span> = <span class="mshow v p"><span>2</span><span>1</span></span>.</p>
+  <p>There’s a shortcut for a single unknown, called <b>Cramer’s rule</b>: to get <i>x</i>, replace column 1 of <i>A</i> by <b>b</b>, take that determinant, and divide by det <i>A</i>. For <i>y</i>, replace column 2 instead.</p>
+  <p style="text-align:center;font:16px var(--mono)"><i>x</i> = det[<b class="kt">b</b> <span class="kj">col 2</span>] / det <i>A</i>, &nbsp;&nbsp; <i>y</i> = det[<span class="ki">col 1</span> <b class="kt">b</b>] / det <i>A</i></p>
+  <p>It looks like a magic trick, but it’s a picture about areas (7.B.6). The parallelogram on <b>b</b> and column 2 has area det[<b>b</b> col 2]. Now slide <b>b</b> along the direction of column 2 until it lands on column 1’s line. Sliding a side along the other side is a shear, which never changes area. Where does <b>b</b> land? Since <b>b</b> = <i>x</i>·col 1 + <i>y</i>·col 2, removing the <i>y</i>·col 2 part leaves <i>x</i>·col 1. So the parallelogram on <b>b</b> and col 2 has the same area as the one on <i>x</i>·col 1 and col 2, which is <i>x</i> times det <i>A</i>.</p>
+</section>
+<section class="wide">
+  <div class="card" id="cramer">
+    <div class="card-h"><span class="tag">Explore</span><h3>Cramer’s rule as a slide</h3>
+      <span class="sub">Press Play: the brown parallelogram on <b class="kt">b</b> slides along a column without changing its area, until it’s a whole number of copies (or a fraction of one) of the purple parallelogram of <i>A</i>.</span></div>
+    <div class="row" id="cPresets"></div>
+    <div class="inputs">
+      <div class="grp"><div class="matw"><div class="mhead"><span class="ki">col 1</span><span class="kj">col 2</span></div>
+        <div class="mat"><input id="ca" class="ci" type="text" inputmode="decimal" autocomplete="off"><input id="cb" class="cj" type="text" inputmode="decimal" autocomplete="off"><input id="cc" class="ci" type="text" inputmode="decimal" autocomplete="off"><input id="cd" class="cj" type="text" inputmode="decimal" autocomplete="off"></div></div></div>
+      <div class="grp"><div class="matw"><span class="mlab kt">b</span>
+        <div class="mat v1 mT"><input id="ce" type="text" inputmode="decimal" autocomplete="off"><input id="cf" type="text" inputmode="decimal" autocomplete="off"></div></div></div>
+      <div class="row" style="margin:0"><button class="primary" id="cPlay">Play</button></div>
+    </div>
+    <div class="err" id="cErr"></div>
+    <div class="split s2">
+      <svg id="cX" viewBox="0 0 480 400" role="img" aria-label="Finding x"></svg>
+      <svg id="cY" viewBox="0 0 480 400" role="img" aria-label="Finding y"></svg>
+    </div>
+    <div class="eqs" id="cEqs"></div>
+  </div>
+</section>
+<section class="prose">
+  <p>Cramer’s rule is handy for 2×2 systems and for proofs. For big systems it’s far too slow (every determinant is a lot of work), and computers use row reduction instead (7.B.9).</p>
+</section>
+
+<!-- ===================== §5 ===================== -->
+<section class="prose">
+  <h2><span class="n">5</span>Tickets: setting up the matrix from a story</h2>
+  <p>A school play sells adult and child tickets. You know how many tickets were sold and how much money came in. Let <i>a</i> be the number of adult tickets and <i>c</i> the number of child tickets. One equation counts tickets, the other counts money, and each becomes a row.</p>
+</section>
+<section class="wide">
+  <div class="card" id="tickets">
+    <div class="card-h"><span class="tag">Explore</span><h3>How many of each ticket?</h3>
+      <span class="sub">Pick a night or type the prices and totals.</span></div>
+    <div class="row" id="tPresets"></div>
+    <div class="inputs">
+      <label class="field sm"><span>Adult price ($)</span><input id="tPa" type="text" inputmode="decimal" autocomplete="off"></label>
+      <label class="field sm"><span>Child price ($)</span><input id="tPc" type="text" inputmode="decimal" autocomplete="off"></label>
+      <label class="field ft sm"><span>Tickets sold</span><input id="tN" type="text" inputmode="decimal" autocomplete="off"></label>
+      <label class="field ft sm"><span>Money in ($)</span><input id="tM" type="text" inputmode="decimal" autocomplete="off"></label>
+    </div>
+    <div class="err" id="tErr"></div>
+    <div class="two">
+      <svg class="nl" id="tSvg" viewBox="0 0 520 440" role="img" aria-label="Row picture for the tickets"></svg>
+      <div class="eqs" id="tEqs"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §6 ===================== -->
+<section class="prose">
+  <h2><span class="n">6</span>Mixing paint: the column picture at work</h2>
+  <p>Some problems are column pictures from the start. A paint shop has two ready-made mixes. Each can of <b>Sunset</b> holds 3 parts red and 1 part yellow; each can of <b>Daffodil</b> holds 1 part red and 3 parts yellow. Each can is a column. A customer wants a color with a certain amount of red and yellow: that’s the target <b>b</b>. How many cans of each should be poured together?</p>
+</section>
+<section class="wide">
+  <div class="card" id="paint">
+    <div class="card-h"><span class="tag">Explore</span><h3>Reach the target color</h3>
+      <span class="sub">Type the parts of red and yellow the customer wants. Each slanted grid line is one more can.</span></div>
+    <div class="row" id="pPresets"></div>
+    <div class="inputs">
+      <label class="field ft sm"><span>Red parts</span><input id="pR" type="text" inputmode="decimal" autocomplete="off"></label>
+      <label class="field ft sm"><span>Yellow parts</span><input id="pY" type="text" inputmode="decimal" autocomplete="off"></label>
+    </div>
+    <div class="err" id="pErr"></div>
+    <div class="two">
+      <svg class="nl" id="pSvg" viewBox="0 0 520 440" role="img" aria-label="Column picture for the paint"></svg>
+      <div class="eqs" id="pEqs"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §7 ===================== -->
+<section class="prose">
+  <h2><span class="n">7</span>Bigger systems: traffic in a small town</h2>
+  <p>Nothing about <i>A</i><b>x</b> = <b>b</b> needs exactly two unknowns. Three equations in three unknowns give a 3×3 matrix; each equation is now a flat <b>plane</b> in 3D, and a single solution is the one point where three planes meet (7.B.10). The same rule holds: if det <i>A</i> ≠ 0 there’s exactly one solution, <b>x</b> = <i>A</i><sup>−1</sup><b>b</b>; if det <i>A</i> = 0 there are none or infinitely many.</p>
+  <p>Here’s a real-looking 3×3 system with det = 0. Three one-way streets join junctions P, Q and R. Cars per hour enter and leave the town at the junctions, and at every junction, cars in = cars out. That gives one equation per junction:</p>
+</section>
+<section class="wide">
+  <div class="card" id="traffic">
+    <div class="card-h"><span class="tag">Explore</span><h3>Cars in = cars out</h3>
+      <span class="sub">The three equations don’t pin the flows down: one street’s flow can be chosen freely. Pick the flow <i>t</i> on the street from P to R (cars per hour) and see what the others must be.</span></div>
+    <div class="row" id="fPresets"></div>
+    <div class="inputs">
+      <label class="field fp sm"><span><i>t</i> = P→R flow</span><input id="fT" type="text" inputmode="decimal" autocomplete="off"></label>
+    </div>
+    <div class="err" id="fErr"></div>
+    <div class="two">
+      <svg class="nl" id="fSvg" viewBox="0 0 520 400" role="img" aria-label="Three junctions and their street flows"></svg>
+      <div class="eqs" id="fEqs"></div>
+    </div>
+  </div>
+</section>
+<section class="prose">
+  <p>Infinitely many solutions isn’t a mistake here: it reflects a real fact. Cars could go round the long way (P→Q→R) or take the short cut (P→R), and counting cars at the junctions can’t tell how they split. One more measurement, a counter on any one street, settles it. One-way streets add one more rule (no flow can be negative), which narrows the infinitely many solutions to a range.</p>
+</section>
+
+<!-- ===================== §8 ===================== -->
+<section class="prose">
+  <h2><span class="n">8</span>Now, in symbols</h2>
+  <div class="math">\[ \begin{cases} a x + b y = e \\ c x + d y = f \end{cases} \iff \begin{bmatrix} a & b \\ c & d \end{bmatrix}\begin{bmatrix} x \\ y \end{bmatrix} = \begin{bmatrix} e \\ f \end{bmatrix} \iff x\begin{bmatrix} a \\ c \end{bmatrix} + y\begin{bmatrix} b \\ d \end{bmatrix} = \begin{bmatrix} e \\ f \end{bmatrix} \]<div class="cap">The system, its matrix form, and its column form (a linear combination of the columns).</div></div>
+  <div class="math">\[ \det A \neq 0 \;\Longrightarrow\; \mathbf{x} = A^{-1}\mathbf{b} \text{ is the one and only solution} \]<div class="cap">When det A = 0: no solution, or infinitely many, depending on b.</div></div>
+  <div class="math">\[ x = \frac{\det\begin{bmatrix} e & b \\ f & d \end{bmatrix}}{\det A} = \frac{ed - bf}{ad - bc}, \qquad y = \frac{\det\begin{bmatrix} a & e \\ c & f \end{bmatrix}}{\det A} = \frac{af - ec}{ad - bc} \]<div class="cap">Cramer’s rule: replace a column by b, divide determinants.</div></div>
+  <p>A computer solves systems of any size in one call. It also says when a system has no single answer:</p>
+  <pre class="code"><code>import numpy as np                                     # NumPy: arrays of numbers
+A = np.array([[2, 1], [1, -1]])                        # the system 2x + y = 5, x - y = 1
+b = np.array([5, 1])                                   # right-hand side
+print(np.linalg.solve(A, b))                           # [2. 1.]: x = 2, y = 1
+T = np.array([[1, 0, 1], [1, -1, 0], [0, 1, 1]])       # the traffic system (3 equations, 3 unknowns)
+print(round(np.linalg.det(T), 9))                      # 0.0: no single answer
+print(np.linalg.matrix_rank(T))                        # 2: only 2 of the 3 equations are really independent</code></pre>
+</section>
+
+<!-- ===================== §9 ===================== -->
+<section class="prose">
+  <h2><span class="n">9</span>Where this goes</h2>
+  <ul class="goes">
+    <li><b>Next (7.B.9):</b> row reduction, the step-by-step method that solves systems of any size by working on the augmented matrix, and that finds every solution when there are infinitely many.</li>
+    <li><b>Later in this book:</b> planes meeting in 3D (7.B.10), rank and independence, which count how many equations really carry information (7.B.12), and least squares in the Undergraduate tier, which finds the best answer when a system has no exact solution.</li>
+    <li><b>In the world:</b> engineers solve systems with millions of unknowns to simulate bridges, weather and airflow; GPS solves one to find your position; and traffic planners balance flows exactly as in §7.</li>
+  </ul>
+</section>
+
+<!-- ===================== §10 ===================== -->
+<section class="prose">
+  <h2><span class="n">10</span>Words to know</h2>
+  <div class="vocab">
+    <div class="term"><b>System of linear equations</b>Several equations, each a sum of numbers times unknowns, to be true all at once.</div>
+    <div class="term"><b>Coefficient matrix</b><i>A</i>: the numbers in front of the unknowns, one row per equation, one column per unknown.</div>
+    <div class="term"><b>Unknown vector</b><b>x</b>: the unknowns stacked in a column.</div>
+    <div class="term"><b>Right-hand side</b><b>b</b>: the numbers after the equals signs, stacked in a column.</div>
+    <div class="term"><b>Augmented matrix</b>[<i>A</i> | <b>b</b>]: <i>A</i> with <b>b</b> attached as an extra column. Row reduction (7.B.9) works on it.</div>
+    <div class="term"><b>Row picture</b>Each equation is a line (a plane in 3D); solutions are where they all meet.</div>
+    <div class="term"><b>Column picture</b>The system asks how much of each column of <i>A</i> adds up to <b>b</b>.</div>
+    <div class="term"><b>Linear combination</b>A sum of stretched vectors, like <i>x</i>·col 1 + <i>y</i>·col 2.</div>
+    <div class="term"><b>Unique solution</b>Exactly one answer. For a square <i>A</i>, it happens exactly when det <i>A</i> ≠ 0.</div>
+    <div class="term"><b>Cramer’s rule</b><i>x</i> = det(<i>A</i> with column 1 replaced by <b>b</b>) / det <i>A</i>, and likewise for each unknown.</div>
+  </div>
+</section>
+
+<!-- ===================== Quiz ===================== -->
+<section class="prose"><h2><span class="n">11</span>Check yourself</h2>
+  <p>Four kinds of questions: write a system as <i>A</i><b>x</b> = <b>b</b>, decide how many solutions it has, solve it, and read the answer from a column picture.</p>
+</section>
+<section class="wide">
+  <div class="card" id="quiz">
+    <div class="card-h"><span class="tag">Quiz</span><h3 id="qTitle"></h3><span class="score" id="score">Score: 0 / 0</span></div>
+    <div class="qtext" id="qText"></div>
+    <svg class="nl" id="qSvg" viewBox="0 0 1000 400" role="img" aria-label="Quiz picture"></svg>
+    <div class="choice" id="qChoice"></div>
+    <div class="inputs" id="qIn">
+      <div class="grp" id="qMat"><div class="matw"><span class="mlab">A</span>
+        <div class="mat"><input id="qm0" type="text" inputmode="decimal" autocomplete="off" aria-label="row 1, x"><input id="qm1" type="text" inputmode="decimal" autocomplete="off" aria-label="row 1, y"><input id="qm2" type="text" inputmode="decimal" autocomplete="off" aria-label="row 2, x"><input id="qm3" type="text" inputmode="decimal" autocomplete="off" aria-label="row 2, y"></div></div></div>
+      <div class="grp" id="qB"><div class="matw"><span class="mlab kt">b</span>
+        <div class="mat v1 mT"><input id="qb0" type="text" inputmode="decimal" autocomplete="off" aria-label="b, row 1"><input id="qb1" type="text" inputmode="decimal" autocomplete="off" aria-label="b, row 2"></div></div></div>
+      <div class="grp" id="qVec"><label class="field fp sm"><span><i>x</i></span><input id="qv0" type="text" inputmode="decimal" autocomplete="off"></label><label class="field fp sm"><span><i>y</i></span><input id="qv1" type="text" inputmode="decimal" autocomplete="off"></label></div>
+      <div class="row" style="margin:0"><button class="primary" id="qCheck">Check</button></div>
+    </div>
+    <div class="row" style="margin:10px 0 0"><button id="qShow">Show answer</button><button id="qNew">New question</button></div>
+    <div class="err" id="qErr"></div>
+    <div class="feedback" id="qFb" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ===================== Pager (filled in by the shared navigation) ===================== -->
+<nav class="wide">
+  <div class="pager"></div>
+  <div class="meta">7.B.8 · Prerequisites: 3.B.6 (systems of linear equations), 7.B.6 (the determinant), 7.B.7 (inverse matrices) · Leads to: 7.B.9 (row reduction), 7.B.10 (3D), 7.B.12 (independence)</div>
+</nav>
+</main>
+
+<script>
+
+/* =====================================================================
+   1. HELPERS
+   ===================================================================== */
+const NS = 'http://www.w3.org/2000/svg';
+const $ = id => document.getElementById(id);
+function mk(tag, attrs, parent){                           // create an SVG element with attributes
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function txt(parent, x, y, s, cls, extra){                 // create an SVG text element
+  extra = Object.assign({}, extra || {});
+  // a CSS class's text-anchor beats the attribute, so move a requested anchor into the style
+  if (extra['text-anchor']){ extra.style = (extra.style ? extra.style + ';' : '') + 'text-anchor:' + extra['text-anchor']; delete extra['text-anchor']; }
+  const t = mk('text', Object.assign({ x, y, class: cls || '' }, extra), parent);
+  t.textContent = s;
+  return t;
+}
+function num(x, d){ if (d === undefined) d = 2; const r = Math.round(x * Math.pow(10, d)) / Math.pow(10, d); return r === 0 ? '0' : (r < 0 ? '−' : '') + String(Math.abs(r)); }
+// A number as a fraction when it is one with a small bottom (3/5, −1/2), otherwise a rounded decimal
+function fr(x){
+  if (!isFinite(x)) return '—';
+  if (Math.abs(x) < 1e-12) return '0';
+  if (Math.abs(x * 10 - Math.round(x * 10)) < 1e-9) return num(x, 1);   // whole numbers and one-decimal values (1.5, 0.4) read best as decimals
+  for (let q = 1; q <= 40; q++){ const p = Math.round(x * q); if (Math.abs(p / q - x) < 1e-9) return (p < 0 ? '−' : '') + (q === 1 ? Math.abs(p) : Math.abs(p) + '/' + q); }
+  return num(x, 3);
+}
+const pn = x => /[−\/]/.test(fr(x)) ? `(${fr(x)})` : fr(x);   // a number, in parentheses when negative or a fraction
+// Parse typed input: integers, decimals, a leading minus, fractions a/b (also -a/b and a/-b)
+function parseNum(s){
+  s = String(s).trim().replace(/[−–]/g, '-').replace(/\s+/g, '');
+  if (/^-?\d+(\.\d+)?$|^-?\.\d+$/.test(s)) return parseFloat(s);
+  const m = s.match(/^(-?\d*\.?\d+)\/(-?\d*\.?\d+)$/);
+  if (m && +m[2] !== 0) return +m[1] / +m[2];
+  return NaN;
+}
+const ease = t => t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+const C = { i: 'var(--ci)', j: 'var(--cj)', p: 'var(--cp)', s: 'var(--cs)', r: 'var(--cr)', a: 'var(--ca)', b: 'var(--cb)', u: 'var(--cu)' };
+const DEG = 180 / Math.PI;
+function readAll(ids, errId, msg){
+  const out = ids.map(id => parseNum($(id).value));
+  if (ids.some(id => $(id).value.trim() === '') || out.some(isNaN)){ $(errId).textContent = msg || 'Fill in every box with a number.'; return null; }
+  $(errId).textContent = ''; return out;
+}
+// A matrix is stored as [a, b, c, d] = top row a b, bottom row c d. Column 1 = [a, c] (where î lands), column 2 = [b, d].
+const ap = (M, p) => [M[0] * p[0] + M[1] * p[1], M[2] * p[0] + M[3] * p[1]];   // where the point p lands
+const det = M => M[0] * M[3] - M[1] * M[2];
+const blend = (M, e) => [1 + e * (M[0] - 1), e * M[1], e * M[2], 1 + e * (M[3] - 1)];   // from "no move" (e = 0) to M (e = 1)
+const mul = (B, A) => [B[0] * A[0] + B[1] * A[2], B[0] * A[1] + B[1] * A[3], B[2] * A[0] + B[3] * A[2], B[2] * A[1] + B[3] * A[3]];   // B·A: do A, then B
+const inv = M => { const D = det(M); return Math.abs(D) < 1e-12 ? null : [M[3] / D, -M[1] / D, -M[2] / D, M[0] / D]; };   // swap, change signs, divide
+const same = (M, N, tol) => M.every((v, k) => Math.abs(v - N[k]) < (tol || 1e-9));
+const ID = [1, 0, 0, 1];
+const vstr = p => `(${p.map(x => fr(x)).join(', ')})`;
+// Printed matrices: colored columns (î green, ĵ orange), or one color (A blue, B pink, undo amber)
+const mshow = M => `<span class="mshow"><span class="c1">${fr(M[0])}</span><span class="c2">${fr(M[1])}</span><span class="c1">${fr(M[2])}</span><span class="c2">${fr(M[3])}</span></span>`;
+const ms = (M, cls) => `<span class="mshow ${cls || ''}">${M.map(v => `<span>${fr(v)}</span>`).join('')}</span>`;
+function selectOnFocus(ids){ ids.forEach(id => $(id).addEventListener('focus', e => e.target.select())); }
+const rot = deg => { const t = deg / DEG; return [Math.cos(t), -Math.sin(t), Math.sin(t), Math.cos(t)]; };
+
+const svgCss = document.createElement('style');
+svgCss.textContent = `
+  .grid{stroke:var(--line);stroke-width:1} .axis{stroke:var(--ink);stroke-width:1.6;opacity:.7}
+  .ref{stroke:var(--muted);stroke-width:1;stroke-dasharray:3 4;opacity:.6} .refaxis{stroke:var(--muted);stroke-width:1.5;stroke-dasharray:6 4}
+  .tl{fill:var(--muted);font:500 11px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:3px}
+  .tlb{fill:var(--muted);font:500 12.5px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:3px}
+  .lab{font:700 15px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:5px}
+  .labS{font:600 12.5px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+  .cap{fill:var(--muted);font:500 12px var(--sans)}
+  .pl{fill:var(--ink);font:700 13px var(--sans);paint-order:stroke;stroke:var(--bg);stroke-width:5px;letter-spacing:.06em;text-transform:uppercase}
+  .note{fill:var(--ink);font:600 13px var(--sans);paint-order:stroke;stroke:var(--bg);stroke-width:5px}
+  .big{font:800 22px var(--sans);paint-order:stroke;stroke:var(--bg);stroke-width:6px}
+`;
+document.head.appendChild(svgCss);
+
+/* =====================================================================
+   2. THE PLANE (grid, axes, arrows, labels, the F)
+   ===================================================================== */
+// Draw a fixed grid that fits the box. o.dashed = the dashed fixed ruler for an After panel; o.noLabels hides tick labels.
+function plane(svg, W, H, box, maxU, o){
+  o = o || {};
+  svg.innerHTML = ''; const g = mk('g', {}, svg);
+  const pad = 1;
+  const u = Math.min(maxU || 44, (W - 40) / (box.x1 - box.x0 + 2 * pad), (H - 30) / (box.y1 - box.y0 + 2 * pad));
+  const cx = W / 2 - u * (box.x0 + box.x1) / 2, cy = H / 2 + u * (box.y0 + box.y1) / 2;   // pixel position of the origin
+  const X = x => cx + x * u, Y = y => cy - y * u;
+  const xa = Math.ceil((0 - cx) / u), xb = Math.floor((W - cx) / u), ya = Math.ceil((cy - H) / u), yb = Math.floor(cy / u);
+  const gc = o.dashed ? 'ref' : 'grid', ac = o.dashed ? 'refaxis' : 'axis';
+  const nice = px => [1, 2, 5, 10, 20, 50, 100, 200, 500].find(s => s * u >= px) || 1000;   // a round step at least px pixels wide
+  const gs = nice(9), ts = nice(28);                           // grid-line step and tick-label step
+  for (let k = xa; k <= xb; k++) if (k && k % gs === 0) mk('line', { x1: X(k), y1: 0, x2: X(k), y2: H, class: gc }, g);
+  for (let k = ya; k <= yb; k++) if (k && k % gs === 0) mk('line', { x1: 0, y1: Y(k), x2: W, y2: Y(k), class: gc }, g);
+  mk('line', { x1: 0, y1: Y(0), x2: W, y2: Y(0), class: ac }, g);
+  mk('line', { x1: X(0), y1: 0, x2: X(0), y2: H, class: ac }, g);
+  const P = { g, X, Y, u, W, H, inv: (px, py) => [(px - cx) / u, (cy - py) / u] };
+  P.ticks = (cls) => {                                       // tick labels, drawn last so they sit on top
+    if (o.noLabels) return;
+    const step = ts;
+    for (let k = xa; k <= xb; k++) if (k && k % step === 0 && X(k) > 12 && X(k) < W - 12) txt(g, X(k), Y(0) + 15, k < 0 ? '−' + (-k) : String(k), cls || 'tl', { 'text-anchor': 'middle' });
+    for (let k = ya; k <= yb; k++) if (k && k % step === 0 && Y(k) > 10 && Y(k) < H - 6) txt(g, X(0) - 6, Y(k) + 4, k < 0 ? '−' + (-k) : String(k), cls || 'tl', { 'text-anchor': 'end' });
+  };
+  return P;
+}
+function arrow(P, p, q, col, o){
+  o = o || {};
+  const x1 = P.X(p[0]), y1 = P.Y(p[1]), x2 = P.X(q[0]), y2 = P.Y(q[1]), L = Math.hypot(x2 - x1, y2 - y1), w = o.w || 3, op = o.op === undefined ? 1 : o.op;
+  const st = `stroke:${col};stroke-width:${w};opacity:${op}${o.dash ? ';stroke-dasharray:' + o.dash : ''}`;
+  if (L < 2){ mk('circle', { cx: x1, cy: y1, r: 5, style: `fill:${col};opacity:${op}` }, P.g); return; }
+  const ux = (x2 - x1) / L, uy = (y2 - y1) / L, h = Math.min(11 + w, L * 0.45);
+  mk('line', { x1, y1, x2: x2 - ux * h * 0.8, y2: y2 - uy * h * 0.8, style: st + ';stroke-linecap:round' }, P.g);
+  mk('polygon', { points: `${x2},${y2} ${x2 - ux * h - uy * h * .45},${y2 - uy * h + ux * h * .45} ${x2 - ux * h + uy * h * .45},${y2 - uy * h - ux * h * .45}`, style: `fill:${col};opacity:${op}` }, P.g);
+}
+// A label beside the middle of an arrow from the origin, on the side away from the other arrow (pref breaks ties when they're parallel)
+function armLabel(P, q, other, str, col, pref){
+  const sx = P.X(q[0]) - P.X(0), sy = P.Y(q[1]) - P.Y(0), L = Math.hypot(sx, sy);
+  if (L < 4){ txt(P.g, P.X(0) + 12 * (pref || 1), P.Y(0) + 20, str, 'lab', { 'text-anchor': 'middle', style: `fill:${col}` }); return; }
+  let nx = -sy / L, ny = sx / L;                               // a screen-space perpendicular
+  const ox = P.X(other[0]) - P.X(0), oy = P.Y(other[1]) - P.Y(0), side = nx * ox + ny * oy;
+  if (Math.abs(side) < 1e-6 * (Math.hypot(ox, oy) + 1)){ if ((pref || 1) < 0){ nx = -nx; ny = -ny; } }
+  else if (side > 0){ nx = -nx; ny = -ny; }
+  txt(P.g, P.X(0) + sx * .5 + nx * 15, P.Y(0) + sy * .5 + ny * 15 + 5, str, 'lab', { 'text-anchor': 'middle', style: `fill:${col}` });
+}
+// î and ĵ after the move M, with their labels
+function arms(P, M, w){
+  const i2 = [M[0], M[2]], j2 = [M[1], M[3]];
+  arrow(P, [0, 0], i2, C.i, { w: w || 3.5 }); arrow(P, [0, 0], j2, C.j, { w: w || 3.5 });
+  armLabel(P, i2, j2, 'î', C.i, 1); armLabel(P, j2, i2, 'ĵ', C.j, -1);
+}
+// The moved grid: the images of the lines x = k and y = k under M (purple; the image of each axis darker)
+function movedGrid(P, M, R){
+  R = R || 16; const g = mk('g', {}, P.g);
+  for (let k = -R; k <= R; k++){
+    const st = k ? 'stroke:var(--cs);stroke-width:1.1;opacity:.85' : 'stroke:var(--cp);stroke-width:2;opacity:.75';
+    [[[k, -R], [k, R]], [[-R, k], [R, k]]].forEach(([p, q]) => { const a = ap(M, p), b = ap(M, q); mk('line', { x1: P.X(a[0]), y1: P.Y(a[1]), x2: P.X(b[0]), y2: P.Y(b[1]), style: st }, g); });
+  }
+}
+function poly(P, pts, M, style){ return mk('polygon', { points: pts.map(p => { const q = M ? ap(M, p) : p; return P.X(q[0]).toFixed(1) + ',' + P.Y(q[1]).toFixed(1); }).join(' '), style }, P.g); }
+// The F marker (asymmetric, so flips and turns can't hide) and the unit square
+const FP = [[.3, .3], [.7, .3], [.7, 1.1], [1.3, 1.1], [1.3, 1.5], [.7, 1.5], [.7, 1.9], [1.7, 1.9], [1.7, 2.3], [.3, 2.3]];
+const US = [[0, 0], [1, 0], [1, 1], [0, 1]];
+function drawSquareAndF(P, M){
+  poly(P, US, M, 'fill:var(--cs);opacity:.45;stroke:var(--cp);stroke-width:1.2');
+  poly(P, FP, M, 'fill:var(--cp);opacity:.85;stroke:var(--cp);stroke-width:1.5;stroke-linejoin:round');
+}
+// The dashed outline of "home": where the F and the square started
+function home(P){
+  poly(P, US, null, 'fill:none;stroke:var(--ink);stroke-width:1.4;stroke-dasharray:4 3;opacity:.55');
+  poly(P, FP, null, 'fill:none;stroke:var(--ink);stroke-width:1.6;stroke-dasharray:4 3;opacity:.7');
+}
+const origin = P => mk('circle', { cx: P.X(0), cy: P.Y(0), r: 4.5, style: 'fill:var(--ink)' }, P.g);
+// A blue point with a label up and to the right (or wherever the caller says)
+function dot(P, q, lab, o){
+  o = o || {};
+  mk('circle', { cx: P.X(q[0]), cy: P.Y(q[1]), r: o.r || 6.5, style: o.hollow ? 'fill:var(--paper);stroke:var(--cr);stroke-width:2.5' : 'fill:var(--cr);stroke:var(--paper);stroke-width:2' }, P.g);
+  if (lab) txt(P.g, P.X(q[0]) + (o.dx === undefined ? 10 : o.dx), P.Y(q[1]) + (o.dy === undefined ? -9 : o.dy), lab, 'labS', { 'text-anchor': o.anchor || 'start', style: 'fill:var(--cr)' });
+}
+// A one-line verdict badge in a panel corner
+function badge(P, ok, s){ txt(P.g, P.W - 12, 26, s, 'big', { 'text-anchor': 'end', style: `fill:${ok ? 'var(--good)' : 'var(--wrong)'}` }); }
+
+function svgPt(svg, P, ev){ const pt = svg.createSVGPoint(); pt.x = ev.clientX; pt.y = ev.clientY; const q = pt.matrixTransform(svg.getScreenCTM().inverse()); return P.inv(q.x, q.y); }
+const unk = (...names) => `<span class="mshow v">${names.map(n => `<span><i>${n}</i></span>`).join('')}</span>`;   // a column of unknowns
+
+/* =====================================================================
+   3. PAGE TOOLS: equations, lines, the two pictures
+   ===================================================================== */
+const ct = A => [[A[0], A[2]], [A[1], A[3]]];                // the two columns of A
+const vcol = (v, cls) => `<span class="mshow v ${cls || ''}">${v.map(x => `<span>${fr(x)}</span>`).join('')}</span>`;
+// One term of an equation, like "+ 3y" or "− y"; the first term has no leading "+"
+function term(k, v, first){
+  if (Math.abs(k) < 1e-12) return '';
+  const m = Math.abs(k), mm = Math.abs(m - 1) < 1e-12 ? '' : fr(m);
+  return first ? (k < 0 ? '−' : '') + mm + v : ` ${k < 0 ? '−' : '+'} ${mm}${v}`;
+}
+function eqStr(a, b, c, vx, vy){ vx = vx || '<i>x</i>'; vy = vy || '<i>y</i>'; let L = term(a, vx, true); L += term(b, vy, L === ''); return `${L || '0'} = ${fr(c)}`; }
+const eqPlain = (a, b, c, vx, vy) => eqStr(a, b, c, vx || 'x', vy || 'y').replace(/<[^>]+>/g, '');
+const sysHTML = (A, b, vx, vy) => `<span class="sys"><span class="k1">${eqStr(A[0], A[1], b[0], vx, vy)}</span><br><span class="k2">${eqStr(A[2], A[3], b[1], vx, vy)}</span></span>`;
+// The part of the line a·x + b·y = c inside the box, as two end points (or null)
+function clipLine(a, b, c, box){
+  const pts = [];
+  if (Math.abs(b) > 1e-12) [box.x0, box.x1].forEach(x => { const y = (c - a * x) / b; if (y >= box.y0 - 1e-9 && y <= box.y1 + 1e-9) pts.push([x, y]); });
+  if (Math.abs(a) > 1e-12) [box.y0, box.y1].forEach(y => { const x = (c - b * y) / a; if (x >= box.x0 - 1e-9 && x <= box.x1 + 1e-9) pts.push([x, y]); });
+  if (pts.length < 2) return null;
+  let best = [pts[0], pts[1]], bd = -1;
+  for (let i = 0; i < pts.length; i++) for (let j = i + 1; j < pts.length; j++){ const d = Math.hypot(pts[i][0] - pts[j][0], pts[i][1] - pts[j][1]); if (d > bd){ bd = d; best = [pts[i], pts[j]]; } }
+  return best;
+}
+// Visible box of a plane, in math units
+const vis = P => { const [x0, y1] = P.inv(0, 0), [x1, y0] = P.inv(P.W, P.H); return { x0, x1, y0, y1 }; };
+// Draw a line with a label at a fraction f along its visible part
+function drawLine(P, a, b, c, col, lab, f, o){
+  o = o || {};
+  const seg = clipLine(a, b, c, vis(P)); if (!seg) return;
+  const [p, q] = seg;
+  mk('line', { x1: P.X(p[0]), y1: P.Y(p[1]), x2: P.X(q[0]), y2: P.Y(q[1]), style: `stroke:${col};stroke-width:${o.w || 3};${o.dash ? 'stroke-dasharray:' + o.dash : ''};opacity:${o.op || 1}` }, P.g);
+  if (lab){
+    // order the ends left to right, then put the label at fraction f, nudged off the line
+    const [L, R] = P.X(p[0]) <= P.X(q[0]) ? [p, q] : [q, p];
+    const x = P.X(L[0]) + (P.X(R[0]) - P.X(L[0])) * f, y = P.Y(L[1]) + (P.Y(R[1]) - P.Y(L[1])) * f;
+    const dx = P.X(R[0]) - P.X(L[0]), dy = P.Y(R[1]) - P.Y(L[1]), Ln = Math.hypot(dx, dy) || 1;
+    const s = o.side || -1, nx = -dy / Ln * s, ny = dx / Ln * s;
+    // anchor the text on the far side of its offset, so a long horizontal label never lies across the line
+    const anc = nx > .3 ? 'start' : nx < -.3 ? 'end' : 'middle', w = lab.length * 7.6;
+    let tx = x + nx * 12, ty = y + ny * 14 + 4 + (anc === 'middle' ? ny * 4 : 0);
+    tx = anc === 'start' ? Math.min(tx, P.W - 6 - w) : anc === 'end' ? Math.max(tx, 6 + w) : Math.max(6 + w / 2, Math.min(P.W - 6 - w / 2, tx));
+    ty = Math.max(16, Math.min(P.H - 30, ty));
+    txt(P.g, tx, ty, lab, 'labS', { 'text-anchor': anc, style: `fill:${col}` });
+  }
+}
+// Is b reachable when det A = 0? (b lies on the line through a nonzero column)
+function onColLine(A, b){
+  const [c1, c2] = ct(A), c = Math.hypot(...c1) > 1e-12 ? c1 : c2;
+  return Math.abs(c[0] * b[1] - c[1] * b[0]) < 1e-9;
+}
+// How many solutions, and one solution if there is one
+function solveSys(A, b){
+  const D = det(A);
+  if (Math.abs(D) > 1e-12) return { kind: 'one', x: ap(inv(A), b) };
+  if (!onColLine(A, b)) return { kind: 'none' };
+  const [c1, c2] = ct(A), u = Math.hypot(...c1) > 1e-12 ? 0 : 1, c = u ? c2 : c1, k = (b[0] * c[0] + b[1] * c[1]) / (c[0] * c[0] + c[1] * c[1]);
+  return { kind: 'many', x: u ? [0, k] : [k, 0] };
+}
+// The row picture: one line per equation, the solution where they cross
+function rowPic(svg, W, H, A, b, box, o){
+  o = o || {};
+  const P = plane(svg, W, H, box, o.maxU || 40);
+  const sol = solveSys(A, b);
+  if (sol.kind === 'many'){
+    drawLine(P, A[0], A[1], b[0], 'var(--r1)', '', 0, { w: 6, op: .5 });
+    drawLine(P, A[2], A[3], b[1], 'var(--r2)', '', 0, { w: 3, dash: '10 8' });
+  } else {
+    drawLine(P, A[0], A[1], b[0], 'var(--r1)', o.noLab ? '' : eqPlain(A[0], A[1], b[0], o.vx, o.vy), o.f1 || .82, { side: -1 });
+    drawLine(P, A[2], A[3], b[1], 'var(--r2)', o.noLab ? '' : eqPlain(A[2], A[3], b[1], o.vx, o.vy), o.f2 || .18, { side: 1 });
+  }
+  P.ticks(o.tcls);
+  if (sol.kind === 'one'){
+    const s = sol.x, v = vis(P);
+    if (s[0] > v.x0 && s[0] < v.x1 && s[1] > v.y0 && s[1] < v.y1){
+      mk('circle', { cx: P.X(s[0]), cy: P.Y(s[1]), r: 7.5, style: 'fill:var(--cp);stroke:var(--paper);stroke-width:2.5' }, P.g);
+      const right = P.X(s[0]) < W - 150;
+      txt(P.g, P.X(s[0]) + (right ? 12 : -12), P.Y(s[1]) + 22, `(${fr(s[0])}, ${fr(s[1])})`, 'labS', { 'text-anchor': right ? 'start' : 'end', style: 'fill:var(--cp)' });
+    } else txt(P.g, W / 2, H - 14, `they cross at (${fr(s[0])}, ${fr(s[1])}), off the picture`, 'note', { 'text-anchor': 'middle', style: 'fill:var(--cp)' });
+  } else if (sol.kind === 'none') txt(P.g, W / 2, H - 14, 'parallel: the lines never meet', 'note', { 'text-anchor': 'middle', style: 'fill:var(--wrong)' });
+  else txt(P.g, W / 2, H - 14, 'the same line: every point on it works', 'note', { 'text-anchor': 'middle', style: 'fill:var(--good)' });
+  origin(P);
+  return { P, sol };
+}
+// The column picture: the columns, their moved grid, the target b, and the path x·col 1 then y·col 2
+function colPic(svg, W, H, A, b, box, o){
+  o = o || {};
+  const P = plane(svg, W, H, box, o.maxU || 40, { dashed: true });
+  const sol = solveSys(A, b), [c1, c2] = ct(A);
+  if (sol.kind === 'one') movedGrid(P, A, o.R || 16);
+  else { const c = Math.hypot(...c1) > 1e-12 ? c1 : c2; drawLine(P, -c[1], c[0], 0, 'var(--cs)', '', 0, { w: 6, op: .7 }); }
+  P.ticks(o.tcls);
+  arrow(P, [0, 0], c1, C.i, { w: 4 }); arrow(P, [0, 0], c2, C.j, { w: 4 });
+  armLabel(P, c1, c2, o.l1 || 'col 1', C.i, 1); armLabel(P, c2, c1, o.l2 || 'col 2', C.j, -1);
+  if (sol.kind !== 'none' && (o.path !== false)){
+    const s = sol.x, m = [s[0] * c1[0], s[0] * c1[1]];
+    if (Math.abs(s[0]) > 1e-9) arrow(P, [0, 0], m, C.i, { w: 3, dash: '7 5', op: .9 });
+    if (Math.abs(s[1]) > 1e-9) arrow(P, m, b, C.j, { w: 3, dash: '7 5', op: .9 });
+  }
+  mk('circle', { cx: P.X(b[0]), cy: P.Y(b[1]), r: 8, style: 'fill:var(--ct);stroke:var(--paper);stroke-width:2.5' }, P.g);
+  const right = P.X(b[0]) < W - 120;
+  txt(P.g, P.X(b[0]) + (right ? 12 : -12), P.Y(b[1]) + 24, o.bl || `b = (${fr(b[0])}, ${fr(b[1])})`, 'labS', { 'text-anchor': right ? 'start' : 'end', style: 'fill:var(--ct)' });
+  if (sol.kind === 'none') txt(P.g, W / 2, H - 14, 'b is off the columns’ line: out of reach', 'note', { 'text-anchor': 'middle', style: 'fill:var(--wrong)' });
+  else if (sol.kind === 'many') txt(P.g, W / 2, H - 14, 'b is on the columns’ line: many mixes reach it', 'note', { 'text-anchor': 'middle', style: 'fill:var(--good)' });
+  origin(P);
+  return { P, sol };
+}
+
+/* =====================================================================
+   4. ROW PICTURE AND COLUMN PICTURE (main explorer)
+   ===================================================================== */
+const XP = [
+  { n: 'One crossing', A: [2, 1, 1, -1], b: [5, 1], d: 'The system from §1: the lines cross at (2, 1), and 2 of column 1 plus 1 of column 2 reach b.' },
+  { n: 'Another', A: [1, 2, 3, -1], b: [-1, 4], d: 'The lines cross at (1, −1): 1 of column 1, then −1 of column 2 (backwards along it).' },
+  { n: 'Fractions', A: [3, 1, 1, 2], b: [4, 5], d: 'det = 5, so the answer comes in fifths: (0.6, 2.2). b sits between the grid crossings.' },
+  { n: 'Nearly parallel', A: [1, 2, 1, 2.2], b: [2, 2.2], d: 'det = 0.2. Drag b a tiny bit and watch the crossing point jump: nearly parallel lines make a touchy system.' },
+  { n: 'Parallel', A: [1, 2, 2, 4], b: [2, 3], d: 'det = 0 and b is off the columns’ line: 2x + 4y = 3 is the line x + 2y = 1.5, parallel to x + 2y = 2. They never meet. No solution.' },
+  { n: 'Same line', A: [1, 2, 2, 4], b: [2, 4], d: 'det = 0 and b is on the columns’ line: the second equation is just the first one doubled. Infinitely many solutions.' },
+];
+const XIDS = ['xa', 'xb', 'xc', 'xd', 'xe', 'xf'];
+const mx = { A: [2, 1, 1, -1], b: [5, 1], drag: false };
+const XBX = { x0: -5, x1: 5, y0: -4, y1: 4.5 };
+XP.forEach(p => { const b = document.createElement('button'); b.className = 'preset'; b.textContent = p.n; b.onclick = () => { mx.A = p.A.slice(); mx.b = p.b.slice(); fillX(); drawX(); }; $('xPresets').appendChild(b); });
+function fillX(){ mx.A.concat(mx.b).forEach((v, k) => { $(XIDS[k]).value = num(v, 3); }); }
+function drawX(){
+  const A = mx.A, b = mx.b, i = XP.findIndex(p => same(p.A, A) && same(p.b, b));
+  [...$('xPresets').children].forEach((el, j) => el.classList.toggle('on', j === i));
+  $('xDesc').textContent = i < 0 ? 'Your own system.' : XP[i].d;
+  $('xSys').innerHTML = sysHTML(A, b);
+  const s0 = solveSys(A, b), pts = [b].concat(s0.kind === 'one' ? [s0.x] : []);   // grow the view to keep b and the crossing in sight
+  const bx = { x0: Math.min(XBX.x0, ...pts.map(q => q[0] - 1)), x1: Math.max(XBX.x1, ...pts.map(q => q[0] + 1)), y0: Math.min(XBX.y0, ...pts.map(q => q[1] - 1)), y1: Math.max(XBX.y1, ...pts.map(q => q[1] + 1)) };
+  const { sol } = rowPic($('xR'), 480, 420, A, b, bx);
+  txt($('xR').firstChild, 12, 22, 'Row picture', 'pl');
+  const r = colPic($('xC'), 480, 420, A, b, bx); mx.P = r.P;
+  txt($('xC').firstChild, 12, 22, 'Column picture', 'pl');
+  const D = det(A), [c1, c2] = ct(A);
+  let h = `<span class="lbl">Matrix form</span>${ms(A)}${unk('x', 'y')} = ${vcol(b, 't')} &nbsp; augmented: <span class="mshow aug"><span>${fr(A[0])}</span><span>${fr(A[1])}</span><span class="ct">${fr(b[0])}</span><span>${fr(A[2])}</span><span>${fr(A[3])}</span><span class="ct">${fr(b[1])}</span></span><br>`;
+  h += `<span class="lbl">Column form</span><i>x</i>·${vcol(c1)} + <i>y</i>·${vcol(c2)} = ${vcol(b, 't')}<br>`;
+  h += `<span class="lbl">Determinant</span>det A = ${fr(A[0])}·${pn(A[3])} − ${pn(A[1])}·${pn(A[2])} = <b>${fr(D)}</b><br>`;
+  if (sol.kind === 'one'){
+    const s = sol.x;
+    h += `<span class="lbl">Solution</span><b>x</b> = A⁻¹<b>b</b> = ${ms(inv(A), 'u')}${vcol(b, 't')} = <b class="kp">(${fr(s[0])}, ${fr(s[1])})</b><br>`;
+    h += `<span class="lbl">Check</span>${fr(s[0])}·${vstr(c1)} + ${pn(s[1])}·${vstr(c2)} = ${vstr(ap(A, s))} ✓`;
+  } else if (sol.kind === 'none') h += `<span class="lbl">Solution</span><b style="color:var(--wrong)">none</b>: det = 0 and b is not on the line of the columns`;
+  else { const s = sol.x, k = ct(A); h += `<span class="lbl">Solutions</span><b style="color:var(--good)">infinitely many</b>, for example <b class="kp">(${fr(s[0])}, ${fr(s[1])})</b>; every point on the line works`; }
+  $('xEqs').innerHTML = h;
+  $('xOut').innerHTML = sol.kind === 'one' ? `<b>det ≠ 0: exactly one solution.</b> Row picture: the lines cross at (${fr(sol.x[0])}, ${fr(sol.x[1])}). Column picture: ${fr(sol.x[0])} of column 1 plus ${fr(sol.x[1])} of column 2 land on b.`
+    : sol.kind === 'none' ? '<b>det = 0 and b out of reach: no solution.</b> The lines are parallel, and the columns can’t leave their line.'
+    : '<b>det = 0 and b on the line: infinitely many solutions.</b> Both equations describe the same line.';
+}
+XIDS.forEach(id => $(id).addEventListener('input', () => {
+  const r = readAll(XIDS, 'xErr'); if (!r) return;
+  if (r.slice(0, 4).some(v => Math.abs(v) > 4) || r.slice(4).some(v => Math.abs(v) > 12)){ $('xErr').textContent = 'Keep the entries of A between −4 and 4, and b between −12 and 12.'; return; }
+  if ((r[0] === 0 && r[1] === 0) || (r[2] === 0 && r[3] === 0)){ $('xErr').textContent = 'Each equation needs at least one nonzero number in front of x or y.'; return; }
+  mx.A = r.slice(0, 4); mx.b = r.slice(4); drawX();
+}));
+selectOnFocus(XIDS);
+$('xC').addEventListener('pointerdown', ev => {
+  const q = svgPt($('xC'), mx.P, ev); if (Math.hypot(q[0] - mx.b[0], q[1] - mx.b[1]) > 1) return;
+  mx.drag = true; $('xC').setPointerCapture(ev.pointerId);
+});
+$('xC').addEventListener('pointermove', ev => {
+  if (!mx.drag) return;
+  const q = svgPt($('xC'), mx.P, ev), st = Math.abs(det(mx.A)) < .5 ? 10 : 2;   // finer steps for touchy systems
+  mx.b = [Math.max(-4.8, Math.min(4.8, Math.round(q[0] * st) / st)), Math.max(-3.8, Math.min(4.3, Math.round(q[1] * st) / st))];
+  fillX(); $('xErr').textContent = ''; drawX();
+});
+$('xC').addEventListener('pointerup', () => { mx.drag = false; });
+
+/* =====================================================================
+   5. CRAMER'S RULE AS A SLIDE
+   ===================================================================== */
+const CPR = [{ n: 'Whole numbers', A: [2, 1, 1, 3], b: [5, 5] }, { n: 'A fraction', A: [3, 1, 1, 2], b: [4, 5] }, { n: 'A negative', A: [2, 1, 1, 2], b: [1, 2] }];
+const CIDS = ['ca', 'cb', 'cc', 'cd', 'ce', 'cf'];
+const cr = { t: 1, raf: 0, playing: false };
+CPR.forEach(p => { const b = document.createElement('button'); b.className = 'preset'; b.textContent = p.n; b.onclick = () => { p.A.concat(p.b).forEach((v, k) => { $(CIDS[k]).value = num(v); }); playC(); }; $('cPresets').appendChild(b); });
+CPR[0].A.concat(CPR[0].b).forEach((v, k) => { $(CIDS[k]).value = v; });
+const pg = (P, a, b, style) => poly(P, [[0, 0], a, [a[0] + b[0], a[1] + b[1]], b], null, style);
+function cpanel(svg, A, b, which){
+  const [c1, c2] = ct(A), x = ap(inv(A), b), e = ease(cr.t);
+  const keep = which ? c1 : c2, k = which ? x[1] : x[0], base = which ? c2 : c1;   // the column that stays, the unknown, the column b ends up on
+  const other = which ? x[0] : x[1];
+  const p = [b[0] - e * other * keep[0], b[1] - e * other * keep[1]];                // b slides along the kept column
+  const pts = [[0, 0], c1, c2, b, p, [c1[0] + c2[0], c1[1] + c2[1]], [b[0] + keep[0], b[1] + keep[1]], [k * base[0], k * base[1]]];
+  const xs = pts.map(q => q[0]), ys = pts.map(q => q[1]);
+  const P = plane(svg, 480, 400, { x0: Math.min(...xs) - .3, x1: Math.max(...xs) + .3, y0: Math.min(...ys) - .3, y1: Math.max(...ys) + .3 }, 44, { dashed: true });
+  // k copies of A's parallelogram along the base column (the target of the slide)
+  if (cr.t >= 1) pg(P, [k * base[0], k * base[1]], keep, 'fill:var(--cp);opacity:.12;stroke:var(--cp);stroke-width:1;stroke-dasharray:4 3');
+  pg(P, which ? keep : base, which ? base : keep, 'fill:var(--cp);opacity:.35;stroke:var(--cp);stroke-width:1.5');
+  pg(P, p, keep, 'fill:var(--ct);opacity:.28;stroke:var(--ct);stroke-width:2');
+  P.ticks();
+  arrow(P, [0, 0], c1, C.i, { w: 3.5 }); arrow(P, [0, 0], c2, C.j, { w: 3.5 });
+  armLabel(P, c1, c2, 'col 1', C.i, 1); armLabel(P, c2, c1, 'col 2', C.j, -1);
+  arrow(P, [0, 0], p, 'var(--ct)', { w: 3 });
+  if (cr.t < 1 || Math.abs(other) > 1e-9) mk('circle', { cx: P.X(b[0]), cy: P.Y(b[1]), r: 5, style: 'fill:none;stroke:var(--ct);stroke-width:2;stroke-dasharray:3 2' }, P.g);
+  txt(P.g, P.X(b[0]) + 8, P.Y(b[1]) - 8, 'b', 'labS', { style: 'fill:var(--ct)' });
+  origin(P);
+  const DA = det(A), Dk = which ? det([c1[0], b[0], c1[1], b[1]]) : det([b[0], c2[0], b[1], c2[1]]);
+  txt(P.g, 12, 22, which ? 'Finding y' : 'Finding x', 'pl');
+  txt(P.g, 12, 42, `brown area ${fr(Dk)}, purple area ${fr(DA)}`, 'note');
+  return { DA, Dk, k };
+}
+function drawC(){
+  const r = readAll(CIDS, 'cErr'); if (!r) return false;
+  [...$('cPresets').children].forEach((el, j) => el.classList.toggle('on', same(CPR[j].A.concat(CPR[j].b), r)));
+  const A = r.slice(0, 4), b = r.slice(4);
+  if (r.some(v => Math.abs(v) > 6)){ $('cErr').textContent = 'Keep every entry between −6 and 6.'; return false; }
+  if (Math.abs(det(A)) < 1e-12){ $('cErr').textContent = 'det A = 0, so Cramer’s rule would divide by 0: there is no single answer to find.'; return false; }
+  const X = cpanel($('cX'), A, b, 0), Y = cpanel($('cY'), A, b, 1);
+  $('cEqs').innerHTML =
+    `<span class="lbl">For x</span>replace col 1 by b: det${ms([b[0], A[1], b[1], A[3]])} = ${fr(X.Dk)}, &nbsp; <i>x</i> = ${fr(X.Dk)} / ${pn(X.DA)} = <b class="kp">${fr(X.k)}</b><br>` +
+    `<span class="lbl">For y</span>replace col 2 by b: det${ms([A[0], b[0], A[2], b[1]])} = ${fr(Y.Dk)}, &nbsp; <i>y</i> = ${fr(Y.Dk)} / ${pn(Y.DA)} = <b class="kp">${fr(Y.k)}</b><br>` +
+    `<span class="lbl">Why</span>sliding b along the other column is a shear, so the brown area never changes; it ends as ${fr(X.k)} and ${fr(Y.k)} copies of the purple one`;
+  return true;
+}
+function playC(){
+  cancelAnimationFrame(cr.raf); cr.t = 0; if (!drawC()) return;
+  let last = performance.now();
+  const step = now => { cr.t = Math.min(1, cr.t + (now - last) / 2400); last = now; drawC(); if (cr.t < 1) cr.raf = requestAnimationFrame(step); };
+  cr.raf = requestAnimationFrame(step);
+}
+$('cPlay').onclick = playC;
+CIDS.forEach(id => $(id).addEventListener('input', () => { cancelAnimationFrame(cr.raf); cr.t = 1; drawC(); })); selectOnFocus(CIDS);
+
+/* =====================================================================
+   6. TICKETS (set up from a story)
+   ===================================================================== */
+const TP = [{ n: 'Friday', v: [8, 5, 120, 810] }, { n: 'Saturday', v: [10, 6, 150, 1260] }, { n: 'Sunday matinee', v: [7, 4, 90, 495] }, { n: 'Typo in the books', v: [8, 5, 120, 800] }];
+const TIDS = ['tPa', 'tPc', 'tN', 'tM'];
+TP[0].v.forEach((v, k) => { $(TIDS[k]).value = v; });
+TP.forEach(p => { const b = document.createElement('button'); b.className = 'preset'; b.textContent = p.n; b.onclick = () => { p.v.forEach((v, k) => { $(TIDS[k]).value = v; }); drawT(); }; $('tPresets').appendChild(b); });
+function drawT(){
+  const r = readAll(TIDS, 'tErr'); if (!r) return;
+  [...$('tPresets').children].forEach((el, j) => el.classList.toggle('on', same(TP[j].v, r)));
+  const [pa, pc, N, M] = r;
+  if (pa <= 0 || pc <= 0 || N <= 0 || M <= 0 || N > 400 || M > 5000){ $('tErr').textContent = 'Use positive prices, up to 400 tickets and up to $5000.'; return; }
+  const A = [1, 1, pa, pc], b = [N, M], D = det(A);
+  const top = Math.max(N, M / Math.min(pa, pc)) * 1.08;
+  rowPic($('tSvg'), 520, 440, A, b, { x0: 0, x1: top, y0: 0, y1: top }, { vx: 'a', vy: 'c', tcls: 'tlb', f1: .25, f2: .7 });
+  const g = $('tSvg').firstChild;
+  txt(g, 510, 418, 'adult tickets a →', 'cap', { 'text-anchor': 'end' }); txt(g, 60, 16, '↑ child tickets c', 'cap');
+  let h = `<span class="lbl">The story as equations</span>${sysHTML(A, b, '<i>a</i>', '<i>c</i>')}` +
+    `<span class="lbl">Matrix form</span>${ms(A)}${unk('a', 'c')} = ${vcol(b, 't')}` +
+    `<span class="lbl">Determinant</span>1·${pn(pc)} − 1·${pn(pa)} = ${fr(D)}`;
+  if (Math.abs(D) < 1e-12){ $('tEqs').innerHTML = h + '<span class="lbl">Verdict</span><b style="color:var(--wrong)">det = 0: both tickets cost the same, so the money can’t tell them apart.</b>'; return; }
+  const x = ap(inv(A), b), whole = x.every(v => Math.abs(v - Math.round(v)) < 1e-9), neg = x.some(v => v < -1e-9);
+  h += `<span class="lbl">Cramer’s rule</span><i>a</i> = (${fr(N)}·${pn(pc)} − 1·${pn(M)}) / ${pn(D)} = ${fr(x[0])}, &nbsp; <i>c</i> = (1·${pn(M)} − ${fr(N)}·${pn(pa)}) / ${pn(D)} = ${fr(x[1])}`;
+  h += '<span class="lbl">Verdict</span>' + (neg ? '<b style="color:var(--wrong)">A negative number of tickets: these totals are impossible with these prices.</b>'
+    : whole ? `<b>${fr(x[0])} adult and ${fr(x[1])} child tickets.</b> Check: ${fr(x[0])} + ${fr(x[1])} = ${fr(N)} tickets, $${fr(pa)}·${fr(x[0])} + $${fr(pc)}·${fr(x[1])} = $${fr(M)} ✓`
+    : `<b style="color:var(--wrong)">Not whole tickets (${fr(x[0])} and ${fr(x[1])}).</b> The algebra is fine, but nobody sells part of a ticket, so one of the totals was written down wrong.`);
+  $('tEqs').innerHTML = h;
+}
+TIDS.forEach(id => $(id).addEventListener('input', drawT)); selectOnFocus(TIDS);
+
+/* =====================================================================
+   7. MIXING PAINT (a column picture)
+   ===================================================================== */
+const PA = [3, 1, 1, 3];                                        // columns: Sunset [3 red, 1 yellow], Daffodil [1 red, 3 yellow]
+const PP = [{ n: 'Orange', v: [10, 14] }, { n: 'Deep orange', v: [11, 5] }, { n: 'Soft yellow', v: [6, 10] }, { n: 'Pure red?', v: [9, 0] }, { n: 'Halves', v: [8, 6] }];
+$('pR').value = 10; $('pY').value = 14;
+PP.forEach(p => { const b = document.createElement('button'); b.className = 'preset'; b.textContent = p.n; b.onclick = () => { $('pR').value = p.v[0]; $('pY').value = p.v[1]; drawP(); }; $('pPresets').appendChild(b); });
+// Mix red and yellow paint in proportion, as a color for the swatches
+function mixCol(r, y){
+  const t = r + y > 0 ? r / (r + y) : .5, R = [216, 68, 58], Y = [245, 197, 24];
+  return `rgb(${R.map((v, k) => Math.round(t * v + (1 - t) * Y[k])).join(',')})`;
+}
+function drawP(){
+  const r = readAll(['pR', 'pY'], 'pErr'); if (!r) return;
+  [...$('pPresets').children].forEach((el, j) => el.classList.toggle('on', same(PP[j].v, r)));
+  if (r.some(v => v < 0 || v > 16)){ $('pErr').textContent = 'Use amounts from 0 to 16 parts.'; return; }
+  colPic($('pSvg'), 520, 440, PA, r, { x0: -.5, x1: 16.5, y0: -.5, y1: 16.5 }, { l1: 'Sunset', l2: 'Daffodil', tcls: 'tlb', R: 20, bl: 'target' });
+  const g = $('pSvg').firstChild;
+  txt(g, 510, 418, 'red parts →', 'cap', { 'text-anchor': 'end' }); txt(g, 50, 16, '↑ yellow parts', 'cap');
+  const x = ap(inv(PA), r), neg = x.some(v => v < -1e-9);
+  $('pEqs').innerHTML =
+    `<span class="lbl">The cans are columns</span><span class="swatch" style="background:${mixCol(3, 1)}"></span>Sunset ${vcol([3, 1])} &nbsp; <span class="swatch" style="background:${mixCol(1, 3)}"></span>Daffodil ${vcol([1, 3])}` +
+    `<span class="lbl">The target b</span><span class="swatch" style="background:${mixCol(r[0], r[1])}"></span>${vcol(r, 't')} &nbsp; (red, yellow)` +
+    `<span class="lbl">The equation</span><i>s</i>·${vcol([3, 1])} + <i>d</i>·${vcol([1, 3])} = ${vcol(r, 't')}` +
+    `<span class="lbl">Solve</span>det = 3·3 − 1·1 = 8, &nbsp; (<i>s</i>, <i>d</i>) = A⁻¹<b>b</b> = ${ms(inv(PA), 'u')}${vcol(r, 't')} = <b class="kp">(${fr(x[0])}, ${fr(x[1])})</b>` +
+    '<span class="lbl">Verdict</span>' + (neg ? `<b style="color:var(--wrong)">Impossible with these two mixes</b>: it would take ${fr(Math.min(...x))} cans of one of them. Mixing can’t take paint out; this color lies outside the wedge between the two columns.`
+      : `<b>Pour ${fr(x[0])} can${x[0] === 1 ? '' : 's'} of Sunset and ${fr(x[1])} can${x[1] === 1 ? '' : 's'} of Daffodil.</b>`);
+}
+['pR', 'pY'].forEach(id => $(id).addEventListener('input', drawP)); selectOnFocus(['pR', 'pY']);
+
+/* =====================================================================
+   8. TRAFFIC (a 3×3 system with det = 0)
+   ===================================================================== */
+// Junction P: 500 cars/h come in from outside; streets P→Q (x₁), Q→R (x₂), P→R (x₃ = t); 200 leave at Q, 300 leave at R
+const FPR = [0, 100, 250, 300, 350];
+$('fT').value = 100;
+FPR.forEach(v => { const b = document.createElement('button'); b.className = 'preset'; b.textContent = `t = ${v}`; b.onclick = () => { $('fT').value = v; drawF(); }; $('fPresets').appendChild(b); });
+function drawF(){
+  const r = readAll(['fT'], 'fErr'); if (!r) return;
+  const t = r[0]; [...$('fPresets').children].forEach((el, j) => el.classList.toggle('on', FPR[j] === t));
+  if (Math.abs(t) > 1000){ $('fErr').textContent = 'Keep t between −1000 and 1000.'; return; }
+  const x1 = 500 - t, x2 = 300 - t, x3 = t, ok = [x1, x2, x3].every(v => v >= 0);
+  const svg = $('fSvg'); svg.innerHTML = ''; const g = mk('g', {}, svg);
+  const J = { P: [260, 95], Q: [110, 330], R: [410, 330] }, G = [260, 252];   // junctions and the triangle's middle
+  const street = (a, b, f, name) => {                         // a street from a to b with its flow f
+    const [x0, y0] = J[a], [x1_, y1_] = J[b], L = Math.hypot(x1_ - x0, y1_ - y0), ux = (x1_ - x0) / L, uy = (y1_ - y0) / L;
+    const col = f < 0 ? 'var(--wrong)' : 'var(--cp)', w = 3 + Math.min(14, Math.abs(f) / 40);
+    mk('line', { x1: x0 + ux * 26, y1: y0 + uy * 26, x2: x1_ - ux * 40, y2: y1_ - uy * 40, style: `stroke:${col};stroke-width:${w};stroke-linecap:round;opacity:.8` }, g);
+    const hx = x1_ - ux * 28, hy = y1_ - uy * 28;
+    mk('polygon', { points: `${hx},${hy} ${hx - ux * 16 - uy * 9},${hy - uy * 16 + ux * 9} ${hx - ux * 16 + uy * 9},${hy - uy * 16 - ux * 9}`, style: `fill:${col}` }, g);
+    const mx_ = (x0 + x1_) / 2, my = (y0 + y1_) / 2; let nx = -uy, ny = ux;
+    if (nx * (mx_ - G[0]) + ny * (my - G[1]) < 0){ nx = -nx; ny = -ny; }   // put the label outside the triangle
+    txt(g, mx_ + nx * 22, my + ny * 22 + 5, `${name} = ${fr(f)}`, 'labS', { 'text-anchor': Math.abs(nx) < .3 ? 'middle' : nx > 0 ? 'start' : 'end', style: `fill:${col}` });
+  };
+  street('P', 'Q', x1, 'x₁'); street('Q', 'R', x2, 'x₂'); street('P', 'R', x3, 'x₃ = t');
+  const ext = (j, dx, dy, s, inward) => { const [x, y] = J[j]; arrow({ g, X: v => v, Y: v => v }, inward ? [x + dx, y + dy] : [x + dx * .35, y + dy * .35], inward ? [x + dx * .35, y + dy * .35] : [x + dx, y + dy], 'var(--ct)', { w: 3 }); txt(g, x + dx * 1.1, y + dy * 1.1 + 5, s, 'labS', { 'text-anchor': 'middle', style: 'fill:var(--ct)' }); };
+  ext('P', 0, -62, '500 in', true); ext('Q', -70, 40, '200 out', false); ext('R', 70, 40, '300 out', false);
+  Object.entries(J).forEach(([n, [x, y]]) => { mk('circle', { cx: x, cy: y, r: 20, style: 'fill:var(--paper);stroke:var(--ink);stroke-width:2' }, g); txt(g, x, y + 6, n, 'lab', { 'text-anchor': 'middle', style: 'fill:var(--ink)' }); });
+  $('fEqs').innerHTML =
+    `<span class="lbl">One equation per junction</span>P: <i>x</i>₁ + <i>x</i>₃ = 500 (all 500 cars leave on the two streets)<br>Q: <i>x</i>₁ − <i>x</i>₂ = 200 (in from P, out on Q→R or out of town)<br>R: <i>x</i>₂ + <i>x</i>₃ = 300 (both streets bring cars, 300 leave)` +
+    `<span class="lbl">As A<b>x</b> = <b>b</b></span><span class="mshow c3"><span>1</span><span>0</span><span>1</span><span>1</span><span>−1</span><span>0</span><span>0</span><span>1</span><span>1</span></span>${unk('x₁', 'x₂', 'x₃')} = ${vcol([500, 200, 300], 't')}` +
+    `<span class="lbl">Determinant</span>det = 0 &nbsp; (the R equation is just P minus Q, so it adds nothing new)` +
+    `<span class="lbl">All solutions</span><i>x</i>₁ = 500 − <i>t</i>, &nbsp; <i>x</i>₂ = 300 − <i>t</i>, &nbsp; <i>x</i>₃ = <i>t</i>, for any <i>t</i>` +
+    '<span class="lbl">This choice</span>' + (ok ? `<b>(${fr(x1)}, ${fr(x2)}, ${fr(x3)})</b>: every junction balances ✓${t === 0 ? ' Nobody uses the short cut.' : t === 300 ? ' Nobody drives Q→R: every car for R takes the short cut.' : ''}`
+      : `<b style="color:var(--wrong)">(${fr(x1)}, ${fr(x2)}, ${fr(x3)}): the junctions balance, but a one-way street would carry negative traffic.</b> With one-way streets, <i>t</i> must stay between 0 and 300.`);
+}
+$('fT').addEventListener('input', drawF); selectOnFocus(['fT']);
+
+/* =====================================================================
+   9. QUIZ
+   ===================================================================== */
+const rnd = arr => arr[Math.floor(Math.random() * arr.length)];
+const randInt = (lo, hi) => lo + Math.floor(Math.random() * (hi - lo + 1));
+const nz = a => { let x; do { x = randInt(-a, a); } while (x === 0); return x; };
+const qz = { counted: false, done: false, right: 0, total: 0 };
+const QM = ['qm0', 'qm1', 'qm2', 'qm3'], QB = ['qb0', 'qb1'], QV = ['qv0', 'qv1'];
+const COUNT = ['Exactly one', 'None', 'Infinitely many'];
+function setMode(kind){
+  $('qChoice').style.display = kind === 'choice' ? '' : 'none'; $('qIn').style.display = kind === 'choice' ? 'none' : '';
+  $('qMat').style.display = kind === 'write' ? '' : 'none'; $('qB').style.display = kind === 'write' ? '' : 'none'; $('qVec').style.display = kind === 'vec' ? '' : 'none';
+  if (kind === 'choice'){ $('qChoice').innerHTML = ''; COUNT.forEach((l, i) => { const b = document.createElement('button'); b.textContent = l; b.onclick = () => answerChoice(i); $('qChoice').appendChild(b); }); }
+}
+// Write one equation with its terms in a chosen order, and sometimes a term moved across the = sign
+function eqVariant(a, b, c){
+  const v = rnd(['plain', 'plain', 'swap', 'moved']);
+  if (v === 'swap' && a && b) return `${term(b, '<i>y</i>', true)}${term(a, '<i>x</i>', false)} = ${fr(c)}`;
+  if (v === 'moved' && a && b) return `${term(a, '<i>x</i>', true)} = ${fr(c)}${term(-b, '<i>y</i>', false)}`;
+  return eqStr(a, b, c);
+}
+function newQuestion(){
+  Object.assign(qz, { counted: false, done: false });
+  $('qErr').textContent = ''; $('qFb').className = 'feedback'; $('qFb').innerHTML = ''; QM.concat(QB, QV).forEach(id => { $(id).value = ''; });
+  qz.type = rnd(['write', 'count', 'solve', 'solve', 'col']);
+  $('qSvg').style.display = 'none';
+  if (qz.type === 'write'){
+    let A; do { A = [0, 0, 0, 0].map(() => randInt(-5, 5)); } while (A.filter(v => v).length < 3 || (!A[0] && !A[1]) || (!A[2] && !A[3]));
+    const b = [randInt(-9, 9), randInt(-9, 9)]; Object.assign(qz, { A, b });
+    $('qTitle').textContent = 'Write it as Ax = b';
+    $('qText').innerHTML = `Write this system as <i>A</i><b>x</b> = <b>b</b>, with <b>x</b> = (<i>x</i>, <i>y</i>):<br><span class="sys"><span class="k1">${eqVariant(A[0], A[1], b[0])}</span><br><span class="k2">${eqVariant(A[2], A[3], b[1])}</span></span>`;
+    setMode('write');
+  } else if (qz.type === 'count'){
+    const kind = rnd([0, 1, 2]); let A, b;
+    do {
+      const r1 = [nz(4), randInt(-4, 4)], k = rnd([2, -1, 3, -2]), b1 = randInt(-6, 6);
+      if (kind === 0){ A = [r1[0], r1[1], randInt(-4, 4), randInt(-4, 4)]; b = [b1, randInt(-6, 6)]; }
+      else { A = [r1[0], r1[1], k * r1[0], k * r1[1]]; b = [b1, kind === 2 ? k * b1 : k * b1 + nz(3)]; }
+    } while ((kind === 0 && det(A) === 0) || A.filter(v => v).length < 3 || Math.abs(b[1]) > 15);
+    Object.assign(qz, { A, b, kind });
+    $('qTitle').textContent = 'How many solutions?';
+    $('qText').innerHTML = `How many solutions does this system have?<br>${sysHTML(A, b)}`;
+    setMode('choice');
+  } else if (qz.type === 'solve'){
+    let A, x; do { A = [0, 0, 0, 0].map(() => randInt(-4, 4)); x = [randInt(-4, 4), randInt(-4, 4)]; } while (det(A) === 0 || A.filter(v => v).length < 3 || (!x[0] && !x[1]));
+    const b = ap(A, x); Object.assign(qz, { A, b, x });
+    $('qTitle').textContent = 'Solve it';
+    $('qText').innerHTML = `Solve <i>A</i><b>x</b> = <b>b</b> with A = ${ms(A)} and <b>b</b> = ${vcol(b, 't')}, that is, ${sysHTML(A, b)} &nbsp; Use <i>A</i><sup>−1</sup> or Cramer’s rule.`;
+    setMode('vec');
+  } else {
+    let A, x; do { A = [0, 0, 0, 0].map(() => randInt(-2, 2)); x = [randInt(-3, 3), randInt(-3, 3)]; }
+    while (det(A) === 0 || A.filter(v => v).length < 3 || !x[0] || !x[1] || Math.abs(ap(A, x)[0]) > 6 || Math.abs(ap(A, x)[1]) > 4);
+    const b = ap(A, x); Object.assign(qz, { A, b, x });
+    $('qTitle').textContent = 'Read the column picture';
+    $('qText').innerHTML = 'The purple grid is built from the two columns of <i>A</i>. How much of column 1 (<i>x</i>) and how much of column 2 (<i>y</i>) does it take to reach <b class="kt">b</b>? (Count the steps along the slanted grid.)';
+    setMode('vec'); $('qSvg').style.display = ''; drawQ(false);
+  }
+}
+function drawQ(path){
+  const { A, b } = qz;
+  colPic($('qSvg'), 1000, 400, A, b, { x0: -7, x1: 7, y0: -4.6, y1: 4.6 }, { path, maxU: 40, R: 20, bl: 'b' });
+}
+function countQ(ok){ if (qz.counted) return; qz.counted = true; qz.total++; if (ok) qz.right++; $('score').textContent = `Score: ${qz.right} / ${qz.total}`; }
+const near = (u, v) => u.every((s, k) => Math.abs(s - v[k]) < 2e-3);
+function checkQ(){
+  const ids = qz.type === 'write' ? QM.concat(QB) : QV, X = ids.map(id => parseNum($(id).value));
+  if (ids.some(id => $(id).value.trim() === '') || X.some(isNaN)){ $('qErr').textContent = 'Fill in every box with a number (put 0 for a missing term).'; return; }
+  $('qErr').textContent = ''; let ok, msg;
+  if (qz.type === 'write'){
+    const { A, b } = qz, XA = X.slice(0, 4), Xb = X.slice(4); ok = near(XA, A) && near(Xb, b);
+    if (ok) msg = `<b>Right.</b> ${ms(A)}${unk('x', 'y')} = ${vcol(b, 't')}: row 1 is the first equation, row 2 the second, and column 1 holds every <i>x</i>.`;
+    else if (near(XA, [A[1], A[0], A[3], A[2]])) msg = '<b>The columns are swapped.</b> Column 1 must hold the numbers in front of <i>x</i>, even when an equation writes the <i>y</i> term first.';
+    else if (near(XA, A) && !near(Xb, b)) msg = '<b>A is right; check b.</b> If a term sits on the right of the = sign, move it to the left first (changing its sign) so only a plain number is left on the right.';
+    else if (!near(XA, A) && near(Xb, b)) msg = '<b>b is right; check A.</b> Watch the signs, and if a term appears on the right of the = sign, move it left and change its sign. A missing term is a 0.';
+    else msg = '<b>Not quite.</b> Rewrite each equation as (number)·<i>x</i> + (number)·<i>y</i> = (number), then copy the numbers row by row.';
+  } else {
+    const { A, b, x } = qz; ok = near(X, x);
+    if (ok) msg = `<b>Right: (${fr(x[0])}, ${fr(x[1])}).</b> Check: ${fr(x[0])}·${vstr(ct(A)[0])} + ${pn(x[1])}·${vstr(ct(A)[1])} = ${vstr(b)}.`;
+    else if (near(X, [x[1], x[0]])) msg = '<b>x and y are swapped.</b> The first unknown goes with column 1.';
+    else if (near(X, ap(A, b))) msg = '<b>You multiplied b by A.</b> To solve, undo A: multiply b by A⁻¹.';
+    else if (near(X, ap([A[3], -A[1], -A[2], A[0]], b))) msg = `<b>Almost: divide by det A = ${fr(det(A))}.</b>`;
+    else msg = `<b>Not quite.</b> Your answer gives A${vstr(X)} = ${vstr(ap(A, X))}, not ${vstr(b)}.` + (qz.type === 'col' ? ' Count steps along the slanted lines: first along column 1, then along column 2.' : ' Try Cramer’s rule: x = det[b col 2] / det A.');
+  }
+  countQ(ok); if (ok){ qz.done = true; if (qz.type === 'col') drawQ(true); }
+  $('qFb').className = 'feedback ' + (ok ? 'ok' : 'bad'); $('qFb').innerHTML = msg;
+}
+function answerChoice(i){
+  if (qz.done) return; qz.done = true;
+  const { A, b, kind } = qz, ok = i === kind; countQ(ok);
+  const D = det(A), why = kind === 0 ? `det = ${fr(A[0])}·${pn(A[3])} − ${pn(A[1])}·${pn(A[2])} = ${fr(D)} ≠ 0, so the lines cross once: (${fr(ap(inv(A), b)[0])}, ${fr(ap(inv(A), b)[1])}).`
+    : `det = 0: the second row of A is ${fr(A[2] / A[0])} times the first, so the lines are parallel. ` + (kind === 2 ? `b does the same (${fr(b[1])} = ${fr(A[2] / A[0])} × ${pn(b[0])}), so it’s the same line: infinitely many.` : `But ${fr(b[1])} isn’t ${fr(A[2] / A[0])} × ${pn(b[0])}, so the lines are parallel and separate: none.`);
+  $('qFb').className = 'feedback ' + (ok ? 'ok' : 'bad');
+  $('qFb').innerHTML = `<b>${ok ? 'Right' : 'Not this time'}: ${COUNT[kind].toLowerCase()}.</b> ${why}` + (!ok && kind === 0 && i ? ' (det ≠ 0 always means exactly one.)' : !ok && kind && !i ? ' (det = 0 never gives exactly one; check b to choose between none and infinitely many.)' : '');
+}
+function showQ(){
+  countQ(false); qz.done = true; $('qErr').textContent = '';
+  const fb = $('qFb'); fb.className = 'feedback info';
+  if (qz.type === 'write') fb.innerHTML = `<b>A = ${ms(qz.A)}, b = ${vcol(qz.b, 't')}</b>`;
+  else if (qz.type === 'count') fb.innerHTML = `<b>${COUNT[qz.kind]}</b>: det = ${fr(det(qz.A))}${qz.kind ? (qz.kind === 2 ? ', and b fits the same pattern as the rows' : ', and b breaks the pattern of the rows') : ''}.`;
+  else { fb.innerHTML = `<b>(${fr(qz.x[0])}, ${fr(qz.x[1])})</b> = A⁻¹b = ${ms(inv(qz.A), 'u')}${vcol(qz.b, 't')}.`; if (qz.type === 'col') drawQ(true); }
+}
+$('qCheck').onclick = checkQ; $('qShow').onclick = showQ; $('qNew').onclick = newQuestion;
+QM.concat(QB, QV).forEach(id => { $(id).addEventListener('input', () => { $('qErr').textContent = ''; }); $(id).addEventListener('keydown', e => { if (e.key === 'Enter') checkQ(); }); });
+selectOnFocus(QM.concat(QB, QV));
+
+/* =====================================================================
+   10. START
+   ===================================================================== */
+fillX(); drawX();
+drawC();
+drawT();
+drawP();
+drawF();
+newQuestion();
+</script>
+<script src="../shared/toc.js"></script>
+<script src="../shared/nav.js"></script>
+</body>
+</html>
