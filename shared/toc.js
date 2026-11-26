@@ -27,7 +27,7 @@ window.MM_TOC = [
     { id: '3.B.9', title: 'Quadratics and Parabolas', built: true, url: 'https://claude.ai/artifact/18rzo1Y54Kg1t5RzAQ25tH' },
     { id: '3.B.10', title: 'Radicals and Rational Exponents', built: true, url: 'https://claude.ai/artifact/LpgpTksXEXJJwQ1JGWJMZH' },
     { id: '3.B.11', title: 'Rational Expressions and Functions', built: true, url: 'https://claude.ai/artifact/GaoZwJRNutVxZ6eHKTe6h8' },
-    { id: '3.B.12', title: 'Transforming Graphs' },
+    { id: '3.B.12', title: 'Transforming Graphs', built: true, url: 'https://claude.ai/artifact/Kp3qt7DYT8Gxtx95cVzoGo' },
     { id: '3.B.13', title: 'Inverse Functions' },
     { id: '3.B.14', title: 'Logarithms', url: 'https://claude.ai/artifact/2z9S6MW54Wv2QaJoxx7HLw', built: true },
     { id: '3.B.15', title: 'Complex Numbers and Polynomial Roots', built: true, url: 'https://claude.ai/artifact/EF9Nmoqb9XjeciRh5jAD8D' },
