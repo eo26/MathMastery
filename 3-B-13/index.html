@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>3.B.13 Inverse Functions · MathMastery</title>
+<!-- Fonts: a book serif for prose, a clean sans for UI, a mono for numbers -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<!-- MathJax renders the few formulas on the page (SVG output needs no external stylesheet) -->
+<script>
+  window.MathJax = { tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] }, svg: { fontCache: 'global' } };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<style>
+/* ===================== Theme ===================== */
+:root{
+  --bg:#f7f5ef; --paper:#ffffff; --ink:#1f1e1d; --muted:#6b6a66; --line:#e4e0d5; --line2:#c9c5b8;
+  --accent:#534AB7; --accent-bg:#EEEDFE;
+  --pos:#1D9E75; --neg:#D85A30; --pt:#7F77DD; --pt-soft:#AFA9EC; --pt-dark:#534AB7;
+  --pos-new:#9FE1CB; --neg-new:#F0997B; --ok:#3B6D11; --ok-bg:#EAF3DE; --bad:#A32D2D; --bad-bg:#FCEBEB; --note-bg:#FAF3E3; --note-line:#E7C98A;
+  --serif:"Source Serif 4", Georgia, "Times New Roman", serif;
+  --sans:"IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#191817; --paper:#232220; --ink:#ecebe6; --muted:#a3a29c; --line:#383733; --line2:#55534e;
+    --accent:#AFA9EC; --accent-bg:#2c2852; --pt-dark:#CECBF6; --pt-soft:#6f68b8; --pos-new:#5DCAA5; --neg-new:#F5C4B3;
+    --ok:#C0DD97; --ok-bg:#24400d; --bad:#F7C1C1; --bad-bg:#5a1c1c; --note-bg:#2b261b; --note-line:#6b5626;
+  }
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.7 var(--serif);-webkit-font-smoothing:antialiased}
+
+/* ===================== Layout ===================== */
+.topbar{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1000px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:14px;font:500 13px/1 var(--sans);color:var(--muted)}
+.brand{color:var(--ink);font-weight:600;letter-spacing:.02em}
+.brand b{color:var(--accent)}
+.crumbs{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pid{font-family:var(--mono);color:var(--accent);background:var(--accent-bg);padding:4px 8px;border-radius:6px}
+.prose{max-width:720px;margin:0 auto;padding:0 20px}
+.wide{max-width:1000px;margin:0 auto;padding:0 20px}
+
+/* ===================== Hero ===================== */
+.hero{padding:48px 0 12px}
+.kicker{font:600 13px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1{font:700 46px/1.1 var(--serif);margin:12px 0 14px;letter-spacing:-.01em}
+.dek{font-size:21px;color:var(--muted);margin:0 0 22px;font-style:italic}
+.tiers{display:flex;gap:6px;flex-wrap:wrap;font:500 13px/1 var(--sans);margin-bottom:8px}
+.tier{padding:7px 12px;border-radius:999px;border:1px solid var(--line2);color:var(--muted)}
+.tier.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.tier small{opacity:.7;margin-left:4px}
+
+/* ===================== Text elements ===================== */
+h2{font:700 28px/1.25 var(--serif);margin:56px 0 10px;display:flex;gap:12px;align-items:baseline}
+h2 .n{font:600 14px/1 var(--mono);color:var(--accent);min-width:28px}
+p{margin:0 0 16px}
+em.key{font-style:normal;background:linear-gradient(transparent 62%,var(--accent-bg) 62%);padding:0 2px}
+.goals{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:18px 22px;margin:22px 0 0;font:15.5px/1.6 var(--sans)}
+.goals h3{font:600 12px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
+.goals ul{margin:0;padding-left:20px}
+.note{background:var(--note-bg);border-left:4px solid var(--note-line);border-radius:0 10px 10px 0;padding:14px 18px;margin:20px 0;font:15.5px/1.6 var(--sans)}
+.note b{font-weight:600}
+.notice{list-style:none;padding:0;margin:8px 0 18px;counter-reset:n}
+.notice li{position:relative;padding:12px 0 12px 46px;border-top:1px solid var(--line)}
+.notice li:last-child{border-bottom:1px solid var(--line)}
+.notice li::before{counter-increment:n;content:counter(n);position:absolute;left:4px;top:13px;width:26px;height:26px;border-radius:50%;background:var(--accent-bg);color:var(--accent);font:600 13px/26px var(--mono);text-align:center}
+.goes{list-style:none;padding:0;margin:8px 0 18px}
+.goes li{padding:12px 0;border-top:1px solid var(--line)}
+.goes li:last-child{border-bottom:1px solid var(--line)}
+.math{overflow-x:auto;margin:12px 0 18px;padding:14px 18px;background:var(--paper);border:1px solid var(--line);border-radius:12px}
+.math .cap{font:14px/1.5 var(--sans);color:var(--muted);margin-top:4px}
+.mono{font-family:var(--mono);font-size:.92em;white-space:nowrap}
+.pos{color:var(--pos);font-weight:600}.neg{color:var(--neg);font-weight:600}.pt{color:var(--pt-dark);font-weight:600}
+
+/* ===================== Vocabulary ===================== */
+.vocab{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin:14px 0 8px}
+.term{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font:14.5px/1.5 var(--sans)}
+.term b{display:block;font:600 15px/1.3 var(--serif);margin-bottom:4px}
+
+/* ===================== Interactive cards ===================== */
+.card{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:18px 20px 20px;margin:26px 0;box-shadow:0 1px 0 var(--line),0 12px 32px -22px rgba(0,0,0,.25);font-family:var(--sans)}
+.card-h{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.card-h .tag{font:600 11px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--accent);background:var(--accent-bg);padding:5px 8px;border-radius:6px}
+.card-h h3{font:600 18px/1.3 var(--sans);margin:0}
+.card-h .sub{color:var(--muted);font-size:14.5px;flex-basis:100%}
+.panel-label{font:600 11px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:12px 0 4px;display:flex;justify-content:space-between}
+.panel-label span:last-child{letter-spacing:0;text-transform:none;font-weight:500}
+svg.nl{display:block;width:100%;height:auto;border:1px solid var(--line);border-radius:12px;background:var(--bg);touch-action:manipulation}
+svg.clickable{cursor:pointer}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:12px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0}
+button{font:500 14px/1 var(--sans);padding:9px 14px;border-radius:9px;border:1px solid var(--line2);background:var(--paper);color:var(--ink);cursor:pointer;transition:background .15s,border-color .15s}
+button:hover{border-color:var(--ink)}
+button.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+button.preset.on{background:var(--accent-bg);border-color:var(--accent);color:var(--accent)}
+button:disabled{opacity:.45;cursor:default}
+.desc{min-height:24px;color:var(--muted);font-size:14.5px;margin:2px 0 6px}
+.inputs{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;margin:12px 0 4px}
+.field{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.field input{width:92px;font:500 18px/1 var(--mono);padding:9px 10px;border-radius:9px;border:2px solid var(--line2);background:var(--bg);color:var(--ink);text-align:center}
+.field input:focus{outline:none;border-color:var(--accent)}
+.field i,.eq i,.sym{font:italic 600 1.15em var(--serif);text-transform:none;letter-spacing:0;color:var(--pt-dark)}
+.field.start input{border-color:var(--pt-soft)}
+.field.slide input{border-color:var(--pt)}
+.eq{font:500 20px/1 var(--mono);padding:10px 14px;background:var(--bg);border-radius:10px;border:1px solid var(--line)}
+.err{color:var(--bad);font-size:14px;min-height:20px;margin:2px 0}
+.readout{margin-top:12px;padding:12px 14px;background:var(--bg);border-radius:10px;border:1px solid var(--line);font-size:15px;line-height:1.55;min-height:48px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:12px;font-size:13px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{display:inline-block;width:14px;height:14px;border-radius:50%}
+.sw.pos{background:var(--pos)}.sw.neg{border:2.4px solid var(--neg)}
+.sw.x{position:relative;background:var(--pos);opacity:.45}.sw.x::after{content:'✕';position:absolute;inset:-1px 0 0 0;color:var(--neg);font:700 13px/1 var(--sans);text-align:center}
+.sw.posnew{background:var(--pos-new);border:1.5px solid var(--pos)}.sw.negnew{border:2.4px solid var(--neg-new)}.sw.pt{background:var(--pt)}
+.sw.mv{width:22px;height:4px;border-radius:2px;background:var(--pt-soft)}
+.sw.rl{width:22px;height:0;border-top:2px dashed var(--ink);border-radius:0;opacity:.7}
+.feedback{margin-top:10px;padding:12px 14px;border-radius:10px;font-size:15px;line-height:1.55;display:none}
+.feedback.ok{display:block;background:var(--ok-bg);color:var(--ok)}
+.feedback.bad{display:block;background:var(--bad-bg);color:var(--bad)}
+.feedback.info{display:block;background:var(--accent-bg);color:var(--accent)}
+.score{margin-left:auto;font:600 14px/1 var(--mono);color:var(--muted)}
+
+/* ===================== Footer nav ===================== */
+.pager{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:56px 0 18px;font-family:var(--sans)}
+.pager a,.pager div{display:block;padding:16px 18px;border:1px solid var(--line);border-radius:14px;background:var(--paper);color:var(--ink);text-decoration:none}
+.pager small{display:block;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.pager .next{text-align:right}
+.pager .soon{opacity:.6}
+.meta{font:13px/1.6 var(--sans);color:var(--muted);text-align:center;padding:10px 0 50px}
+
+@media (max-width:720px){
+  body{font-size:17px}
+  h1{font-size:34px}
+  .dek{font-size:18px}
+  h2{font-size:24px}
+  .card{padding:14px 12px 16px;border-radius:14px}
+  .crumbs{display:none}
+  svg.nl{min-width:640px}
+}
+</style>
+<meta name="mm-site" content="1">
+<link rel="stylesheet" href="../shared/nav.css">
+</head>
+<body>
+<style>
+/* ===================== Page-specific styles (3.B.13) ===================== */
+/* f = purple, the inverse f⁻¹ = green, the mirror line y = x = grey, not one-to-one / not a function = red */
+:root{ --cv:#7F77DD; --inv:#1D9E75; --ng:#D8443A; --rt:#B86E00; --err:#D8443A; --no:#D8443A; --road:#9a9a9a; }
+@media (prefers-color-scheme:dark){ :root{ --cv:#AFA9EC; --inv:#5DCAA5; --ng:#F07B72; --rt:#FFB547; --err:#F07B72; --no:#F07B72; --road:#666; } }
+.kv{color:var(--cv);font-weight:700}.ki{color:var(--inv);font-weight:700}.kng{color:var(--ng);font-weight:700}.kr{color:var(--rt);font-weight:700}
+svg{user-select:none;-webkit-user-select:none}
+svg text.lab,svg text.labS{fill:var(--ink)}
+.stack svg{width:100%;height:auto;display:block;background:var(--bg);border:1px solid var(--line);border-radius:10px;margin-top:6px}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:10px;align-items:start}
+.split svg{width:100%;height:auto;display:block;background:var(--bg);border:1px solid var(--line);border-radius:10px}
+.mainsplit{display:grid;grid-template-columns:540px 1fr;gap:16px;margin-top:10px;align-items:start}
+.mainsplit svg{width:100%;height:auto;display:block;background:var(--bg);border:1px solid var(--line);border-radius:10px}
+.field.sm input{width:70px}
+.field.wd input{width:240px}
+.toggle button.on{background:var(--accent-bg);border-color:var(--accent);color:var(--accent)}
+.bigpoly{font:600 16px var(--mono);margin:10px 0 0;padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);overflow-x:auto;white-space:nowrap}
+.legend span span{display:inline}
+.panel{border:1px solid var(--line);border-radius:10px;background:var(--bg);padding:12px 14px;font-size:15px;line-height:1.7}
+.panel .ln{font:600 15px var(--mono)}
+.chain{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:8px 0;font:600 15px var(--mono)}
+.chain .val{padding:5px 10px;border-radius:999px;border:2px solid var(--line);background:var(--bg);min-width:44px;text-align:center}
+.chain .stp{padding:5px 10px;border-radius:8px;border:2px solid var(--cv);color:var(--cv);background:var(--bg)}
+.chain.back .stp{border-color:var(--inv);color:var(--inv)}
+.chain .arr{color:var(--muted)}
+.chain .val.lit{border-color:var(--rt);color:var(--rt);box-shadow:0 0 0 3px var(--accent-bg)}
+.chain .val.bad{border-color:var(--ng);color:var(--ng)}
+.ordsel{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end}
+.ordsel select{font:15px var(--sans);padding:7px 8px;border:1.5px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)}
+.ctab{border-collapse:collapse;font:13px var(--mono);margin-top:6px}
+.ctab td,.ctab th{border:1px solid var(--line);padding:3px 5px;text-align:center;min-width:16px}
+.ctab th{color:var(--muted);font-weight:600}
+.ctab td.clash{background:var(--bad-bg);color:var(--ng);font-weight:700}
+.traps{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:8px}
+.traps .t{border:1px solid var(--line);border-radius:10px;background:var(--bg);padding:10px}
+.traps .t h4{margin:0 0 4px;font:600 15px var(--sans)}
+.traps .t p{margin:6px 0 0;font-size:14.5px;line-height:1.5;color:var(--muted)}
+.traps svg{width:100%;height:auto;display:block}
+.qtext{font:17px/1.55 var(--serif);margin:4px 0 10px}
+.qexpr{font:600 22px var(--mono);margin:4px 0 10px}
+.qtab{border-collapse:collapse;font:15px var(--mono);margin:6px 0 4px}
+.qtab td,.qtab th{border:1px solid var(--line);padding:4px 12px;text-align:center}
+.choice{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 0}.choice button{min-width:120px;font-family:var(--mono)}
+.choice button.right{border-color:var(--ok);background:var(--ok-bg);color:var(--ok)}.choice button.wrong{border-color:var(--bad);background:var(--bad-bg);color:var(--bad)}
+</style>
+
+<!-- ===================== Top bar ===================== -->
+<div class="topbar"><div class="topbar-in">
+  <span class="brand">Math<b>Mastery</b></span>
+  <span class="crumbs">Chapter 3 · Algebra › Basics</span>
+  <span class="pid">3.B.13</span>
+</div></div>
+
+<!-- ===================== Hero ===================== -->
+<header class="prose hero">
+  <div class="kicker">Chapter 3 · Algebra</div>
+  <h1>Inverse Functions</h1>
+  <p class="dek">A function turns inputs into outputs. Its inverse turns them back. On a graph the inverse is the mirror image in the line <i>y</i> = <i>x</i>, and as a recipe it undoes the steps in reverse order, like taking off socks and shoes.</p>
+  <div class="tiers" aria-label="Tier">
+    <span class="tier on">Basics <small>you are here</small></span>
+    <span class="tier">Undergraduate</span>
+    <span class="tier">Masters</span>
+  </div>
+  <div class="goals">
+    <h3>On this page</h3>
+    <ul>
+      <li>Understand the <b>inverse function</b> <i>f</i>⁻¹ as the function that undoes <i>f</i>: if <i>f</i>(<i>a</i>) = <i>b</i>, then <i>f</i>⁻¹(<i>b</i>) = <i>a</i>.</li>
+      <li>Find inverses by <b>undoing the steps in reverse order</b>, or by <b>swapping <i>x</i> and <i>y</i></b> and solving.</li>
+      <li>See the graph of <i>f</i>⁻¹ as the <b>reflection in <i>y</i> = <i>x</i></b>, with <b>domain</b> and <b>range</b> swapped.</li>
+      <li>Decide which functions have inverses: <b>one-to-one</b> functions, spotted with the <b>horizontal line test</b>, and fix the others by <b>restricting the domain</b>.</li>
+      <li>Check an inverse with <b>composition</b>: <i>f</i>⁻¹(<i>f</i>(<i>x</i>)) = <i>x</i> and <i>f</i>(<i>f</i>⁻¹(<i>x</i>)) = <i>x</i>.</li>
+    </ul>
+  </div>
+</header>
+
+<main>
+<!-- ===================== §1 ===================== -->
+<section class="prose">
+  <h2><span class="n">1</span>Running a function backwards</h2>
+  <p>The function <i>f</i>(<i>x</i>) = 2<i>x</i> + 3 takes 4 to 11. Going backwards, from 11 to 4, is the job of the <b>inverse function</b>, written <i>f</i>⁻¹ (“<i>f</i> inverse”): <i>f</i>⁻¹(11) = 4. In general,</p>
+  <div class="math">\[ f(a) = b \quad\Longleftrightarrow\quad f^{-1}(b) = a. \]</div>
+  <p>Careful with the notation: the −1 is not an exponent. <i>f</i>⁻¹(<i>x</i>) means “undo <i>f</i>”, not 1/<i>f</i>(<i>x</i>). (For numbers 3⁻¹ = 1/3; for functions it means the inverse.)</p>
+  <p>Think of <i>f</i> as a recipe: take <i>x</i>, <b>multiply by 2</b>, then <b>add 3</b>. To undo it, undo each step, <em class="key">in reverse order</em>: <b>subtract 3</b>, then <b>divide by 2</b>. So <i>f</i>⁻¹(<i>x</i>) = (<i>x</i> − 3)/2. It’s the same as getting dressed: socks then shoes, so to undress, shoes off then socks off.</p>
+  <p>The algebra version: write <i>y</i> = 2<i>x</i> + 3, <b>swap <i>x</i> and <i>y</i></b> (because the inverse swaps inputs and outputs), <i>x</i> = 2<i>y</i> + 3, and solve for <i>y</i>: <i>y</i> = (<i>x</i> − 3)/2.</p>
+</section>
+<section class="wide">
+  <div class="card" id="chainCard">
+    <div class="card-h"><span class="tag">Explore</span><h3>The undo machine</h3>
+      <span class="sub">Build <i>f</i> as a chain of steps. The inverse machine underneath undoes each step, in reverse order. Type an input and press Play to send it through <i>f</i> and back through <i>f</i>⁻¹: you should get your input back.</span></div>
+    <div class="row" id="cPresets"></div>
+    <div class="ordsel">
+      <label class="field"><span>Step</span><select id="cOp"></select></label>
+      <label class="field sm"><span>amount</span><input id="cAmt" type="text" inputmode="decimal" autocomplete="off"></label>
+      <div class="row" style="margin:0"><button id="cAdd">Add step</button><button id="cClear">Clear</button></div>
+      <label class="field sm"><span>input <i>x</i></span><input id="cX" type="text" inputmode="decimal" autocomplete="off" style="border-color:var(--rt)"></label>
+      <div class="row" style="margin:0"><button class="primary" id="cPlay">Play</button></div>
+    </div>
+    <div class="err" id="cErr"></div>
+    <div class="bigpoly" id="cEq"></div>
+    <div class="chain" id="cFwd"></div>
+    <div class="chain back" id="cBack"></div>
+    <div class="readout" id="cOut"></div>
+  </div>
+</section>
+
+<!-- ===================== §2 ===================== -->
+<section class="prose">
+  <h2><span class="n">2</span>The mirror in y = x</h2>
+  <p>Every point (<i>a</i>, <i>b</i>) on the graph of <i>f</i> becomes the point (<i>b</i>, <i>a</i>) on the graph of <i>f</i>⁻¹: the coordinates swap. Swapping coordinates is reflecting in the line <i>y</i> = <i>x</i>, so <em class="key">the graph of <i>f</i>⁻¹ is the mirror image of the graph of <i>f</i> in <i>y</i> = <i>x</i></em>. You met one pair in 3.B.10: <i>y</i> = <i>x</i>² (for <i>x</i> ≥ 0) and <i>y</i> = √<i>x</i>. Another pair is coming in 3.B.14: 2<sup><i>x</i></sup> and log₂ <i>x</i>.</p>
+  <p>Swapping also swaps the <b>domain</b> (allowed inputs) and <b>range</b> (possible outputs): the domain of <i>f</i>⁻¹ is the range of <i>f</i>, and the other way round. √<i>x</i> only accepts <i>x</i> ≥ 0 because <i>x</i>² only produces outputs ≥ 0.</p>
+
+  <h2><span class="n">3</span>Not every function can be undone</h2>
+  <p><i>f</i>(<i>x</i>) = <i>x</i>² sends both 3 and −3 to 9. So what is <i>f</i>⁻¹(9)? There’s no single answer, and a function must give one output. A function has an inverse exactly when it is <b>one-to-one</b>: different inputs always give different outputs. On a graph, that’s the <b>horizontal line test</b>: no horizontal line crosses the graph more than once. (If one did, the mirror image would fail the vertical line test from 3.B.4 and wouldn’t be a function.)</p>
+  <p>The fix is to <b>restrict the domain</b>: keep only part of the graph that passes the test. <i>x</i>² on <i>x</i> ≥ 0 is one-to-one, and its inverse is √<i>x</i>. That’s exactly why √ means the <i>principal</i> (non-negative) root.</p>
+</section>
+<section class="wide">
+  <div class="card" id="mirror">
+    <div class="card-h"><span class="tag">Explore</span><h3>Reflect a graph in y = x</h3>
+      <span class="sub">Purple is <i>f</i>; green is its mirror image. Pick a point <i>a</i>: the dashed segment joins (<i>a</i>, <i>f</i>(<i>a</i>)) to its partner (<i>f</i>(<i>a</i>), <i>a</i>), crossing the mirror at a right angle. The red line is a horizontal line test at height <i>f</i>(<i>a</i>). Press Play to watch the reflection happen.</span></div>
+    <div class="row" id="mPresets"></div>
+    <div class="desc" id="mDesc"></div>
+    <div class="inputs">
+      <label class="field sm"><span>point <i>a</i></span><input id="mAx" type="text" inputmode="decimal" autocomplete="off" style="border-color:var(--rt)"></label>
+      <div class="row" style="margin:0"><button id="mUse">Use this</button><button class="primary" id="mPlay">Play</button><button id="mRestrict">Restrict the domain</button></div>
+    </div>
+    <div class="err" id="mErr"></div>
+    <div class="bigpoly" id="mEq"></div>
+    <div class="mainsplit"><svg id="mG" viewBox="0 0 540 540" role="img" aria-label="Graph of f and its mirror image in y = x"></svg><div class="panel" id="mPanel"></div></div>
+    <div class="readout" id="mOut"></div>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--cv)"></i><span><i>y</i> = <i>f</i>(<i>x</i>)</span></span>
+      <span><i class="sw" style="background:var(--inv)"></i><span>its mirror image: <i>y</i> = <i>f</i>⁻¹(<i>x</i>)</span></span>
+      <span><i class="sw" style="background:none;border:2px dotted var(--muted)"></i><span>the mirror <i>y</i> = <i>x</i></span></span>
+      <span><i class="sw" style="background:var(--ng)"></i><span>horizontal line test / not a function</span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §4 ===================== -->
+<section class="prose">
+  <h2><span class="n">4</span>Checking an inverse</h2>
+  <p>Doing <i>f</i> and then <i>f</i>⁻¹ should change nothing. That’s the definition, written with <b>composition</b> (doing one function after another):</p>
+  <div class="math">\[ f^{-1}\big(f(x)\big) = x \ \text{ for every } x \text{ in the domain of } f, \qquad f\big(f^{-1}(x)\big) = x \ \text{ for every } x \text{ in the domain of } f^{-1}. \]</div>
+  <p>For <i>f</i>(<i>x</i>) = 2<i>x</i> + 3 and <i>f</i>⁻¹(<i>x</i>) = (<i>x</i> − 3)/2: <i>f</i>⁻¹(<i>f</i>(<i>x</i>)) = ((2<i>x</i> + 3) − 3)/2 = <i>x</i> ✓. Some functions are their own inverse: 1/<i>x</i> and 6 − <i>x</i> are their own mirror images in <i>y</i> = <i>x</i>.</p>
+</section>
+
+<!-- ===================== §5 ===================== -->
+<section class="prose">
+  <h2><span class="n">5</span>Inverses at work</h2>
+  <p>Whenever you know the answer and want the question, you need an inverse: what temperature in °C is 98.6 °F? How far did the taxi go for a $28 fare? How fast was the car that left 40 m of skid marks? Secret codes are functions too: encrypting is <i>f</i>, decrypting is <i>f</i>⁻¹, and a code that isn’t one-to-one can’t be decoded.</p>
+</section>
+<section class="wide">
+  <div class="card" id="ctx">
+    <div class="card-h"><span class="tag">Explore</span><h3>Units, codes, fares and skid marks</h3>
+      <span class="sub">Pick a situation and type the known output; the inverse gives the input.</span></div>
+    <div class="row toggle" id="xTab"><button class="on">°F → °C</button><button>Secret code</button><button>Taxi fare</button><button>Skid marks</button></div>
+    <div class="desc" id="xDesc"></div>
+    <div class="inputs">
+      <label class="field wd" id="xF"><span id="xLab">v</span><input id="xV" type="text" autocomplete="off" style="border-color:var(--inv)"></label>
+      <div class="row" style="margin:0"><button class="primary" id="xUse">Use this</button></div>
+    </div>
+    <div class="row" id="xPresets" style="margin-top:6px"></div>
+    <div class="err" id="xErr"></div>
+    <div class="bigpoly" id="xEq"></div>
+    <div class="split"><div id="xPicW"><svg id="xPic" viewBox="0 0 470 360" role="img" aria-label="Picture"></svg></div><svg id="xG" viewBox="0 0 470 360" role="img" aria-label="Graph"></svg></div>
+    <div class="readout" id="xOut"></div>
+  </div>
+</section>
+
+<!-- ===================== §6 ===================== -->
+<section class="prose">
+  <h2><span class="n">6</span>Traps and non-examples</h2>
+</section>
+<section class="wide">
+  <div class="card" id="traps">
+    <div class="card-h"><span class="tag">Compare</span><h3>Easy to get wrong</h3></div>
+    <div class="traps">
+      <div class="t"><h4 class="kng">✕ f⁻¹(x) = 1/f(x)</h4><svg id="tr1" viewBox="0 0 300 190"></svg><p>For <i>f</i>(<i>x</i>) = 2<i>x</i> + 3, the inverse is (<i>x</i> − 3)/2 (green), the mirror image. 1/(2<i>x</i> + 3) (red) is a different curve entirely: the −1 means “undo”, not “one over”.</p></div>
+      <div class="t"><h4 class="kng">✕ Undo in the same order</h4><svg id="tr2" viewBox="0 0 300 190"></svg><p><i>f</i>: ×2, then +3. Undoing ÷2 first, then −3, gives <i>x</i>/2 − 3 (red), which sends 11 to 2.5, not 4. Reverse the order: −3, then ÷2.</p></div>
+      <div class="t"><h4 class="kng">✕ √(x²) undoes x²</h4><svg id="tr3" viewBox="0 0 300 190"></svg><p>Only for <i>x</i> ≥ 0. For <i>x</i> = −3: (−3)² = 9 and √9 = 3, not −3. <i>x</i>² fails the horizontal line test, so it has no inverse until you restrict it to <i>x</i> ≥ 0.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §7 ===================== -->
+<section class="prose">
+  <h2><span class="n">7</span>Now, in symbols</h2>
+  <div class="math">\[ f(a) = b \iff f^{-1}(b) = a, \qquad f^{-1}(f(x)) = x, \qquad f(f^{-1}(x)) = x \]</div>
+  <div class="math">\[ \text{one-to-one: } f(x_1) = f(x_2) \Rightarrow x_1 = x_2, \qquad \operatorname{dom} f^{-1} = \operatorname{ran} f, \qquad \operatorname{ran} f^{-1} = \operatorname{dom} f \]</div>
+  <div class="math">\[ f(x) = ax + b \ \Rightarrow\ f^{-1}(x) = \frac{x - b}{a}, \qquad (g \circ f)^{-1} = f^{-1} \circ g^{-1} \]</div>
+  <div class="math">\[ C = \tfrac59(F - 32), \qquad v = \frac{-0.21 + \sqrt{0.21^2 + 0.022\,d}}{0.011} \]</div>
+</section>
+
+<!-- ===================== §8 ===================== -->
+<section class="prose">
+  <h2><span class="n">8</span>Where this goes</h2>
+  <ul class="goes">
+    <li><b>Next:</b> 3.B.14 meets the most important inverse pair after <i>x</i>² and √<i>x</i>: exponentials and logarithms, 2<sup><i>x</i></sup> and log₂ <i>x</i>. In chapter 5, restricting the domain of sin <i>x</i> gives the inverse trig functions arcsin, arccos and arctan.</li>
+    <li><b>Later in this book:</b> inverse matrices in linear algebra (7.B), which undo a transformation of the plane, the derivative of an inverse function in calculus, and inverse transform sampling in probability.</li>
+    <li><b>In the world:</b> unit and currency conversions, decoding and decryption, working back from a measurement to its cause (skid marks, carbon dating, a thermometer’s reading), and “undo” in every app.</li>
+  </ul>
+</section>
+
+<!-- ===================== §9 ===================== -->
+<section class="prose">
+  <h2><span class="n">9</span>Words to know</h2>
+  <div class="vocab">
+    <div class="term"><b>Inverse function</b><i>f</i>⁻¹: the function that undoes <i>f</i>; <i>f</i>(<i>a</i>) = <i>b</i> means <i>f</i>⁻¹(<i>b</i>) = <i>a</i>.</div>
+    <div class="term"><b>Swap x and y</b>The algebra method: write <i>y</i> = <i>f</i>(<i>x</i>), swap, solve for <i>y</i>.</div>
+    <div class="term"><b>Undo in reverse order</b>Undo the last step first: socks and shoes.</div>
+    <div class="term"><b>Reflection in y = x</b>The picture of swapping coordinates; the graph of <i>f</i>⁻¹.</div>
+    <div class="term"><b>Domain / range</b>All allowed inputs / all possible outputs; they swap for <i>f</i>⁻¹.</div>
+    <div class="term"><b>One-to-one</b>Different inputs always give different outputs.</div>
+    <div class="term"><b>Horizontal line test</b>A graph is one-to-one if no horizontal line meets it more than once.</div>
+    <div class="term"><b>Restricting the domain</b>Keeping only part of a function so it becomes one-to-one.</div>
+    <div class="term"><b>Composition</b><i>g</i>(<i>f</i>(<i>x</i>)), written <i>g</i> ∘ <i>f</i>: do <i>f</i>, then <i>g</i>.</div>
+    <div class="term"><b>Self-inverse</b>A function that is its own inverse, such as 1/<i>x</i>.</div>
+  </div>
+</section>
+
+<!-- ===================== Quiz ===================== -->
+<section class="prose"><h2><span class="n">10</span>Check yourself</h2>
+  <p>Four kinds of questions: find the inverse, evaluate <i>f</i>⁻¹, decide whether an inverse exists, and spot the trap.</p>
+</section>
+<section class="wide">
+  <div class="card" id="quiz">
+    <div class="card-h"><span class="tag">Quiz</span><h3 id="qTitle"></h3><span class="score" id="score">Score: 0 / 0</span></div>
+    <div class="qtext" id="qText"></div>
+    <div class="qexpr" id="qExpr"></div>
+    <div class="choice" id="qChoice"></div>
+    <div class="inputs" id="qIn">
+      <label class="field"><span id="qL1">Answer</span><input id="q1" type="text" autocomplete="off" style="width:160px"></label>
+      <div class="row" style="margin:0"><button class="primary" id="qCheck">Check</button></div>
+    </div>
+    <div class="row" style="margin:10px 0 0"><button id="qShow">Show answer</button><button id="qNew">New question</button></div>
+    <div class="err" id="qErr"></div>
+    <div class="feedback" id="qFb" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ===================== Pager (filled in by the shared navigation) ===================== -->
+<nav class="wide">
+  <div class="pager"></div>
+  <div class="meta">3.B.13 · Prerequisites: 3.B.2 (solving equations), 3.B.4 (functions), 3.B.10 (roots), 3.B.12 (reflections) · Leads to: 3.B.14 (logarithms), chapter 5 (inverse trig), 7.B (inverse matrices)</div>
+</nav>
+</main>
+
+<script>
+/* =====================================================================
+   1. HELPERS (shared with the other chapter 3 pages)
+   ===================================================================== */
+const NS = 'http://www.w3.org/2000/svg';
+const $ = id => document.getElementById(id);
+function mk(tag, attrs, parent){                           // create an SVG element with attributes
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function txt(parent, x, y, s, cls, extra){                 // create an SVG text element
+  extra = Object.assign({}, extra || {});
+  if (extra['text-anchor']){ extra.style = (extra.style ? extra.style + ';' : '') + 'text-anchor:' + extra['text-anchor']; delete extra['text-anchor']; }
+  const t = mk('text', Object.assign({ x, y, class: cls || '' }, extra), parent);
+  t.textContent = s;
+  return t;
+}
+// round for display, use a true minus sign, never show −0
+function num(x, d){ if (d === undefined) d = 2; const r = Math.round(x * Math.pow(10, d)) / Math.pow(10, d); return r === 0 ? '0' : (r < 0 ? '−' : '') + String(Math.abs(r)); }
+const pn = x => x < 0 ? `(${num(x)})` : num(x);              // wrap negatives in brackets when substituting
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const ri = (a, b) => a + Math.floor(Math.random() * (b - a + 1));   // random whole number from a to b
+const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+function parseNum(s){                                     // integers, decimals, minus, simple fractions
+  s = String(s).trim().replace(/[−–]/g, '-').replace(/\s+/g, '');
+  if (/^-?\d+(\.\d+)?$|^-?\.\d+$/.test(s)) return parseFloat(s);
+  const m = s.match(/^(-?\d+)\/(\d+)$/);
+  if (m && +m[2] !== 0) return +m[1] / +m[2];
+  return NaN;
+}
+function selectOnFocus(ids){ ids.forEach(id => $(id).addEventListener('focus', e => e.target.select())); }
+function buttons(boxId, list, onPick){                    // a row of preset buttons; returns a function that marks one as on
+  list.forEach((p, i) => { const b = document.createElement('button'); b.className = 'preset'; b.textContent = p.n; b.onclick = () => onPick(i); $(boxId).appendChild(b); });
+  return i => [...$(boxId).children].forEach((b, j) => b.classList.toggle('on', j === i));
+}
+function svgPt(svg, ev){                                  // mouse position in the SVG's own coordinates
+  const p = svg.createSVGPoint(); p.x = ev.clientX; p.y = ev.clientY;
+  return p.matrixTransform(svg.getScreenCTM().inverse());
+}
+const svgCss = document.createElement('style');
+svgCss.textContent = `
+  .grid{stroke:var(--line);stroke-width:1}
+  .axis{stroke:var(--ink);stroke-width:1.4;opacity:.7}
+  .tl{fill:var(--muted);font:500 11.5px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:3px}
+  .lab{font:700 14px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:5px}
+  .labS{font:600 12.5px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+  .cap{fill:var(--muted);font:600 12px var(--sans);letter-spacing:.06em;paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+  .oval{fill:var(--paper);stroke:var(--line);stroke-width:1.5}
+`;
+document.head.appendChild(svgCss);
+let clipN = 0;                                            // unique clip-path ids
+
+/* ---------- axes: a coordinate grid inside an SVG, with separate x and y scales ---------- */
+function axes(svg, W, H, b, o){
+  o = o || {};
+  svg.innerHTML = '';
+  const L = o.padL ?? 44, R = o.padR ?? 16, T = o.padT ?? 16, B = o.padB ?? 30;
+  const sx = (W - L - R) / (b.x1 - b.x0), sy = (H - T - B) / (b.y1 - b.y0);   // pixels per unit
+  const X = x => L + (x - b.x0) * sx, Y = y => T + (b.y1 - y) * sy;
+  const step = (s, px) => (o.half ? [0.5, 1, 2, 5, 10, 20, 50, 100] : [1, 2, 5, 10, 20, 50, 100]).find(k => k * s >= px) || 200;   // a round step at least px pixels wide
+  const xg = o.xg || step(sx, 9), yg = o.yg || step(sy, 9);        // grid-line spacing
+  const xt = o.xt || step(sx, 34), yt = o.yt || step(sy, 26);      // tick-label spacing
+  const gGrid = mk('g', {}, svg), id = 'clp' + (++clipN);
+  const cp = mk('clipPath', { id }, svg); mk('rect', { x: L, y: T, width: W - L - R, height: H - T - B }, cp);
+  const cg = mk('g', { 'clip-path': `url(#${id})` }, svg);         // clipped layer for curves
+  const m = mk('g', {}, svg), top = mk('g', {}, svg);              // free layer, then labels on top
+  const near = (v, s) => Math.abs(v / s - Math.round(v / s)) < 1e-6;
+  for (let x = Math.ceil(b.x0 / xg) * xg; x <= b.x1 + 1e-9; x += xg) mk('line', { x1: X(x), y1: T, x2: X(x), y2: H - B, class: 'grid' }, gGrid);
+  for (let y = Math.ceil(b.y0 / yg) * yg; y <= b.y1 + 1e-9; y += yg) mk('line', { x1: L, y1: Y(y), x2: W - R, y2: Y(y), class: 'grid' }, gGrid);
+  const ay = (b.y0 <= 0 && b.y1 >= 0) ? Y(0) : H - B;              // where the x-axis is drawn
+  const ax = (b.x0 <= 0 && b.x1 >= 0) ? X(0) : L;                  // where the y-axis is drawn
+  mk('line', { x1: L, y1: ay, x2: W - R, y2: ay, class: 'axis' }, gGrid);
+  mk('line', { x1: ax, y1: T, x2: ax, y2: H - B, class: 'axis' }, gGrid);
+  const fx = o.fx || (v => num(v)), fy = o.fy || (v => num(v));
+  for (let x = Math.ceil(b.x0 / xt) * xt; x <= b.x1 + 1e-9; x += xt){
+    if (Math.abs(x) < 1e-9 && ax === X(0) && !o.zeroX) continue;
+    txt(top, X(x), ay + 16, fx(x), 'tl', { 'text-anchor': 'middle' });
+  }
+  for (let y = Math.ceil(b.y0 / yt) * yt; y <= b.y1 + 1e-9; y += yt){
+    if (Math.abs(y) < 1e-9 && ay === Y(0)) continue;
+    txt(top, ax - 6, Y(y) + 4, fy(y), 'tl', { 'text-anchor': 'end' });
+  }
+  if (o.xT) txt(top, W - R - 2, ay - 8, o.xT, 'cap', { 'text-anchor': 'end' });
+  if (o.yT) txt(top, ax + 8, T + 12, o.yT, 'cap');
+  return { svg, X, Y, sx, sy, cg, m, top, b, L, R, T, B, W, H, ay, ax,
+           inv: (px, py) => [b.x0 + (px - L) / sx, b.y1 - (py - T) / sy] };
+}
+function dPath(P, pts){ return pts.map((p, i) => (i ? 'L' : 'M') + P.X(p[0]).toFixed(1) + ' ' + P.Y(p[1]).toFixed(1)).join(''); }
+// sample y = f(x) from a to b, breaking the curve where f is undefined or jumps
+function sample(f, a, b, n, ok){
+  const out = []; let cur = [];
+  for (let i = 0; i <= n; i++){
+    const x = a + (b - a) * i / n, y = (ok && !ok(x)) ? NaN : f(x);
+    if (!isFinite(y)){ if (cur.length > 1) out.push(cur); cur = []; continue; }
+    if (cur.length && Math.abs(y - cur[cur.length - 1][1]) > 40){ if (cur.length > 1) out.push(cur); cur = []; }
+    cur.push([x, y]);
+  }
+  if (cur.length > 1) out.push(cur);
+  return out;
+}
+function dot(P, x, y, col, o){                              // a filled (or open) point
+  o = o || {};
+  return mk('circle', { cx: P.X(x), cy: P.Y(y), r: o.r || 6, style: o.open ? `fill:var(--bg);stroke:${col};stroke-width:2.6` : `fill:${col};stroke:var(--bg);stroke-width:1.5` }, o.layer || P.m);
+}
+function vline(P, x, col, o){ o = o || {}; return mk('line', { x1: P.X(x), y1: o.y0 !== undefined ? P.Y(o.y0) : P.T, x2: P.X(x), y2: o.y1 !== undefined ? P.Y(o.y1) : P.H - P.B, style: `stroke:${col};stroke-width:${o.w || 2.5};${o.dash ? 'stroke-dasharray:' + o.dash : ''}` }, o.layer || P.m); }
+function hline(P, y, col, o){ o = o || {}; return mk('line', { x1: o.x0 !== undefined ? P.X(o.x0) : P.L, y1: P.Y(y), x2: o.x1 !== undefined ? P.X(o.x1) : P.W - P.R, y2: P.Y(y), style: `stroke:${col};stroke-width:${o.w || 2.5};${o.dash ? 'stroke-dasharray:' + o.dash : ''}` }, o.layer || P.m); }
+function arrowHead(g, x1, y1, x2, y2, col, size){            // a small triangle at (x2, y2) pointing away from (x1, y1)
+  const a = Math.atan2(y2 - y1, x2 - x1), s = size || 9;
+  const p = [[x2, y2], [x2 - s * Math.cos(a - 0.4), y2 - s * Math.sin(a - 0.4)], [x2 - s * Math.cos(a + 0.4), y2 - s * Math.sin(a + 0.4)]];
+  mk('polygon', { points: p.map(q => q.join(',')).join(' '), style: `fill:${col}` }, g);
+}
+
+/* ---------- arrow diagram: inputs in a left oval, outputs in a right oval, one arrow per pair ---------- */
+// pairs: [[in, out], ...]; o.ins / o.outs give the order (defaults: sorted values); o.fmt formats a value;
+// o.hl = input to highlight (others fade); o.lit = [in, out] arrow drawn thick; o.dead = inputs shown crossed out
+function arrowDiagram(svg, W, H, pairs, o){
+  o = o || {};
+  svg.innerHTML = '';
+  const fmt = o.fmt || (v => typeof v === 'number' ? num(v) : v);
+  const key = v => String(v);
+  const uniq = arr => { const s = new Set(), r = []; arr.forEach(v => { if (!s.has(key(v))){ s.add(key(v)); r.push(v); } }); return r; };
+  const srt = arr => arr.every(v => typeof v === 'number') ? arr.slice().sort((a, b) => a - b) : arr;
+  const ins = o.ins || srt(uniq(pairs.map(p => p[0]))), outs = o.outs || srt(uniq(pairs.map(p => p[1])));
+  const top = o.top ?? 34, bot = H - (o.bottom ?? 14);
+  const lx = W * 0.25, rx = W * 0.75, ow = Math.min(W * 0.17, 90);
+  mk('ellipse', { cx: lx, cy: (top + bot) / 2, rx: ow, ry: (bot - top) / 2, class: 'oval' }, svg);
+  mk('ellipse', { cx: rx, cy: (top + bot) / 2, rx: ow, ry: (bot - top) / 2, class: 'oval' }, svg);
+  txt(svg, lx, 18, o.inLab || 'INPUTS x', 'cap', { 'text-anchor': 'middle', style: 'fill:var(--in)' });
+  txt(svg, rx, 18, o.outLab || 'OUTPUTS y', 'cap', { 'text-anchor': 'middle', style: 'fill:var(--out)' });
+  const ypos = (i, n) => n === 1 ? (top + bot) / 2 : top + 26 + (bot - top - 52) * i / (n - 1);
+  const iy = {}, oy = {};
+  ins.forEach((v, i) => iy[key(v)] = ypos(i, ins.length));
+  outs.forEach((v, i) => oy[key(v)] = ypos(i, outs.length));
+  const cnt = {}; pairs.forEach(p => cnt[key(p[0])] = (cnt[key(p[0])] || 0) + 1);   // how many outputs each input has
+  const dx = Math.min(ow * 0.45, 34), fs = ins.length > 9 || outs.length > 9 ? 'labS' : 'lab';
+  const ga = mk('g', {}, svg), gd = mk('g', {}, svg);
+  pairs.forEach(p => {                                     // arrows
+    const k = key(p[0]), bad = cnt[k] > 1, faded = o.hl !== undefined && o.hl !== null && key(o.hl) !== k;
+    const lit = o.lit && key(o.lit[0]) === k && key(o.lit[1]) === key(p[1]);
+    const col = bad ? 'var(--no)' : 'var(--pt)';
+    const x1 = lx + dx + 8, y1 = iy[k], x2 = rx - dx - 9, y2 = oy[key(p[1])];
+    mk('line', { x1, y1, x2, y2, style: `stroke:${col};stroke-width:${lit ? 4.5 : 2.4};opacity:${faded ? .18 : 1}` }, ga);
+    if (!faded) arrowHead(ga, x1, y1, x2, y2, col, lit ? 12 : 10);
+  });
+  ins.forEach(v => {                                       // input dots and labels
+    const k = key(v), dead = o.dead && o.dead.map(key).includes(k), bad = cnt[k] > 1;
+    const faded = o.hl !== undefined && o.hl !== null && key(o.hl) !== k;
+    const col = dead ? 'var(--muted)' : bad ? 'var(--no)' : 'var(--in)';
+    mk('circle', { cx: lx + dx, cy: iy[k], r: o.hl !== undefined && key(o.hl) === k ? 8 : 6, style: `fill:${col};opacity:${faded ? .35 : 1}` }, gd);
+    const t = txt(gd, lx + dx - 12, iy[k] + 5, fmt(v), fs, { 'text-anchor': 'end', style: `fill:${col};opacity:${faded ? .45 : 1}${dead ? ';text-decoration:line-through' : ''}` });
+  });
+  outs.forEach(v => {                                      // output dots and labels
+    const k = key(v);
+    mk('circle', { cx: rx - dx, cy: oy[k], r: 6, style: 'fill:var(--out)' }, gd);
+    txt(gd, rx - dx + 12, oy[k] + 5, fmt(v), fs, { style: 'fill:var(--out)' });
+  });
+  return { ins, outs };
+}
+// group pairs by input: Map from input to its list of distinct outputs
+function byInput(pairs){
+  const m = new Map();
+  pairs.forEach(([x, y]) => { const k = String(x); if (!m.has(k)) m.set(k, { x, ys: [] }); const e = m.get(k); if (!e.ys.some(v => String(v) === String(y))) e.ys.push(y); });
+  return m;
+}
+const setStr = arr => '{' + arr.map(v => num(v)).join(', ') + '}';
+
+
+/* ---------- helpers for zoomable graphs (any scale) ---------- */
+const niceStep = raw => { const p = Math.pow(10, Math.floor(Math.log10(raw))), m = raw / p; return (m <= 1 ? 1 : m <= 2 ? 2 : m <= 5 ? 5 : 10) * p; };
+const decs = st => Math.max(0, -Math.floor(Math.log10(st) + 1e-9));
+function fmt(v, st){ const d = decs(st); const r = Number(v.toFixed(d)); return r === 0 ? '0' : (r < 0 ? '−' : '') + Math.abs(r).toFixed(d); }
+// a coordinate system with any box (tiny or huge), labelled ticks, a clipped layer for curves
+function ax2(svg, W, H, b, o){
+  o = o || {}; svg.innerHTML = '';
+  const L = o.padL ?? 52, R = o.padR ?? 14, T = o.padT ?? 14, B = o.padB ?? 28;
+  const sx = (W - L - R) / (b.x1 - b.x0), sy = (H - T - B) / (b.y1 - b.y0), X = x => L + (x - b.x0) * sx, Y = y => T + (b.y1 - y) * sy;
+  const gx = niceStep((b.x1 - b.x0) / 8), gy = niceStep((b.y1 - b.y0) / 7);
+  const g = mk('g', {}, svg), id = 'c' + Math.random().toString(36).slice(2);
+  const cp = mk('clipPath', { id }, svg); mk('rect', { x: L, y: T, width: W - L - R, height: H - T - B }, cp);
+  const cg = mk('g', { 'clip-path': `url(#${id})` }, svg), m = mk('g', {}, svg), top = mk('g', {}, svg);
+  for (let v = Math.ceil(b.x0 / gx) * gx; v <= b.x1 + gx * 1e-6; v += gx){ mk('line', { x1: X(v), y1: T, x2: X(v), y2: H - B, class: 'grid' }, g); txt(top, X(v), H - B + 16, o.fx ? o.fx(v) : fmt(v, gx), 'tl', { 'text-anchor': 'middle' }); }
+  for (let v = Math.ceil(b.y0 / gy) * gy; v <= b.y1 + gy * 1e-6; v += gy){ mk('line', { x1: L, y1: Y(v), x2: W - R, y2: Y(v), class: 'grid' }, g); txt(top, L - 6, Y(v) + 4, fmt(v, gy), 'tl', { 'text-anchor': 'end' }); }
+  if (b.y0 < 0 && b.y1 > 0) mk('line', { x1: L, y1: Y(0), x2: W - R, y2: Y(0), class: 'axis' }, g);
+  if (b.x0 < 0 && b.x1 > 0) mk('line', { x1: X(0), y1: T, x2: X(0), y2: H - B, class: 'axis' }, g);
+  mk('rect', { x: L, y: T, width: W - L - R, height: H - T - B, style: 'fill:none;stroke:var(--line2)' }, g);
+  if (o.xT) txt(top, W - R - 4, H - B - 6, o.xT, 'cap', { 'text-anchor': 'end' });
+  if (o.yT) txt(top, L + 6, T + 14, o.yT, 'cap');
+  return { X, Y, sx, sy, cg, m, top, b, L, R, T, B, W, H, inv: (px, py) => [b.x0 + (px - L) / sx, b.y1 - (py - T) / sy] };
+}
+// sample a curve across the box, breaking at undefined points, at listed jumps, and at big leaps
+function curve(P, f, o){
+  o = o || {}; const b = P.b, n = o.n || 900, brk = o.breaks || [], polys = []; let cur = [];
+  const lim = (b.y1 - b.y0) * 3;
+  for (let i = 0; i <= n; i++){
+    const x = b.x0 + (b.x1 - b.x0) * i / n, y = f(x);
+    const crossed = cur.length && brk.some(c => (cur[cur.length - 1][0] - c) * (x - c) <= 0);
+    if (!isFinite(y) || crossed || (cur.length && Math.abs(y - cur[cur.length - 1][1]) > lim)){ if (cur.length > 1) polys.push(cur); cur = []; if (!isFinite(y)) continue; }
+    cur.push([x, Math.max(b.y0 - lim, Math.min(b.y1 + lim, y))]);
+  }
+  if (cur.length > 1) polys.push(cur);
+  polys.forEach(p => mk('path', { d: dPath(P, p), style: `fill:none;stroke:${o.col || 'var(--cv)'};stroke-width:${o.w || 3};${o.dash ? 'stroke-dasharray:' + o.dash : ''}` }, P.cg));
+}
+const holeAt = (P, x, y, col) => mk('circle', { cx: P.X(x), cy: P.Y(y), r: 6, style: `fill:var(--bg);stroke:${col || 'var(--cv)'};stroke-width:2.5` }, P.m);
+const dotAt = (P, x, y, col, r) => mk('circle', { cx: P.X(x), cy: P.Y(y), r: r || 6, style: `fill:${col || 'var(--cv)'};stroke:var(--bg);stroke-width:1.5` }, P.m);
+const sig = v => !isFinite(v) ? (v > 0 ? '∞' : v < 0 ? '−∞' : 'undefined') : Math.abs(v) >= 1e5 ? v.toExponential(2).replace('-', '−') : num(v, 6);
+function parseLim(s){
+  const t = String(s).trim().toLowerCase().replace(/\s+/g, '').replace(/[−–]/g, '-');
+  if (/^(dne|none|doesnotexist|noLimit|nolimit|no)$/i.test(t)) return 'DNE';
+  if (/^\+?(inf|infinity|∞|oo)$/.test(t)) return Infinity;
+  if (/^-(inf|infinity|∞|oo)$/.test(t)) return -Infinity;
+  return parseNum(s);
+}
+
+const minus = s => String(s).replace(/(^|[\s(,=>→\/·+×])-(\d)/g, '$1−$2');
+const r4 = v => Number((Math.abs(v) < 1e-300 ? 0 : v).toPrecision(5));
+const SUP = k => String(k).replace(/-/g, '⁻').replace(/\d/g, d => '⁰¹²³⁴⁵⁶⁷⁸⁹'[d]);
+const sci = v => { if (v === 0) return '0'; const a = Math.abs(v); if (a >= 1e-3 && a < 1e7) return minus(String(r4(v))); let e = Math.floor(Math.log10(a)); if (Math.abs(v / Math.pow(10, e)) >= 9.995) e++; const m = v / Math.pow(10, e); return minus(`${m.toFixed(2)}×10${SUP(e)}`); };
+const gcd = (a, b) => b ? gcd(b, a % b) : Math.abs(a);
+function frc(x){ if (Math.abs(x - Math.round(x)) < 1e-9) return num(Math.round(x)); for (let d = 2; d <= 10000; d++){ const n = x * d; if (Math.abs(n - Math.round(n)) < 1e-9 * d && gcd(Math.round(n), d) === 1) return (x < 0 ? '−' : '') + Math.abs(Math.round(n)) + '/' + d; } return sci(x); }
+// a readable value: whole numbers with commas, otherwise 4–5 significant figures
+const big = v => Math.abs(v) >= 1e7 ? sci(v) : Math.abs(v - Math.round(v)) < 1e-9 ? Math.round(v).toLocaleString().replace('-', '−') : minus(String(r4(v)));
+
+/* =====================================================================
+   2. POLYNOMIAL TOOLS
+   ===================================================================== */
+// polynomials are arrays of coefficients, highest power first: [3, 2, -5] is 3x² + 2x − 5
+const pmul = (A, B) => { const r = Array(A.length + B.length - 1).fill(0); A.forEach((a, i) => B.forEach((b, j) => r[i + j] += a * b)); return r; };
+const peval = (C, x) => C.reduce((s, c) => s * x + c, 0);          // Horner's rule
+// write a polynomial in standard form with true minus signs; 1·x is written x
+function pstr(C, v){
+  v = v || 'x'; const n = C.length - 1; let s = '';
+  C.forEach((c, i) => {
+    const k = n - i; if (Math.abs(c) < 1e-12) return;              // skip zero terms
+    const a = Math.abs(c), neg = c < 0;
+    const cs = (Math.abs(a - 1) < 1e-12 && k > 0) ? '' : frc(a);   // hide a coefficient of 1
+    const vs = k === 0 ? '' : k === 1 ? v : v + SUP(k);
+    s += (s === '' ? (neg ? '−' : '') : (neg ? ' − ' : ' + ')) + cs + vs;
+  });
+  return s || '0';
+}
+const lin = (p, q) => pstr([p, q]);                                // "2x + 1"
+const sgn = v => (v < 0 ? '− ' : '+ ') + frc(Math.abs(v));         // "+ 3" or "− 2" for joining
+const nz = (a, b) => { let v; do { v = ri(a, b); } while (v === 0); return v; };   // random nonzero whole number
+const isInt = v => isFinite(v) && Math.abs(v - Math.round(v)) < 1e-9;
+// factor ax² + bx + c over the whole numbers: returns {g, p, q, r, s} with ax²+bx+c = g(px+q)(rx+s), or {g, none, A, B, C}
+function factorQ(a, b, c){
+  let g = gcd(gcd(Math.abs(a), Math.abs(b)), Math.abs(c)); if (a < 0) g = -g;   // GCF, and make the leading coefficient positive
+  const A = a / g, B = b / g, C = c / g;
+  if (C === 0) return { g, p: 1, q: 0, r: A, s: B };                // no constant: x is a factor
+  for (let p = 1; p <= A; p++){ if (A % p) continue; const r = A / p;
+    for (let q = -Math.abs(C); q <= Math.abs(C); q++){ if (q === 0 || C % q) continue; const s = C / q; if (p * s + q * r === B) return { g, p, q, r, s }; } }
+  return { g, none: true, A, B, C };
+}
+// one linear factor as text: "x", "(x + 3)", "(2x − 1)"
+const fpart = (p, q) => q === 0 ? (p === 1 ? 'x' : frc(p) + 'x') : `(${lin(p, q)})`;
+function fstr(F){
+  const f1 = fpart(F.p, F.q), f2 = fpart(F.r, F.s);
+  let body = f1 === f2 ? (f1 === 'x' ? 'x²' : f1 + '²') : (f2 === 'x' ? f2 + f1 : f1 + f2);
+  const g = F.g === 1 ? '' : F.g === -1 ? '−' : num(F.g);
+  return g + body;
+}
+// colours for a tile: its shape decides the colour, a negative tile is red
+const tcol = (type, sg) => sg < 0 ? 'var(--ng)' : { x2: 'var(--sq)', x: 'var(--xt)', u: 'var(--un)' }[type];
+// draw one tile rectangle; ghost = cancelled (faded with an ✕ in the colour of the tile that cancelled it)
+function tileR(g, x, y, w, h, col, o){
+  o = o || {};
+  const r = mk('rect', { x, y, width: w, height: h, rx: Math.min(3, w / 4), style: `fill:${col};stroke:var(--bg);stroke-width:1.2;opacity:${o.ghost ? .22 : (o.op ?? .9)}` }, g);
+  if (o.ghost){ const c = o.xcol || 'var(--muted)'; mk('path', { d: `M${x + 2} ${y + 2}L${x + w - 2} ${y + h - 2}M${x + w - 2} ${y + 2}L${x + 2} ${y + h - 2}`, style: `stroke:${c};stroke-width:2` }, g); }
+  if (o.lab) txt(g, x + w / 2, y + h / 2 + 4.5, o.lab, 'labS', { 'text-anchor': 'middle', style: 'fill:#fff;stroke:none;font-size:' + (o.fs || 12.5) + 'px' });
+  return r;
+}
+const ease = t => t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+// simple animation runner: calls step(e) with e from 0 to 1, then done()
+function animate(ms, step, done){
+  const t0 = performance.now(); let id = 0, stopped = false;
+  const tick = now => { if (stopped) return; const e = Math.min(1, (now - t0) / ms); step(e); if (e < 1) id = requestAnimationFrame(tick); else if (done) done(); };
+  id = requestAnimationFrame(tick);
+  return () => { stopped = true; cancelAnimationFrame(id); };
+}
+// a small isometric box (x right-down, y left-down, z up); draws the three visible faces
+function isoBox(g, P, x, y, z, dx, dy, dz, col, o){
+  o = o || {};
+  const f = (a, b, c) => P(a, b, c).join(',');
+  const face = (pts, op) => mk('polygon', { points: pts.join(' '), style: `fill:${col};fill-opacity:${op};stroke:${o.stroke || 'var(--bg)'};stroke-width:1.2${o.dash ? ';stroke-dasharray:4 3' : ''}` }, g);
+  const sc = o.ghost ? .35 : 1;
+  face([f(x, y, z + dz), f(x + dx, y, z + dz), f(x + dx, y + dy, z + dz), f(x, y + dy, z + dz)], (o.ghost ? .12 : .95) * sc);   // top
+  face([f(x + dx, y, z), f(x + dx, y + dy, z), f(x + dx, y + dy, z + dz), f(x + dx, y, z + dz)], (o.ghost ? .1 : .72) * sc);    // right face (x = max)
+  face([f(x, y + dy, z), f(x + dx, y + dy, z), f(x + dx, y + dy, z + dz), f(x, y + dy, z + dz)], (o.ghost ? .08 : .55) * sc);   // left face (y = max)
+}
+
+
+function ratOf(x){ for (let d = 1; d <= 400; d++){ const n = x * d; if (Math.abs(n - Math.round(n)) < 1e-9 * d) return [Math.round(n), d]; } return null; }
+const isRat = x => ratOf(x) !== null;
+const T = v => isRat(v) ? frc(v) : num(v, 3);
+const same = (a, b) => Math.abs(a - b) < 1e-9;
+const TD = v => Math.abs(v * 1000 - Math.round(v * 1000)) < 1e-9 ? num(v, 3) : T(v);
+const pT = v => v < 0 ? `(${T(v)})` : T(v);
+function pcurve(P, pts, o){
+  o = o || {}; const lim = (P.b.y1 - P.b.y0) * 2, polys = []; let cur = [];
+  pts.forEach(p => {
+    if (!p || !isFinite(p[0]) || !isFinite(p[1]) || Math.abs(p[0]) > 1e6){ if (cur.length > 1) polys.push(cur); cur = []; return; }
+    if (cur.length && (Math.abs(p[1] - cur[cur.length - 1][1]) > lim || Math.abs(p[0] - cur[cur.length - 1][0]) > lim)){ if (cur.length > 1) polys.push(cur); cur = []; }
+    cur.push([Math.max(P.b.x0 - lim, Math.min(P.b.x1 + lim, p[0])), Math.max(P.b.y0 - lim, Math.min(P.b.y1 + lim, p[1]))]);
+  });
+  if (cur.length > 1) polys.push(cur);
+  polys.forEach(q => mk('path', { d: dPath(P, q), style: `fill:none;stroke:${o.col || 'var(--cv)'};stroke-width:${o.w || 3};${o.dash ? 'stroke-dasharray:' + o.dash : ''}` }, P.cg));
+}
+
+/* =====================================================================
+   2. THE UNDO MACHINE (chains of steps)
+   ===================================================================== */
+// each step: forward function, its undo, labels, and how it changes a formula string
+const STEPS = {
+  mul: { n: '× a', amt: true, f: (x, a) => x * a, g: (y, a) => y / a, lab: a => `×${TD(a)}`, ilab: a => `÷${TD(a)}` },
+  div: { n: '÷ a', amt: true, f: (x, a) => x / a, g: (y, a) => y * a, lab: a => `÷${TD(a)}`, ilab: a => `×${TD(a)}` },
+  add: { n: '+ a', amt: true, f: (x, a) => x + a, g: (y, a) => y - a, lab: a => `+${TD(a)}`, ilab: a => `−${TD(a)}` },
+  sub: { n: '− a', amt: true, f: (x, a) => x - a, g: (y, a) => y + a, lab: a => `−${TD(a)}`, ilab: a => `+${TD(a)}` },
+  sq: { n: 'square', f: x => x * x, g: y => y >= 0 ? Math.sqrt(y) : NaN, lab: () => 'square', ilab: () => '√' },
+  cu: { n: 'cube', f: x => x ** 3, g: y => Math.cbrt(y), lab: () => 'cube', ilab: () => '∛' },
+  rt: { n: 'square root', f: x => x >= 0 ? Math.sqrt(x) : NaN, g: y => y >= 0 ? y * y : NaN, lab: () => '√', ilab: () => 'square' },
+  rc: { n: '1/x', f: x => x === 0 ? NaN : 1 / x, g: y => y === 0 ? NaN : 1 / y, lab: () => '1/x', ilab: () => '1/x' },
+  ex: { n: '2 to the power', f: x => 2 ** x, g: y => y > 0 ? Math.log2(y) : NaN, lab: () => '2^x', ilab: () => 'log₂' }
+};
+// formula strings with a precedence level: 3 = atom, 2 = product, 1 = sum
+const wrap = (s, lv, need) => lv < need ? `(${s})` : s;
+function applyStr([s, lv], op, a){
+  const at = () => wrap(s, lv, 3), A = TD(a).includes('/') ? `(${TD(a)})` : TD(a);
+  switch (op){
+    case 'mul': return [same(a, 1) ? s : `${A}${/^[\d(]/.test(s) && lv === 3 ? '·' : ''}${wrap(s, lv, 2)}`, 2];
+    case 'div': return [`${wrap(s, lv, 2)}/${A}`, 2];
+    case 'add': return [`${s} + ${T(a)}`, 1];
+    case 'sub': return [`${s} − ${T(a)}`, 1];
+    case 'sq': return [`${at()}²`, 3];
+    case 'cu': return [`${at()}³`, 3];
+    case 'rt': return [lv === 3 && s === 'x' ? '√x' : `√(${s})`, 3];
+    case 'rc': return [`1/${at()}`, 2];
+    case 'ex': return [`2^(${s})`, 3];
+  }
+}
+const INV = { mul: 'div', div: 'mul', add: 'sub', sub: 'add', sq: 'rt', cu: 'cu3', rt: 'sq', rc: 'rc', ex: 'lg' };
+function applyInvStr([s, lv], op, a){
+  switch (op){
+    case 'mul': return applyStr([s, lv], 'div', a);
+    case 'div': return applyStr([s, lv], 'mul', a);
+    case 'add': return applyStr([s, lv], 'sub', a);
+    case 'sub': return applyStr([s, lv], 'add', a);
+    case 'sq': return applyStr([s, lv], 'rt', a);
+    case 'rt': return applyStr([s, lv], 'sq', a);
+    case 'cu': return [lv === 3 && s === 'x' ? '∛x' : `∛(${s})`, 3];
+    case 'rc': return applyStr([s, lv], 'rc', a);
+    case 'ex': return [`log₂(${s})`, 3];
+  }
+}
+Object.entries(STEPS).forEach(([k, v]) => { const o = document.createElement('option'); o.value = k; o.textContent = v.n; $('cOp').appendChild(o); });
+const CP = [
+  { n: '×2, then +3', s: [['mul', 2], ['add', 3]], x: 4 },
+  { n: '+3, then ×2', s: [['add', 3], ['mul', 2]], x: 4 },
+  { n: '°C → °F', s: [['mul', 1.8], ['add', 32]], x: 37 },
+  { n: '−1, ÷2, cube', s: [['sub', 1], ['div', 2], ['cu', 0]], x: 5 },
+  { n: 'square, +1 (x ≥ 0 only)', s: [['sq', 0], ['add', 1]], x: -3 },
+  { n: '2^x, then ×3', s: [['ex', 0], ['mul', 3]], x: 2 }
+];
+const CS = { steps: [['mul', 2], ['add', 3]], x: 4, k: -1, timer: 0 };
+const cMark = buttons('cPresets', CP, i => { CS.steps = CP[i].s.map(s => s.slice()); CS.x = CP[i].x; $('cX').value = minus(String(CS.x)); cMark(i); cStop(); CS.k = -1; cDraw(); });
+$('cOp').addEventListener('change', () => { $('cAmt').disabled = !STEPS[$('cOp').value].amt; });
+$('cAdd').onclick = () => {
+  const op = $('cOp').value, st = STEPS[op], a = st.amt ? parseNum($('cAmt').value) : 0;
+  if (st.amt && !isFinite(a)){ $('cErr').textContent = 'Type an amount for this step.'; return; }
+  if ((op === 'mul' || op === 'div') && a === 0){ $('cErr').textContent = 'Multiplying by 0 can’t be undone (every input gives 0), and dividing by 0 isn’t allowed.'; return; }
+  if (CS.steps.length >= 5){ $('cErr').textContent = 'At most 5 steps. Clear and start again.'; return; }
+  $('cErr').textContent = ''; CS.steps.push([op, a]); cMark(-1); cStop(); CS.k = -1; cDraw();
+};
+$('cClear').onclick = () => { CS.steps = []; cMark(-1); cStop(); CS.k = -1; cDraw(); };
+function cStop(){ clearTimeout(CS.timer); $('cPlay').textContent = 'Play'; }
+$('cPlay').onclick = () => {
+  const x = parseNum($('cX').value); if (!isFinite(x)){ $('cErr').textContent = 'Type an input number.'; return; }
+  if (!CS.steps.length){ $('cErr').textContent = 'Add at least one step first.'; return; }
+  $('cErr').textContent = ''; CS.x = x; cStop(); CS.k = 0; cDraw(); $('cPlay').textContent = 'Playing…';
+  const tot = 2 * CS.steps.length;
+  const tick = () => { CS.k++; cDraw(); if (CS.k < tot) CS.timer = setTimeout(tick, 700); else $('cPlay').textContent = 'Play'; };
+  CS.timer = setTimeout(tick, 700);
+};
+$('cX').addEventListener('keydown', e => { if (e.key === 'Enter') $('cPlay').click(); });
+['cX', 'cAmt'].forEach(id => $(id).addEventListener('input', () => $('cErr').textContent = ''));
+function cDraw(){
+  const S = CS.steps, x = CS.x, n = S.length, k = CS.k;
+  // forward values
+  const fv = [x]; S.forEach(([op, a]) => fv.push(STEPS[op].f(fv[fv.length - 1], a)));
+  // backward: undo steps in reverse order, starting from the output
+  const bv = [fv[n]]; for (let i = n - 1; i >= 0; i--){ const [op, a] = S[i]; bv.push(STEPS[op].g(bv[bv.length - 1], a)); }
+  const show = v => isFinite(v) ? TD(+v.toPrecision(10)) : 'undefined';
+  const lit = (row, j) => k >= 0 && (row === 0 ? k === j : k === n + j);
+  let h = `<span class="val${lit(0, 0) ? ' lit' : ''}">x = ${minus(show(fv[0]))}</span>`;
+  S.forEach(([op, a], i) => { h += `<span class="arr">→</span><span class="stp">${minus(STEPS[op].lab(a))}</span><span class="arr">→</span><span class="val${lit(0, i + 1) ? ' lit' : ''}${isFinite(fv[i + 1]) ? '' : ' bad'}">${minus(show(fv[i + 1]))}</span>`; });
+  $('cFwd').innerHTML = `<span style="color:var(--cv);margin-right:6px">f:</span>` + (n ? h : '<span style="color:var(--muted)">no steps yet</span>');
+  let b = `<span class="val${lit(1, 0) ? ' lit' : ''}">${minus(show(bv[0]))}</span>`;
+  for (let i = n - 1, j = 1; i >= 0; i--, j++){ const [op, a] = S[i]; b += `<span class="arr">→</span><span class="stp">${minus(STEPS[op].ilab(a))}</span><span class="arr">→</span><span class="val${lit(1, j) ? ' lit' : ''}${isFinite(bv[j]) ? '' : ' bad'}">${minus(show(bv[j]))}</span>`; }
+  $('cBack').innerHTML = `<span style="color:var(--inv);margin-right:6px">f⁻¹:</span>` + (n ? b : '');
+  // formulas
+  let F = ['x', 3]; S.forEach(([op, a]) => F = applyStr(F, op, a));
+  let G = ['x', 3]; for (let i = n - 1; i >= 0; i--) G = applyInvStr(G, S[i][0], S[i][1]);
+  $('cEq').innerHTML = n ? minus(`f(x) = ${F[0]}     f⁻¹(x) = ${G[0]}`) : 'Add steps to build f.';
+  const back = bv[n], ok = isFinite(back) && Math.abs(back - x) < 1e-7 * Math.max(1, Math.abs(x));
+  const hasSq = S.some(([op]) => op === 'sq'), hasEven = S.some(([op]) => op === 'sq');
+  let s = !n ? '' : ok ? `f⁻¹(f(${minus(T(x))})) = ${minus(T(x))} ✓. Each step is undone by its opposite, <b>last step first</b>: ${S.slice().reverse().map(([op, a]) => minus(STEPS[op].ilab(a))).join(', then ')}.`
+    : isFinite(back) ? `<b class="kng">Not undone:</b> going forward and back gave ${minus(T(+back.toPrecision(10)))}, not ${minus(T(x))}. ${hasSq ? 'Squaring sends x and −x to the same value, so √ can only bring back the non-negative one. Squaring is not one-to-one: restrict the inputs to x ≥ 0 (or wherever the value before squaring is ≥ 0).' : ''}`
+    : `<b class="kng">Undefined:</b> some step got an input it can’t take (a square root of a negative, 1/0, or the log of a non-positive number). The inverse only exists on the range of f.`;
+  if (n >= 2 && ok && S[0][0] !== S[1][0]) s += ' Try the same steps in the other order: the function changes, and so does its inverse.';
+  $('cOut').innerHTML = s;
+}
+
+/* =====================================================================
+   3. THE MIRROR EXPLORER
+   ===================================================================== */
+const MF = [
+  { n: '2x + 3', f: x => 2 * x + 3, fi: x => (x - 3) / 2, ft: 'f(x) = 2x + 3', it: 'f⁻¹(x) = (x − 3)/2', dom: [-30, 30], a: 1, d: 'A line: always one-to-one (if it isn’t flat). Its inverse is the line (x − 3)/2: slope 1/2 instead of 2.', D: 'all x', R: 'all y' },
+  { n: 'x³', f: x => x ** 3, fi: x => Math.cbrt(x), ft: 'f(x) = x³', it: 'f⁻¹(x) = ∛x', dom: [-4, 4], a: 1.5, d: 'Always increasing, so one-to-one: its inverse is the cube root.', D: 'all x', R: 'all y' },
+  { n: 'x²', f: x => x * x, fi: null, ft: 'f(x) = x²', it: 'no inverse on all x', dom: [-6, 6], a: 2, d: 'Fails the horizontal line test: 2 and −2 both give 4. The mirror image is a sideways parabola, which isn’t a function. Press “Restrict the domain”.', D: 'all x', R: 'y ≥ 0', rx: { n: 'x² (x ≥ 0)', f: x => x >= 0 ? x * x : NaN, fi: x => x >= 0 ? Math.sqrt(x) : NaN, ft: 'f(x) = x², x ≥ 0', it: 'f⁻¹(x) = √x', dom: [0, 6], D: 'x ≥ 0', R: 'y ≥ 0' } },
+  { n: '2ˣ', f: x => 2 ** x, fi: x => x > 0 ? Math.log2(x) : NaN, ft: 'f(x) = 2ˣ', it: 'f⁻¹(x) = log₂ x', dom: [-30, 6], a: 2, d: 'Always increasing. Its inverse, log₂ x, answers “2 to what power?” (3.B.14). Domain and range swap: log₂ only accepts x > 0.', D: 'all x', R: 'y > 0' },
+  { n: '1/x', f: x => x === 0 ? NaN : 1 / x, fi: x => x === 0 ? NaN : 1 / x, ft: 'f(x) = 1/x', it: 'f⁻¹(x) = 1/x', dom: [-40, 40], a: 2, d: 'Its own inverse: the graph is symmetric in y = x, so the reflection lands on itself.', D: 'x ≠ 0', R: 'y ≠ 0', br: [0] },
+  { n: '(2x + 1)/(x − 3)', f: x => x === 3 ? NaN : (2 * x + 1) / (x - 3), fi: x => x === 2 ? NaN : (3 * x + 1) / (x - 2), ft: 'f(x) = (2x + 1)/(x − 3)', it: 'f⁻¹(x) = (3x + 1)/(x − 2)', dom: [-60, 60], a: 4, d: 'A rational function (3.B.11). The asymptotes swap too: x = 3 and y = 2 become y = 3 and x = 2.', D: 'x ≠ 3', R: 'y ≠ 2', br: [3] },
+  { n: 'x³ − 3x', f: x => x ** 3 - 3 * x, fi: null, ft: 'f(x) = x³ − 3x', it: 'no inverse on all x', dom: [-3, 3], a: 0.5, d: 'A wiggle in the middle: some heights are hit three times, so no inverse unless you restrict (for example to x ≥ 1).', D: 'all x', R: 'all y', rx: { n: 'x³ − 3x (x ≥ 1)', f: x => x >= 1 ? x ** 3 - 3 * x : NaN, fi: null, ft: 'f(x) = x³ − 3x, x ≥ 1', it: 'f⁻¹ exists (no simple formula)', dom: [1, 3], D: 'x ≥ 1', R: 'y ≥ −2' } },
+  { n: '|x|', f: x => Math.abs(x), fi: null, ft: 'f(x) = |x|', it: 'no inverse on all x', dom: [-8, 8], a: 2, d: '3 and −3 both give 3: not one-to-one. Restricted to x ≥ 0 it is just y = x, its own inverse.', D: 'all x', R: 'y ≥ 0', rx: { n: '|x| (x ≥ 0)', f: x => x >= 0 ? x : NaN, fi: x => x >= 0 ? x : NaN, ft: 'f(x) = |x|, x ≥ 0', it: 'f⁻¹(x) = x, x ≥ 0', dom: [0, 8], D: 'x ≥ 0', R: 'y ≥ 0' } }
+];
+const MS = { i: 0, a: 1, restrict: false, e: 1, stop: null };
+const mMark = buttons('mPresets', MF, i => { MS.i = i; MS.a = MF[i].a; MS.restrict = false; $('mAx').value = minus(T(MS.a)); mMark(i); $('mDesc').innerHTML = minus(MF[i].d); mHalt(); MS.e = 1; mDraw(); });
+const cur = () => MS.restrict && MF[MS.i].rx ? Object.assign({}, MF[MS.i], MF[MS.i].rx) : MF[MS.i];
+$('mRestrict').onclick = () => { if (!MF[MS.i].rx){ $('mErr').textContent = MF[MS.i].fi ? 'This function is already one-to-one: no restriction needed.' : ''; return; } MS.restrict = !MS.restrict; if (MS.restrict && !isFinite(cur().f(MS.a))){ MS.a = cur().dom[0] + 1; $('mAx').value = minus(T(MS.a)); } $('mErr').textContent = ''; mHalt(); MS.e = 1; mDraw(); };
+$('mUse').onclick = () => {
+  const a = parseNum($('mAx').value);
+  if (!isFinite(a)){ $('mErr').textContent = 'Type a number for a.'; return; }
+  if (!isFinite(cur().f(a))){ $('mErr').textContent = 'a is outside the domain of f: pick another value.'; return; }
+  $('mErr').textContent = ''; MS.a = a; mHalt(); MS.e = 1; mDraw();
+};
+$('mAx').addEventListener('keydown', e => { if (e.key === 'Enter') $('mUse').click(); });
+$('mAx').addEventListener('input', () => $('mErr').textContent = '');
+function mHalt(){ if (MS.stop){ MS.stop(); MS.stop = null; } $('mPlay').textContent = 'Play'; }
+$('mPlay').onclick = () => { if (MS.stop){ mHalt(); return; } $('mPlay').textContent = 'Pause'; MS.stop = animate(2600, e => { MS.e = ease(e); mDraw(); }, () => { MS.stop = null; $('mPlay').textContent = 'Play'; }); };
+function mDraw(){
+  const F = cur(), e = MS.e, one = !!F.fi || (MS.restrict && F.rx);
+  const P = axes($('mG'), 540, 540, { x0: -7, x1: 7, y0: -7, y1: 7 }, { xg: 1, yg: 1, xt: 2, yt: 2, padL: 30, padB: 26, padT: 10, padR: 10 });
+  mk('line', { x1: P.X(-7), y1: P.Y(-7), x2: P.X(7), y2: P.Y(7), style: 'stroke:var(--muted);stroke-width:1.6;stroke-dasharray:2 5' }, P.cg);
+  txt(P.top, P.X(6.2), P.Y(6.2) + 18, 'y = x', 'labS', { 'text-anchor': 'end', style: 'fill:var(--muted)' });
+  // sample f densely (including near its asymptotes) and draw f and its mirror image
+  const [d0, d1] = F.dom, xs = []; for (let i = 0; i <= 3000; i++){ const t = i / 3000; xs.push(d0 + (d1 - d0) * (t < 0.5 ? 0.5 * Math.pow(2 * t, 3) : 1 - 0.5 * Math.pow(2 - 2 * t, 3))); }
+  (F.br || []).forEach(c => { for (let j = -40; j <= 40; j++) if (j) xs.push(c + Math.sign(j) * Math.pow(10, -Math.abs(j) / 8)); });
+  xs.sort((p, q) => p - q);
+  const pts = xs.map(x => [x, F.f(x)]);
+  pcurve(P, pts, { w: 3.2 });
+  // the moving copy: each point slides straight across the mirror from (x, y) to (y, x)
+  pcurve(P, pts.map(([x, y]) => [x + (y - x) * e, y + (x - y) * e]), { col: one ? 'var(--inv)' : 'var(--ng)', w: 3, dash: one ? '' : '7 5' });
+  // the chosen point and its partner
+  const a = MS.a, b = F.f(a);
+  if (isFinite(b)){
+    mk('line', { x1: P.L, y1: P.Y(b), x2: P.W - P.R, y2: P.Y(b), style: 'stroke:var(--ng);stroke-width:1.5;opacity:.7' }, P.cg);
+    const hits = []; for (let i = 1; i < pts.length; i++){ const [x1, y1] = pts[i - 1], [x2, y2] = pts[i]; if (isFinite(y1) && isFinite(y2) && Math.abs(x2 - x1) < 1 && Math.abs(y2 - y1) < 5 && (y1 - b) * (y2 - b) <= 0 && y1 !== y2){ const xx = x1 + (b - y1) * (x2 - x1) / (y2 - y1); if (!hits.some(h => Math.abs(h - xx) < 0.05)) hits.push(xx); } }
+    hits.forEach(xx => { if (Math.abs(xx) <= 7) mk('circle', { cx: P.X(xx), cy: P.Y(b), r: 5, style: 'fill:none;stroke:var(--ng);stroke-width:2' }, P.m); });
+    MS.hits = hits;
+    const pa = [a + (b - a) * e, b + (a - b) * e];
+    mk('line', { x1: P.X(a), y1: P.Y(b), x2: P.X(b), y2: P.Y(a), style: 'stroke:var(--rt);stroke-width:1.6;stroke-dasharray:4 4' }, P.m);
+    dotAt(P, a, b, 'var(--cv)', 7); dotAt(P, pa[0], pa[1], one ? 'var(--inv)' : 'var(--ng)', 7);
+    if (Math.abs(a) <= 7 && Math.abs(b) <= 7) txt(P.top, P.X(a) + 9, P.Y(b) - 9, `(${T(a)}, ${T(+b.toPrecision(6))})`, 'labS', { style: 'fill:var(--cv)' });
+    if (e > 0.98 && Math.abs(a) <= 7 && Math.abs(b) <= 7) txt(P.top, P.X(b) + 9, P.Y(a) + 18, `(${T(+b.toPrecision(6))}, ${T(a)})`, 'labS', { style: `fill:${one ? 'var(--inv)' : 'var(--ng)'}` });
+  }
+  // panel: formulas, domain/range swap, composition check
+  const nh = (MS.hits || []).length;
+  let pnl = `<div><b class="kv">${minus(F.ft)}</b></div><div><b class="${one ? 'ki' : 'kng'}">${minus(F.it)}</b></div><hr style="border:none;border-top:1px solid var(--line)">`;
+  pnl += `<div>domain of f: <span class="ln">${minus(F.D)}</span></div><div>range of f: <span class="ln">${minus(F.R)}</span></div>`;
+  if (one) pnl += `<div style="color:var(--inv)">domain of f⁻¹: <span class="ln">${minus(F.R.replace('y', 'x'))}</span></div><div style="color:var(--inv)">range of f⁻¹: <span class="ln">${minus(F.D.replace('x', 'y'))}</span></div>`;
+  pnl += `<hr style="border:none;border-top:1px solid var(--line)"><div>horizontal line at y = ${T(+b.toPrecision(6))}: <b class="${nh > 1 ? 'kng' : 'ki'}">${nh} crossing${nh === 1 ? '' : 's'}</b></div>`;
+  if (one && F.fi && isFinite(b)) pnl += `<div>check: f(${T(a)}) = ${T(+b.toPrecision(6))}, f⁻¹(${T(+b.toPrecision(6))}) = <b>${T(+F.fi(b).toPrecision(6))}</b> ✓</div>`;
+  $('mPanel').innerHTML = minus(pnl);
+  $('mEq').innerHTML = minus(`${F.ft}     ${F.it}`);
+  $('mOut').innerHTML = minus(one
+    ? `Every point (a, f(a)) of the purple graph has a partner (f(a), a) on the green one: the coordinates swap, which is a reflection in y = x. The horizontal line at height ${T(+b.toPrecision(6))} crosses f once, so f(x) = ${T(+b.toPrecision(6))} has just one answer and f⁻¹(${T(+b.toPrecision(6))}) = ${T(a)} is well defined.`
+    : `The horizontal line at height ${T(+b.toPrecision(6))} crosses f <b class="kng">${nh} times</b>: ${nh} different inputs give the same output, so “f⁻¹(${T(+b.toPrecision(6))})” would have to be ${nh} numbers at once. The red mirror image fails the vertical line test: it isn’t a function. ${MF[MS.i].rx ? 'Press “Restrict the domain” to keep just one branch.' : ''}`);
+  $('mRestrict').classList.toggle('on', MS.restrict);
+  $('mRestrict').style.display = MF[MS.i].rx ? '' : 'none';
+}
+
+/* =====================================================================
+   4. CONTEXTS
+   ===================================================================== */
+const ALPH = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+const mod = (a, n) => ((a % n) + n) % n;
+function modInv(a, n){ for (let x = 1; x < n; x++) if (mod(a * x, n) === 1) return x; return null; }
+const skid = v => 0.0055 * v * v + 0.21 * v, skidInv = d => (-0.21 + Math.sqrt(0.21 * 0.21 + 4 * 0.0055 * d)) / (2 * 0.0055);
+const XC = [
+  { key: 'temp', lab: 'temperature in °F', v: '98.6', pre: [['body 98.6 °F', '98.6'], ['freezing 32 °F', '32'], ['hot day 104 °F', '104'], ['−40 °F', '-40']], d: 'The US uses °F, most of the world °C. F = 1.8C + 32 turns °C into °F; the inverse C = (F − 32)/1.8 turns °F back into °C: undo +32, then undo ×1.8.' },
+  { key: 'code', lab: 'message (letters)', v: 'MATH', pre: [['×5 + 8', 'MATH', 5, 8], ['Caesar +3', 'HELLO', 1, 3], ['×2 + 1 (broken!)', 'BOOK', 2, 1], ['×13 (broken!)', 'CODE', 13, 0]], d: 'Number the letters A = 0 … Z = 25. To encrypt, multiply by a, add b, and wrap round past 25 (the remainder after dividing by 26, as on 1.B.3’s clock). Decrypting needs the inverse function, which only exists if the code is one-to-one.' },
+  { key: 'taxi', lab: 'fare paid ($)', v: '28', pre: [['$8', '8'], ['$28', '28'], ['$53', '53']], d: 'A taxi charges $3 to start plus $2.50 per km: fare = 3 + 2.5d. From the fare, the inverse finds the distance: d = (fare − 3)/2.5.' },
+  { key: 'skid', lab: 'stopping distance (m)', v: '40', pre: [['14 m', '14'], ['40 m', '40'], ['80 m', '80']], d: 'From 3.B.9, a car at v km/h needs d = 0.0055v² + 0.21v metres to stop. Investigators measure d and need v: the inverse, from the quadratic formula (keeping v ≥ 0, where d is one-to-one).' }
+];
+const XS = { i: 0, a: 5, b: 8 };
+let xMark = null;
+[...$('xTab').children].forEach((b, j) => b.onclick = () => {
+  XS.i = j; [...$('xTab').children].forEach((x, k) => x.classList.toggle('on', k === j));
+  const c = XC[j]; $('xLab').textContent = c.lab; $('xV').value = minus(c.v); $('xDesc').innerHTML = minus(c.d); $('xErr').textContent = '';
+  if (c.key === 'code'){ XS.a = 5; XS.b = 8; }
+  $('xPresets').innerHTML = ''; xMark = buttons('xPresets', c.pre.map(([n]) => ({ n })), k => { const p = c.pre[k]; c.v = p[1]; if (c.key === 'code'){ XS.a = p[2]; XS.b = p[3]; } $('xV').value = minus(c.v); xMark(k); xDraw(); });
+  xDraw();
+});
+$('xUse').onclick = () => { if (xMark) xMark(-1); XC[XS.i].v = $('xV').value; xDraw(); };
+$('xV').addEventListener('keydown', e => { if (e.key === 'Enter') $('xUse').click(); });
+$('xV').addEventListener('input', () => $('xErr').textContent = '');
+function xDraw(){
+  const c = XC[XS.i];
+  if (c.key !== 'code' && !$('xPic')) $('xPicW').innerHTML = '<svg id="xPic" viewBox="0 0 470 360" role="img" aria-label="Picture"></svg>';
+  const pic = $('xPic'), G = $('xG'); if (pic) pic.innerHTML = ''; G.innerHTML = '';
+  let s = '', eq = '';
+  if (c.key !== 'code'){
+    const v = parseNum(String(c.v));
+    if (!isFinite(v)){ $('xErr').textContent = 'Type a number.'; return; }
+    if (c.key === 'taxi' && v < 3){ $('xErr').textContent = 'Every ride costs at least the $3 start fee: fares below $3 are outside the range, so f⁻¹ isn’t defined there.'; return; }
+    if (c.key === 'skid' && (v <= 0 || v > 200)){ $('xErr').textContent = 'Use a stopping distance between 0 and 200 m.'; return; }
+    if (c.key === 'temp' && Math.abs(v) > 300){ $('xErr').textContent = 'Keep the temperature between −300 and 300 °F.'; return; }
+    $('xErr').textContent = '';
+    if (c.key === 'temp'){
+      const C = (v - 32) / 1.8;
+      // picture: two linked scales, °F on top and °C below
+      const L = 40, R = 430, Fx = f => L + (f + 40) / 260 * (R - L), Cx = cc => Fx(1.8 * cc + 32);
+      mk('line', { x1: L, y1: 120, x2: R, y2: 120, style: 'stroke:var(--cv);stroke-width:2' }, pic); mk('line', { x1: L, y1: 240, x2: R, y2: 240, style: 'stroke:var(--inv);stroke-width:2' }, pic);
+      for (let f = -40; f <= 220; f += 40){ mk('line', { x1: Fx(f), y1: 114, x2: Fx(f), y2: 126, style: 'stroke:var(--cv)' }, pic); txt(pic, Fx(f), 106, f, 'tl', { 'text-anchor': 'middle' }); }
+      for (let cc = -40; cc <= 100; cc += 20){ mk('line', { x1: Cx(cc), y1: 234, x2: Cx(cc), y2: 246, style: 'stroke:var(--inv)' }, pic); txt(pic, Cx(cc), 264, cc, 'tl', { 'text-anchor': 'middle' }); }
+      txt(pic, L, 80, '°F', 'lab', { style: 'fill:var(--cv)' }); txt(pic, L, 300, '°C', 'lab', { style: 'fill:var(--inv)' });
+      if (v >= -40 && v <= 220){ mk('line', { x1: Fx(v), y1: 120, x2: Cx(C), y2: 240, style: 'stroke:var(--rt);stroke-width:2.4' }, pic); dotAt({ X: x => x, Y: y => y, m: pic }, Fx(v), 120, 'var(--cv)', 7); dotAt({ X: x => x, Y: y => y, m: pic }, Cx(C), 240, 'var(--inv)', 7); txt(pic, Fx(v), 150, `${num(v, 2)} °F`, 'labS', { 'text-anchor': 'middle', style: 'fill:var(--cv)' }); txt(pic, Cx(C), 222, `${num(C, 1)} °C`, 'labS', { 'text-anchor': 'middle', style: 'fill:var(--inv)' }); }
+      const P = ax2(G, 470, 360, { x0: -50, x1: 230, y0: -50, y1: 230 }, { padL: 44, xT: 'input', yT: 'output' });
+      mk('line', { x1: P.X(-50), y1: P.Y(-50), x2: P.X(230), y2: P.Y(230), style: 'stroke:var(--muted);stroke-dasharray:2 5' }, P.cg);
+      curve(P, x => 1.8 * x + 32); curve(P, x => (x - 32) / 1.8, { col: 'var(--inv)' });
+      dotAt(P, v, C, 'var(--inv)', 6.5); dotAt(P, C, v, 'var(--cv)', 6.5);
+      txt(P.top, P.X(60), P.Y(1.8 * 60 + 32) - 10, 'F = 1.8C + 32', 'labS', { style: 'fill:var(--cv)' }); txt(P.top, P.X(150), P.Y((150 - 32) / 1.8) + 18, 'C = (F − 32)/1.8', 'labS', { style: 'fill:var(--inv)' });
+      eq = `C = (F − 32)/1.8 = (${num(v, 2)} − 32)/1.8 = ${num(C, 2)} °C`;
+      s = `${num(v, 2)} °F is <b class="ki">${num(C, 2)} °C</b>. Undo the steps of F = 1.8C + 32 in reverse: subtract 32, then divide by 1.8. On the right the two lines are mirror images in y = x. ${same(v, -40) ? '−40 is where the scales agree: it lies on y = x, its own partner.' : ''}`;
+    } else if (c.key === 'taxi'){
+      const d = (v - 3) / 2.5;
+      mk('rect', { x: 120, y: 80, width: 230, height: 120, rx: 14, style: 'fill:var(--ink);opacity:.85' }, pic);
+      txt(pic, 235, 130, `$${num(v, 2)}`, 'lab', { 'text-anchor': 'middle', style: 'fill:#ffd36b;font-size:30px;stroke:none' });
+      txt(pic, 235, 175, `= $3 + $2.50 × ${num(d, 2)} km`, 'labS', { 'text-anchor': 'middle', style: 'fill:#ffffff;stroke:none' });
+      mk('line', { x1: 40, y1: 290, x2: 40 + Math.min(390, d * 19), y2: 290, style: 'stroke:var(--inv);stroke-width:6;stroke-linecap:round' }, pic);
+      txt(pic, 40, 320, `distance ${num(d, 2)} km`, 'labS', { style: 'fill:var(--inv)' });
+      const P = ax2(G, 470, 360, { x0: 0, x1: 60, y0: 0, y1: 60 }, { padL: 40, xT: 'input', yT: 'output' });
+      mk('line', { x1: P.X(0), y1: P.Y(0), x2: P.X(60), y2: P.Y(60), style: 'stroke:var(--muted);stroke-dasharray:2 5' }, P.cg);
+      curve(P, x => 3 + 2.5 * x); curve(P, x => x >= 3 ? (x - 3) / 2.5 : NaN, { col: 'var(--inv)' });
+      dotAt(P, d, v, 'var(--cv)', 6.5); dotAt(P, v, d, 'var(--inv)', 6.5);
+      txt(P.top, P.X(12), P.Y(3 + 2.5 * 12) - 8, 'fare(d)', 'labS', { style: 'fill:var(--cv)' }); txt(P.top, P.X(45), P.Y(16.8) - 10, 'd(fare)', 'labS', { style: 'fill:var(--inv)' });
+      eq = `d = (fare − 3)/2.5 = (${T(v)} − 3)/2.5 = ${num(d, 2)} km`;
+      s = `A $${num(v, 2)} fare means <b class="ki">${num(d, 2)} km</b>: take off the $3 start fee, then divide by $2.50 per km. The inverse only accepts fares of $3 or more: that’s the range of the fare function, which becomes the domain of its inverse.`;
+    } else {
+      const vv = skidInv(v), react = 0.21 * vv, brake = 0.0055 * vv * vv;
+      mk('rect', { x: 0, y: 150, width: 470, height: 80, style: 'fill:var(--road);opacity:.35' }, pic);
+      const sc = 400 / 200, x0 = 30;
+      mk('line', { x1: x0, y1: 180, x2: x0 + react * sc, y2: 180, style: 'stroke:var(--muted);stroke-width:3;stroke-dasharray:4 4' }, pic);
+      mk('line', { x1: x0 + react * sc, y1: 172, x2: x0 + v * sc, y2: 172, style: 'stroke:var(--ink);stroke-width:4' }, pic); mk('line', { x1: x0 + react * sc, y1: 188, x2: x0 + v * sc, y2: 188, style: 'stroke:var(--ink);stroke-width:4' }, pic);
+      mk('rect', { x: x0 + v * sc, y: 168, width: 34, height: 24, rx: 5, style: 'fill:var(--cv)' }, pic);
+      txt(pic, x0, 130, `stopped in ${T(v)} m: reaction ${num(react, 1)} m + skid ${num(brake, 1)} m`, 'labS');
+      txt(pic, 235, 280, `speed ≈ ${num(vv, 1)} km/h`, 'lab', { 'text-anchor': 'middle', style: 'fill:var(--inv);font-size:22px' });
+      const P = ax2(G, 470, 360, { x0: 0, x1: 160, y0: 0, y1: 160 }, { padL: 40, xT: 'input', yT: 'output' });
+      mk('line', { x1: P.X(0), y1: P.Y(0), x2: P.X(160), y2: P.Y(160), style: 'stroke:var(--muted);stroke-dasharray:2 5' }, P.cg);
+      curve(P, skid); curve(P, skidInv, { col: 'var(--inv)' });
+      dotAt(P, vv, v, 'var(--cv)', 6.5); dotAt(P, v, vv, 'var(--inv)', 6.5);
+      txt(P.top, P.X(110), P.Y(skid(110)) + 4, 'd(v)', 'labS', { style: 'fill:var(--cv)' }); txt(P.top, P.X(130), P.Y(skidInv(130)) + 18, 'v(d)', 'labS', { style: 'fill:var(--inv)' });
+      eq = `v = (−0.21 + √(0.21² + 0.022·${T(v)})) / 0.011 = ${num(vv, 1)} km/h`;
+      s = `Solving 0.0055v² + 0.21v = ${T(v)} for v with the quadratic formula and keeping the positive root gives <b class="ki">v ≈ ${num(vv, 1)} km/h</b>. On v ≥ 0 the stopping distance always increases, so it’s one-to-one and has an inverse; the negative root belongs to the other half of the parabola, which we cut off.`;
+    }
+  } else {
+    // ----- affine cipher: E(x) = (a·x + b) mod 26 -----
+    const a = XS.a, b = XS.b, msg = String(c.v).toUpperCase().replace(/[^A-Z]/g, '');
+    if (!msg){ $('xErr').textContent = 'Type a message using the letters A to Z.'; return; }
+    if (msg.length > 14){ $('xErr').textContent = 'Keep the message to 14 letters or fewer.'; return; }
+    $('xErr').textContent = '';
+    const E = x => mod(a * x + b, 26), ai = modInv(a, 26), D = y => ai === null ? null : mod(ai * (y - b), 26);
+    const enc = [...msg].map(ch => ALPH[E(ALPH.indexOf(ch))]).join('');
+    const counts = {}; for (let x = 0; x < 26; x++) counts[E(x)] = (counts[E(x)] || 0) + 1;
+    // the table: every letter and where it goes; clashes in red
+    let t = '<table class="ctab"><tr><th>in</th>' + [...ALPH].map(l => `<td>${l}</td>`).join('') + '</tr><tr><th>out</th>' + [...ALPH].map((l, x) => `<td class="${counts[E(x)] > 1 ? 'clash' : ''}">${ALPH[E(x)]}</td>`).join('') + '</tr></table>';
+    $('xPicW').innerHTML = `<div class="panel"><div>code: <span class="ln">E(x) = (${a === 1 ? '' : a}x + ${b}) mod 26</span></div><div style="margin-top:6px">message <span class="ln">${msg}</span> → coded <b class="kv ln">${enc}</b></div><div>decoded <b class="${ai === null ? 'kng' : 'ki'} ln">${ai === null ? 'impossible' : [...enc].map(ch => ALPH[D(ALPH.indexOf(ch))]).join('')}</b></div>${t}</div>`;
+    const P = ax2(G, 470, 360, { x0: -1, x1: 26, y0: -1, y1: 26 }, { padL: 36, xT: 'letter in', yT: 'letter out' });
+    for (let x = 0; x < 26; x++) dotAt(P, x, E(x), counts[E(x)] > 1 ? 'var(--ng)' : 'var(--cv)', 4.5);
+    const twice = Object.entries(counts).find(([, n]) => n > 1);
+    if (twice) mk('line', { x1: P.L, y1: P.Y(+twice[0]), x2: P.W - P.R, y2: P.Y(+twice[0]), style: 'stroke:var(--ng);stroke-width:1.5;opacity:.7' }, P.cg);
+    eq = ai === null ? `E(x) = (${a === 1 ? '' : a}x + ${b}) mod 26: not one-to-one, no inverse` : `E(x) = (${a === 1 ? '' : a}x + ${b}) mod 26,   D(y) = ${ai === 1 ? '' : ai}(y − ${b}) mod 26`;
+    s = ai === null ? `<b class="kng">This code can’t be decoded.</b> ${a} and 26 share a factor, so different letters land on the same code letter (red): the 26 letters only produce ${Object.keys(counts).length} different code letters: for example ${ALPH[0]} and ${ALPH[26 / gcd(a, 26)]} both become ${ALPH[E(0)]}. The horizontal line on the right hits ${twice ? twice[1] : 2} points. A receiver who sees ${ALPH[E(0)]} can’t tell which letter was meant: not one-to-one, so no inverse.`
+      : a === 1 ? `A Caesar shift: decoding just shifts back by ${b}. Every letter goes to a different letter, so the code is one-to-one and D = E⁻¹ exists.` : `Decoding undoes the steps in reverse: subtract ${b}, then “divide by ${a}”. Dividing on a 26-hour clock means multiplying by ${ai}, because ${a} × ${ai} = ${a * ai} = ${Math.floor(a * ai / 26)}·26 + 1. Every letter goes to a different letter (no two dots at the same height), so the code is one-to-one and D = E⁻¹ exists.`;
+    $('xEq').innerHTML = minus(eq); $('xOut').innerHTML = minus(s); return;
+  }
+  $('xEq').innerHTML = minus(eq); $('xOut').innerHTML = minus(s);
+}
+
+/* =====================================================================
+   5. TRAPS
+   ===================================================================== */
+(function(){
+  const diag = P => mk('line', { x1: P.X(P.b.x0), y1: P.Y(P.b.x0), x2: P.X(P.b.x1), y2: P.Y(P.b.x1), style: 'stroke:var(--muted);stroke-width:1.2;stroke-dasharray:2 4' }, P.cg);
+  let P = ax2($('tr1'), 300, 190, { x0: -4, x1: 8, y0: -4, y1: 8 }, { padL: 26, padB: 22, padT: 8, padR: 8 }); diag(P);
+  curve(P, x => 2 * x + 3, { w: 2.4 }); curve(P, x => (x - 3) / 2, { col: 'var(--inv)', w: 2.4 }); curve(P, x => 1 / (2 * x + 3), { col: 'var(--ng)', w: 2, dash: '5 4', breaks: [-1.5] });
+  P = ax2($('tr2'), 300, 190, { x0: 0, x1: 14, y0: -4, y1: 7 }, { padL: 26, padB: 22, padT: 8, padR: 8 });
+  curve(P, x => (x - 3) / 2, { col: 'var(--inv)', w: 2.4 }); curve(P, x => x / 2 - 3, { col: 'var(--ng)', w: 2, dash: '5 4' });
+  dotAt(P, 11, 4, 'var(--inv)', 5); dotAt(P, 11, 2.5, 'var(--ng)', 5);
+  txt(P.top, P.X(11) - 6, P.Y(4) - 8, '4 ✓', 'labS', { 'text-anchor': 'end', style: 'fill:var(--inv)' }); txt(P.top, P.X(11) + 6, P.Y(2.5) + 16, '2.5 ✕', 'labS', { style: 'fill:var(--ng)' });
+  P = ax2($('tr3'), 300, 190, { x0: -4, x1: 4, y0: -1, y1: 12 }, { padL: 26, padB: 22, padT: 8, padR: 8 });
+  curve(P, x => x * x, { w: 2.4 }); mk('line', { x1: P.L, y1: P.Y(9), x2: P.W - P.R, y2: P.Y(9), style: 'stroke:var(--ng);stroke-width:1.6' }, P.cg);
+  dotAt(P, -3, 9, 'var(--ng)', 5); dotAt(P, 3, 9, 'var(--ng)', 5);
+  txt(P.top, P.X(-3), P.Y(9) - 8, '−3', 'labS', { 'text-anchor': 'middle', style: 'fill:var(--ng)' }); txt(P.top, P.X(3), P.Y(9) - 8, '3', 'labS', { 'text-anchor': 'middle', style: 'fill:var(--ng)' });
+})();
+
+/* =====================================================================
+   6. QUIZ
+   ===================================================================== */
+const Q = { right: 0, total: 0 };
+let qq = null;
+const qTitles = { find: 'Find the inverse', eval: 'Evaluate the inverse', has: 'Does it have an inverse?', trap: 'Spot the trap' };
+function shuffle(a){ for (let i = a.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+function qReset(){ ['qChoice', 'qExpr'].forEach(id => $(id).innerHTML = ''); $('qFb').className = 'feedback'; $('qFb').innerHTML = ''; $('qErr').textContent = ''; $('qIn').style.display = ''; $('q1').value = ''; }
+function qScore(ok){ if (qq.counted) return; qq.counted = true; Q.total++; if (ok) Q.right++; $('score').textContent = `Score: ${Q.right} / ${Q.total}`; }
+function qFeedback(ok, html){ $('qFb').className = 'feedback ' + (ok ? 'ok' : 'bad'); $('qFb').innerHTML = (ok ? '<b>Right.</b> ' : '<b>Not quite.</b> ') + minus(html); }
+function qChoices(list, correctIdx, explain){
+  $('qIn').style.display = 'none'; qq.correctIdx = correctIdx; qq.explainFn = explain;
+  list.forEach((c, k) => { const b = document.createElement('button'); b.innerHTML = minus(c); b.onclick = () => { const ok = k === correctIdx; qScore(ok); [...$('qChoice').children].forEach((x, j) => { x.classList.remove('right', 'wrong'); if (j === k) x.classList.add(ok ? 'right' : 'wrong'); }); qFeedback(ok, explain(k)); }; $('qChoice').appendChild(b); });
+}
+const sg = v => v < 0 ? `− ${Math.abs(v)}` : `+ ${v}`, sgI = v => v < 0 ? `+ ${Math.abs(v)}` : `− ${v}`;
+function qFind(){
+  const kind = pick(['lin', 'lin', 'cube', 'rat', 'div']);
+  let f, ok, bad, why;
+  if (kind === 'lin'){ const a = pick([2, 3, 4, 5, -2]), b = nz(-9, 9); f = `f(x) = ${a}x ${sg(b)}`; ok = `f⁻¹(x) = (x ${sgI(b)})/${a < 0 ? '(' + a + ')' : a}`; bad = [`f⁻¹(x) = x/${a < 0 ? '(' + a + ')' : a} ${sgI(b)}`, `f⁻¹(x) = 1/(${a}x ${sg(b)})`, `f⁻¹(x) = (x ${sg(b)})/${a < 0 ? '(' + a + ')' : a}`]; why = `f multiplies by ${a}, then ${b < 0 ? 'subtracts ' + (-b) : 'adds ' + b}. Undo in reverse: ${b < 0 ? 'add ' + (-b) : 'subtract ' + b}, then divide by ${a}.`; }
+  else if (kind === 'cube'){ const b = nz(-6, 6); f = `f(x) = x³ ${sg(b)}`; ok = `f⁻¹(x) = ∛(x ${sgI(b)})`; bad = [`f⁻¹(x) = ∛x ${sgI(b)}`, `f⁻¹(x) = 1/(x³ ${sg(b)})`, `f⁻¹(x) = (x ${sgI(b)})³`]; why = `Cube, then ${b < 0 ? 'subtract ' + (-b) : 'add ' + b}. Undo: ${b < 0 ? 'add ' + (-b) : 'subtract ' + b} first, then cube root.`; }
+  else if (kind === 'div'){ const a = pick([2, 3, 4]), b = nz(-6, 6); f = `f(x) = (x ${sg(b)})/${a}`; ok = `f⁻¹(x) = ${a}x ${sgI(b)}`; bad = [`f⁻¹(x) = ${a}(x ${sgI(b)})`, `f⁻¹(x) = ${a}/(x ${sg(b)})`, `f⁻¹(x) = (x ${sgI(b)})/${a}`]; why = `${b < 0 ? 'Subtract ' + (-b) : 'Add ' + b}, then divide by ${a}. Undo: multiply by ${a} first, then ${b < 0 ? 'add ' + (-b) : 'subtract ' + b}.`; }
+  else { const c = nz(-4, 4); f = `f(x) = 1/(x ${c < 0 ? '+ ' + (-c) : '− ' + c})`; ok = `f⁻¹(x) = 1/x ${c < 0 ? '− ' + (-c) : '+ ' + c}`; bad = [`f⁻¹(x) = 1/(x ${c < 0 ? '− ' + (-c) : '+ ' + c})`, `f⁻¹(x) = x ${c < 0 ? '+ ' + (-c) : '− ' + c}`, `f⁻¹(x) = 1/x ${c < 0 ? '+ ' + (-c) : '− ' + c}`]; why = `f subtracts ${c}, then takes 1/x. Undo: 1/x first (it is its own inverse), then add ${c}. Check with swap-and-solve: x = 1/(y − ${c}) gives y − ${c} = 1/x.`; }
+  const opts = shuffle([ok, ...bad]), idx = opts.indexOf(ok);
+  $('qText').innerHTML = 'Which is the inverse?'; $('qExpr').innerHTML = minus(f);
+  qChoices(opts, idx, j => (j === idx ? '' : /1\/\(/.test(opts[j]) && kind !== 'rat' ? 'f⁻¹ means “undo f”, not 1/f. ' : 'Check the order: undo the last step first. ') + why);
+}
+function qEval(){
+  if (Math.random() < 0.5){
+    const a = pick([2, 3, 4, 5]), b = nz(-9, 9), x = ri(-5, 8), y = a * x + b;
+    Object.assign(qq, { ans: x, why: `f⁻¹(${y}) is the x with f(x) = ${y}: ${a}x ${sg(b)} = ${y}, so ${a}x = ${y - b} and x = ${x}.`, traps: [[a * y + b, 'That’s f(' + y + '), not f⁻¹(' + y + ').'], [1 / y, 'f⁻¹ doesn’t mean 1/f.']] });
+    $('qText').innerHTML = minus(`f(x) = ${a}x ${sg(b)}. Find f⁻¹(${y}).`);
+  } else {
+    const xs = [1, 2, 3, 4, 5], ys = shuffle([2, 5, 7, 9, 11, 13, 4].slice()).slice(0, 5), k = ri(0, 4);
+    Object.assign(qq, { ans: xs[k], why: `Find ${ys[k]} in the f(x) row: it sits above x = ${xs[k]}, so f⁻¹(${ys[k]}) = ${xs[k]}. Reading the table upwards is running f backwards.`, traps: [[ys.includes(ys[k]) && xs.includes(ys[k]) ? ys[xs.indexOf(ys[k])] : NaN, 'That’s f(' + ys[k] + '): you read the table forwards.']] });
+    $('qText').innerHTML = minus(`Use the table to find f⁻¹(${ys[k]}).`);
+    $('qExpr').innerHTML = `<table class="qtab"><tr><th>x</th>${xs.map(v => `<td>${v}</td>`).join('')}</tr><tr><th>f(x)</th>${ys.map(v => `<td>${v}</td>`).join('')}</tr></table>`;
+  }
+  $('qL1').textContent = 'f⁻¹ =';
+}
+function qHas(){
+  const c = pick([
+    ['f(x) = x²', 1, 'f(2) = f(−2) = 4: two inputs, one output. Not one-to-one (fails the horizontal line test).'],
+    ['f(x) = x² for x ≥ 0', 0, 'Restricted to x ≥ 0 it is one-to-one; its inverse is √x.'],
+    ['f(x) = x³', 0, 'Always increasing: every horizontal line crosses once. Inverse ∛x.'],
+    ['f(x) = |x|', 1, 'f(3) = f(−3) = 3: not one-to-one.'],
+    ['f(x) = 5 (a constant)', 1, 'Every input gives 5: maximally not one-to-one. A horizontal line at y = 5 hits the whole graph.'],
+    ['f(x) = 2ˣ', 0, 'Always increasing: one-to-one. Its inverse is log₂ x (3.B.14).'],
+    ['f(x) = 1/x', 0, 'One-to-one, and in fact its own inverse.'],
+    ['f(x) = x³ − 3x', 1, 'f(0) = f(√3) = 0: the wiggle makes some heights repeat.'],
+    ['the table x: 1 2 3 4, f(x): 6 8 6 9', 1, 'f(1) = f(3) = 6: two inputs share an output.'],
+    ['f(x) = −4x + 7', 0, 'A non-flat line: one-to-one, inverse (7 − x)/4.']
+  ]);
+  $('qText').innerHTML = 'Does this function have an inverse (on the stated domain)?'; $('qExpr').innerHTML = minus(c[0]);
+  qChoices(['Yes, it’s one-to-one', 'No, it isn’t one-to-one'], c[1], j => (j === c[1] ? '' : 'Check whether two different inputs can give the same output. ') + c[2]);
+}
+function qTrap(){
+  const c = pick([
+    () => ({ s: 'f(x) = x + 2. Which is f⁻¹(x)?', ok: 'x − 2', bad: ['1/(x + 2)', '−x − 2', 'x + 2'], why: 'Undo adding 2 by subtracting 2. 1/(x + 2) is 1/f(x), a different thing: the −1 in f⁻¹ is not an exponent.' }),
+    () => ({ s: 'f has domain x ≥ 0 and range y ≥ 3. What is the domain of f⁻¹?', ok: 'x ≥ 3', bad: ['x ≥ 0', 'all x', 'x ≤ 3'], why: 'Inverting swaps inputs and outputs, so the domain of f⁻¹ is the range of f: x ≥ 3.' }),
+    () => ({ s: 'f(4) = 9. Which must be true?', ok: 'f⁻¹(9) = 4', bad: ['f⁻¹(4) = 9', 'f⁻¹(9) = 1/4', 'f(9) = 4'], why: 'f⁻¹ runs f backwards: f(4) = 9 means f⁻¹(9) = 4. Nothing is known about f(9) or f⁻¹(4).' }),
+    () => ({ s: 'f: multiply by 3, then subtract 5. In what order does f⁻¹ undo it?', ok: 'add 5, then divide by 3', bad: ['divide by 3, then add 5', 'subtract 5, then divide by 3', 'divide by 3, then subtract 5'], why: 'Undo the last step first: the +5 undoes the −5, then ÷3 undoes ×3. f⁻¹(x) = (x + 5)/3.' }),
+    () => ({ s: 'The point (2, 7) is on the graph of f. Which point is on the graph of f⁻¹?', ok: '(7, 2)', bad: ['(−2, −7)', '(2, 1/7)', '(−7, −2)'], why: 'The coordinates swap: a reflection in y = x sends (2, 7) to (7, 2).' })
+  ])();
+  const opts = shuffle([c.ok, ...c.bad]), idx = opts.indexOf(c.ok);
+  $('qText').innerHTML = minus(c.s); qChoices(opts, idx, j => (j === idx ? '' : 'Not that one. ') + c.why);
+}
+let lastType = null;
+function qNew(){
+  qReset();
+  let t; do { t = pick(['find', 'eval', 'has', 'trap']); } while (t === lastType);
+  lastType = t; qq = { type: t, counted: false };
+  $('qTitle').textContent = qTitles[t];
+  ({ find: qFind, eval: qEval, has: qHas, trap: qTrap })[t]();
+}
+$('qCheck').onclick = () => {
+  $('qErr').textContent = '';
+  const v = parseNum($('q1').value);
+  if ($('q1').value.trim() === '' || !isFinite(v)){ $('qErr').textContent = 'Type a number.'; return; }
+  const ok = same(v, qq.ans); let why = qq.why;
+  if (!ok){ const t = (qq.traps || []).find(([x]) => isFinite(x) && same(v, x)); if (t) why = t[1] + ' ' + why; }
+  qScore(ok); qFeedback(ok, why);
+};
+$('q1').addEventListener('keydown', e => { if (e.key === 'Enter') $('qCheck').click(); });
+$('q1').addEventListener('input', () => $('qErr').textContent = '');
+$('qShow').onclick = () => {
+  qScore(false);
+  if (qq.correctIdx !== undefined){ [...$('qChoice').children].forEach((b, j) => { if (j === qq.correctIdx) b.classList.add('right'); }); qFeedback(false, qq.explainFn(qq.correctIdx)); return; }
+  $('q1').value = String(qq.ans); $('qFb').className = 'feedback bad'; $('qFb').innerHTML = '<b>Answer filled in.</b> ' + minus(qq.why);
+};
+$('qNew').onclick = qNew;
+
+/* =====================================================================
+   7. START
+   ===================================================================== */
+selectOnFocus(['cAmt', 'cX', 'mAx', 'xV', 'q1']);
+$('cPresets').children[0].click();
+$('mPresets').children[0].click();
+$('xTab').children[0].click();
+qNew();
+</script>
+<script src="../shared/toc.js"></script>
+<script src="../shared/nav.js"></script>
+</body></html>
