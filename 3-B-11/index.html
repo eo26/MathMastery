@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>3.B.11 Rational Expressions and Functions · MathMastery</title>
+<!-- Fonts: a book serif for prose, a clean sans for UI, a mono for numbers -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<!-- MathJax renders the few formulas on the page (SVG output needs no external stylesheet) -->
+<script>
+  window.MathJax = { tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] }, svg: { fontCache: 'global' } };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<style>
+/* ===================== Theme ===================== */
+:root{
+  --bg:#f7f5ef; --paper:#ffffff; --ink:#1f1e1d; --muted:#6b6a66; --line:#e4e0d5; --line2:#c9c5b8;
+  --accent:#534AB7; --accent-bg:#EEEDFE;
+  --pos:#1D9E75; --neg:#D85A30; --pt:#7F77DD; --pt-soft:#AFA9EC; --pt-dark:#534AB7;
+  --pos-new:#9FE1CB; --neg-new:#F0997B; --ok:#3B6D11; --ok-bg:#EAF3DE; --bad:#A32D2D; --bad-bg:#FCEBEB; --note-bg:#FAF3E3; --note-line:#E7C98A;
+  --serif:"Source Serif 4", Georgia, "Times New Roman", serif;
+  --sans:"IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#191817; --paper:#232220; --ink:#ecebe6; --muted:#a3a29c; --line:#383733; --line2:#55534e;
+    --accent:#AFA9EC; --accent-bg:#2c2852; --pt-dark:#CECBF6; --pt-soft:#6f68b8; --pos-new:#5DCAA5; --neg-new:#F5C4B3;
+    --ok:#C0DD97; --ok-bg:#24400d; --bad:#F7C1C1; --bad-bg:#5a1c1c; --note-bg:#2b261b; --note-line:#6b5626;
+  }
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.7 var(--serif);-webkit-font-smoothing:antialiased}
+
+/* ===================== Layout ===================== */
+.topbar{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1000px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:14px;font:500 13px/1 var(--sans);color:var(--muted)}
+.brand{color:var(--ink);font-weight:600;letter-spacing:.02em}
+.brand b{color:var(--accent)}
+.crumbs{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pid{font-family:var(--mono);color:var(--accent);background:var(--accent-bg);padding:4px 8px;border-radius:6px}
+.prose{max-width:720px;margin:0 auto;padding:0 20px}
+.wide{max-width:1000px;margin:0 auto;padding:0 20px}
+
+/* ===================== Hero ===================== */
+.hero{padding:48px 0 12px}
+.kicker{font:600 13px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1{font:700 46px/1.1 var(--serif);margin:12px 0 14px;letter-spacing:-.01em}
+.dek{font-size:21px;color:var(--muted);margin:0 0 22px;font-style:italic}
+.tiers{display:flex;gap:6px;flex-wrap:wrap;font:500 13px/1 var(--sans);margin-bottom:8px}
+.tier{padding:7px 12px;border-radius:999px;border:1px solid var(--line2);color:var(--muted)}
+.tier.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.tier small{opacity:.7;margin-left:4px}
+
+/* ===================== Text elements ===================== */
+h2{font:700 28px/1.25 var(--serif);margin:56px 0 10px;display:flex;gap:12px;align-items:baseline}
+h2 .n{font:600 14px/1 var(--mono);color:var(--accent);min-width:28px}
+p{margin:0 0 16px}
+em.key{font-style:normal;background:linear-gradient(transparent 62%,var(--accent-bg) 62%);padding:0 2px}
+.goals{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:18px 22px;margin:22px 0 0;font:15.5px/1.6 var(--sans)}
+.goals h3{font:600 12px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
+.goals ul{margin:0;padding-left:20px}
+.note{background:var(--note-bg);border-left:4px solid var(--note-line);border-radius:0 10px 10px 0;padding:14px 18px;margin:20px 0;font:15.5px/1.6 var(--sans)}
+.note b{font-weight:600}
+.notice{list-style:none;padding:0;margin:8px 0 18px;counter-reset:n}
+.notice li{position:relative;padding:12px 0 12px 46px;border-top:1px solid var(--line)}
+.notice li:last-child{border-bottom:1px solid var(--line)}
+.notice li::before{counter-increment:n;content:counter(n);position:absolute;left:4px;top:13px;width:26px;height:26px;border-radius:50%;background:var(--accent-bg);color:var(--accent);font:600 13px/26px var(--mono);text-align:center}
+.goes{list-style:none;padding:0;margin:8px 0 18px}
+.goes li{padding:12px 0;border-top:1px solid var(--line)}
+.goes li:last-child{border-bottom:1px solid var(--line)}
+.math{overflow-x:auto;margin:12px 0 18px;padding:14px 18px;background:var(--paper);border:1px solid var(--line);border-radius:12px}
+.math .cap{font:14px/1.5 var(--sans);color:var(--muted);margin-top:4px}
+.mono{font-family:var(--mono);font-size:.92em;white-space:nowrap}
+.pos{color:var(--pos);font-weight:600}.neg{color:var(--neg);font-weight:600}.pt{color:var(--pt-dark);font-weight:600}
+
+/* ===================== Vocabulary ===================== */
+.vocab{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin:14px 0 8px}
+.term{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font:14.5px/1.5 var(--sans)}
+.term b{display:block;font:600 15px/1.3 var(--serif);margin-bottom:4px}
+
+/* ===================== Interactive cards ===================== */
+.card{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:18px 20px 20px;margin:26px 0;box-shadow:0 1px 0 var(--line),0 12px 32px -22px rgba(0,0,0,.25);font-family:var(--sans)}
+.card-h{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.card-h .tag{font:600 11px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--accent);background:var(--accent-bg);padding:5px 8px;border-radius:6px}
+.card-h h3{font:600 18px/1.3 var(--sans);margin:0}
+.card-h .sub{color:var(--muted);font-size:14.5px;flex-basis:100%}
+.panel-label{font:600 11px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:12px 0 4px;display:flex;justify-content:space-between}
+.panel-label span:last-child{letter-spacing:0;text-transform:none;font-weight:500}
+svg.nl{display:block;width:100%;height:auto;border:1px solid var(--line);border-radius:12px;background:var(--bg);touch-action:manipulation}
+svg.clickable{cursor:pointer}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:12px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0}
+button{font:500 14px/1 var(--sans);padding:9px 14px;border-radius:9px;border:1px solid var(--line2);background:var(--paper);color:var(--ink);cursor:pointer;transition:background .15s,border-color .15s}
+button:hover{border-color:var(--ink)}
+button.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+button.preset.on{background:var(--accent-bg);border-color:var(--accent);color:var(--accent)}
+button:disabled{opacity:.45;cursor:default}
+.desc{min-height:24px;color:var(--muted);font-size:14.5px;margin:2px 0 6px}
+.inputs{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;margin:12px 0 4px}
+.field{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.field input{width:92px;font:500 18px/1 var(--mono);padding:9px 10px;border-radius:9px;border:2px solid var(--line2);background:var(--bg);color:var(--ink);text-align:center}
+.field input:focus{outline:none;border-color:var(--accent)}
+.field i,.eq i,.sym{font:italic 600 1.15em var(--serif);text-transform:none;letter-spacing:0;color:var(--pt-dark)}
+.field.start input{border-color:var(--pt-soft)}
+.field.slide input{border-color:var(--pt)}
+.eq{font:500 20px/1 var(--mono);padding:10px 14px;background:var(--bg);border-radius:10px;border:1px solid var(--line)}
+.err{color:var(--bad);font-size:14px;min-height:20px;margin:2px 0}
+.readout{margin-top:12px;padding:12px 14px;background:var(--bg);border-radius:10px;border:1px solid var(--line);font-size:15px;line-height:1.55;min-height:48px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:12px;font-size:13px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{display:inline-block;width:14px;height:14px;border-radius:50%}
+.sw.pos{background:var(--pos)}.sw.neg{border:2.4px solid var(--neg)}
+.sw.x{position:relative;background:var(--pos);opacity:.45}.sw.x::after{content:'✕';position:absolute;inset:-1px 0 0 0;color:var(--neg);font:700 13px/1 var(--sans);text-align:center}
+.sw.posnew{background:var(--pos-new);border:1.5px solid var(--pos)}.sw.negnew{border:2.4px solid var(--neg-new)}.sw.pt{background:var(--pt)}
+.sw.mv{width:22px;height:4px;border-radius:2px;background:var(--pt-soft)}
+.sw.rl{width:22px;height:0;border-top:2px dashed var(--ink);border-radius:0;opacity:.7}
+.feedback{margin-top:10px;padding:12px 14px;border-radius:10px;font-size:15px;line-height:1.55;display:none}
+.feedback.ok{display:block;background:var(--ok-bg);color:var(--ok)}
+.feedback.bad{display:block;background:var(--bad-bg);color:var(--bad)}
+.feedback.info{display:block;background:var(--accent-bg);color:var(--accent)}
+.score{margin-left:auto;font:600 14px/1 var(--mono);color:var(--muted)}
+
+/* ===================== Footer nav ===================== */
+.pager{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:56px 0 18px;font-family:var(--sans)}
+.pager a,.pager div{display:block;padding:16px 18px;border:1px solid var(--line);border-radius:14px;background:var(--paper);color:var(--ink);text-decoration:none}
+.pager small{display:block;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.pager .next{text-align:right}
+.pager .soon{opacity:.6}
+.meta{font:13px/1.6 var(--sans);color:var(--muted);text-align:center;padding:10px 0 50px}
+
+@media (max-width:720px){
+  body{font-size:17px}
+  h1{font-size:34px}
+  .dek{font-size:18px}
+  h2{font-size:24px}
+  .card{padding:14px 12px 16px;border-radius:14px}
+  .crumbs{display:none}
+  svg.nl{min-width:640px}
+}
+</style>
+<meta name="mm-site" content="1">
+<link rel="stylesheet" href="../shared/nav.css">
+</head>
+<body>
+<style>
+/* ===================== Page-specific styles (3.B.11) ===================== */
+/* curve = purple, top factors / x-intercepts = gold, bottom factors / vertical asymptotes = red, cancelled factors / holes = grey, horizontal or slant asymptote = green */
+:root{ --cv:#7F77DD; --top:#B86E00; --bot:#D8443A; --hole:#7a7a7a; --ha:#1D9E75; --err:#D8443A; --no:#D8443A; --water:#6EA2F5; --salt:#E08A2E; }
+@media (prefers-color-scheme:dark){ :root{ --cv:#AFA9EC; --top:#FFB547; --bot:#F07B72; --hole:#a8a8a8; --ha:#5DCAA5; --err:#F07B72; --no:#F07B72; --water:#6EA2F5; --salt:#F2B266; } }
+.kv{color:var(--cv);font-weight:700}.kt{color:var(--top);font-weight:700}.kb{color:var(--bot);font-weight:700}.kh{color:var(--hole);font-weight:700}.ka{color:var(--ha);font-weight:700}
+svg{user-select:none;-webkit-user-select:none}
+svg text.lab,svg text.labS{fill:var(--ink)}
+.stack svg{width:100%;height:auto;display:block;background:var(--bg);border:1px solid var(--line);border-radius:10px;margin-top:6px}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:10px;align-items:start}
+.split svg{width:100%;height:auto;display:block;background:var(--bg);border:1px solid var(--line);border-radius:10px}
+.field.sm input{width:64px}
+.field.wd input{width:200px}
+.field.xw input{width:300px;font-family:var(--mono)}
+.toggle button.on{background:var(--accent-bg);border-color:var(--accent);color:var(--accent)}
+.bigpoly{font:600 16px var(--mono);margin:10px 0 0;padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);overflow-x:auto;white-space:nowrap}
+.legend span span{display:inline}
+.rfrac{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;margin:0 6px}
+.rfrac>.num,.rfrac>.den{display:flex;gap:4px;align-items:center;padding:3px 4px;flex-wrap:nowrap}
+.rfrac>.num{border-bottom:2px solid var(--ink)}
+.fchip{font:600 14.5px var(--mono);padding:2px 7px;border-radius:7px;border:1.5px solid var(--line);background:var(--bg);white-space:nowrap}
+.fchip.t{border-color:var(--top);color:var(--top)}
+.fchip.b{border-color:var(--bot);color:var(--bot)}
+.fchip.k{border-color:var(--line);color:var(--ink)}
+.fchip.c{border-color:var(--hole);color:var(--hole);text-decoration:line-through;opacity:.6}
+.fchip.new{border-style:dashed;border-color:var(--ha);color:var(--ha)}
+.fchip.p{border-color:var(--cv);color:var(--cv)}
+.oprow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font:600 20px var(--mono);margin:8px 0}
+.steps{margin:6px 0 0;padding-left:22px}
+.steps li{margin:6px 0;font-size:15px;line-height:1.6}
+.check{margin-top:8px;font:14px var(--mono);color:var(--muted)}
+.traps{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:8px}
+.traps .t{border:1px solid var(--line);border-radius:10px;background:var(--bg);padding:10px}
+.traps .t h4{margin:0 0 4px;font:600 15px var(--sans)}
+.traps .t p{margin:6px 0 0;font-size:14.5px;line-height:1.5;color:var(--muted)}
+.traps svg{width:100%;height:auto;display:block}
+.qtext{font:17px/1.55 var(--serif);margin:4px 0 10px}
+.qexpr{font:600 22px var(--mono);margin:4px 0 10px}
+.choice{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 0}.choice button{min-width:120px;font-family:var(--mono)}
+.choice button.right{border-color:var(--ok);background:var(--ok-bg);color:var(--ok)}.choice button.wrong{border-color:var(--bad);background:var(--bad-bg);color:var(--bad)}
+</style>
+
+<!-- ===================== Top bar ===================== -->
+<div class="topbar"><div class="topbar-in">
+  <span class="brand">Math<b>Mastery</b></span>
+  <span class="crumbs">Chapter 3 · Algebra › Basics</span>
+  <span class="pid">3.B.11</span>
+</div></div>
+
+<!-- ===================== Hero ===================== -->
+<header class="prose hero">
+  <div class="kicker">Chapter 3 · Algebra</div>
+  <h1>Rational Expressions and Functions</h1>
+  <p class="dek">Divide one polynomial by another and you get fractions with <i>x</i> in them. They follow the same rules as 1.B.3’s fractions, and their graphs are shaped by one thing you can never do: divide by zero.</p>
+  <div class="tiers" aria-label="Tier">
+    <span class="tier on">Basics <small>you are here</small></span>
+    <span class="tier">Undergraduate</span>
+    <span class="tier">Masters</span>
+  </div>
+  <div class="goals">
+    <h3>On this page</h3>
+    <ul>
+      <li>Read a <b>rational expression</b> <i>p</i>(<i>x</i>)/<i>q</i>(<i>x</i>) and find its <b>domain</b>: every <i>x</i> except the zeros of the bottom.</li>
+      <li>Simplify by <b>cancelling common factors</b> (never terms), and multiply, divide, add and subtract with a <b>least common denominator</b>.</li>
+      <li>Read the graph of a <b>rational function</b> from its factors: <b>vertical asymptotes</b>, <b>holes</b>, <i>x</i>-intercepts, and the <b>horizontal</b> or <b>slant asymptote</b>.</li>
+      <li>Solve <b>rational equations</b> and throw out <b>extraneous solutions</b> that would divide by zero.</li>
+      <li>Use rational functions for work rates, average cost, mixtures and average speed.</li>
+    </ul>
+  </div>
+</header>
+
+<main>
+<!-- ===================== §1 ===================== -->
+<section class="prose">
+  <h2><span class="n">1</span>Fractions with x in them</h2>
+  <p>A <b>rational expression</b> is one polynomial divided by another, like (<i>x</i> + 1)/(<i>x</i> − 2). Just as a fraction is a ratio of whole numbers (1.B.3), this is a ratio of polynomials, hence “rational”. A <b>rational function</b> is <i>y</i> = <i>p</i>(<i>x</i>)/<i>q</i>(<i>x</i>).</p>
+  <p>One rule rules them all: <em class="key">you can’t divide by zero.</em> So the <b>domain</b> is every <i>x</i> except where the bottom is 0. For (<i>x</i> + 1)/(<i>x</i> − 2), <i>x</i> = 2 is excluded. What happens near <i>x</i> = 2 is the most interesting part of the graph: try <i>x</i> = 2.1, 2.01, 2.001. The bottom gets tiny, 0.1, 0.01, 0.001, while the top stays about 3, so <i>y</i> = 30, 300, 3000: it shoots off to infinity. The graph hugs the vertical line <i>x</i> = 2 without touching it, a <b>vertical asymptote</b>.</p>
+  <p>Far from the origin something calmer happens. For <i>x</i> = 1000, (1001)/(998) ≈ 1.003: top and bottom are both about <i>x</i>, so <i>y</i> settles towards 1, a <b>horizontal asymptote</b> <i>y</i> = 1. And where the top is 0 (and the bottom isn’t), <i>y</i> = 0: an <i>x</i>-intercept at <i>x</i> = −1. Every feature comes from a factor.</p>
+</section>
+<section class="wide">
+  <div class="card" id="main">
+    <div class="card-h"><span class="tag">Explore</span><h3>Build a rational function from its factors</h3>
+      <span class="sub">Type the roots of the top and of the bottom. Each factor chip is coloured like the feature it makes: top factors give <i>x</i>-intercepts (gold), bottom factors give vertical asymptotes (red), and a factor on both cancels and leaves a hole (grey). Press Play to run a tracer along the curve.</span></div>
+    <div class="row" id="mPresets"></div>
+    <div class="desc" id="mDesc"></div>
+    <div class="inputs">
+      <label class="field sm"><span>constant <i>k</i></span><input id="mK" type="text" inputmode="decimal" autocomplete="off" style="border-color:var(--cv)"></label>
+      <label class="field wd"><span>top roots (blank for none)</span><input id="mT" type="text" autocomplete="off" style="border-color:var(--top)"></label>
+      <label class="field wd"><span>bottom roots</span><input id="mB" type="text" autocomplete="off" style="border-color:var(--bot)"></label>
+      <div class="row" style="margin:0"><button id="mUse">Use these</button><button class="primary" id="mPlay">Play</button></div>
+    </div>
+    <div class="err" id="mErr"></div>
+    <div class="oprow" id="mChips"></div>
+    <div class="stack"><svg id="mG" viewBox="0 0 960 420" role="img" aria-label="Graph of the rational function with its asymptotes and holes"></svg></div>
+    <div class="readout" id="mOut"></div>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--cv)"></i><span>the curve</span></span>
+      <span><i class="sw" style="background:var(--top)"></i><span><i>x</i>-intercept (top factor)</span></span>
+      <span><i class="sw" style="background:none;border:2px dashed var(--bot)"></i><span>vertical asymptote (bottom factor)</span></span>
+      <span><i class="sw" style="background:none;border:2.5px solid var(--hole)"></i><span>hole (cancelled factor)</span></span>
+      <span><i class="sw" style="background:none;border:2px dashed var(--ha)"></i><span>horizontal / slant asymptote</span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §2 ===================== -->
+<section class="prose">
+  <h2><span class="n">2</span>Graphs are made of factors</h2>
+  <p>Factor the top and the bottom (3.B.8) and every feature can be read off:</p>
+  <ul>
+    <li><b>A factor only on the bottom</b>, like <i>x</i> − 2, gives a <b>vertical asymptote</b> at <i>x</i> = 2. If it appears an odd number of times the graph jumps from +∞ to −∞ across it; an even number of times and both sides go the same way.</li>
+    <li><b>A factor only on the top</b>, like <i>x</i> + 1, gives an <i>x</i>-intercept at <i>x</i> = −1.</li>
+    <li><b>A factor on both</b>, like <i>x</i> − 1 in (<i>x</i> − 1)(<i>x</i> + 2)/(<i>x</i> − 1), cancels: the graph is the line <i>y</i> = <i>x</i> + 2, except that <i>x</i> = 1 is still not allowed. There’s a single missing point, a <b>hole</b>, at (1, 3).</li>
+    <li><b>The degrees</b> decide the far-away behaviour. Top degree smaller than bottom: <i>y</i> → 0. Equal degrees: <i>y</i> → (leading coefficient of top) ÷ (leading coefficient of bottom). Top one degree bigger: the graph approaches a slanted line, a <b>slant asymptote</b>, found by polynomial long division.</li>
+  </ul>
+</section>
+
+<!-- ===================== §3 ===================== -->
+<section class="prose">
+  <h2><span class="n">3</span>Simplify, multiply, divide, add</h2>
+  <p>All the fraction rules from 1.B.3 carry over, with factors playing the role of prime factors.</p>
+  <ul>
+    <li><b>Simplify</b> by cancelling factors common to top and bottom: (<i>x</i> + 2)(<i>x</i> − 1)/((<i>x</i> − 1)(<i>x</i> + 3)) = (<i>x</i> + 2)/(<i>x</i> + 3), for <i>x</i> ≠ 1. Only <i>factors</i> cancel, never terms: (<i>x</i> + 3)/(<i>x</i> + 5) is not 3/5.</li>
+    <li><b>Multiply</b> tops and bottoms, then cancel. <b>Divide</b> by flipping the second fraction and multiplying.</li>
+    <li><b>Add or subtract</b> over a common denominator. The <b>least common denominator</b> (LCD) uses each bottom factor as many times as it appears in any one denominator: for 1/<i>x</i> + 1/(<i>x</i> + 1) it’s <i>x</i>(<i>x</i> + 1), and the sum is ((<i>x</i> + 1) + <i>x</i>)/(<i>x</i>(<i>x</i> + 1)) = (2<i>x</i> + 1)/(<i>x</i>(<i>x</i> + 1)).</li>
+  </ul>
+  <p>The answer is only valid where every original denominator was nonzero, even if a cancelled factor no longer shows it.</p>
+</section>
+<section class="wide">
+  <div class="card" id="ops">
+    <div class="card-h"><span class="tag">Explore</span><h3>The algebra workbench</h3>
+      <span class="sub">Type expressions in factored form, like <code>(x+2)(x-1)/((x-1)(x+3))</code> or <code>2/(x-1)</code>. Bottom factors are red, top factors gold; factors added to build a common denominator are dashed green; cancelled factors stay faded and crossed out. The check plugs in a test value of <i>x</i>.</span></div>
+    <div class="row toggle" id="oOp"><button class="on">Simplify</button><button>A × B</button><button>A ÷ B</button><button>A + B</button><button>A − B</button></div>
+    <div class="row" id="oPresets"></div>
+    <div class="inputs">
+      <label class="field xw"><span>A</span><input id="oA" type="text" autocomplete="off"></label>
+      <label class="field xw" id="oBF"><span>B</span><input id="oB" type="text" autocomplete="off"></label>
+      <div class="row" style="margin:0"><button class="primary" id="oGo">Work it out</button></div>
+    </div>
+    <div class="err" id="oErr"></div>
+    <div class="oprow" id="oShow"></div>
+    <ol class="steps" id="oSteps"></ol>
+    <div class="check" id="oCheck"></div>
+  </div>
+</section>
+
+<!-- ===================== §4 ===================== -->
+<section class="prose">
+  <h2><span class="n">4</span>Rational equations</h2>
+  <p>To solve an equation with fractions, multiply both sides by the LCD to clear them, then solve the polynomial equation that’s left. But multiplying by an expression that can be zero can create <b>extraneous solutions</b>, as squaring did in 3.B.10. For example:</p>
+  <div class="math">\[ \frac{x}{x-2} = \frac{2}{x-2} \;\Rightarrow\; x = 2. \]</div>
+  <p>But <i>x</i> = 2 makes both denominators zero: it isn’t in the domain, so the equation has <b>no solution</b>. On the graph, the two sides are the curve <i>y</i> = <i>x</i>/(<i>x</i> − 2) and the curve <i>y</i> = 2/(<i>x</i> − 2), and they never meet. <em class="key">Always check answers against the excluded values.</em></p>
+</section>
+
+<!-- ===================== §5 ===================== -->
+<section class="prose">
+  <h2><span class="n">5</span>Rational functions at work</h2>
+  <p>Rates, averages and concentrations are all divisions, so they’re all rational functions. Each example below has an asymptote with a meaning: a limit you approach and never reach.</p>
+</section>
+<section class="wide">
+  <div class="card" id="ctx">
+    <div class="card-h"><span class="tag">Explore</span><h3>Pipes, costs, mixtures and round trips</h3>
+      <span class="sub">Pick a situation, change the input or press Play. The dashed green line is the asymptote: what the quantity approaches but never reaches.</span></div>
+    <div class="row toggle" id="xTab"><button class="on">Two pipes</button><button>Average cost</button><button>Mixing</button><button>Round trip</button></div>
+    <div class="desc" id="xDesc"></div>
+    <div class="inputs">
+      <label class="field sm"><span id="xLab">v</span><input id="xV" type="text" inputmode="decimal" autocomplete="off" style="border-color:var(--cv)"></label>
+      <div class="row" style="margin:0"><button id="xUse">Use this</button><button class="primary" id="xPlay">Play</button></div>
+    </div>
+    <div class="err" id="xErr"></div>
+    <div class="bigpoly" id="xEq"></div>
+    <div class="split"><svg id="xPic" viewBox="0 0 470 360" role="img" aria-label="Picture"></svg><svg id="xG" viewBox="0 0 470 360" role="img" aria-label="Graph"></svg></div>
+    <div class="readout" id="xOut"></div>
+  </div>
+</section>
+
+<!-- ===================== §6 ===================== -->
+<section class="prose">
+  <h2><span class="n">6</span>Traps and non-examples</h2>
+</section>
+<section class="wide">
+  <div class="card" id="traps">
+    <div class="card-h"><span class="tag">Compare</span><h3>Easy to get wrong</h3></div>
+    <div class="traps">
+      <div class="t"><h4 class="kb">✕ (x + 3)/(x + 5) = 3/5</h4><svg id="tr1" viewBox="0 0 300 190"></svg><p>The <i>x</i>’s are terms, not factors, so they don’t cancel. Test <i>x</i> = 5: 8/10 = 0.8, not 0.6. The real graph (purple) only creeps towards 1, while 3/5 is a flat line.</p></div>
+      <div class="t"><h4 class="kb">✕ The hole disappears</h4><svg id="tr2" viewBox="0 0 300 190"></svg><p>(<i>x</i>² − 1)/(<i>x</i> − 1) simplifies to <i>x</i> + 1, but <i>x</i> = 1 is still forbidden: the graph is the line with one point missing at (1, 2). A hole, not an asymptote.</p></div>
+      <div class="t"><h4 class="kb">✕ x/(x − 2) = 2/(x − 2) ⇒ x = 2</h4><svg id="tr3" viewBox="0 0 300 190"></svg><p>Clearing the fractions gives <i>x</i> = 2, but that divides by zero. The two curves never meet (they only approach each other near the asymptote): no solution.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §7 ===================== -->
+<section class="prose">
+  <h2><span class="n">7</span>Now, in symbols</h2>
+  <div class="math">\[ f(x) = \frac{p(x)}{q(x)}, \qquad \text{domain} = \{x : q(x) \ne 0\} \]</div>
+  <div class="math">\[ \frac{a}{b}\cdot\frac{c}{d} = \frac{ac}{bd}, \qquad \frac{a}{b} \div \frac{c}{d} = \frac{a}{b}\cdot\frac{d}{c}, \qquad \frac{a}{b} \pm \frac{c}{d} = \frac{ad \pm bc}{bd} \]</div>
+  <div class="math">\[ \deg p < \deg q:\ y \to 0, \qquad \deg p = \deg q:\ y \to \frac{a_n}{b_n}, \qquad \deg p = \deg q + 1:\ y \to \text{the quotient of } p \div q \]</div>
+  <div class="math">\[ \frac1{t} = \frac1a + \frac1b, \qquad \bar c(n) = \frac{F + vn}{n} \to v, \qquad \bar v = \frac{2 v_1 v_2}{v_1 + v_2} \]</div>
+</section>
+
+<!-- ===================== §8 ===================== -->
+<section class="prose">
+  <h2><span class="n">8</span>Where this goes</h2>
+  <ul class="goes">
+    <li><b>Next:</b> 3.B.12 shifts and stretches graphs such as 1/<i>x</i>, so <i>y</i> = 3/(<i>x</i> − 2) + 1 becomes easy to sketch, and 3.B.13 finds the inverse of a function like (2<i>x</i> + 1)/(<i>x</i> − 3), which is again rational.</li>
+    <li><b>Later in this book:</b> limits at infinity and near asymptotes in chapter 6 and calculus (8.B), partial fractions for integration, and transfer functions in control and signal processing, whose poles (zeros of the bottom) decide stability.</li>
+    <li><b>In the world:</b> combined work rates, unit costs and economies of scale, concentrations and dilution, average speeds, lens and resistor formulas, and the Michaelis–Menten curve of enzyme kinetics.</li>
+  </ul>
+</section>
+
+<!-- ===================== §9 ===================== -->
+<section class="prose">
+  <h2><span class="n">9</span>Words to know</h2>
+  <div class="vocab">
+    <div class="term"><b>Rational expression</b>A polynomial divided by a polynomial, such as (<i>x</i> + 1)/(<i>x</i> − 2).</div>
+    <div class="term"><b>Rational function</b><i>y</i> = <i>p</i>(<i>x</i>)/<i>q</i>(<i>x</i>).</div>
+    <div class="term"><b>Domain</b>The <i>x</i>-values allowed: all except zeros of the denominator.</div>
+    <div class="term"><b>Excluded value</b>An <i>x</i> that makes a denominator zero.</div>
+    <div class="term"><b>Cancel common factors</b>Divide top and bottom by a shared factor; terms never cancel.</div>
+    <div class="term"><b>Least common denominator</b>The smallest product of factors that every denominator divides.</div>
+    <div class="term"><b>Vertical asymptote</b>A line <i>x</i> = <i>a</i> the graph runs up or down along, from a factor (<i>x</i> − <i>a</i>) left on the bottom.</div>
+    <div class="term"><b>Hole</b>A single missing point, from a factor cancelled from top and bottom.</div>
+    <div class="term"><b>Horizontal asymptote</b>A line <i>y</i> = <i>c</i> the graph approaches far to the left and right.</div>
+    <div class="term"><b>Slant asymptote</b>A slanted line approached far out, when the top’s degree is one more than the bottom’s.</div>
+    <div class="term"><b>Polynomial long division</b>Dividing polynomials like numbers, giving a quotient and a remainder.</div>
+    <div class="term"><b>Rational equation</b>An equation with the unknown in a denominator.</div>
+    <div class="term"><b>Extraneous solution</b>A value from the solving steps that makes a denominator zero, so it must be rejected.</div>
+  </div>
+</section>
+
+<!-- ===================== Quiz ===================== -->
+<section class="prose"><h2><span class="n">10</span>Check yourself</h2>
+  <p>Four kinds of questions: simplify and find the domain, asymptotes and holes, add and subtract, and solve (watch for extraneous solutions).</p>
+</section>
+<section class="wide">
+  <div class="card" id="quiz">
+    <div class="card-h"><span class="tag">Quiz</span><h3 id="qTitle"></h3><span class="score" id="score">Score: 0 / 0</span></div>
+    <div class="qtext" id="qText"></div>
+    <div class="qexpr" id="qExpr"></div>
+    <div class="choice" id="qChoice"></div>
+    <div class="inputs" id="qIn">
+      <label class="field"><span id="qL1">Answer</span><input id="q1" type="text" autocomplete="off" style="width:220px"></label>
+      <div class="row" style="margin:0"><button class="primary" id="qCheck">Check</button></div>
+    </div>
+    <div class="row" style="margin:10px 0 0"><button id="qShow">Show answer</button><button id="qNew">New question</button></div>
+    <div class="err" id="qErr"></div>
+    <div class="feedback" id="qFb" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ===================== Pager (filled in by the shared navigation) ===================== -->
+<nav class="wide">
+  <div class="pager"></div>
+  <div class="meta">3.B.11 · Prerequisites: 1.B.3 (fractions), 3.B.8 (factoring), 3.B.9 (quadratics) · Leads to: 3.B.12 (transforming graphs), 3.B.13 (inverse functions), chapter 6 (limits)</div>
+</nav>
+</main>
+
+<script>
+/* =====================================================================
+   1. HELPERS (shared with the other chapter 3 pages)
+   ===================================================================== */
+const NS = 'http://www.w3.org/2000/svg';
+const $ = id => document.getElementById(id);
+function mk(tag, attrs, parent){                           // create an SVG element with attributes
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function txt(parent, x, y, s, cls, extra){                 // create an SVG text element
+  extra = Object.assign({}, extra || {});
+  if (extra['text-anchor']){ extra.style = (extra.style ? extra.style + ';' : '') + 'text-anchor:' + extra['text-anchor']; delete extra['text-anchor']; }
+  const t = mk('text', Object.assign({ x, y, class: cls || '' }, extra), parent);
+  t.textContent = s;
+  return t;
+}
+// round for display, use a true minus sign, never show −0
+function num(x, d){ if (d === undefined) d = 2; const r = Math.round(x * Math.pow(10, d)) / Math.pow(10, d); return r === 0 ? '0' : (r < 0 ? '−' : '') + String(Math.abs(r)); }
+const pn = x => x < 0 ? `(${num(x)})` : num(x);              // wrap negatives in brackets when substituting
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const ri = (a, b) => a + Math.floor(Math.random() * (b - a + 1));   // random whole number from a to b
+const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+function parseNum(s){                                     // integers, decimals, minus, simple fractions
+  s = String(s).trim().replace(/[−–]/g, '-').replace(/\s+/g, '');
+  if (/^-?\d+(\.\d+)?$|^-?\.\d+$/.test(s)) return parseFloat(s);
+  const m = s.match(/^(-?\d+)\/(\d+)$/);
+  if (m && +m[2] !== 0) return +m[1] / +m[2];
+  return NaN;
+}
+function selectOnFocus(ids){ ids.forEach(id => $(id).addEventListener('focus', e => e.target.select())); }
+function buttons(boxId, list, onPick){                    // a row of preset buttons; returns a function that marks one as on
+  list.forEach((p, i) => { const b = document.createElement('button'); b.className = 'preset'; b.textContent = p.n; b.onclick = () => onPick(i); $(boxId).appendChild(b); });
+  return i => [...$(boxId).children].forEach((b, j) => b.classList.toggle('on', j === i));
+}
+function svgPt(svg, ev){                                  // mouse position in the SVG's own coordinates
+  const p = svg.createSVGPoint(); p.x = ev.clientX; p.y = ev.clientY;
+  return p.matrixTransform(svg.getScreenCTM().inverse());
+}
+const svgCss = document.createElement('style');
+svgCss.textContent = `
+  .grid{stroke:var(--line);stroke-width:1}
+  .axis{stroke:var(--ink);stroke-width:1.4;opacity:.7}
+  .tl{fill:var(--muted);font:500 11.5px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:3px}
+  .lab{font:700 14px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:5px}
+  .labS{font:600 12.5px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+  .cap{fill:var(--muted);font:600 12px var(--sans);letter-spacing:.06em;paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+  .oval{fill:var(--paper);stroke:var(--line);stroke-width:1.5}
+`;
+document.head.appendChild(svgCss);
+let clipN = 0;                                            // unique clip-path ids
+
+/* ---------- axes: a coordinate grid inside an SVG, with separate x and y scales ---------- */
+function axes(svg, W, H, b, o){
+  o = o || {};
+  svg.innerHTML = '';
+  const L = o.padL ?? 44, R = o.padR ?? 16, T = o.padT ?? 16, B = o.padB ?? 30;
+  const sx = (W - L - R) / (b.x1 - b.x0), sy = (H - T - B) / (b.y1 - b.y0);   // pixels per unit
+  const X = x => L + (x - b.x0) * sx, Y = y => T + (b.y1 - y) * sy;
+  const step = (s, px) => (o.half ? [0.5, 1, 2, 5, 10, 20, 50, 100] : [1, 2, 5, 10, 20, 50, 100]).find(k => k * s >= px) || 200;   // a round step at least px pixels wide
+  const xg = o.xg || step(sx, 9), yg = o.yg || step(sy, 9);        // grid-line spacing
+  const xt = o.xt || step(sx, 34), yt = o.yt || step(sy, 26);      // tick-label spacing
+  const gGrid = mk('g', {}, svg), id = 'clp' + (++clipN);
+  const cp = mk('clipPath', { id }, svg); mk('rect', { x: L, y: T, width: W - L - R, height: H - T - B }, cp);
+  const cg = mk('g', { 'clip-path': `url(#${id})` }, svg);         // clipped layer for curves
+  const m = mk('g', {}, svg), top = mk('g', {}, svg);              // free layer, then labels on top
+  const near = (v, s) => Math.abs(v / s - Math.round(v / s)) < 1e-6;
+  for (let x = Math.ceil(b.x0 / xg) * xg; x <= b.x1 + 1e-9; x += xg) mk('line', { x1: X(x), y1: T, x2: X(x), y2: H - B, class: 'grid' }, gGrid);
+  for (let y = Math.ceil(b.y0 / yg) * yg; y <= b.y1 + 1e-9; y += yg) mk('line', { x1: L, y1: Y(y), x2: W - R, y2: Y(y), class: 'grid' }, gGrid);
+  const ay = (b.y0 <= 0 && b.y1 >= 0) ? Y(0) : H - B;              // where the x-axis is drawn
+  const ax = (b.x0 <= 0 && b.x1 >= 0) ? X(0) : L;                  // where the y-axis is drawn
+  mk('line', { x1: L, y1: ay, x2: W - R, y2: ay, class: 'axis' }, gGrid);
+  mk('line', { x1: ax, y1: T, x2: ax, y2: H - B, class: 'axis' }, gGrid);
+  const fx = o.fx || (v => num(v)), fy = o.fy || (v => num(v));
+  for (let x = Math.ceil(b.x0 / xt) * xt; x <= b.x1 + 1e-9; x += xt){
+    if (Math.abs(x) < 1e-9 && ax === X(0) && !o.zeroX) continue;
+    txt(top, X(x), ay + 16, fx(x), 'tl', { 'text-anchor': 'middle' });
+  }
+  for (let y = Math.ceil(b.y0 / yt) * yt; y <= b.y1 + 1e-9; y += yt){
+    if (Math.abs(y) < 1e-9 && ay === Y(0)) continue;
+    txt(top, ax - 6, Y(y) + 4, fy(y), 'tl', { 'text-anchor': 'end' });
+  }
+  if (o.xT) txt(top, W - R - 2, ay - 8, o.xT, 'cap', { 'text-anchor': 'end' });
+  if (o.yT) txt(top, ax + 8, T + 12, o.yT, 'cap');
+  return { svg, X, Y, sx, sy, cg, m, top, b, L, R, T, B, W, H, ay, ax,
+           inv: (px, py) => [b.x0 + (px - L) / sx, b.y1 - (py - T) / sy] };
+}
+function dPath(P, pts){ return pts.map((p, i) => (i ? 'L' : 'M') + P.X(p[0]).toFixed(1) + ' ' + P.Y(p[1]).toFixed(1)).join(''); }
+// sample y = f(x) from a to b, breaking the curve where f is undefined or jumps
+function sample(f, a, b, n, ok){
+  const out = []; let cur = [];
+  for (let i = 0; i <= n; i++){
+    const x = a + (b - a) * i / n, y = (ok && !ok(x)) ? NaN : f(x);
+    if (!isFinite(y)){ if (cur.length > 1) out.push(cur); cur = []; continue; }
+    if (cur.length && Math.abs(y - cur[cur.length - 1][1]) > 40){ if (cur.length > 1) out.push(cur); cur = []; }
+    cur.push([x, y]);
+  }
+  if (cur.length > 1) out.push(cur);
+  return out;
+}
+function dot(P, x, y, col, o){                              // a filled (or open) point
+  o = o || {};
+  return mk('circle', { cx: P.X(x), cy: P.Y(y), r: o.r || 6, style: o.open ? `fill:var(--bg);stroke:${col};stroke-width:2.6` : `fill:${col};stroke:var(--bg);stroke-width:1.5` }, o.layer || P.m);
+}
+function vline(P, x, col, o){ o = o || {}; return mk('line', { x1: P.X(x), y1: o.y0 !== undefined ? P.Y(o.y0) : P.T, x2: P.X(x), y2: o.y1 !== undefined ? P.Y(o.y1) : P.H - P.B, style: `stroke:${col};stroke-width:${o.w || 2.5};${o.dash ? 'stroke-dasharray:' + o.dash : ''}` }, o.layer || P.m); }
+function hline(P, y, col, o){ o = o || {}; return mk('line', { x1: o.x0 !== undefined ? P.X(o.x0) : P.L, y1: P.Y(y), x2: o.x1 !== undefined ? P.X(o.x1) : P.W - P.R, y2: P.Y(y), style: `stroke:${col};stroke-width:${o.w || 2.5};${o.dash ? 'stroke-dasharray:' + o.dash : ''}` }, o.layer || P.m); }
+function arrowHead(g, x1, y1, x2, y2, col, size){            // a small triangle at (x2, y2) pointing away from (x1, y1)
+  const a = Math.atan2(y2 - y1, x2 - x1), s = size || 9;
+  const p = [[x2, y2], [x2 - s * Math.cos(a - 0.4), y2 - s * Math.sin(a - 0.4)], [x2 - s * Math.cos(a + 0.4), y2 - s * Math.sin(a + 0.4)]];
+  mk('polygon', { points: p.map(q => q.join(',')).join(' '), style: `fill:${col}` }, g);
+}
+
+/* ---------- arrow diagram: inputs in a left oval, outputs in a right oval, one arrow per pair ---------- */
+// pairs: [[in, out], ...]; o.ins / o.outs give the order (defaults: sorted values); o.fmt formats a value;
+// o.hl = input to highlight (others fade); o.lit = [in, out] arrow drawn thick; o.dead = inputs shown crossed out
+function arrowDiagram(svg, W, H, pairs, o){
+  o = o || {};
+  svg.innerHTML = '';
+  const fmt = o.fmt || (v => typeof v === 'number' ? num(v) : v);
+  const key = v => String(v);
+  const uniq = arr => { const s = new Set(), r = []; arr.forEach(v => { if (!s.has(key(v))){ s.add(key(v)); r.push(v); } }); return r; };
+  const srt = arr => arr.every(v => typeof v === 'number') ? arr.slice().sort((a, b) => a - b) : arr;
+  const ins = o.ins || srt(uniq(pairs.map(p => p[0]))), outs = o.outs || srt(uniq(pairs.map(p => p[1])));
+  const top = o.top ?? 34, bot = H - (o.bottom ?? 14);
+  const lx = W * 0.25, rx = W * 0.75, ow = Math.min(W * 0.17, 90);
+  mk('ellipse', { cx: lx, cy: (top + bot) / 2, rx: ow, ry: (bot - top) / 2, class: 'oval' }, svg);
+  mk('ellipse', { cx: rx, cy: (top + bot) / 2, rx: ow, ry: (bot - top) / 2, class: 'oval' }, svg);
+  txt(svg, lx, 18, o.inLab || 'INPUTS x', 'cap', { 'text-anchor': 'middle', style: 'fill:var(--in)' });
+  txt(svg, rx, 18, o.outLab || 'OUTPUTS y', 'cap', { 'text-anchor': 'middle', style: 'fill:var(--out)' });
+  const ypos = (i, n) => n === 1 ? (top + bot) / 2 : top + 26 + (bot - top - 52) * i / (n - 1);
+  const iy = {}, oy = {};
+  ins.forEach((v, i) => iy[key(v)] = ypos(i, ins.length));
+  outs.forEach((v, i) => oy[key(v)] = ypos(i, outs.length));
+  const cnt = {}; pairs.forEach(p => cnt[key(p[0])] = (cnt[key(p[0])] || 0) + 1);   // how many outputs each input has
+  const dx = Math.min(ow * 0.45, 34), fs = ins.length > 9 || outs.length > 9 ? 'labS' : 'lab';
+  const ga = mk('g', {}, svg), gd = mk('g', {}, svg);
+  pairs.forEach(p => {                                     // arrows
+    const k = key(p[0]), bad = cnt[k] > 1, faded = o.hl !== undefined && o.hl !== null && key(o.hl) !== k;
+    const lit = o.lit && key(o.lit[0]) === k && key(o.lit[1]) === key(p[1]);
+    const col = bad ? 'var(--no)' : 'var(--pt)';
+    const x1 = lx + dx + 8, y1 = iy[k], x2 = rx - dx - 9, y2 = oy[key(p[1])];
+    mk('line', { x1, y1, x2, y2, style: `stroke:${col};stroke-width:${lit ? 4.5 : 2.4};opacity:${faded ? .18 : 1}` }, ga);
+    if (!faded) arrowHead(ga, x1, y1, x2, y2, col, lit ? 12 : 10);
+  });
+  ins.forEach(v => {                                       // input dots and labels
+    const k = key(v), dead = o.dead && o.dead.map(key).includes(k), bad = cnt[k] > 1;
+    const faded = o.hl !== undefined && o.hl !== null && key(o.hl) !== k;
+    const col = dead ? 'var(--muted)' : bad ? 'var(--no)' : 'var(--in)';
+    mk('circle', { cx: lx + dx, cy: iy[k], r: o.hl !== undefined && key(o.hl) === k ? 8 : 6, style: `fill:${col};opacity:${faded ? .35 : 1}` }, gd);
+    const t = txt(gd, lx + dx - 12, iy[k] + 5, fmt(v), fs, { 'text-anchor': 'end', style: `fill:${col};opacity:${faded ? .45 : 1}${dead ? ';text-decoration:line-through' : ''}` });
+  });
+  outs.forEach(v => {                                      // output dots and labels
+    const k = key(v);
+    mk('circle', { cx: rx - dx, cy: oy[k], r: 6, style: 'fill:var(--out)' }, gd);
+    txt(gd, rx - dx + 12, oy[k] + 5, fmt(v), fs, { style: 'fill:var(--out)' });
+  });
+  return { ins, outs };
+}
+// group pairs by input: Map from input to its list of distinct outputs
+function byInput(pairs){
+  const m = new Map();
+  pairs.forEach(([x, y]) => { const k = String(x); if (!m.has(k)) m.set(k, { x, ys: [] }); const e = m.get(k); if (!e.ys.some(v => String(v) === String(y))) e.ys.push(y); });
+  return m;
+}
+const setStr = arr => '{' + arr.map(v => num(v)).join(', ') + '}';
+
+
+/* ---------- helpers for zoomable graphs (any scale) ---------- */
+const niceStep = raw => { const p = Math.pow(10, Math.floor(Math.log10(raw))), m = raw / p; return (m <= 1 ? 1 : m <= 2 ? 2 : m <= 5 ? 5 : 10) * p; };
+const decs = st => Math.max(0, -Math.floor(Math.log10(st) + 1e-9));
+function fmt(v, st){ const d = decs(st); const r = Number(v.toFixed(d)); return r === 0 ? '0' : (r < 0 ? '−' : '') + Math.abs(r).toFixed(d); }
+// a coordinate system with any box (tiny or huge), labelled ticks, a clipped layer for curves
+function ax2(svg, W, H, b, o){
+  o = o || {}; svg.innerHTML = '';
+  const L = o.padL ?? 52, R = o.padR ?? 14, T = o.padT ?? 14, B = o.padB ?? 28;
+  const sx = (W - L - R) / (b.x1 - b.x0), sy = (H - T - B) / (b.y1 - b.y0), X = x => L + (x - b.x0) * sx, Y = y => T + (b.y1 - y) * sy;
+  const gx = niceStep((b.x1 - b.x0) / 8), gy = niceStep((b.y1 - b.y0) / 7);
+  const g = mk('g', {}, svg), id = 'c' + Math.random().toString(36).slice(2);
+  const cp = mk('clipPath', { id }, svg); mk('rect', { x: L, y: T, width: W - L - R, height: H - T - B }, cp);
+  const cg = mk('g', { 'clip-path': `url(#${id})` }, svg), m = mk('g', {}, svg), top = mk('g', {}, svg);
+  for (let v = Math.ceil(b.x0 / gx) * gx; v <= b.x1 + gx * 1e-6; v += gx){ mk('line', { x1: X(v), y1: T, x2: X(v), y2: H - B, class: 'grid' }, g); txt(top, X(v), H - B + 16, o.fx ? o.fx(v) : fmt(v, gx), 'tl', { 'text-anchor': 'middle' }); }
+  for (let v = Math.ceil(b.y0 / gy) * gy; v <= b.y1 + gy * 1e-6; v += gy){ mk('line', { x1: L, y1: Y(v), x2: W - R, y2: Y(v), class: 'grid' }, g); txt(top, L - 6, Y(v) + 4, fmt(v, gy), 'tl', { 'text-anchor': 'end' }); }
+  if (b.y0 < 0 && b.y1 > 0) mk('line', { x1: L, y1: Y(0), x2: W - R, y2: Y(0), class: 'axis' }, g);
+  if (b.x0 < 0 && b.x1 > 0) mk('line', { x1: X(0), y1: T, x2: X(0), y2: H - B, class: 'axis' }, g);
+  mk('rect', { x: L, y: T, width: W - L - R, height: H - T - B, style: 'fill:none;stroke:var(--line2)' }, g);
+  if (o.xT) txt(top, W - R - 4, H - B - 6, o.xT, 'cap', { 'text-anchor': 'end' });
+  if (o.yT) txt(top, L + 6, T + 14, o.yT, 'cap');
+  return { X, Y, sx, sy, cg, m, top, b, L, R, T, B, W, H, inv: (px, py) => [b.x0 + (px - L) / sx, b.y1 - (py - T) / sy] };
+}
+// sample a curve across the box, breaking at undefined points, at listed jumps, and at big leaps
+function curve(P, f, o){
+  o = o || {}; const b = P.b, n = o.n || 900, brk = o.breaks || [], polys = []; let cur = [];
+  const lim = (b.y1 - b.y0) * 3;
+  for (let i = 0; i <= n; i++){
+    const x = b.x0 + (b.x1 - b.x0) * i / n, y = f(x);
+    const crossed = cur.length && brk.some(c => (cur[cur.length - 1][0] - c) * (x - c) <= 0);
+    if (!isFinite(y) || crossed || (cur.length && Math.abs(y - cur[cur.length - 1][1]) > lim)){ if (cur.length > 1) polys.push(cur); cur = []; if (!isFinite(y)) continue; }
+    cur.push([x, Math.max(b.y0 - lim, Math.min(b.y1 + lim, y))]);
+  }
+  if (cur.length > 1) polys.push(cur);
+  polys.forEach(p => mk('path', { d: dPath(P, p), style: `fill:none;stroke:${o.col || 'var(--cv)'};stroke-width:${o.w || 3};${o.dash ? 'stroke-dasharray:' + o.dash : ''}` }, P.cg));
+}
+const holeAt = (P, x, y, col) => mk('circle', { cx: P.X(x), cy: P.Y(y), r: 6, style: `fill:var(--bg);stroke:${col || 'var(--cv)'};stroke-width:2.5` }, P.m);
+const dotAt = (P, x, y, col, r) => mk('circle', { cx: P.X(x), cy: P.Y(y), r: r || 6, style: `fill:${col || 'var(--cv)'};stroke:var(--bg);stroke-width:1.5` }, P.m);
+const sig = v => !isFinite(v) ? (v > 0 ? '∞' : v < 0 ? '−∞' : 'undefined') : Math.abs(v) >= 1e5 ? v.toExponential(2).replace('-', '−') : num(v, 6);
+function parseLim(s){
+  const t = String(s).trim().toLowerCase().replace(/\s+/g, '').replace(/[−–]/g, '-');
+  if (/^(dne|none|doesnotexist|noLimit|nolimit|no)$/i.test(t)) return 'DNE';
+  if (/^\+?(inf|infinity|∞|oo)$/.test(t)) return Infinity;
+  if (/^-(inf|infinity|∞|oo)$/.test(t)) return -Infinity;
+  return parseNum(s);
+}
+
+const minus = s => String(s).replace(/(^|[\s(,=>→\/·+×])-(\d)/g, '$1−$2');
+const r4 = v => Number((Math.abs(v) < 1e-300 ? 0 : v).toPrecision(5));
+const SUP = k => String(k).replace(/-/g, '⁻').replace(/\d/g, d => '⁰¹²³⁴⁵⁶⁷⁸⁹'[d]);
+const sci = v => { if (v === 0) return '0'; const a = Math.abs(v); if (a >= 1e-3 && a < 1e7) return minus(String(r4(v))); let e = Math.floor(Math.log10(a)); if (Math.abs(v / Math.pow(10, e)) >= 9.995) e++; const m = v / Math.pow(10, e); return minus(`${m.toFixed(2)}×10${SUP(e)}`); };
+const gcd = (a, b) => b ? gcd(b, a % b) : Math.abs(a);
+function frc(x){ if (Math.abs(x - Math.round(x)) < 1e-9) return num(Math.round(x)); for (let d = 2; d <= 10000; d++){ const n = x * d; if (Math.abs(n - Math.round(n)) < 1e-9 * d && gcd(Math.round(n), d) === 1) return (x < 0 ? '−' : '') + Math.abs(Math.round(n)) + '/' + d; } return sci(x); }
+// a readable value: whole numbers with commas, otherwise 4–5 significant figures
+const big = v => Math.abs(v) >= 1e7 ? sci(v) : Math.abs(v - Math.round(v)) < 1e-9 ? Math.round(v).toLocaleString().replace('-', '−') : minus(String(r4(v)));
+
+/* =====================================================================
+   2. POLYNOMIAL TOOLS
+   ===================================================================== */
+// polynomials are arrays of coefficients, highest power first: [3, 2, -5] is 3x² + 2x − 5
+const pmul = (A, B) => { const r = Array(A.length + B.length - 1).fill(0); A.forEach((a, i) => B.forEach((b, j) => r[i + j] += a * b)); return r; };
+const peval = (C, x) => C.reduce((s, c) => s * x + c, 0);          // Horner's rule
+// write a polynomial in standard form with true minus signs; 1·x is written x
+function pstr(C, v){
+  v = v || 'x'; const n = C.length - 1; let s = '';
+  C.forEach((c, i) => {
+    const k = n - i; if (Math.abs(c) < 1e-12) return;              // skip zero terms
+    const a = Math.abs(c), neg = c < 0;
+    const cs = (Math.abs(a - 1) < 1e-12 && k > 0) ? '' : frc(a);   // hide a coefficient of 1
+    const vs = k === 0 ? '' : k === 1 ? v : v + SUP(k);
+    s += (s === '' ? (neg ? '−' : '') : (neg ? ' − ' : ' + ')) + cs + vs;
+  });
+  return s || '0';
+}
+const lin = (p, q) => pstr([p, q]);                                // "2x + 1"
+const sgn = v => (v < 0 ? '− ' : '+ ') + frc(Math.abs(v));         // "+ 3" or "− 2" for joining
+const nz = (a, b) => { let v; do { v = ri(a, b); } while (v === 0); return v; };   // random nonzero whole number
+const isInt = v => isFinite(v) && Math.abs(v - Math.round(v)) < 1e-9;
+// factor ax² + bx + c over the whole numbers: returns {g, p, q, r, s} with ax²+bx+c = g(px+q)(rx+s), or {g, none, A, B, C}
+function factorQ(a, b, c){
+  let g = gcd(gcd(Math.abs(a), Math.abs(b)), Math.abs(c)); if (a < 0) g = -g;   // GCF, and make the leading coefficient positive
+  const A = a / g, B = b / g, C = c / g;
+  if (C === 0) return { g, p: 1, q: 0, r: A, s: B };                // no constant: x is a factor
+  for (let p = 1; p <= A; p++){ if (A % p) continue; const r = A / p;
+    for (let q = -Math.abs(C); q <= Math.abs(C); q++){ if (q === 0 || C % q) continue; const s = C / q; if (p * s + q * r === B) return { g, p, q, r, s }; } }
+  return { g, none: true, A, B, C };
+}
+// one linear factor as text: "x", "(x + 3)", "(2x − 1)"
+const fpart = (p, q) => q === 0 ? (p === 1 ? 'x' : frc(p) + 'x') : `(${lin(p, q)})`;
+function fstr(F){
+  const f1 = fpart(F.p, F.q), f2 = fpart(F.r, F.s);
+  let body = f1 === f2 ? (f1 === 'x' ? 'x²' : f1 + '²') : (f2 === 'x' ? f2 + f1 : f1 + f2);
+  const g = F.g === 1 ? '' : F.g === -1 ? '−' : num(F.g);
+  return g + body;
+}
+// colours for a tile: its shape decides the colour, a negative tile is red
+const tcol = (type, sg) => sg < 0 ? 'var(--ng)' : { x2: 'var(--sq)', x: 'var(--xt)', u: 'var(--un)' }[type];
+// draw one tile rectangle; ghost = cancelled (faded with an ✕ in the colour of the tile that cancelled it)
+function tileR(g, x, y, w, h, col, o){
+  o = o || {};
+  const r = mk('rect', { x, y, width: w, height: h, rx: Math.min(3, w / 4), style: `fill:${col};stroke:var(--bg);stroke-width:1.2;opacity:${o.ghost ? .22 : (o.op ?? .9)}` }, g);
+  if (o.ghost){ const c = o.xcol || 'var(--muted)'; mk('path', { d: `M${x + 2} ${y + 2}L${x + w - 2} ${y + h - 2}M${x + w - 2} ${y + 2}L${x + 2} ${y + h - 2}`, style: `stroke:${c};stroke-width:2` }, g); }
+  if (o.lab) txt(g, x + w / 2, y + h / 2 + 4.5, o.lab, 'labS', { 'text-anchor': 'middle', style: 'fill:#fff;stroke:none;font-size:' + (o.fs || 12.5) + 'px' });
+  return r;
+}
+const ease = t => t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+// simple animation runner: calls step(e) with e from 0 to 1, then done()
+function animate(ms, step, done){
+  const t0 = performance.now(); let id = 0, stopped = false;
+  const tick = now => { if (stopped) return; const e = Math.min(1, (now - t0) / ms); step(e); if (e < 1) id = requestAnimationFrame(tick); else if (done) done(); };
+  id = requestAnimationFrame(tick);
+  return () => { stopped = true; cancelAnimationFrame(id); };
+}
+// a small isometric box (x right-down, y left-down, z up); draws the three visible faces
+function isoBox(g, P, x, y, z, dx, dy, dz, col, o){
+  o = o || {};
+  const f = (a, b, c) => P(a, b, c).join(',');
+  const face = (pts, op) => mk('polygon', { points: pts.join(' '), style: `fill:${col};fill-opacity:${op};stroke:${o.stroke || 'var(--bg)'};stroke-width:1.2${o.dash ? ';stroke-dasharray:4 3' : ''}` }, g);
+  const sc = o.ghost ? .35 : 1;
+  face([f(x, y, z + dz), f(x + dx, y, z + dz), f(x + dx, y + dy, z + dz), f(x, y + dy, z + dz)], (o.ghost ? .12 : .95) * sc);   // top
+  face([f(x + dx, y, z), f(x + dx, y + dy, z), f(x + dx, y + dy, z + dz), f(x + dx, y, z + dz)], (o.ghost ? .1 : .72) * sc);    // right face (x = max)
+  face([f(x, y + dy, z), f(x + dx, y + dy, z), f(x + dx, y + dy, z + dz), f(x, y + dy, z + dz)], (o.ghost ? .08 : .55) * sc);   // left face (y = max)
+}
+
+
+/* ---------- rational-function tools ---------- */
+function ratOf(x){ for (let d = 1; d <= 400; d++){ const n = x * d; if (Math.abs(n - Math.round(n)) < 1e-9 * d) return [Math.round(n), d]; } return null; }
+const isRat = x => ratOf(x) !== null;
+const T = v => isRat(v) ? frc(v) : num(v, 3);
+const same = (a, b) => Math.abs(a - b) < 1e-9;
+// one factor (x − r) as text
+const facT = r => same(r, 0) ? 'x' : `(x ${r < 0 ? '+' : '−'} ${T(Math.abs(r))})`;
+// a list of roots as factors, repeats written as powers: [1, 1, -2] → (x − 1)²(x + 2)
+function facsT(list){
+  const g = []; list.slice().sort((a, b) => a - b).forEach(r => { const e = g.find(q => same(q.r, r)); if (e) e.k++; else g.push({ r, k: 1 }); });
+  return g.map(({ r, k }) => facT(r) + (k > 1 ? SUP(k) : '')).join('');
+}
+const polyOf = (k, roots) => roots.reduce((C, r) => pmul(C, [1, -r]), [k]);
+// multiset difference and intersection of root lists
+function msInter(a, b){ const bb = b.slice(), out = []; a.forEach(r => { const i = bb.findIndex(q => same(q, r)); if (i >= 0){ out.push(r); bb.splice(i, 1); } }); return out; }
+function msMinus(a, b){ const bb = b.slice(), out = []; a.forEach(r => { const i = bb.findIndex(q => same(q, r)); if (i >= 0) bb.splice(i, 1); else out.push(r); }); return out; }
+// polynomial long division: N = Q·D + R
+function pdiv(N, D){
+  N = N.slice(); const q = [];
+  while (N.length >= D.length){ const c = N[0] / D[0]; q.push(c); for (let i = 0; i < D.length; i++) N[i] -= c * D[i]; N.shift(); }
+  return { q: q.length ? q : [0], r: N };
+}
+// real rational roots of a polynomial (found by trying simple fractions), plus what's left over
+function rootsOfPoly(C){
+  C = C.slice(); while (C.length > 1 && Math.abs(C[0]) < 1e-12) C.shift();
+  const out = [];
+  const cands = []; for (let d = 1; d <= 6; d++) for (let n = -60; n <= 60; n++) cands.push(n / d);
+  let changed = true;
+  while (C.length > 1 && changed){
+    changed = false;
+    for (const c of cands){ if (Math.abs(peval(C, c)) < 1e-9 * Math.max(1, ...C.map(Math.abs))){ out.push(c); C = pdiv(C, [1, -c]).q; changed = true; break; } }
+  }
+  return { roots: out, rest: C };          // rest: leading constant (length 1) or an irreducible leftover
+}
+// parse "2(x+1)(x-3)^2/((x-1)x)" → { k, top, bot }
+function parseRat(s){
+  s = String(s).replace(/\s+/g, '').replace(/[−–]/g, '-').replace(/·|\*/g, '');
+  if (!s) return null;
+  let depth = 0, cut = -1;
+  for (let i = 0; i < s.length; i++){ const ch = s[i]; if (ch === '(') depth++; else if (ch === ')') depth--; else if (ch === '/' && depth === 0){ if (cut >= 0) return null; cut = i; } if (depth < 0) return null; }
+  if (depth) return null;
+  const top = cut < 0 ? s : s.slice(0, cut), bot = cut < 0 ? '1' : s.slice(cut + 1);
+  const unwrap = t => { while (t.startsWith('(') && t.endsWith(')')){ let d = 0, ok = true; for (let i = 0; i < t.length - 1; i++){ if (t[i] === '(') d++; else if (t[i] === ')') d--; if (d === 0){ ok = false; break; } } if (!ok) break; const inner = t.slice(1, -1); if (/^x[+-][\d.\/]+$|^x$/.test(inner)) break; t = inner; } return t; };
+  const prod = t => {
+    t = unwrap(t); let k = 1, roots = [];
+    const m0 = t.match(/^(-?[\d.]+(?:\/\d+)?|-)?(.*)$/); let rest = m0[2];
+    if (m0[1] !== undefined && m0[1] !== '') k = m0[1] === '-' ? -1 : parseNum(m0[1]);
+    if (!isFinite(k)) return null;
+    const re = /^(?:\(x([+-][\d.]+(?:\/\d+)?)?\)|x)(?:\^(\d))?/;
+    while (rest.length){ const m = rest.match(re); if (!m) return null; const a = m[1] ? parseNum(m[1].replace(/^\+/, '')) : 0, p = m[2] ? +m[2] : 1; if (!isFinite(a) || p < 1 || p > 3) return null; for (let j = 0; j < p; j++) roots.push(-a); rest = rest.slice(m[0].length); }
+    return { k, roots };
+  };
+  const T1 = prod(top), B1 = prod(bot);
+  if (!T1 || !B1 || B1.k === 0) return null;
+  return { k: T1.k / B1.k, top: T1.roots, bot: B1.roots };
+}
+// a fraction as chip HTML: k, top roots (with cancelled ones), bottom roots, extra classes per chip
+function chipFrac(k, top, bot, o){
+  o = o || {};
+  const chip = (txt, cls) => `<span class="fchip ${cls}">${minus(txt)}</span>`;
+  const tops = [], bots = [];
+  if (!same(k, 1) || (!top.length && !(o.topX || []).length && !(o.topNew || []).length && !(o.topRest))) tops.push(chip(T(k), 'k'));
+  top.forEach(r => tops.push(chip(facT(r), 't')));
+  (o.topNew || []).forEach(r => tops.push(chip(facT(r), 'new')));
+  if (o.topRest) tops.push(chip(o.topRest, 'p'));
+  (o.topX || []).forEach(r => tops.push(chip(facT(r), 'c')));
+  bot.forEach(r => bots.push(chip(facT(r), 'b')));
+  (o.botNew || []).forEach(r => bots.push(chip(facT(r), 'new')));
+  (o.botX || []).forEach(r => bots.push(chip(facT(r), 'c')));
+  if (!bots.length) return `<span class="rfrac"><span class="num" style="border:none">${tops.join('')}</span></span>`;
+  return `<span class="rfrac"><span class="num">${tops.join('')}</span><span class="den">${bots.join('')}</span></span>`;
+}
+// text form of k·top/bot
+function ratT(k, top, bot, rest){
+  const kt = same(k, 1) && (top.length || rest) ? '' : same(k, -1) && (top.length || rest) ? '−' : T(k);
+  let t = kt + facsT(top) + (rest ? (rest.includes(' ') && (kt || top.length) ? `(${rest})` : rest) : ''); if (!t) t = '1';
+  if (!bot.length) return t;
+  const bt = facsT(bot);
+  const wrapTop = (rest && rest.includes(' ') && !kt && !top.length) ? `(${t})` : t;
+  return `${wrapTop}/${bot.length > 1 ? '(' + bt + ')' : bt}`;
+}
+
+/* =====================================================================
+   2. MAIN EXPLORER: graph from factors
+   ===================================================================== */
+const MP = [
+  { n: '1/x', k: 1, t: '', b: '0', d: 'The basic rational function: a vertical asymptote at x = 0 and a horizontal one at y = 0.' },
+  { n: '(x + 1)/(x − 2)', k: 1, t: '-1', b: '2', d: 'Equal degrees, so y → 1 far out. Asymptote at x = 2, intercept at x = −1.' },
+  { n: '(x − 1)(x + 2)/(x − 1)', k: 1, t: '1, -2', b: '1', d: 'The factor (x − 1) cancels: the line y = x + 2 with a hole at (1, 3).' },
+  { n: '2x/((x − 1)(x + 1))', k: 2, t: '0', b: '1, -1', d: 'Two vertical asymptotes; top degree smaller, so y → 0 at both ends.' },
+  { n: '1/(x − 1)²', k: 1, t: '', b: '1, 1', d: 'A squared factor on the bottom: both sides of the asymptote shoot up the same way.' },
+  { n: 'x²/(x − 1)', k: 1, t: '0, 0', b: '1', d: 'Top one degree higher: long division gives x + 1 + 1/(x − 1), so the slant asymptote is y = x + 1.' },
+  { n: '3(x − 2)/((x + 1)(x − 2))', k: 3, t: '2', b: '-1, 2', d: 'A hole at x = 2 and an asymptote at x = −1. After cancelling it’s just 3/(x + 1).' }
+];
+const MS = { k: 1, top: [-1], bot: [2], e: -1, stop: null };
+const mMark = buttons('mPresets', MP, i => { const p = MP[i]; $('mK').value = p.k; $('mT').value = minus(p.t); $('mB').value = minus(p.b); mMark(i); $('mDesc').innerHTML = minus(p.d); mRead(); mHalt(); MS.e = -1; mDraw(); });
+const listOf = s => s.trim() === '' ? [] : s.split(',').map(t => parseNum(t.trim()));
+function mRead(){
+  const k = parseNum($('mK').value), top = listOf($('mT').value), bot = listOf($('mB').value);
+  if (!isFinite(k) || k === 0){ $('mErr').textContent = 'k must be a nonzero number.'; return false; }
+  if (top.some(v => !isFinite(v)) || bot.some(v => !isFinite(v))){ $('mErr').textContent = 'Type the roots as numbers separated by commas, like 1, -2.'; return false; }
+  if (!bot.length){ $('mErr').textContent = 'Give the bottom at least one root; otherwise it’s a polynomial (3.B.8).'; return false; }
+  if (top.length > 3 || bot.length > 3){ $('mErr').textContent = 'Use at most 3 roots on top and 3 on the bottom.'; return false; }
+  if ([...top, ...bot].some(v => Math.abs(v) > 6) || Math.abs(k) > 6){ $('mErr').textContent = 'Keep the roots and k between −6 and 6.'; return false; }
+  $('mErr').textContent = ''; Object.assign(MS, { k, top, bot }); return true;
+}
+$('mUse').onclick = () => { if (mRead()){ mMark(-1); $('mDesc').textContent = 'Custom.'; mHalt(); MS.e = -1; mDraw(); } };
+['mK', 'mT', 'mB'].forEach(id => { $(id).addEventListener('input', () => $('mErr').textContent = ''); $(id).addEventListener('keydown', e => { if (e.key === 'Enter') $('mUse').click(); }); });
+function mHalt(){ if (MS.stop){ MS.stop(); MS.stop = null; } $('mPlay').textContent = 'Play'; }
+$('mPlay').onclick = () => { if (MS.stop){ mHalt(); return; } $('mPlay').textContent = 'Pause'; MS.stop = animate(6000, e => { MS.e = e; mDraw(); }, () => { MS.stop = null; $('mPlay').textContent = 'Play'; MS.e = -1; mDraw(); }); };
+function mAnalyse(){
+  const { k, top, bot } = MS, can = msInter(top, bot), T2 = msMinus(top, can), B2 = msMinus(bot, can);
+  const N = polyOf(k, T2), D = polyOf(1, B2), f = x => peval(polyOf(k, top), x) / peval(polyOf(1, bot), x);
+  const g = x => peval(N, x) / peval(D, x);                        // the simplified function
+  const holes = [...new Set(can.map(r => +r.toFixed(9)))].filter(r => !B2.some(b => same(b, r))).map(r => ({ x: r, y: g(r) }));
+  const VAs = [...new Set(B2.map(r => +r.toFixed(9)))].map(r => ({ x: r, m: B2.filter(b => same(b, r)).length }));
+  const xints = [...new Set(T2.map(r => +r.toFixed(9)))];
+  const dn = N.length - 1, dd = D.length - 1, div = pdiv(N, D);
+  return { can, T2, B2, N, D, f, g, holes, VAs, xints, dn, dd, quot: div.q };
+}
+function mDraw(){
+  const A = mAnalyse(), { k, top, bot } = MS;
+  // chips: each factor in the colour of the feature it causes
+  $('mChips').innerHTML = `<span style="font-size:18px">y =</span>` + chipFrac(k, A.T2, A.B2, { topX: A.can, botX: A.can }) +
+    (A.can.length ? `<span style="font-size:15px;color:var(--muted)">= ${minus(ratT(k, A.T2, A.B2))}${A.holes.length ? ', x ≠ ' + A.holes.map(h => T(h.x)).join(', ') : ''}</span>` : '');
+  const xs = [...top, ...bot], x0 = Math.min(-6, ...xs.map(v => v - 3)), x1 = Math.max(6, ...xs.map(v => v + 3));
+  const P = ax2($('mG'), 960, 420, { x0, x1, y0: -10, y1: 10 }, { padL: 44, xT: 'x', yT: 'y' });
+  // asymptotes
+  A.VAs.forEach(v => { mk('line', { x1: P.X(v.x), y1: P.T, x2: P.X(v.x), y2: P.H - P.B, style: 'stroke:var(--bot);stroke-width:2;stroke-dasharray:7 5' }, P.cg); txt(P.top, P.X(v.x) + 6, P.T + 16, `x = ${T(v.x)}`, 'labS', { style: 'fill:var(--bot)' }); });
+  let endTxt = '';
+  if (A.dn < A.dd){ curve(P, () => 0, { col: 'var(--ha)', w: 2, dash: '7 5' }); endTxt = 'y = 0'; }
+  else if (A.dn === A.dd){ const c = A.N[0] / A.D[0]; curve(P, () => c, { col: 'var(--ha)', w: 2, dash: '7 5' }); endTxt = `y = ${T(c)}`; }
+  else if (A.dn === A.dd + 1){ const Q = A.quot; curve(P, x => peval(Q, x), { col: 'var(--ha)', w: 2, dash: '7 5' }); endTxt = 'y = ' + pstr(Q.map(v => isRat(v) ? v : r4(v))); }
+  if (endTxt) txt(P.top, P.W - P.R - 8, P.T + 16, endTxt, 'labS', { 'text-anchor': 'end', style: 'fill:var(--ha)' });
+  // the curve, broken at each vertical asymptote
+  curve(P, A.g, { breaks: A.VAs.map(v => v.x), n: 1600, w: 3.2 });
+  A.xints.forEach(r => { dotAt(P, r, 0, 'var(--top)', 6.5); txt(P.top, P.X(r), P.Y(0) + 20, `x = ${T(r)}`, 'labS', { 'text-anchor': 'middle', style: 'fill:var(--top)' }); });
+  A.holes.forEach(h => { if (Math.abs(h.y) < 10){ holeAt(P, h.x, h.y, 'var(--hole)'); txt(P.top, P.X(h.x) + 9, P.Y(h.y) - 9, `hole (${T(h.x)}, ${T(h.y)})`, 'labS', { style: 'fill:var(--hole)' }); } });
+  // tracer during Play
+  if (MS.e >= 0){
+    const x = x0 + (x1 - x0) * MS.e, y = A.g(x), bad = A.VAs.some(v => same(v.x, x)) || A.holes.some(h => Math.abs(h.x - x) < 1e-3);
+    mk('line', { x1: P.X(x), y1: P.T, x2: P.X(x), y2: P.H - P.B, style: 'stroke:var(--muted);stroke-width:1;stroke-dasharray:2 3' }, P.cg);
+    if (isFinite(y) && Math.abs(y) < 10 && !bad){ dotAt(P, x, y, 'var(--cv)', 7); txt(P.top, P.X(x) + 10, Math.max(P.T + 30, Math.min(P.H - P.B - 30, P.Y(y) - 10)), `x = ${num(x, 2)}, y = ${num(y, 2)}`, 'labS', { style: 'fill:var(--cv)' }); }
+    else txt(P.top, P.X(x) + 10, P.T + 34, isFinite(y) && !bad ? `y = ${big(y)}: off the chart` : 'not defined here', 'labS', { style: 'fill:var(--bot)' });
+  }
+  // readout
+  const excl = [...new Set(bot.map(r => +r.toFixed(9)))].sort((a, b) => a - b);
+  let s = `<b>Domain:</b> every x except ${excl.map(T).join(', ')} (where the bottom is 0). `;
+  if (A.VAs.length) s += `<span class="kb">Vertical asymptote${A.VAs.length > 1 ? 's' : ''}</span> at ${A.VAs.map(v => `x = ${T(v.x)}${v.m > 1 ? ` (factor repeated ${v.m}×, so both sides go the same way)` : ''}`).join(', ')}. `;
+  if (A.holes.length) s += `<span class="kh">Hole${A.holes.length > 1 ? 's' : ''}</span> at ${A.holes.map(h => `(${T(h.x)}, ${T(h.y)})`).join(', ')}: the factor cancels, but x = ${A.holes.map(h => T(h.x)).join(', ')} is still excluded. `;
+  if (A.xints.length) s += `<span class="kt">x-intercept${A.xints.length > 1 ? 's' : ''}</span> at ${A.xints.map(T).join(', ')}. `;
+  s += A.dn < A.dd ? `Top degree ${A.dn} &lt; bottom degree ${A.dd}: <span class="ka">y → 0</span> far out.`
+     : A.dn === A.dd ? `Equal degrees (${A.dn}): <span class="ka">y → ${T(A.N[0] / A.D[0])}</span>, the ratio of leading coefficients.`
+     : A.dn === A.dd + 1 ? `Top degree one more than the bottom: long division gives the <span class="ka">slant asymptote ${endTxt}</span>.`
+     : `Top degree ${A.dn} is more than one above the bottom’s: far out the graph follows the curve y = ${pstr(A.quot.map(v => isRat(v) ? v : r4(v)))}, not a line.`;
+  $('mOut').innerHTML = minus(s);
+}
+
+/* =====================================================================
+   3. THE ALGEBRA WORKBENCH
+   ===================================================================== */
+const OPS = ['simp', 'mul', 'div', 'add', 'sub'];
+const OP = {
+  simp: [{ n: 'cancel one factor', a: '(x+2)(x-1)/((x-1)(x+3))' }, { n: '(x² − 4)/(x² + x − 6)', a: '(x+2)(x-2)/((x+3)(x-2))' }, { n: 'nothing cancels', a: '(x+3)/(x+5)' }, { n: 'repeated factor', a: '2(x-1)^2/((x-1)(x+4))' }],
+  mul: [{ n: 'cross-cancel', a: '(x+1)/(x-2)', b: '(x-2)/(x+3)' }, { n: 'two cancels', a: 'x/(x+1)', b: '(x+1)(x-3)/x' }],
+  div: [{ n: 'flip and multiply', a: '(x+1)/(x-2)', b: '(x+1)/x' }, { n: 'divide by a factor', a: '(x-3)(x+2)/(x+5)', b: '(x-3)' }],
+  add: [{ n: '1/x + 1/(x + 1)', a: '1/x', b: '1/(x+1)' }, { n: '2/(x − 1) + 3/(x + 1)', a: '2/(x-1)', b: '3/(x+1)' }, { n: 'shared factor', a: '1/((x-1)(x+2))', b: '1/(x+2)' }],
+  sub: [{ n: 'x/(x − 2) − 2/(x − 2)', a: 'x/(x-2)', b: '2/(x-2)' }, { n: '1/(x − 1) − 1/(x + 1)', a: '1/(x-1)', b: '1/(x+1)' }, { n: 'minus sign trap', a: '3/(x+1)', b: '(x-2)/(x+1)' }]
+};
+const OS = { op: 'simp' };
+let oMark = null;
+function oBuild(){
+  $('oPresets').innerHTML = '';
+  oMark = buttons('oPresets', OP[OS.op], i => { const p = OP[OS.op][i]; $('oA').value = p.a; $('oB').value = p.b || ''; oMark(i); oRun(); });
+  $('oBF').style.display = OS.op === 'simp' ? 'none' : '';
+  [...$('oOp').children].forEach((b, j) => b.classList.toggle('on', OPS[j] === OS.op));
+}
+[...$('oOp').children].forEach((b, j) => b.onclick = () => { OS.op = OPS[j]; $('oErr').textContent = ''; oBuild(); $('oPresets').children[0].click(); });
+$('oGo').onclick = () => { if (oMark) oMark(-1); oRun(); };
+['oA', 'oB'].forEach(id => { $(id).addEventListener('input', () => $('oErr').textContent = ''); $(id).addEventListener('keydown', e => { if (e.key === 'Enter') $('oGo').click(); }); });
+function oRun(){
+  const A = parseRat($('oA').value), B = OS.op === 'simp' ? null : parseRat($('oB').value);
+  if (!A || (OS.op !== 'simp' && !B)){ $('oErr').textContent = 'Use factored form like (x+2)(x-1)/((x-1)(x+3)), 2/(x-1) or x/(x+4). Factors are x or (x±number), with optional ^2.'; return; }
+  if (A.top.length + A.bot.length > 6 || (B && B.top.length + B.bot.length > 6)){ $('oErr').textContent = 'Keep each expression to at most 6 factors.'; return; }
+  $('oErr').textContent = '';
+  const op = OS.op, steps = []; let show = '', res, excl;
+  const exA = A.bot, exB = B ? B.bot : [];
+  if (op === 'simp'){
+    const can = msInter(A.top, A.bot), t = msMinus(A.top, can), b = msMinus(A.bot, can);
+    steps.push(`Factored: top ${minus(facsT(A.top) || T(A.k))}, bottom ${minus(facsT(A.bot) || '1')}. (Expanded, that’s (${minus(pstr(polyOf(A.k, A.top)))})/(${minus(pstr(polyOf(1, A.bot)))}).)`);
+    steps.push(can.length ? `Cancel the common factor${can.length > 1 ? 's' : ''} ${minus(facsT(can))}: each is a factor of both top and bottom, so it divides out to 1.` : 'No factor appears on both top and bottom, so nothing cancels. (Terms such as the x in x + 3 and x + 5 never cancel.)');
+    show = chipFrac(A.k, t, b, { topX: can, botX: can }); res = { k: A.k, top: t, bot: b }; excl = exA;
+  } else if (op === 'mul' || op === 'div'){
+    const Bt = op === 'mul' ? B.top : B.bot, Bb = op === 'mul' ? B.bot : B.top, k = op === 'mul' ? A.k * B.k : A.k / B.k;
+    if (op === 'div') steps.push(`Dividing by B means multiplying by B flipped: ${minus(ratT(1 / B.k, B.bot, B.top))}. Also, B can’t be 0, so its top’s zeros are excluded too.`);
+    const top = [...A.top, ...Bt], bot = [...A.bot, ...Bb], can = msInter(top, bot), t = msMinus(top, can), b = msMinus(bot, can);
+    steps.push(`Multiply tops and bottoms: ${minus(ratT(k, top, bot))}.`);
+    steps.push(can.length ? `Cancel ${minus(facsT(can))} from top and bottom.` : 'Nothing cancels.');
+    show = `${chipFrac(A.k, A.top, A.bot)}<span>${op === 'mul' ? '×' : '÷'}</span>${chipFrac(B.k, B.top, B.bot)}<span>=</span>${chipFrac(k, t, b, { topX: can, botX: can })}`;
+    res = { k, top: t, bot: b }; excl = op === 'mul' ? [...exA, ...exB] : [...exA, ...exB, ...B.top];
+  } else {
+    const sg = op === 'add' ? 1 : -1;
+    // least common denominator: each factor as often as it appears in either denominator
+    const LCD = [...A.bot, ...msMinus(B.bot, A.bot)], mA = msMinus(LCD, A.bot), mB = msMinus(LCD, B.bot);
+    const nA = polyOf(A.k, [...A.top, ...mA]), nB = polyOf(B.k, [...B.top, ...mB]);
+    const L = Math.max(nA.length, nB.length), pad = C => Array(L - C.length).fill(0).concat(C);
+    const Nsum = pad(nA).map((v, i) => v + sg * pad(nB)[i]).map(v => Math.abs(v) < 1e-12 ? 0 : v);
+    steps.push(`The least common denominator is ${minus(facsT(LCD) || '1')}. ${mA.length ? `A is missing ${minus(facsT(mA))}` : 'A already has it'}${mB.length ? `; B is missing ${minus(facsT(mB))}` : '; B already has it'}: multiply top and bottom by what’s missing (dashed green).`);
+    steps.push(`Now the tops can be ${op === 'add' ? 'added' : 'subtracted'}: (${minus(pstr(nA))}) ${op === 'add' ? '+' : '−'} (${minus(pstr(nB))}) = <b>${minus(pstr(Nsum))}</b>.${op === 'sub' && B.top.length + mB.length > 0 ? ' The minus sign applies to every term of the second top: use brackets.' : ''}`);
+    const R = rootsOfPoly(Nsum), allZero = Nsum.every(v => v === 0);
+    const can = allZero ? [] : msInter(R.roots, LCD), bb = msMinus(LCD, can);
+    // what's left of the top after cancelling: factored if it splits into whole-number roots, otherwise written out
+    let Rem = Nsum.slice(); while (Rem.length > 1 && Math.abs(Rem[0]) < 1e-12) Rem.shift(); can.forEach(c => Rem = pdiv(Rem, [1, -c]).q);
+    const RR = rootsOfPoly(Rem); let kk = 1, tt = [], rest = '';
+    if (Rem.length === 1) kk = Rem[0];
+    else if (Rem.length > 2 && RR.roots.length === Rem.length - 1 && RR.roots.every(isInt)){ kk = RR.rest[0]; tt = RR.roots; }
+    else rest = pstr(Rem);
+    if (allZero) steps.push('The tops cancel completely: the answer is 0 (for every allowed x).');
+    else steps.push(can.length ? `The top shares the factor ${minus(facsT(can))} with the denominator: cancel it.` : `The top has no factor in common with the denominator, so nothing cancels.`);
+    show = `${chipFrac(A.k, A.top, A.bot, { topNew: mA, botNew: mA })}<span>${op === 'add' ? '+' : '−'}</span>${chipFrac(B.k, B.top, B.bot, { topNew: mB, botNew: mB })}<span>=</span>` +
+      (allZero ? '<span>0</span>' : chipFrac(kk, tt, bb, { topX: can, botX: can, topRest: rest }));
+    res = allZero ? { k: 0, top: [], bot: [] } : { k: kk, top: tt, bot: bb, rest, restC: rest ? Rem : null };
+    excl = [...exA, ...exB];
+  }
+  const ex = [...new Set(excl.map(r => +r.toFixed(9)))].sort((a, b) => a - b);
+  const left = res.bot ? [...new Set(res.bot.map(r => +r.toFixed(9)))] : [];
+  const hidden = ex.filter(r => !left.some(q => same(q, r)));
+  steps.push(`Result: <b>${minus(res.k === 0 ? '0' : ratT(res.k, res.top, res.bot, res.rest))}</b>${ex.length ? `, for x ≠ ${ex.map(T).join(', ')}` : ''}.${hidden.length ? ` The excluded value${hidden.length > 1 ? 's' : ''} ${hidden.map(T).join(', ')} no longer show${hidden.length > 1 ? '' : 's'} in the answer, but x ≠ ${hidden.map(T).join(', ')} still holds: a hole in the graph.` : ''}`);
+  $('oShow').innerHTML = show; $('oSteps').innerHTML = steps.map(s => `<li>${s}</li>`).join('');
+  // numeric check at a test value that isn't excluded
+  const tv = [4.5, 3.5, -4.5, 5.5, 7].find(x => !ex.some(r => Math.abs(r - x) < 1e-9) && !(B && B.top.some(r => Math.abs(r - x) < 1e-9)));
+  const val = R => peval(polyOf(R.k, R.top), tv) / peval(polyOf(1, R.bot), tv);
+  const lhs = op === 'simp' ? val(A) : op === 'mul' ? val(A) * val(B) : op === 'div' ? val(A) / val(B) : op === 'add' ? val(A) + val(B) : val(A) - val(B);
+  const rhs = res.k === 0 ? 0 : (peval(polyOf(res.k, res.top), tv) * (res.restC ? peval(res.restC, tv) : 1)) / peval(polyOf(1, res.bot), tv);
+  $('oCheck').innerHTML = minus(`Check at x = ${tv}: the original gives ${num(lhs, 5)}, the result gives ${num(rhs, 5)} ${Math.abs(lhs - rhs) < 1e-7 * Math.max(1, Math.abs(lhs)) ? '✓' : '✕'}`);
+}
+
+/* =====================================================================
+   4. CONTEXTS
+   ===================================================================== */
+const XC = [
+  { key: 'pipe', lab: 'pipe B alone (hours)', lo: 0.5, hi: 30, v: 6, d: 'Pipe A fills a tank in 3 hours. Pipe B alone takes b hours. Together, each hour they fill 1/3 + 1/b of the tank, so the time t satisfies 1/t = 1/3 + 1/b.' },
+  { key: 'cost', lab: 'items made n', lo: 1, hi: 2000, v: 50, d: 'Setting up a print run costs $500, then each T-shirt costs $2. The average cost per shirt is (500 + 2n)/n dollars.' },
+  { key: 'mix', lab: 'litres added x', lo: 0, hi: 100, v: 10, d: 'A tank holds 10 L of a 20% salt solution. Pour in x litres of a 50% solution. The concentration is (salt)/(total) = (2 + 0.5x)/(10 + x).' },
+  { key: 'trip', lab: 'return speed v (km/h)', lo: 5, hi: 400, v: 90, d: 'You drive 60 km to a town at 60 km/h and come back at v km/h. The average speed for the whole trip is total distance ÷ total time = 120/(1 + 60/v).' }
+];
+const XS = { i: 0, stop: null };
+[...$('xTab').children].forEach((b, j) => b.onclick = () => { xHalt(); XS.i = j; [...$('xTab').children].forEach((x, k) => x.classList.toggle('on', k === j)); const c = XC[j]; $('xLab').textContent = c.lab; $('xV').value = c.v; $('xDesc').innerHTML = minus(c.d); $('xErr').textContent = ''; xDraw(); });
+function xHalt(){ if (XS.stop){ XS.stop(); XS.stop = null; } $('xPlay').textContent = 'Play'; }
+$('xUse').onclick = () => {
+  const c = XC[XS.i], v = parseNum($('xV').value);
+  if (!isFinite(v)){ $('xErr').textContent = 'Type a number.'; return; }
+  if (v < c.lo || v > c.hi){ $('xErr').textContent = `Use a value from ${c.lo} to ${c.hi}.`; return; }
+  $('xErr').textContent = ''; c.v = v; xHalt(); xDraw();
+};
+$('xV').addEventListener('input', () => $('xErr').textContent = '');
+$('xV').addEventListener('keydown', e => { if (e.key === 'Enter') $('xUse').click(); });
+$('xPlay').onclick = () => {
+  if (XS.stop){ xHalt(); return; }
+  const c = XC[XS.i], top = { pipe: 30, cost: 1000, mix: 100, trip: 400 }[c.key]; $('xPlay').textContent = 'Pause';
+  XS.stop = animate(4500, e => { c.v = Math.round((c.lo + (top - c.lo) * e * e) * 10) / 10; $('xV').value = c.v; xDraw(); }, () => { XS.stop = null; $('xPlay').textContent = 'Play'; });
+};
+function xDraw(){
+  const c = XC[XS.i], v = c.v, pic = $('xPic'); pic.innerHTML = '';
+  let s = '', eq = '';
+  const hline = (P, y, lab) => { mk('line', { x1: P.L, y1: P.Y(y), x2: P.W - P.R, y2: P.Y(y), style: 'stroke:var(--ha);stroke-width:2;stroke-dasharray:7 5' }, P.cg); txt(P.top, P.W - P.R - 6, P.Y(y) - 7, lab, 'labS', { 'text-anchor': 'end', style: 'fill:var(--ha)' }); };
+  if (c.key === 'pipe'){
+    const t = 3 * v / (3 + v);
+    // picture: the tank after one hour, filled by each pipe's share
+    const ox = 140, oy = 60, W = 190, H = 240, a = 1 / 3, b = 1 / v, fill = Math.min(1, a + b);
+    mk('rect', { x: ox, y: oy, width: W, height: H, style: 'fill:none;stroke:var(--ink);stroke-width:2' }, pic);
+    mk('rect', { x: ox, y: oy + H * (1 - Math.min(1, a)), width: W, height: H * Math.min(1, a), style: 'fill:var(--water);opacity:.75' }, pic);
+    mk('rect', { x: ox, y: oy + H * (1 - fill), width: W, height: H * (fill - Math.min(1, a)), style: 'fill:var(--cv);opacity:.6' }, pic);
+    txt(pic, ox + W + 10, oy + H * (1 - a / 2) + 4, 'A: 1/3', 'labS', { style: 'fill:var(--water)' });
+    txt(pic, ox + W + 10, oy + H * (1 - a - Math.min(b, 1 - a) / 2) + 4, `B: 1/${T(v)}`, 'labS', { style: 'fill:var(--cv)' });
+    txt(pic, 235, 40, 'FILLED IN ONE HOUR', 'cap', { 'text-anchor': 'middle' });
+    txt(pic, 235, 336, `together: ${num(t, 2)} hours`, 'lab', { 'text-anchor': 'middle', style: 'fill:var(--cv)' });
+    const P = ax2($('xG'), 470, 360, { x0: 0, x1: 31, y0: 0, y1: 4 }, { padL: 40, xT: 'b (hours)', yT: 'together (h)' });
+    hline(P, 3, 't → 3 h, the time for A alone');
+    curve(P, x => 3 * x / (3 + x)); dotAt(P, v, t, 'var(--cv)', 7);
+    eq = `1/t = 1/3 + 1/${T(v)}  →  t = 3·${T(v)}/(3 + ${T(v)}) = ${num(t, 3)} h`;
+    s = `With pipe B taking ${T(v)} h alone, together they take <b class="kv">${num(t, 2)} hours</b>: always less than either pipe alone. As B gets slower (b → ∞), t climbs towards 3 hours (green), the time for A alone, and never reaches it. As B gets very fast, t → 0. Add the <i>rates</i> (tanks per hour), never the times.`;
+  } else if (c.key === 'cost'){
+    const avg = (500 + 2 * v) / v, fix = 500 / v;
+    const sc = 200 / Math.max(avg, 4), ox = 150, base = 320;
+    mk('rect', { x: ox, y: base - 2 * sc, width: 90, height: 2 * sc, style: 'fill:var(--top);opacity:.8' }, pic);
+    mk('rect', { x: ox, y: base - avg * sc, width: 90, height: fix * sc, style: 'fill:var(--cv);opacity:.7' }, pic);
+    txt(pic, ox + 100, base - sc, '$2 materials', 'labS', { style: 'fill:var(--top)' });
+    txt(pic, ox + 100, base - 2 * sc - fix * sc / 2 + 4, `$${num(fix, 2)} share of setup`, 'labS', { style: 'fill:var(--cv)' });
+    txt(pic, 235, 40, `COST PER SHIRT WHEN MAKING ${big(v)}`, 'cap', { 'text-anchor': 'middle' });
+    txt(pic, 235, 350, `average $${num(avg, 2)}`, 'lab', { 'text-anchor': 'middle' });
+    const P = ax2($('xG'), 470, 360, { x0: 0, x1: 1000, y0: 0, y1: 20 }, { padL: 40, xT: 'n', yT: '$ per shirt' });
+    hline(P, 2, 'y = 2: the materials cost');
+    curve(P, x => (500 + 2 * x) / x, { n: 2000 }); if (v <= 1000) dotAt(P, v, avg, 'var(--cv)', 7);
+    eq = `average cost = (500 + 2n)/n = 2 + 500/n  →  $${num(avg, 2)} at n = ${big(v)}`;
+    s = `Making ${big(v)} shirts costs $${big(500 + 2 * v)} in all, or <b class="kv">$${num(avg, 2)} per shirt</b>. Dividing by n spreads the $500 setup thinner: 500/n → 0, so the average approaches $2 (green) but never gets there. The vertical asymptote at n = 0 is the absurd case of one setup spread over zero shirts.`;
+  } else if (c.key === 'mix'){
+    const conc = (2 + 0.5 * v) / (10 + v), tot = 10 + v, H = 250, mx = 110, lvl = tot / mx;
+    mk('rect', { x: 170, y: 60, width: 130, height: H, style: 'fill:none;stroke:var(--ink);stroke-width:2' }, pic);
+    mk('rect', { x: 170, y: 60 + H * (1 - lvl), width: 130, height: H * lvl, style: `fill:var(--salt);opacity:${0.15 + conc * 1.3}` }, pic);
+    txt(pic, 235, 60 + H * (1 - lvl) - 8, `${num(tot, 1)} L`, 'labS', { 'text-anchor': 'middle' });
+    txt(pic, 235, 340, `${num(conc * 100, 1)}% salt`, 'lab', { 'text-anchor': 'middle', style: 'fill:var(--salt)' });
+    txt(pic, 20, 30, `salt: 2 + 0.5·${T(v)} = ${num(2 + 0.5 * v, 2)} L of ${num(tot, 1)} L`, 'labS');
+    const P = ax2($('xG'), 470, 360, { x0: 0, x1: 100, y0: 0, y1: 60 }, { padL: 40, xT: 'x (L added)', yT: '% salt' });
+    hline(P, 50, '50%: the added solution');
+    curve(P, x => 100 * (2 + 0.5 * x) / (10 + x)); dotAt(P, v, 100 * conc, 'var(--cv)', 7);
+    eq = `concentration = (2 + 0.5x)/(10 + x) = ${num(conc * 100, 2)}%`;
+    s = `After adding ${T(v)} L the tank is <b class="kv">${num(conc * 100, 1)}%</b> salt. It starts at 20% (x = 0) and climbs towards 50% (green): the more you pour in, the more the tank looks like what you’re pouring, but the original 20% never quite washes out. Solving (2 + 0.5x)/(10 + x) = 0.4 gives x = 20 L to reach 40%.`;
+  } else {
+    const avg = 120 / (1 + 60 / v), t1 = 1, t2 = 60 / v;
+    const ox = 40, W = 390, sc = W / (t1 + t2);
+    mk('rect', { x: ox, y: 120, width: t1 * sc, height: 30, style: 'fill:var(--top);opacity:.75' }, pic);
+    mk('rect', { x: ox + t1 * sc, y: 120, width: t2 * sc, height: 30, style: 'fill:var(--cv);opacity:.7' }, pic);
+    txt(pic, ox, 105, 'TIME SPENT ON EACH LEG', 'cap');
+    txt(pic, ox + t1 * sc / 2, 172, 'there: 1 h', 'labS', { 'text-anchor': 'middle', style: 'fill:var(--top)' });
+    if (t2 * sc > 60) txt(pic, ox + t1 * sc + t2 * sc / 2, 172, `back: ${num(t2 * 60, 0)} min`, 'labS', { 'text-anchor': 'middle', style: 'fill:var(--cv)' });
+    txt(pic, 235, 240, `average: 120 km in ${num(t1 + t2, 2)} h = ${num(avg, 1)} km/h`, 'lab', { 'text-anchor': 'middle' });
+    txt(pic, 235, 270, `(not the plain average ${num((60 + v) / 2, 1)})`, 'labS', { 'text-anchor': 'middle', style: 'fill:var(--bot)' });
+    const P = ax2($('xG'), 470, 360, { x0: 0, x1: 400, y0: 0, y1: 140 }, { padL: 40, xT: 'v (km/h)', yT: 'average' });
+    hline(P, 120, '120: impossible to reach');
+    curve(P, x => 120 / (1 + 60 / x), { n: 1500 }); curve(P, x => (60 + x) / 2, { col: 'var(--bot)', w: 1.4, dash: '3 4' }); dotAt(P, v, avg, 'var(--cv)', 7);
+    eq = `average speed = 120 / (1 + 60/v) = 120v/(v + 60) = ${num(avg, 2)} km/h`;
+    s = `Coming back at ${T(v)} km/h, the whole trip averages <b class="kv">${num(avg, 1)} km/h</b>, less than the plain average of the two speeds (red dotted), because you spend longer on the slow leg. Can you average 120 km/h? You’d need the return trip to take no time at all: the curve approaches 120 (green) as v → ∞ but never reaches it. (Lenses obey the same kind of rule: 1/f = 1/d₁ + 1/d₂.)`;
+  }
+  $('xEq').innerHTML = minus(eq); $('xOut').innerHTML = minus(s);
+}
+
+/* =====================================================================
+   5. TRAPS
+   ===================================================================== */
+(function(){
+  let P = ax2($('tr1'), 300, 190, { x0: -4, x1: 20, y0: -0.5, y1: 1.4 }, { padL: 30, padB: 22, padT: 8, padR: 8 });
+  curve(P, x => 0.6, { col: 'var(--bot)', w: 2, dash: '5 4' }); curve(P, x => (x + 3) / (x + 5), { w: 2.6 });
+  dotAt(P, 5, 0.8, 'var(--cv)', 5); dotAt(P, 5, 0.6, 'var(--bot)', 5);
+  txt(P.top, P.X(5) + 8, P.Y(0.8) - 6, '0.8', 'labS', { style: 'fill:var(--cv)' }); txt(P.top, P.X(5) + 8, P.Y(0.6) + 14, '3/5', 'labS', { style: 'fill:var(--bot)' });
+  P = ax2($('tr2'), 300, 190, { x0: -3, x1: 3, y0: -2, y1: 4 }, { padL: 30, padB: 22, padT: 8, padR: 8 });
+  curve(P, x => x + 1, { w: 2.6 }); holeAt(P, 1, 2, 'var(--hole)');
+  txt(P.top, P.X(1) + 10, P.Y(2) + 14, 'hole (1, 2)', 'labS', { style: 'fill:var(--hole)' });
+  P = ax2($('tr3'), 300, 190, { x0: -3, x1: 7, y0: -8, y1: 10 }, { padL: 30, padB: 22, padT: 8, padR: 8 });
+  mk('line', { x1: P.X(2), y1: P.T, x2: P.X(2), y2: P.H - P.B, style: 'stroke:var(--bot);stroke-width:1.6;stroke-dasharray:5 4' }, P.cg);
+  curve(P, x => x / (x - 2), { breaks: [2], w: 2.4 }); curve(P, x => 2 / (x - 2), { breaks: [2], col: 'var(--ha)', w: 2.2 });
+  txt(P.top, P.X(2) + 6, P.T + 14, 'x = 2 excluded', 'labS', { style: 'fill:var(--bot)' });
+  txt(P.top, P.X(6.8), P.Y(1.4) - 10, 'x/(x − 2)', 'labS', { 'text-anchor': 'end', style: 'fill:var(--cv)' }); txt(P.top, P.X(6.8), P.Y(0.4) + 18, '2/(x − 2)', 'labS', { 'text-anchor': 'end', style: 'fill:var(--ha)' });
+})();
+
+/* =====================================================================
+   6. QUIZ
+   ===================================================================== */
+const Q = { right: 0, total: 0 };
+let qq = null;
+const qTitles = { simp: 'Simplify and domain', asym: 'Asymptotes and holes', add: 'Add or subtract', solve: 'Solve and check' };
+function shuffle(a){ for (let i = a.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+function qReset(){ ['qChoice', 'qExpr'].forEach(id => $(id).innerHTML = ''); $('qFb').className = 'feedback'; $('qFb').innerHTML = ''; $('qErr').textContent = ''; $('qIn').style.display = ''; $('q1').value = ''; }
+function qScore(ok){ if (qq.counted) return; qq.counted = true; Q.total++; if (ok) Q.right++; $('score').textContent = `Score: ${Q.right} / ${Q.total}`; }
+function qFeedback(ok, html){ $('qFb').className = 'feedback ' + (ok ? 'ok' : 'bad'); $('qFb').innerHTML = (ok ? '<b>Right.</b> ' : '<b>Not quite.</b> ') + minus(html); }
+function qChoices(list, correctIdx, explain){
+  $('qIn').style.display = 'none'; qq.correctIdx = correctIdx; qq.explainFn = explain;
+  list.forEach((c, k) => { const b = document.createElement('button'); b.innerHTML = minus(c); b.onclick = () => { const ok = k === correctIdx; qScore(ok); [...$('qChoice').children].forEach((x, j) => { x.classList.remove('right', 'wrong'); if (j === k) x.classList.add(ok ? 'right' : 'wrong'); }); qFeedback(ok, explain(k)); }; $('qChoice').appendChild(b); });
+}
+const distinct = (n, lo, hi) => { const s = new Set(); while (s.size < n) s.add(nz(lo, hi)); return [...s]; };
+function qSimp(){
+  const [a, b, c] = distinct(3, -6, 6);                            // (x − a)(x − b) / ((x − a)(x − c))
+  const top = pstr(polyOf(1, [a, b])), bot = pstr(polyOf(1, [a, c]));
+  if (Math.random() < 0.5){
+    const ok = ratT(1, [b], [c]), bad = [ratT(1, [a], [c]), `${-b}/${-c}`.replace(/--/g, ''), ratT(1, [b], [a])];
+    const opts = shuffle([...new Set([ok, ...bad])]), idx = opts.indexOf(ok);
+    $('qText').innerHTML = 'Simplify.'; $('qExpr').innerHTML = minus(`(${top}) / (${bot})`);
+    qChoices(opts.map(minus), idx, j => (j === idx ? '' : 'Factor first, then cancel only a factor that is on both top and bottom. ') + `${minus(`(${top}) = ${facsT([a, b])}`)} and ${minus(`(${bot}) = ${facsT([a, c])}`)}; ${minus(facT(a))} cancels, leaving ${minus(ok)} (x ≠ ${a}, ${c}).`);
+  } else {
+    Object.assign(qq, { kind: 'dom', ans: [a, c], why: `The bottom factors as ${minus(facsT([a, c]))}, which is 0 at x = ${a} and x = ${c}. Both are excluded, even though ${minus(facT(a))} cancels with the top.` });
+    $('qText').innerHTML = 'Which x-values are excluded from the domain? Type them separated by commas.'; $('qExpr').innerHTML = minus(`(${top}) / (${bot})`); $('qL1').textContent = 'x ≠';
+  }
+}
+function qAsym(){
+  const [a, b, c] = distinct(3, -5, 5), k = pick([1, 2, 3, -1]);
+  const kind = pick(['va', 'ha', 'hole']);
+  // f = k(x − a)(x − b) / ((x − a)(x − c))  : hole at a, VA at c, HA y = k
+  const e = `y = ${cfr(k)}${facsT([a, b])} / ${facsT([a, c])}`;
+  const hy = k * (a - b) / (a - c);
+  if (kind === 'va') Object.assign(qq, { kind, ans: [c], why: `Factor (x − ${a}) cancels (a hole), so only ${minus(facT(c))} is left on the bottom: vertical asymptote x = ${c}.`, trap: [a, 'x = ' + a + ' is a hole: its factor cancels.'] });
+  if (kind === 'ha') Object.assign(qq, { kind, ans: [k], why: `Top and bottom both have degree 2, so y → (leading top)/(leading bottom) = ${k}/1 = ${k}.` });
+  if (kind === 'hole') Object.assign(qq, { kind, ans: [a], why: `${minus(facT(a))} is on both top and bottom, so it cancels: a hole at x = ${a} (at y = ${T(hy)}). The leftover bottom factor ${minus(facT(c))} gives an asymptote instead.`, trap: [c, `x = ${c} is a vertical asymptote: its factor doesn’t cancel.`] });
+  $('qText').innerHTML = kind === 'va' ? 'Where is the vertical asymptote? (x = ?)' : kind === 'ha' ? 'What is the horizontal asymptote? (y = ?)' : 'At which x is there a hole?';
+  $('qExpr').innerHTML = minus(e); $('qL1').textContent = kind === 'ha' ? 'y =' : 'x =';
+}
+const cfr = k => k === 1 ? '' : k === -1 ? '−' : String(k);
+function qAdd(){
+  const [p, q] = distinct(2, -5, 5), a = ri(1, 4), b = ri(1, 4), sg = pick([1, -1]);
+  // a/(x − p) ± b/(x − q) = (a(x − q) ± b(x − p)) / ((x − p)(x − q))
+  const N = [a + sg * b, -a * q - sg * b * p], ok = `(${pstr(N)})/(${facsT([p, q])})`;
+  const bad = [`${a + sg * b}/(${facsT([p, q])})`, `${a + sg * b}/(${pstr([2, -p - q])})`, `(${pstr([a - sg * b, -a * q + sg * b * p])})/(${facsT([p, q])})`];
+  const opts = shuffle([...new Set([ok, ...bad])]), idx = opts.indexOf(ok);
+  $('qText').innerHTML = sg > 0 ? 'Add.' : 'Subtract.'; $('qExpr').innerHTML = minus(`${a}/${facT(p)} ${sg > 0 ? '+' : '−'} ${b}/${facT(q)}`);
+  qChoices(opts.map(minus), idx, j => (j === idx ? '' : opts[j] === bad[1] ? 'You can’t add tops and bottoms separately; you need a common denominator. ' : opts[j] === bad[0] ? 'Each top must be multiplied by the factor its denominator is missing. ' : 'Check the signs: multiply each top by the missing factor, and the minus sign applies to the whole second top. ') + `LCD ${minus(facsT([p, q]))}: ${a}${minus(facT(q))} ${sg > 0 ? '+' : '−'} ${b}${minus(facT(p))} = ${minus(pstr(N))}.`);
+}
+function qSolve(){
+  const kind = pick(['quad', 'quad', 'lin', 'none']);
+  if (kind === 'quad'){
+    // (x² + s)/(x − p) = ((p + r)x + s − pr)/(x − p): solutions of x² − (p + r)x + pr = 0 are p (extraneous) and r
+    const [p, r] = distinct(2, -5, 5), s = nz(-6, 6);
+    Object.assign(qq, { ans: [r], cand: [p, r], why: `Multiply by ${minus(facT(p))}: x² ${sgn(s)} = ${minus(pstr([p + r, s - p * r]))}, so ${minus(pstr([1, -(p + r), p * r]))} = 0 = ${minus(facsT([p, r]))}, giving x = ${p} or x = ${r}. But x = ${p} makes the denominator 0: extraneous. Only x = ${r}.` });
+    $('qExpr').innerHTML = minus(`(${pstr([1, 0, s])})/${facT(p)} = (${pstr([p + r, s - p * r])})/${facT(p)}`);
+  } else if (kind === 'lin'){
+    let a, b, p, q, x; do { a = ri(1, 6); b = ri(1, 6); [p, q] = distinct(2, -5, 5); x = (a * q - b * p) / (a - b); } while (a === b || !isInt(x) || x === p || x === q || Math.abs(x) > 12);
+    Object.assign(qq, { ans: [x], cand: [x], why: `Cross-multiply: ${a}${minus(facT(q))} = ${b}${minus(facT(p))}, so ${a - b}x = ${a * q - b * p}, x = ${x}. It doesn’t make either denominator 0, so it stands.` });
+    $('qExpr').innerHTML = minus(`${a}/${facT(p)} = ${b}/${facT(q)}`);
+  } else {
+    const p = nz(-5, 5), c = ri(1, 4);
+    Object.assign(qq, { ans: [], cand: [p], why: `Multiply by ${minus(facT(p))}: x + ${c}${minus(facT(p))} = ${p}, so ${1 + c}x = ${p + c * p} and x = ${p}. That divides by zero: extraneous, so there is no solution.` });
+    $('qExpr').innerHTML = minus(`x/${facT(p)} + ${c} = ${p}/${facT(p)}`);
+  }
+  $('qText').innerHTML = 'Solve. Type every solution, separated by commas, or “none”.'; $('qL1').textContent = 'x =';
+}
+let lastType = null;
+function qNew(){
+  qReset();
+  let t; do { t = pick(['simp', 'asym', 'add', 'solve']); } while (t === lastType);
+  lastType = t; qq = { type: t, counted: false };
+  $('qTitle').textContent = qTitles[t];
+  ({ simp: qSimp, asym: qAsym, add: qAdd, solve: qSolve })[t]();
+}
+$('qCheck').onclick = () => {
+  $('qErr').textContent = '';
+  const raw = $('q1').value.trim(), none = /^(none|no solution|no)$/i.test(raw);
+  const v = none ? [] : raw.split(/[,;]/).map(s => s.trim()).filter(s => s).map(parseNum);
+  if (!none && (!v.length || v.some(x => !isFinite(x)))){ $('qErr').textContent = 'Type numbers separated by commas' + (qq.type === 'solve' ? ', or “none”.' : '.'); return; }
+  const set = A => [...new Set(A.map(x => +x.toFixed(9)))].sort((a, b) => a - b).join(',');
+  const ok = set(v) === set(qq.ans); let hint = '';
+  if (!ok){
+    if (qq.trap && v.length === 1 && same(v[0], qq.trap[0])) hint = qq.trap[1] + ' ';
+    else if (qq.type === 'solve' && set(v) === set(qq.cand) && qq.cand.length !== qq.ans.length) hint = 'You solved the cleared equation correctly but kept a value that makes a denominator 0. ';
+    else if (qq.kind === 'dom' && v.length === 1) hint = 'Every zero of the original bottom is excluded, including the one whose factor cancels. ';
+  }
+  qScore(ok); qFeedback(ok, hint + qq.why);
+};
+$('q1').addEventListener('keydown', e => { if (e.key === 'Enter') $('qCheck').click(); });
+$('q1').addEventListener('input', () => $('qErr').textContent = '');
+$('qShow').onclick = () => {
+  qScore(false);
+  if (qq.correctIdx !== undefined){ [...$('qChoice').children].forEach((b, j) => { if (j === qq.correctIdx) b.classList.add('right'); }); qFeedback(false, qq.explainFn(qq.correctIdx)); return; }
+  $('q1').value = qq.ans.length ? qq.ans.join(', ') : 'none';
+  $('qFb').className = 'feedback bad'; $('qFb').innerHTML = '<b>Answer filled in.</b> ' + minus(qq.why);
+};
+$('qNew').onclick = qNew;
+
+/* =====================================================================
+   7. START
+   ===================================================================== */
+selectOnFocus(['mK', 'mT', 'mB', 'oA', 'oB', 'xV', 'q1']);
+$('mPresets').children[1].click();
+oBuild(); $('oPresets').children[0].click();
+$('xTab').children[0].click();
+qNew();
+</script>
+<script src="../shared/toc.js"></script>
+<script src="../shared/nav.js"></script>
+</body></html>
