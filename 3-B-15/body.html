@@ -1,0 +1,1046 @@
+<style>
+/* ===================== Page-specific styles (3.B.15) ===================== */
+/* z = purple, w = green, result = orange, roots = gold, real graph = blue, the mirror (conjugate) line = grey */
+:root{ --cv:#7F77DD; --w:#1D9E75; --res:#D85A30; --rt:#B86E00; --gr:#2F6FDB; --ng:#D8443A; --err:#D8443A; --no:#D8443A; }
+@media (prefers-color-scheme:dark){ :root{ --cv:#AFA9EC; --w:#5DCAA5; --res:#F0997B; --rt:#FFB547; --gr:#6EA2F5; --ng:#F07B72; --err:#F07B72; --no:#F07B72; } }
+.kv{color:var(--cv);font-weight:700}.kw{color:var(--w);font-weight:700}.ko{color:var(--res);font-weight:700}.kr{color:var(--rt);font-weight:700}.kg{color:var(--gr);font-weight:700}.kng{color:var(--ng);font-weight:700}
+svg{user-select:none;-webkit-user-select:none}
+svg text.lab,svg text.labS{fill:var(--ink)}
+.stack svg{width:100%;height:auto;display:block;background:var(--bg);border:1px solid var(--line);border-radius:10px;margin-top:6px}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:10px;align-items:start}
+.split svg{width:100%;height:auto;display:block;background:var(--bg);border:1px solid var(--line);border-radius:10px}
+.mainsplit{display:grid;grid-template-columns:520px 1fr;gap:16px;margin-top:10px;align-items:start}
+.mainsplit svg{width:100%;height:auto;display:block;background:var(--bg);border:1px solid var(--line);border-radius:10px}
+.field.sm input{width:64px}
+.field.wd input{width:220px}
+.toggle button.on{background:var(--accent-bg);border-color:var(--accent);color:var(--accent)}
+.bigpoly{font:600 16px var(--mono);margin:10px 0 0;padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);overflow-x:auto;white-space:nowrap}
+.algebra{font:15px/1.9 var(--mono);padding:10px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg)}
+.algebra b{font-weight:700}
+.legend span span{display:inline}
+.traps{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:8px}
+.traps .t{border:1px solid var(--line);border-radius:10px;background:var(--bg);padding:10px}
+.traps .t h4{margin:0 0 4px;font:600 15px var(--sans)}
+.traps .t p{margin:6px 0 0;font-size:14.5px;line-height:1.5;color:var(--muted)}
+.traps svg{width:100%;height:auto;display:block}
+.qtext{font:17px/1.55 var(--serif);margin:4px 0 10px}
+.qexpr{font:600 22px var(--mono);margin:4px 0 10px}
+.choice{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 0}.choice button{min-width:120px;font-family:var(--mono)}
+.choice button.right{border-color:var(--ok);background:var(--ok-bg);color:var(--ok)}.choice button.wrong{border-color:var(--bad);background:var(--bad-bg);color:var(--bad)}
+</style>
+
+<!-- ===================== Top bar ===================== -->
+<div class="topbar"><div class="topbar-in">
+  <span class="brand">Math<b>Mastery</b></span>
+  <span class="crumbs">Chapter 3 · Algebra › Basics</span>
+  <span class="pid">3.B.15</span>
+</div></div>
+
+<!-- ===================== Hero ===================== -->
+<header class="prose hero">
+  <div class="kicker">Chapter 3 · Algebra</div>
+  <h1>Complex Numbers and Polynomial Roots</h1>
+  <p class="dek">No real number squares to −1, so we invent one, <i>i</i>, and the number line opens up into a plane. In that plane multiplying means turning, and every polynomial has exactly as many roots as its degree.</p>
+  <div class="tiers" aria-label="Tier">
+    <span class="tier on">Basics <small>you are here</small></span>
+    <span class="tier">Undergraduate</span>
+    <span class="tier">Masters</span>
+  </div>
+  <div class="goals">
+    <h3>On this page</h3>
+    <ul>
+      <li>Meet the <b>imaginary unit</b> <i>i</i> with <i>i</i>² = −1, and <b>complex numbers</b> <i>a</i> + <i>bi</i> as points of the <b>complex plane</b>.</li>
+      <li>Add, subtract and multiply complex numbers, and see multiplying as <b>turning and stretching</b>.</li>
+      <li>Use the <b>conjugate</b> and the <b>modulus</b> to divide.</li>
+      <li>Solve quadratics with a negative discriminant, and see where their complex roots sit.</li>
+      <li>State the <b>Fundamental Theorem of Algebra</b>: degree <i>n</i> means <i>n</i> roots, with complex roots of real polynomials in <b>conjugate pairs</b>.</li>
+    </ul>
+  </div>
+</header>
+
+<main>
+<!-- ===================== §1 ===================== -->
+<section class="prose">
+  <h2><span class="n">1</span>A number whose square is −1</h2>
+  <p>The equation <i>x</i>² = −1 has no real solution: every real number squared is 0 or positive (3.B.10). Mathematicians did what they did when they invented negative numbers and fractions: they made up a new number with the property they wanted. Call it <i>i</i>, the <b>imaginary unit</b>, and declare</p>
+  <div class="math">\[ i^2 = -1. \]</div>
+  <p>Then numbers like 3 + 2<i>i</i> make sense: a <b>complex number</b> <i>a</i> + <i>bi</i> has a <b>real part</b> <i>a</i> and an <b>imaginary part</b> <i>b</i>. Ordinary real numbers are the ones with <i>b</i> = 0, and numbers like 2<i>i</i>, with <i>a</i> = 0, are called <b>imaginary</b> (an unlucky name: they are no less real than −5).</p>
+  <p>Where do they live? The real numbers already fill a line, so <i>i</i> goes off the line: one unit straight <i>up</i>. Then <i>a</i> + <i>bi</i> is the point (<i>a</i>, <i>b</i>) of the <b>complex plane</b>: the real axis runs across, the imaginary axis runs up. Here’s why “up” is right. Multiplying by −1 turns a number half a turn (180°) around 0: 3 goes to −3. Multiplying by <i>i</i> twice must do the same, since <i>i</i> · <i>i</i> = −1, so multiplying by <i>i</i> once is a quarter turn, 90°. And four quarter turns get you back where you started: <i>i</i>, <i>i</i>² = −1, <i>i</i>³ = −<i>i</i>, <i>i</i>⁴ = 1.</p>
+</section>
+
+<!-- ===================== §2 ===================== -->
+<section class="prose">
+  <h2><span class="n">2</span>Arithmetic as moves in the plane</h2>
+  <p><b>Adding</b> works part by part: (3 + 2<i>i</i>) + (1 − 4<i>i</i>) = 4 − 2<i>i</i>. In the plane it’s sliding one arrow onto the tip of the other, exactly like adding vectors.</p>
+  <p><b>Multiplying</b> uses the distributive property and <i>i</i>² = −1: (2 + <i>i</i>)(1 + 2<i>i</i>) = 2 + 4<i>i</i> + <i>i</i> + 2<i>i</i>² = 2 + 5<i>i</i> − 2 = 5<i>i</i>. In the plane something remarkable happens: the <b>angles add</b> and the <b>lengths multiply</b>. The length of <i>a</i> + <i>bi</i> is its <b>modulus</b> |<i>a</i> + <i>bi</i>| = √(<i>a</i>² + <i>b</i>²) (Pythagoras), and its angle up from the positive real axis is its <b>argument</b>. So multiplying by a number of length 1 is a pure turn, and that’s how computers rotate things.</p>
+  <p>Flipping the sign of the imaginary part gives the <b>conjugate</b>: the conjugate of 3 + 4<i>i</i> is 3 − 4<i>i</i>, its mirror image in the real axis. A number times its conjugate is always a positive real number: (3 + 4<i>i</i>)(3 − 4<i>i</i>) = 9 + 16 = 25 = |3 + 4<i>i</i>|². That’s the trick for <b>dividing</b>: multiply top and bottom by the conjugate of the bottom, just like rationalizing a denominator in 3.B.10.</p>
+</section>
+<section class="wide">
+  <div class="card" id="plane">
+    <div class="card-h"><span class="tag">Explore</span><h3>The complex calculator</h3>
+      <span class="sub">Type <i>z</i> and <i>w</i>, pick an operation, press Play. Adding slides <i>w</i> onto the tip of <i>z</i>; multiplying turns <i>z</i> by <i>w</i>’s angle and stretches it by <i>w</i>’s length; dividing undoes that. The algebra on the right matches the picture.</span></div>
+    <div class="row toggle" id="pOp"><button>z + w</button><button>z − w</button><button class="on">z × w</button><button>z ÷ w</button><button>conjugate z̄</button><button>powers zⁿ</button></div>
+    <div class="row" id="pPresets"></div>
+    <div class="desc" id="pDesc"></div>
+    <div class="inputs">
+      <label class="field sm"><span><i>z</i> real</span><input id="pZa" type="text" inputmode="decimal" autocomplete="off" style="border-color:var(--cv)"></label>
+      <label class="field sm"><span><i>z</i> imag</span><input id="pZb" type="text" inputmode="decimal" autocomplete="off" style="border-color:var(--cv)"></label>
+      <label class="field sm" id="pWaF"><span><i>w</i> real</span><input id="pWa" type="text" inputmode="decimal" autocomplete="off" style="border-color:var(--w)"></label>
+      <label class="field sm" id="pWbF"><span><i>w</i> imag</span><input id="pWb" type="text" inputmode="decimal" autocomplete="off" style="border-color:var(--w)"></label>
+      <label class="field sm" id="pNF" style="display:none"><span>power <i>n</i></span><input id="pN" type="text" inputmode="numeric" autocomplete="off"></label>
+      <div class="row" style="margin:0"><button id="pUse">Use these</button><button class="primary" id="pPlay">Play</button><button id="pReset">Reset</button></div>
+    </div>
+    <div class="err" id="pErr"></div>
+    <div class="bigpoly" id="pEq"></div>
+    <div class="mainsplit"><svg id="pSvg" viewBox="0 0 520 520" role="img" aria-label="The complex plane with z, w and the result as arrows"></svg><div class="algebra" id="pAlg"></div></div>
+    <div class="readout" id="pOut"></div>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--cv)"></i><span><i>z</i></span></span>
+      <span><i class="sw" style="background:var(--w)"></i><span><i>w</i></span></span>
+      <span><i class="sw" style="background:var(--res)"></i><span>the result</span></span>
+      <span><i class="sw" style="background:none;border:2px dashed var(--muted)"></i><span>unit circle (length 1)</span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §3 ===================== -->
+<section class="prose">
+  <h2><span class="n">3</span>Quadratics with no real roots</h2>
+  <p>In 3.B.9 the quadratic formula stalled when the discriminant D = <i>b</i>² − 4<i>ac</i> was negative: √D wasn’t a real number. Now it is. √(−16) = √16 · √(−1) = 4<i>i</i>. So <i>x</i>² − 4<i>x</i> + 13 = 0 has</p>
+  <div class="math">\[ x = \frac{4 \pm \sqrt{16 - 52}}{2} = \frac{4 \pm \sqrt{-36}}{2} = \frac{4 \pm 6i}{2} = 2 \pm 3i. \]</div>
+  <p>Check one: (2 + 3<i>i</i>)² − 4(2 + 3<i>i</i>) + 13 = (4 + 12<i>i</i> − 9) − 8 − 12<i>i</i> + 13 = 0 ✓. The two roots are conjugates, <i>h</i> ± <i>ki</i>, and their real part <i>h</i> = 2 is the parabola’s axis of symmetry. Picture it: as a parabola is lifted off the <i>x</i>-axis, its two real roots slide together, meet at the vertex (D = 0), and then split <i>sideways out of the real line</i>, one straight up and one straight down in the complex plane.</p>
+</section>
+
+<!-- ===================== §4 ===================== -->
+<section class="prose">
+  <h2><span class="n">4</span>Every polynomial has all its roots</h2>
+  <p>With complex numbers allowed, factoring never gets stuck. The <b>Fundamental Theorem of Algebra</b> says that every polynomial of degree <i>n</i> ≥ 1 has exactly <i>n</i> complex roots, counting multiplicity (3.B.8), so it factors completely into <i>n</i> linear factors <i>a</i>(<i>x</i> − <i>r</i>₁)(<i>x</i> − <i>r</i>₂)⋯(<i>x</i> − <i>r<sub>n</sub></i>). Gauss gave the first widely accepted proof in 1799.</p>
+  <p>If the coefficients are real, the non-real roots come in <b>conjugate pairs</b> <i>a</i> ± <i>bi</i>: the picture of the roots is symmetric about the real axis. Each pair multiplies to a real quadratic, (<i>x</i> − (<i>a</i> + <i>bi</i>))(<i>x</i> − (<i>a</i> − <i>bi</i>)) = <i>x</i>² − 2<i>ax</i> + (<i>a</i>² + <i>b</i>²). Two consequences: the graph only shows the real roots as <i>x</i>-intercepts, the rest are “hidden” off the line; and a real polynomial of odd degree always has at least one real root, since the pairs can’t use up an odd number.</p>
+</section>
+<section class="wide">
+  <div class="card" id="roots">
+    <div class="card-h"><span class="tag">Explore</span><h3>Where the roots really are</h3>
+      <span class="sub">Left: the real graph, which only shows real roots as <i>x</i>-intercepts. Right: the complex plane, which shows them all. In the quadratic mode press Play to lift the parabola and watch its roots meet and then split up and down.</span></div>
+    <div class="row toggle" id="rMode"><button class="on">Quadratic a, b, c</button><button>Build from roots</button></div>
+    <div class="row" id="rPresets"></div>
+    <div class="desc" id="rDesc"></div>
+    <div class="inputs" id="rIn1">
+      <label class="field sm"><span><i>a</i></span><input id="rA" type="text" inputmode="decimal" autocomplete="off"></label>
+      <label class="field sm"><span><i>b</i></span><input id="rB" type="text" inputmode="decimal" autocomplete="off"></label>
+      <label class="field sm"><span><i>c</i></span><input id="rC" type="text" inputmode="decimal" autocomplete="off"></label>
+    </div>
+    <div class="inputs" id="rIn2" style="display:none">
+      <label class="field wd"><span>roots (conjugates added for you)</span><input id="rL" type="text" autocomplete="off" style="border-color:var(--rt)"></label>
+    </div>
+    <div class="row" style="margin:6px 0 0"><button id="rUse">Use these</button><button class="primary" id="rPlay">Play</button></div>
+    <div class="err" id="rErr"></div>
+    <div class="bigpoly" id="rEq"></div>
+    <div class="split"><svg id="rG" viewBox="0 0 470 420" role="img" aria-label="Real graph"></svg><svg id="rP" viewBox="0 0 470 420" role="img" aria-label="Roots in the complex plane"></svg></div>
+    <div class="readout" id="rOut"></div>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--gr)"></i><span>the real graph</span></span>
+      <span><i class="sw" style="background:var(--rt)"></i><span>real root (an <i>x</i>-intercept)</span></span>
+      <span><i class="sw" style="background:var(--res)"></i><span>non-real root (not on the graph)</span></span>
+      <span><i class="sw" style="background:none;border:2px dashed var(--muted)"></i><span>mirror line: conjugate pairs</span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §5 ===================== -->
+<section class="prose">
+  <h2><span class="n">5</span>Complex numbers at work</h2>
+  <p>Complex numbers are a tool for anything that turns or oscillates. Game and graphics engines rotate shapes by multiplying by a complex number of length 1. Electrical engineers write a circuit’s resistance to alternating current as a complex number, so that the delay between voltage and current is just an angle. And whether a spring bounces or slowly settles depends on whether the roots of a quadratic are complex.</p>
+</section>
+<section class="wide">
+  <div class="card" id="ctx">
+    <div class="card-h"><span class="tag">Explore</span><h3>Rotate, alternate, oscillate</h3>
+      <span class="sub">Pick a situation, change the input, press Play.</span></div>
+    <div class="row toggle" id="xTab"><button class="on">Rotating a sprite</button><button>AC circuit</button><button>Bouncing spring</button></div>
+    <div class="desc" id="xDesc"></div>
+    <div class="inputs">
+      <label class="field sm"><span id="xLab">v</span><input id="xV" type="text" inputmode="decimal" autocomplete="off" style="border-color:var(--cv)"></label>
+      <div class="row" style="margin:0"><button id="xUse">Use this</button><button class="primary" id="xPlay">Play</button></div>
+    </div>
+    <div class="row" id="xPresets" style="margin-top:6px"></div>
+    <div class="err" id="xErr"></div>
+    <div class="bigpoly" id="xEq"></div>
+    <div class="split"><svg id="xPic" viewBox="0 0 470 380" role="img" aria-label="Picture"></svg><svg id="xG" viewBox="0 0 470 380" role="img" aria-label="Graph"></svg></div>
+    <div class="readout" id="xOut"></div>
+  </div>
+</section>
+
+<!-- ===================== §6 ===================== -->
+<section class="prose">
+  <h2><span class="n">6</span>Traps and non-examples</h2>
+</section>
+<section class="wide">
+  <div class="card" id="traps">
+    <div class="card-h"><span class="tag">Compare</span><h3>Easy to get wrong</h3></div>
+    <div class="traps">
+      <div class="t"><h4 class="kng">✕ √(−4) · √(−9) = √36 = 6</h4><svg id="tr1" viewBox="0 0 300 190"></svg><p>Write each with <i>i</i> first: √(−4) = 2<i>i</i> and √(−9) = 3<i>i</i>, so the product is 6<i>i</i>² = −6. The rule √<i>a</i>·√<i>b</i> = √(<i>ab</i>) only holds when <i>a</i>, <i>b</i> ≥ 0. In the plane: two quarter turns make a half turn.</p></div>
+      <div class="t"><h4 class="kng">✕ (2 + 3i)² = 4 + 9 = 13</h4><svg id="tr2" viewBox="0 0 300 190"></svg><p>Two mistakes in one: the middle term 2·2·3<i>i</i> = 12<i>i</i> is missing (3.B.8), and (3<i>i</i>)² = 9<i>i</i>² = −9, not +9. Correct: 4 + 12<i>i</i> − 9 = −5 + 12<i>i</i>.</p></div>
+      <div class="t"><h4 class="kng">✕ x² + 4 = 0 has no roots</h4><svg id="tr3" viewBox="0 0 300 190"></svg><p>It has no <i>real</i> roots: the parabola misses the <i>x</i>-axis. It has two complex roots, ±2<i>i</i>, straight up and down from the axis of symmetry. Degree 2, two roots.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §7 ===================== -->
+<section class="prose">
+  <h2><span class="n">7</span>Now, in symbols</h2>
+  <div class="math">\[ i^2 = -1, \qquad z = a + bi, \qquad \bar z = a - bi, \qquad |z| = \sqrt{a^2+b^2}, \qquad z\bar z = |z|^2 \]</div>
+  <div class="math">\[ (a+bi) \pm (c+di) = (a \pm c) + (b \pm d)i, \qquad (a+bi)(c+di) = (ac - bd) + (ad + bc)i \]</div>
+  <div class="math">\[ \frac{a+bi}{c+di} = \frac{(a+bi)(c-di)}{c^2+d^2}, \qquad |zw| = |z|\,|w|, \qquad \arg(zw) = \arg z + \arg w \]</div>
+  <div class="math">\[ ax^2+bx+c=0,\ D<0:\quad x = -\frac{b}{2a} \pm \frac{\sqrt{-D}}{2a}\,i, \qquad p(x) = a(x-r_1)(x-r_2)\cdots(x-r_n) \]</div>
+</section>
+
+<!-- ===================== §8 ===================== -->
+<section class="prose">
+  <h2><span class="n">8</span>Where this goes</h2>
+  <ul class="goes">
+    <li><b>Next:</b> this completes the algebra basics. Chapter 5 (trigonometry) describes the angle and length of a complex number with sine and cosine, <i>z</i> = <i>r</i>(cos θ + <i>i</i> sin θ), and Euler’s formula <i>e</i><sup><i>i</i>θ</sup> = cos θ + <i>i</i> sin θ ties it to 3.B.7’s exponentials.</li>
+    <li><b>Later in this book:</b> complex eigenvalues of rotation matrices in linear algebra, solving differential equations for springs and circuits in calculus, Fourier analysis of sound and images, and complex analysis at the masters level.</li>
+    <li><b>In the world:</b> rotations in graphics and robotics, AC power grids and electronics, signal processing in every phone, control systems that keep planes and rockets stable, and quantum mechanics, which is written in complex numbers.</li>
+  </ul>
+</section>
+
+<!-- ===================== §9 ===================== -->
+<section class="prose">
+  <h2><span class="n">9</span>Words to know</h2>
+  <div class="vocab">
+    <div class="term"><b>Imaginary unit</b><i>i</i>, a number with <i>i</i>² = −1.</div>
+    <div class="term"><b>Complex number</b><i>a</i> + <i>bi</i> with real <i>a</i>, <i>b</i>; a point of the complex plane.</div>
+    <div class="term"><b>Real part / imaginary part</b><i>a</i> and <i>b</i> in <i>a</i> + <i>bi</i>.</div>
+    <div class="term"><b>Imaginary number</b>A complex number with real part 0, such as 3<i>i</i>.</div>
+    <div class="term"><b>Complex plane</b>The plane with the real axis across and the imaginary axis up.</div>
+    <div class="term"><b>Modulus</b>|<i>a</i> + <i>bi</i>| = √(<i>a</i>² + <i>b</i>²): the distance from 0.</div>
+    <div class="term"><b>Argument</b>The angle from the positive real axis to the point.</div>
+    <div class="term"><b>Conjugate</b><i>a</i> − <i>bi</i>: the mirror image of <i>a</i> + <i>bi</i> in the real axis.</div>
+    <div class="term"><b>Fundamental Theorem of Algebra</b>A polynomial of degree <i>n</i> ≥ 1 has exactly <i>n</i> complex roots, counting multiplicity.</div>
+    <div class="term"><b>Conjugate pairs</b>Non-real roots of a polynomial with real coefficients come as <i>a</i> ± <i>bi</i>.</div>
+    <div class="term"><b>Turning and stretching</b>Multiplying by <i>w</i> turns by <i>w</i>’s angle and stretches by |<i>w</i>|.</div>
+  </div>
+</section>
+
+<!-- ===================== Quiz ===================== -->
+<section class="prose"><h2><span class="n">10</span>Check yourself</h2>
+  <p>Four kinds of questions: arithmetic, conjugates and division, solving when D &lt; 0, and facts about roots. Answers a + bi go in two boxes: the real part and the imaginary part.</p>
+</section>
+<section class="wide">
+  <div class="card" id="quiz">
+    <div class="card-h"><span class="tag">Quiz</span><h3 id="qTitle"></h3><span class="score" id="score">Score: 0 / 0</span></div>
+    <div class="qtext" id="qText"></div>
+    <div class="qexpr" id="qExpr"></div>
+    <div class="choice" id="qChoice"></div>
+    <div class="inputs" id="qIn">
+      <label class="field" id="qF1"><span id="qL1">real part</span><input id="q1" type="text" autocomplete="off" style="width:110px;border-color:var(--cv)"></label>
+      <label class="field" id="qF2"><span id="qL2">imaginary part</span><input id="q2" type="text" autocomplete="off" style="width:110px;border-color:var(--rt)"></label>
+      <div class="row" style="margin:0"><button class="primary" id="qCheck">Check</button></div>
+    </div>
+    <div class="row" style="margin:10px 0 0"><button id="qShow">Show answer</button><button id="qNew">New question</button></div>
+    <div class="err" id="qErr"></div>
+    <div class="feedback" id="qFb" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ===================== Pager (filled in by the shared navigation) ===================== -->
+<nav class="wide">
+  <div class="pager"></div>
+  <div class="meta">3.B.15 · Prerequisites: 3.B.8 (polynomials), 3.B.9 (quadratic formula), 3.B.10 (square roots) · Leads to: Chapter 5 (trigonometry, polar form), 7 (complex eigenvalues), 8 (differential equations)</div>
+</nav>
+</main>
+
+<script>
+/* =====================================================================
+   1. HELPERS (shared with the other chapter 3 pages)
+   ===================================================================== */
+const NS = 'http://www.w3.org/2000/svg';
+const $ = id => document.getElementById(id);
+function mk(tag, attrs, parent){                           // create an SVG element with attributes
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function txt(parent, x, y, s, cls, extra){                 // create an SVG text element
+  extra = Object.assign({}, extra || {});
+  if (extra['text-anchor']){ extra.style = (extra.style ? extra.style + ';' : '') + 'text-anchor:' + extra['text-anchor']; delete extra['text-anchor']; }
+  const t = mk('text', Object.assign({ x, y, class: cls || '' }, extra), parent);
+  t.textContent = s;
+  return t;
+}
+// round for display, use a true minus sign, never show −0
+function num(x, d){ if (d === undefined) d = 2; const r = Math.round(x * Math.pow(10, d)) / Math.pow(10, d); return r === 0 ? '0' : (r < 0 ? '−' : '') + String(Math.abs(r)); }
+const pn = x => x < 0 ? `(${num(x)})` : num(x);              // wrap negatives in brackets when substituting
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const ri = (a, b) => a + Math.floor(Math.random() * (b - a + 1));   // random whole number from a to b
+const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+function parseNum(s){                                     // integers, decimals, minus, simple fractions
+  s = String(s).trim().replace(/[−–]/g, '-').replace(/\s+/g, '');
+  if (/^-?\d+(\.\d+)?$|^-?\.\d+$/.test(s)) return parseFloat(s);
+  const m = s.match(/^(-?\d+)\/(\d+)$/);
+  if (m && +m[2] !== 0) return +m[1] / +m[2];
+  return NaN;
+}
+function selectOnFocus(ids){ ids.forEach(id => $(id).addEventListener('focus', e => e.target.select())); }
+function buttons(boxId, list, onPick){                    // a row of preset buttons; returns a function that marks one as on
+  list.forEach((p, i) => { const b = document.createElement('button'); b.className = 'preset'; b.textContent = p.n; b.onclick = () => onPick(i); $(boxId).appendChild(b); });
+  return i => [...$(boxId).children].forEach((b, j) => b.classList.toggle('on', j === i));
+}
+function svgPt(svg, ev){                                  // mouse position in the SVG's own coordinates
+  const p = svg.createSVGPoint(); p.x = ev.clientX; p.y = ev.clientY;
+  return p.matrixTransform(svg.getScreenCTM().inverse());
+}
+const svgCss = document.createElement('style');
+svgCss.textContent = `
+  .grid{stroke:var(--line);stroke-width:1}
+  .axis{stroke:var(--ink);stroke-width:1.4;opacity:.7}
+  .tl{fill:var(--muted);font:500 11.5px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:3px}
+  .lab{font:700 14px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:5px}
+  .labS{font:600 12.5px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+  .cap{fill:var(--muted);font:600 12px var(--sans);letter-spacing:.06em;paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+  .oval{fill:var(--paper);stroke:var(--line);stroke-width:1.5}
+`;
+document.head.appendChild(svgCss);
+let clipN = 0;                                            // unique clip-path ids
+
+/* ---------- axes: a coordinate grid inside an SVG, with separate x and y scales ---------- */
+function axes(svg, W, H, b, o){
+  o = o || {};
+  svg.innerHTML = '';
+  const L = o.padL ?? 44, R = o.padR ?? 16, T = o.padT ?? 16, B = o.padB ?? 30;
+  const sx = (W - L - R) / (b.x1 - b.x0), sy = (H - T - B) / (b.y1 - b.y0);   // pixels per unit
+  const X = x => L + (x - b.x0) * sx, Y = y => T + (b.y1 - y) * sy;
+  const step = (s, px) => (o.half ? [0.5, 1, 2, 5, 10, 20, 50, 100] : [1, 2, 5, 10, 20, 50, 100]).find(k => k * s >= px) || 200;   // a round step at least px pixels wide
+  const xg = o.xg || step(sx, 9), yg = o.yg || step(sy, 9);        // grid-line spacing
+  const xt = o.xt || step(sx, 34), yt = o.yt || step(sy, 26);      // tick-label spacing
+  const gGrid = mk('g', {}, svg), id = 'clp' + (++clipN);
+  const cp = mk('clipPath', { id }, svg); mk('rect', { x: L, y: T, width: W - L - R, height: H - T - B }, cp);
+  const cg = mk('g', { 'clip-path': `url(#${id})` }, svg);         // clipped layer for curves
+  const m = mk('g', {}, svg), top = mk('g', {}, svg);              // free layer, then labels on top
+  const near = (v, s) => Math.abs(v / s - Math.round(v / s)) < 1e-6;
+  for (let x = Math.ceil(b.x0 / xg) * xg; x <= b.x1 + 1e-9; x += xg) mk('line', { x1: X(x), y1: T, x2: X(x), y2: H - B, class: 'grid' }, gGrid);
+  for (let y = Math.ceil(b.y0 / yg) * yg; y <= b.y1 + 1e-9; y += yg) mk('line', { x1: L, y1: Y(y), x2: W - R, y2: Y(y), class: 'grid' }, gGrid);
+  const ay = (b.y0 <= 0 && b.y1 >= 0) ? Y(0) : H - B;              // where the x-axis is drawn
+  const ax = (b.x0 <= 0 && b.x1 >= 0) ? X(0) : L;                  // where the y-axis is drawn
+  mk('line', { x1: L, y1: ay, x2: W - R, y2: ay, class: 'axis' }, gGrid);
+  mk('line', { x1: ax, y1: T, x2: ax, y2: H - B, class: 'axis' }, gGrid);
+  const fx = o.fx || (v => num(v)), fy = o.fy || (v => num(v));
+  for (let x = Math.ceil(b.x0 / xt) * xt; x <= b.x1 + 1e-9; x += xt){
+    if (Math.abs(x) < 1e-9 && ax === X(0) && !o.zeroX) continue;
+    txt(top, X(x), ay + 16, fx(x), 'tl', { 'text-anchor': 'middle' });
+  }
+  for (let y = Math.ceil(b.y0 / yt) * yt; y <= b.y1 + 1e-9; y += yt){
+    if (Math.abs(y) < 1e-9 && ay === Y(0)) continue;
+    txt(top, ax - 6, Y(y) + 4, fy(y), 'tl', { 'text-anchor': 'end' });
+  }
+  if (o.xT) txt(top, W - R - 2, ay - 8, o.xT, 'cap', { 'text-anchor': 'end' });
+  if (o.yT) txt(top, ax + 8, T + 12, o.yT, 'cap');
+  return { svg, X, Y, sx, sy, cg, m, top, b, L, R, T, B, W, H, ay, ax,
+           inv: (px, py) => [b.x0 + (px - L) / sx, b.y1 - (py - T) / sy] };
+}
+function dPath(P, pts){ return pts.map((p, i) => (i ? 'L' : 'M') + P.X(p[0]).toFixed(1) + ' ' + P.Y(p[1]).toFixed(1)).join(''); }
+// sample y = f(x) from a to b, breaking the curve where f is undefined or jumps
+function sample(f, a, b, n, ok){
+  const out = []; let cur = [];
+  for (let i = 0; i <= n; i++){
+    const x = a + (b - a) * i / n, y = (ok && !ok(x)) ? NaN : f(x);
+    if (!isFinite(y)){ if (cur.length > 1) out.push(cur); cur = []; continue; }
+    if (cur.length && Math.abs(y - cur[cur.length - 1][1]) > 40){ if (cur.length > 1) out.push(cur); cur = []; }
+    cur.push([x, y]);
+  }
+  if (cur.length > 1) out.push(cur);
+  return out;
+}
+function dot(P, x, y, col, o){                              // a filled (or open) point
+  o = o || {};
+  return mk('circle', { cx: P.X(x), cy: P.Y(y), r: o.r || 6, style: o.open ? `fill:var(--bg);stroke:${col};stroke-width:2.6` : `fill:${col};stroke:var(--bg);stroke-width:1.5` }, o.layer || P.m);
+}
+function vline(P, x, col, o){ o = o || {}; return mk('line', { x1: P.X(x), y1: o.y0 !== undefined ? P.Y(o.y0) : P.T, x2: P.X(x), y2: o.y1 !== undefined ? P.Y(o.y1) : P.H - P.B, style: `stroke:${col};stroke-width:${o.w || 2.5};${o.dash ? 'stroke-dasharray:' + o.dash : ''}` }, o.layer || P.m); }
+function hline(P, y, col, o){ o = o || {}; return mk('line', { x1: o.x0 !== undefined ? P.X(o.x0) : P.L, y1: P.Y(y), x2: o.x1 !== undefined ? P.X(o.x1) : P.W - P.R, y2: P.Y(y), style: `stroke:${col};stroke-width:${o.w || 2.5};${o.dash ? 'stroke-dasharray:' + o.dash : ''}` }, o.layer || P.m); }
+function arrowHead(g, x1, y1, x2, y2, col, size){            // a small triangle at (x2, y2) pointing away from (x1, y1)
+  const a = Math.atan2(y2 - y1, x2 - x1), s = size || 9;
+  const p = [[x2, y2], [x2 - s * Math.cos(a - 0.4), y2 - s * Math.sin(a - 0.4)], [x2 - s * Math.cos(a + 0.4), y2 - s * Math.sin(a + 0.4)]];
+  mk('polygon', { points: p.map(q => q.join(',')).join(' '), style: `fill:${col}` }, g);
+}
+
+/* ---------- arrow diagram: inputs in a left oval, outputs in a right oval, one arrow per pair ---------- */
+// pairs: [[in, out], ...]; o.ins / o.outs give the order (defaults: sorted values); o.fmt formats a value;
+// o.hl = input to highlight (others fade); o.lit = [in, out] arrow drawn thick; o.dead = inputs shown crossed out
+function arrowDiagram(svg, W, H, pairs, o){
+  o = o || {};
+  svg.innerHTML = '';
+  const fmt = o.fmt || (v => typeof v === 'number' ? num(v) : v);
+  const key = v => String(v);
+  const uniq = arr => { const s = new Set(), r = []; arr.forEach(v => { if (!s.has(key(v))){ s.add(key(v)); r.push(v); } }); return r; };
+  const srt = arr => arr.every(v => typeof v === 'number') ? arr.slice().sort((a, b) => a - b) : arr;
+  const ins = o.ins || srt(uniq(pairs.map(p => p[0]))), outs = o.outs || srt(uniq(pairs.map(p => p[1])));
+  const top = o.top ?? 34, bot = H - (o.bottom ?? 14);
+  const lx = W * 0.25, rx = W * 0.75, ow = Math.min(W * 0.17, 90);
+  mk('ellipse', { cx: lx, cy: (top + bot) / 2, rx: ow, ry: (bot - top) / 2, class: 'oval' }, svg);
+  mk('ellipse', { cx: rx, cy: (top + bot) / 2, rx: ow, ry: (bot - top) / 2, class: 'oval' }, svg);
+  txt(svg, lx, 18, o.inLab || 'INPUTS x', 'cap', { 'text-anchor': 'middle', style: 'fill:var(--in)' });
+  txt(svg, rx, 18, o.outLab || 'OUTPUTS y', 'cap', { 'text-anchor': 'middle', style: 'fill:var(--out)' });
+  const ypos = (i, n) => n === 1 ? (top + bot) / 2 : top + 26 + (bot - top - 52) * i / (n - 1);
+  const iy = {}, oy = {};
+  ins.forEach((v, i) => iy[key(v)] = ypos(i, ins.length));
+  outs.forEach((v, i) => oy[key(v)] = ypos(i, outs.length));
+  const cnt = {}; pairs.forEach(p => cnt[key(p[0])] = (cnt[key(p[0])] || 0) + 1);   // how many outputs each input has
+  const dx = Math.min(ow * 0.45, 34), fs = ins.length > 9 || outs.length > 9 ? 'labS' : 'lab';
+  const ga = mk('g', {}, svg), gd = mk('g', {}, svg);
+  pairs.forEach(p => {                                     // arrows
+    const k = key(p[0]), bad = cnt[k] > 1, faded = o.hl !== undefined && o.hl !== null && key(o.hl) !== k;
+    const lit = o.lit && key(o.lit[0]) === k && key(o.lit[1]) === key(p[1]);
+    const col = bad ? 'var(--no)' : 'var(--pt)';
+    const x1 = lx + dx + 8, y1 = iy[k], x2 = rx - dx - 9, y2 = oy[key(p[1])];
+    mk('line', { x1, y1, x2, y2, style: `stroke:${col};stroke-width:${lit ? 4.5 : 2.4};opacity:${faded ? .18 : 1}` }, ga);
+    if (!faded) arrowHead(ga, x1, y1, x2, y2, col, lit ? 12 : 10);
+  });
+  ins.forEach(v => {                                       // input dots and labels
+    const k = key(v), dead = o.dead && o.dead.map(key).includes(k), bad = cnt[k] > 1;
+    const faded = o.hl !== undefined && o.hl !== null && key(o.hl) !== k;
+    const col = dead ? 'var(--muted)' : bad ? 'var(--no)' : 'var(--in)';
+    mk('circle', { cx: lx + dx, cy: iy[k], r: o.hl !== undefined && key(o.hl) === k ? 8 : 6, style: `fill:${col};opacity:${faded ? .35 : 1}` }, gd);
+    const t = txt(gd, lx + dx - 12, iy[k] + 5, fmt(v), fs, { 'text-anchor': 'end', style: `fill:${col};opacity:${faded ? .45 : 1}${dead ? ';text-decoration:line-through' : ''}` });
+  });
+  outs.forEach(v => {                                      // output dots and labels
+    const k = key(v);
+    mk('circle', { cx: rx - dx, cy: oy[k], r: 6, style: 'fill:var(--out)' }, gd);
+    txt(gd, rx - dx + 12, oy[k] + 5, fmt(v), fs, { style: 'fill:var(--out)' });
+  });
+  return { ins, outs };
+}
+// group pairs by input: Map from input to its list of distinct outputs
+function byInput(pairs){
+  const m = new Map();
+  pairs.forEach(([x, y]) => { const k = String(x); if (!m.has(k)) m.set(k, { x, ys: [] }); const e = m.get(k); if (!e.ys.some(v => String(v) === String(y))) e.ys.push(y); });
+  return m;
+}
+const setStr = arr => '{' + arr.map(v => num(v)).join(', ') + '}';
+
+
+/* ---------- helpers for zoomable graphs (any scale) ---------- */
+const niceStep = raw => { const p = Math.pow(10, Math.floor(Math.log10(raw))), m = raw / p; return (m <= 1 ? 1 : m <= 2 ? 2 : m <= 5 ? 5 : 10) * p; };
+const decs = st => Math.max(0, -Math.floor(Math.log10(st) + 1e-9));
+function fmt(v, st){ const d = decs(st); const r = Number(v.toFixed(d)); return r === 0 ? '0' : (r < 0 ? '−' : '') + Math.abs(r).toFixed(d); }
+// a coordinate system with any box (tiny or huge), labelled ticks, a clipped layer for curves
+function ax2(svg, W, H, b, o){
+  o = o || {}; svg.innerHTML = '';
+  const L = o.padL ?? 52, R = o.padR ?? 14, T = o.padT ?? 14, B = o.padB ?? 28;
+  const sx = (W - L - R) / (b.x1 - b.x0), sy = (H - T - B) / (b.y1 - b.y0), X = x => L + (x - b.x0) * sx, Y = y => T + (b.y1 - y) * sy;
+  const gx = niceStep((b.x1 - b.x0) / 8), gy = niceStep((b.y1 - b.y0) / 7);
+  const g = mk('g', {}, svg), id = 'c' + Math.random().toString(36).slice(2);
+  const cp = mk('clipPath', { id }, svg); mk('rect', { x: L, y: T, width: W - L - R, height: H - T - B }, cp);
+  const cg = mk('g', { 'clip-path': `url(#${id})` }, svg), m = mk('g', {}, svg), top = mk('g', {}, svg);
+  for (let v = Math.ceil(b.x0 / gx) * gx; v <= b.x1 + gx * 1e-6; v += gx){ mk('line', { x1: X(v), y1: T, x2: X(v), y2: H - B, class: 'grid' }, g); txt(top, X(v), H - B + 16, o.fx ? o.fx(v) : fmt(v, gx), 'tl', { 'text-anchor': 'middle' }); }
+  for (let v = Math.ceil(b.y0 / gy) * gy; v <= b.y1 + gy * 1e-6; v += gy){ mk('line', { x1: L, y1: Y(v), x2: W - R, y2: Y(v), class: 'grid' }, g); txt(top, L - 6, Y(v) + 4, fmt(v, gy), 'tl', { 'text-anchor': 'end' }); }
+  if (b.y0 < 0 && b.y1 > 0) mk('line', { x1: L, y1: Y(0), x2: W - R, y2: Y(0), class: 'axis' }, g);
+  if (b.x0 < 0 && b.x1 > 0) mk('line', { x1: X(0), y1: T, x2: X(0), y2: H - B, class: 'axis' }, g);
+  mk('rect', { x: L, y: T, width: W - L - R, height: H - T - B, style: 'fill:none;stroke:var(--line2)' }, g);
+  if (o.xT) txt(top, W - R - 4, H - B - 6, o.xT, 'cap', { 'text-anchor': 'end' });
+  if (o.yT) txt(top, L + 6, T + 14, o.yT, 'cap');
+  return { X, Y, sx, sy, cg, m, top, b, L, R, T, B, W, H, inv: (px, py) => [b.x0 + (px - L) / sx, b.y1 - (py - T) / sy] };
+}
+// sample a curve across the box, breaking at undefined points, at listed jumps, and at big leaps
+function curve(P, f, o){
+  o = o || {}; const b = P.b, n = o.n || 900, brk = o.breaks || [], polys = []; let cur = [];
+  const lim = (b.y1 - b.y0) * 3;
+  for (let i = 0; i <= n; i++){
+    const x = b.x0 + (b.x1 - b.x0) * i / n, y = f(x);
+    const crossed = cur.length && brk.some(c => (cur[cur.length - 1][0] - c) * (x - c) <= 0);
+    if (!isFinite(y) || crossed || (cur.length && Math.abs(y - cur[cur.length - 1][1]) > lim)){ if (cur.length > 1) polys.push(cur); cur = []; if (!isFinite(y)) continue; }
+    cur.push([x, Math.max(b.y0 - lim, Math.min(b.y1 + lim, y))]);
+  }
+  if (cur.length > 1) polys.push(cur);
+  polys.forEach(p => mk('path', { d: dPath(P, p), style: `fill:none;stroke:${o.col || 'var(--cv)'};stroke-width:${o.w || 3};${o.dash ? 'stroke-dasharray:' + o.dash : ''}` }, P.cg));
+}
+const holeAt = (P, x, y, col) => mk('circle', { cx: P.X(x), cy: P.Y(y), r: 6, style: `fill:var(--bg);stroke:${col || 'var(--cv)'};stroke-width:2.5` }, P.m);
+const dotAt = (P, x, y, col, r) => mk('circle', { cx: P.X(x), cy: P.Y(y), r: r || 6, style: `fill:${col || 'var(--cv)'};stroke:var(--bg);stroke-width:1.5` }, P.m);
+const sig = v => !isFinite(v) ? (v > 0 ? '∞' : v < 0 ? '−∞' : 'undefined') : Math.abs(v) >= 1e5 ? v.toExponential(2).replace('-', '−') : num(v, 6);
+function parseLim(s){
+  const t = String(s).trim().toLowerCase().replace(/\s+/g, '').replace(/[−–]/g, '-');
+  if (/^(dne|none|doesnotexist|noLimit|nolimit|no)$/i.test(t)) return 'DNE';
+  if (/^\+?(inf|infinity|∞|oo)$/.test(t)) return Infinity;
+  if (/^-(inf|infinity|∞|oo)$/.test(t)) return -Infinity;
+  return parseNum(s);
+}
+
+const minus = s => String(s).replace(/(^|[\s(,=>→\/·+×])-(\d)/g, '$1−$2');
+const r4 = v => Number((Math.abs(v) < 1e-300 ? 0 : v).toPrecision(5));
+const SUP = k => String(k).replace(/-/g, '⁻').replace(/\d/g, d => '⁰¹²³⁴⁵⁶⁷⁸⁹'[d]);
+const sci = v => { if (v === 0) return '0'; const a = Math.abs(v); if (a >= 1e-3 && a < 1e7) return minus(String(r4(v))); let e = Math.floor(Math.log10(a)); if (Math.abs(v / Math.pow(10, e)) >= 9.995) e++; const m = v / Math.pow(10, e); return minus(`${m.toFixed(2)}×10${SUP(e)}`); };
+const gcd = (a, b) => b ? gcd(b, a % b) : Math.abs(a);
+function frc(x){ if (Math.abs(x - Math.round(x)) < 1e-9) return num(Math.round(x)); for (let d = 2; d <= 10000; d++){ const n = x * d; if (Math.abs(n - Math.round(n)) < 1e-9 * d && gcd(Math.round(n), d) === 1) return (x < 0 ? '−' : '') + Math.abs(Math.round(n)) + '/' + d; } return sci(x); }
+// a readable value: whole numbers with commas, otherwise 4–5 significant figures
+const big = v => Math.abs(v) >= 1e7 ? sci(v) : Math.abs(v - Math.round(v)) < 1e-9 ? Math.round(v).toLocaleString().replace('-', '−') : minus(String(r4(v)));
+
+/* =====================================================================
+   2. POLYNOMIAL TOOLS
+   ===================================================================== */
+// polynomials are arrays of coefficients, highest power first: [3, 2, -5] is 3x² + 2x − 5
+const pmul = (A, B) => { const r = Array(A.length + B.length - 1).fill(0); A.forEach((a, i) => B.forEach((b, j) => r[i + j] += a * b)); return r; };
+const peval = (C, x) => C.reduce((s, c) => s * x + c, 0);          // Horner's rule
+// write a polynomial in standard form with true minus signs; 1·x is written x
+function pstr(C, v){
+  v = v || 'x'; const n = C.length - 1; let s = '';
+  C.forEach((c, i) => {
+    const k = n - i; if (Math.abs(c) < 1e-12) return;              // skip zero terms
+    const a = Math.abs(c), neg = c < 0;
+    const cs = (Math.abs(a - 1) < 1e-12 && k > 0) ? '' : frc(a);   // hide a coefficient of 1
+    const vs = k === 0 ? '' : k === 1 ? v : v + SUP(k);
+    s += (s === '' ? (neg ? '−' : '') : (neg ? ' − ' : ' + ')) + cs + vs;
+  });
+  return s || '0';
+}
+const lin = (p, q) => pstr([p, q]);                                // "2x + 1"
+const sgn = v => (v < 0 ? '− ' : '+ ') + frc(Math.abs(v));         // "+ 3" or "− 2" for joining
+const nz = (a, b) => { let v; do { v = ri(a, b); } while (v === 0); return v; };   // random nonzero whole number
+const isInt = v => isFinite(v) && Math.abs(v - Math.round(v)) < 1e-9;
+// factor ax² + bx + c over the whole numbers: returns {g, p, q, r, s} with ax²+bx+c = g(px+q)(rx+s), or {g, none, A, B, C}
+function factorQ(a, b, c){
+  let g = gcd(gcd(Math.abs(a), Math.abs(b)), Math.abs(c)); if (a < 0) g = -g;   // GCF, and make the leading coefficient positive
+  const A = a / g, B = b / g, C = c / g;
+  if (C === 0) return { g, p: 1, q: 0, r: A, s: B };                // no constant: x is a factor
+  for (let p = 1; p <= A; p++){ if (A % p) continue; const r = A / p;
+    for (let q = -Math.abs(C); q <= Math.abs(C); q++){ if (q === 0 || C % q) continue; const s = C / q; if (p * s + q * r === B) return { g, p, q, r, s }; } }
+  return { g, none: true, A, B, C };
+}
+// one linear factor as text: "x", "(x + 3)", "(2x − 1)"
+const fpart = (p, q) => q === 0 ? (p === 1 ? 'x' : frc(p) + 'x') : `(${lin(p, q)})`;
+function fstr(F){
+  const f1 = fpart(F.p, F.q), f2 = fpart(F.r, F.s);
+  let body = f1 === f2 ? (f1 === 'x' ? 'x²' : f1 + '²') : (f2 === 'x' ? f2 + f1 : f1 + f2);
+  const g = F.g === 1 ? '' : F.g === -1 ? '−' : num(F.g);
+  return g + body;
+}
+// colours for a tile: its shape decides the colour, a negative tile is red
+const tcol = (type, sg) => sg < 0 ? 'var(--ng)' : { x2: 'var(--sq)', x: 'var(--xt)', u: 'var(--un)' }[type];
+// draw one tile rectangle; ghost = cancelled (faded with an ✕ in the colour of the tile that cancelled it)
+function tileR(g, x, y, w, h, col, o){
+  o = o || {};
+  const r = mk('rect', { x, y, width: w, height: h, rx: Math.min(3, w / 4), style: `fill:${col};stroke:var(--bg);stroke-width:1.2;opacity:${o.ghost ? .22 : (o.op ?? .9)}` }, g);
+  if (o.ghost){ const c = o.xcol || 'var(--muted)'; mk('path', { d: `M${x + 2} ${y + 2}L${x + w - 2} ${y + h - 2}M${x + w - 2} ${y + 2}L${x + 2} ${y + h - 2}`, style: `stroke:${c};stroke-width:2` }, g); }
+  if (o.lab) txt(g, x + w / 2, y + h / 2 + 4.5, o.lab, 'labS', { 'text-anchor': 'middle', style: 'fill:#fff;stroke:none;font-size:' + (o.fs || 12.5) + 'px' });
+  return r;
+}
+const ease = t => t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+// simple animation runner: calls step(e) with e from 0 to 1, then done()
+function animate(ms, step, done){
+  const t0 = performance.now(); let id = 0, stopped = false;
+  const tick = now => { if (stopped) return; const e = Math.min(1, (now - t0) / ms); step(e); if (e < 1) id = requestAnimationFrame(tick); else if (done) done(); };
+  id = requestAnimationFrame(tick);
+  return () => { stopped = true; cancelAnimationFrame(id); };
+}
+// a small isometric box (x right-down, y left-down, z up); draws the three visible faces
+function isoBox(g, P, x, y, z, dx, dy, dz, col, o){
+  o = o || {};
+  const f = (a, b, c) => P(a, b, c).join(',');
+  const face = (pts, op) => mk('polygon', { points: pts.join(' '), style: `fill:${col};fill-opacity:${op};stroke:${o.stroke || 'var(--bg)'};stroke-width:1.2${o.dash ? ';stroke-dasharray:4 3' : ''}` }, g);
+  const sc = o.ghost ? .35 : 1;
+  face([f(x, y, z + dz), f(x + dx, y, z + dz), f(x + dx, y + dy, z + dz), f(x, y + dy, z + dz)], (o.ghost ? .12 : .95) * sc);   // top
+  face([f(x + dx, y, z), f(x + dx, y + dy, z), f(x + dx, y + dy, z + dz), f(x + dx, y, z + dz)], (o.ghost ? .1 : .72) * sc);    // right face (x = max)
+  face([f(x, y + dy, z), f(x + dx, y + dy, z), f(x + dx, y + dy, z + dz), f(x, y + dy, z + dz)], (o.ghost ? .08 : .55) * sc);   // left face (y = max)
+}
+
+
+/* ---------- complex numbers ---------- */
+function ratOf(x){ for (let d = 1; d <= 400; d++){ const n = x * d; if (Math.abs(n - Math.round(n)) < 1e-9 * d) return [Math.round(n), d]; } return null; }
+const isRat = x => ratOf(x) !== null;
+const T = v => isRat(v) ? frc(v) : num(v, 3);
+const Z = (re, im) => ({ re, im });
+const cadd = (z, w) => Z(z.re + w.re, z.im + w.im), csub = (z, w) => Z(z.re - w.re, z.im - w.im);
+const cmul = (z, w) => Z(z.re * w.re - z.im * w.im, z.re * w.im + z.im * w.re);
+const cabs = z => Math.hypot(z.re, z.im), carg = z => Math.atan2(z.im, z.re), conj = z => Z(z.re, -z.im);
+const cdiv = (z, w) => { const m = w.re * w.re + w.im * w.im; return Z((z.re * w.re + z.im * w.im) / m, (z.im * w.re - z.re * w.im) / m); };
+const polar = (r, t) => Z(r * Math.cos(t), r * Math.sin(t));
+const clean = v => Math.abs(v) < 1e-10 ? 0 : v;
+// "3 − 2i", "−i", "4i", "0"
+function ctext(z){
+  const a = clean(z.re), b = clean(z.im);
+  const D = v => isInt(v) ? String(Math.round(v)) : num(v, 3);
+  const bt = Math.abs(b) === 1 ? 'i' : D(Math.abs(b)) + 'i';
+  if (b === 0) return (a < 0 ? '−' : '') + D(Math.abs(a));
+  if (a === 0) return (b < 0 ? '−' : '') + bt;
+  return `${a < 0 ? '−' : ''}${D(Math.abs(a))} ${b < 0 ? '−' : '+'} ${bt}`;
+}
+const cp = z => (clean(z.re) !== 0 && clean(z.im) !== 0) || clean(z.im) < 0 || clean(z.re) < 0 ? `(${ctext(z)})` : ctext(z);   // wrap in brackets when needed
+const deg = t => num(t * 180 / Math.PI, 1) + '°';
+// parse "3+2i", "-i", "4i", "2.5", "1/2-3i"
+function parseC(s){
+  s = String(s).replace(/\s+/g, '').replace(/[−–]/g, '-').toLowerCase();
+  if (s === '') return null;
+  if (!s.includes('i')){ const v = parseNum(s); return isFinite(v) ? Z(v, 0) : null; }
+  if (!s.endsWith('i')) return null;
+  const body = s.slice(0, -1); let k = -1;
+  for (let j = body.length - 1; j > 0; j--) if ((body[j] === '+' || body[j] === '-') && body[j - 1] !== '/'){ k = j; break; }
+  const reS = k > 0 ? body.slice(0, k) : '', imS = k > 0 ? body.slice(k) : body;
+  const re = reS === '' ? 0 : parseNum(reS), im = imS === '' || imS === '+' ? 1 : imS === '-' ? -1 : parseNum(imS.replace(/^\+/, ''));
+  return isFinite(re) && isFinite(im) ? Z(re, im) : null;
+}
+// a square complex plane with equal scales
+function plane(svg, W, R, o){
+  o = o || {};
+  const P = ax2(svg, W, W, { x0: -R, x1: R, y0: -R, y1: R }, { padL: o.padL ?? 40, padR: 14, padT: 14, padB: 30, xT: o.xT ?? 'real', yT: o.yT ?? 'imaginary' });
+  if (o.unit !== false && R < 12) mk('circle', { cx: P.X(0), cy: P.Y(0), r: P.sx, style: 'fill:none;stroke:var(--muted);stroke-width:1.3;stroke-dasharray:4 4' }, P.cg);
+  return P;
+}
+function carrow(P, z0, z1, col, o){
+  o = o || {};
+  const x1 = P.X(z0.re), y1 = P.Y(z0.im), x2 = P.X(z1.re), y2 = P.Y(z1.im);
+  if (Math.hypot(x2 - x1, y2 - y1) < 2) return;
+  mk('line', { x1, y1, x2, y2, style: `stroke:${col};stroke-width:${o.w || 3};${o.dash ? 'stroke-dasharray:' + o.dash + ';' : ''}opacity:${o.op ?? 1}` }, o.layer || P.m);
+  arrowHead(o.layer || P.m, x1, y1, x2, y2, col, o.head || 11);
+}
+function cdot(P, z, col, r, layer){ return mk('circle', { cx: P.X(z.re), cy: P.Y(z.im), r: r || 5.5, style: `fill:${col};stroke:var(--bg);stroke-width:1.5` }, layer || P.m); }
+// arc of angles t0 → t1 at radius rr (in plane units) around 0
+function carc(P, rr, t0, t1, col, layer){
+  const n = 40, pts = []; for (let k = 0; k <= n; k++){ const t = t0 + (t1 - t0) * k / n; pts.push(`${k ? 'L' : 'M'}${P.X(rr * Math.cos(t))} ${P.Y(rr * Math.sin(t))}`); }
+  mk('path', { d: pts.join(''), style: `fill:none;stroke:${col};stroke-width:2` }, layer || P.m);
+}
+
+/* =====================================================================
+   2. THE COMPLEX CALCULATOR
+   ===================================================================== */
+const OPS = ['add', 'sub', 'mul', 'div', 'conj', 'pow'];
+const PP = [
+  { n: 'i × i', op: 'mul', z: [0, 1], w: [0, 1], d: 'Turn i by another quarter turn: you land on −1. That’s i² = −1 as a picture.' },
+  { n: '(2 + i) × i', op: 'mul', z: [2, 1], w: [0, 1], d: 'Multiplying by i turns any arrow a quarter turn (90°) anticlockwise and keeps its length.' },
+  { n: '(3 + 4i) + (1 − 2i)', op: 'add', z: [3, 4], w: [1, -2], d: 'Add the real parts and the imaginary parts: slide w onto the tip of z.' },
+  { n: '(2 + i)(1 + 2i)', op: 'mul', z: [2, 1], w: [1, 2], d: 'Angles add (26.6° + 63.4° = 90°) and lengths multiply (√5 · √5 = 5): straight up to 5i.' },
+  { n: '(3 + 4i)(3 − 4i)', op: 'mul', z: [3, 4], w: [3, -4], d: 'A number times its conjugate: the angles cancel, leaving the real number 25 = 5².' },
+  { n: '(4 + 2i) ÷ (1 + i)', op: 'div', z: [4, 2], w: [1, 1], d: 'Dividing by 1 + i turns back 45° and shrinks by √2: the answer is 3 − i.' },
+  { n: 'conjugate of 3 + 2i', op: 'conj', z: [3, 2], w: [1, 0], d: 'The mirror image in the real axis: 3 − 2i.' },
+  { n: 'powers of i', op: 'pow', z: [0, 1], pw: 8, d: 'Quarter turns: i, −1, −i, 1, and round again. The powers of i repeat every 4.' },
+  { n: 'powers of 1 + i', op: 'pow', z: [1, 1], pw: 6, d: 'Each power turns 45° more and stretches by √2 ≈ 1.41: a spiral outward.' }
+];
+const PS = { op: 'mul', z: Z(2, 1), w: Z(1, 2), n: 4, e: 1, stop: null };
+const pMark = buttons('pPresets', PP, i => { const p = PP[i]; PS.op = p.op; PS.z = Z(...p.z); if (p.w) PS.w = Z(...p.w); if (p.pw) PS.n = p.pw; pMark(i); $('pDesc').innerHTML = minus(p.d); pFill(); pHalt(); PS.e = 1; pDraw(); });
+[...$('pOp').children].forEach((b, j) => b.onclick = () => { PS.op = OPS[j]; if (PS.op === 'div' && cabs(PS.w) === 0) PS.w = Z(1, 1); pMark(-1); $('pDesc').textContent = 'Custom.'; pFill(); pHalt(); PS.e = 1; pDraw(); });
+function pFill(){
+  $('pZa').value = minus(T(PS.z.re)); $('pZb').value = minus(T(PS.z.im)); $('pWa').value = minus(T(PS.w.re)); $('pWb').value = minus(T(PS.w.im)); $('pN').value = PS.n;
+  const showW = PS.op !== 'conj' && PS.op !== 'pow';
+  $('pWaF').style.display = $('pWbF').style.display = showW ? '' : 'none'; $('pNF').style.display = PS.op === 'pow' ? '' : 'none';
+  [...$('pOp').children].forEach((b, j) => b.classList.toggle('on', OPS[j] === PS.op));
+}
+function pHalt(){ if (PS.stop){ PS.stop(); PS.stop = null; } $('pPlay').textContent = 'Play'; }
+$('pUse').onclick = () => {
+  const v = ['pZa', 'pZb', 'pWa', 'pWb'].map(id => parseNum($(id).value)), n = parseNum($('pN').value);
+  const need = PS.op === 'conj' || PS.op === 'pow' ? v.slice(0, 2) : v;
+  if (need.some(x => !isFinite(x))){ $('pErr').textContent = 'Fill in every box with a number (fractions like 1/2 are fine).'; return; }
+  if (need.some(x => Math.abs(x) > 8)){ $('pErr').textContent = 'Keep every part between −8 and 8 so the picture fits.'; return; }
+  if (PS.op === 'div' && v[2] === 0 && v[3] === 0){ $('pErr').textContent = 'You can’t divide by 0.'; return; }
+  if (PS.op === 'pow'){
+    if (!isInt(n) || n < 1 || n > 12){ $('pErr').textContent = 'The power n must be a whole number from 1 to 12.'; return; }
+    if (Math.hypot(v[0], v[1]) ** n > 80){ $('pErr').textContent = 'Those powers get too big to draw; use a smaller z or n.'; return; }
+    PS.n = n;
+  }
+  $('pErr').textContent = ''; PS.z = Z(v[0], v[1]); if (isFinite(v[2]) && isFinite(v[3])) PS.w = Z(v[2], v[3]); pMark(-1); $('pDesc').textContent = 'Custom.'; pHalt(); PS.e = 1; pDraw();
+};
+['pZa', 'pZb', 'pWa', 'pWb', 'pN'].forEach(id => { $(id).addEventListener('input', () => $('pErr').textContent = ''); $(id).addEventListener('keydown', e => { if (e.key === 'Enter') $('pUse').click(); }); });
+$('pPlay').onclick = () => {
+  if (PS.stop){ pHalt(); return; }
+  $('pPlay').textContent = 'Pause';
+  PS.stop = animate(PS.op === 'pow' ? 3200 : 2400, e => { PS.e = e; pDraw(); }, () => { PS.stop = null; $('pPlay').textContent = 'Play'; });
+};
+$('pReset').onclick = () => { pHalt(); PS.e = 0; pDraw(); };
+function pResult(){
+  const { op, z, w, n } = PS;
+  if (op === 'add') return cadd(z, w); if (op === 'sub') return csub(z, w); if (op === 'mul') return cmul(z, w);
+  if (op === 'div') return cdiv(z, w); if (op === 'conj') return conj(z);
+  let p = Z(1, 0); for (let k = 0; k < n; k++) p = cmul(p, z); return p;
+}
+function pDraw(){
+  const { op, z, w, n } = PS, e = ease(PS.e), res = pResult();
+  // plane size: everything drawn must fit
+  const pts = [z, w, res, cadd(z, w), csub(z, w), Z(-w.re, -w.im)];
+  if (op === 'pow'){ let p = Z(1, 0); for (let k = 0; k < n; k++){ p = cmul(p, z); pts.push(p); } }
+  const R = Math.max(2.2, ...pts.filter((q, i) => op !== 'conj' && op !== 'pow' ? true : i === 0 || i === 2 || i > 5).map(q => Math.max(Math.abs(q.re), Math.abs(q.im)))) * 1.18;
+  const P = plane($('pSvg'), 520, R);
+  const lbl = (q, s, col, dx, dy) => txt(P.top, P.X(q.re) + (dx ?? 8), P.Y(q.im) + (dy ?? -8), s, 'labS', { style: `fill:${col}` });
+  const O = Z(0, 0);
+  if (op === 'add' || op === 'sub'){
+    const ww = op === 'add' ? w : Z(-w.re, -w.im);
+    carrow(P, O, z, 'var(--cv)'); lbl(z, 'z = ' + ctext(z), 'var(--cv)');
+    carrow(P, O, w, 'var(--w)', { op: op === 'sub' ? .4 : 1, dash: op === 'sub' ? '5 4' : '' }); lbl(w, 'w = ' + ctext(w), 'var(--w)', 8, 16);
+    if (op === 'sub'){ carrow(P, O, ww, 'var(--w)'); lbl(ww, '−w', 'var(--w)', 8, 16); }
+    const off = Z(z.re * e, z.im * e);
+    carrow(P, off, cadd(off, ww), 'var(--w)', { w: 2.4, dash: '6 4' });                     // the slide
+    if (PS.e > 0.98){ carrow(P, O, res, 'var(--res)', { w: 3.6 }); lbl(res, `z ${op === 'add' ? '+' : '−'} w = ${ctext(res)}`, 'var(--res)', 8, -10);
+      mk('line', { x1: P.X(ww.re), y1: P.Y(ww.im), x2: P.X(res.re), y2: P.Y(res.im), style: 'stroke:var(--muted);stroke-width:1;stroke-dasharray:3 4' }, P.cg); }
+  } else if (op === 'mul' || op === 'div'){
+    const rz = cabs(z), tz = carg(z), rw = cabs(w), tw = carg(w), sgn1 = op === 'mul' ? 1 : -1;
+    carrow(P, O, z, 'var(--cv)'); lbl(z, 'z = ' + ctext(z), 'var(--cv)');
+    carrow(P, O, w, 'var(--w)', { w: 2.4 }); lbl(w, 'w = ' + ctext(w), 'var(--w)', 8, 16);
+    const rr = Math.min(R * 0.18, 0.9);
+    if (rw > 1e-9 && Math.abs(tw) > 1e-6) carc(P, rr * 0.8, 0, tw, 'var(--w)');                // w's angle, from the real axis
+    if (rz > 1e-9 && Math.abs(tz) > 1e-6) carc(P, rr * 1.2, 0, tz, 'var(--cv)');
+    // turning and stretching: angle moves from arg z by e·(±arg w), length from |z| to |z|·|w|^(±e)
+    const t = tz + sgn1 * e * tw, r = rz * Math.pow(rw, sgn1 * e), cur = polar(r, t);
+    if (PS.e > 0.001){
+      const tr = []; for (let k = 0; k <= 40; k++){ const s = e * k / 40; tr.push(polar(rz * Math.pow(rw, sgn1 * s), tz + sgn1 * s * tw)); }
+      mk('path', { d: tr.map((q, k) => `${k ? 'L' : 'M'}${P.X(q.re)} ${P.Y(q.im)}`).join(''), style: 'fill:none;stroke:var(--res);stroke-width:2;stroke-dasharray:4 4' }, P.m);
+      carrow(P, O, cur, 'var(--res)', { w: 3.6 });
+    }
+    if (PS.e > 0.98) lbl(res, `z ${op === 'mul' ? '×' : '÷'} w = ${ctext(res)}`, 'var(--res)', 8, -10);
+  } else if (op === 'conj'){
+    mk('line', { x1: P.L, y1: P.Y(0), x2: P.W - P.R, y2: P.Y(0), style: 'stroke:var(--muted);stroke-width:2.5;stroke-dasharray:8 5' }, P.cg);
+    carrow(P, O, z, 'var(--cv)'); lbl(z, 'z = ' + ctext(z), 'var(--cv)');
+    const cur = Z(z.re, z.im * (1 - 2 * e));
+    mk('line', { x1: P.X(z.re), y1: P.Y(z.im), x2: P.X(cur.re), y2: P.Y(cur.im), style: 'stroke:var(--res);stroke-width:1.5;stroke-dasharray:3 3' }, P.m);
+    carrow(P, O, cur, 'var(--res)', { w: 3.2 }); if (PS.e > 0.98) lbl(res, 'z̄ = ' + ctext(res), 'var(--res)', 8, 18);
+  } else {
+    const shown = Math.max(1, Math.ceil(PS.e * n - 1e-9));
+    let p = Z(1, 0); const list = [p];
+    for (let k = 1; k <= n; k++){ p = cmul(p, z); list.push(p); }
+    mk('path', { d: list.slice(0, shown + 1).map((q, k) => `${k ? 'L' : 'M'}${P.X(q.re)} ${P.Y(q.im)}`).join(''), style: 'fill:none;stroke:var(--res);stroke-width:1.6;stroke-dasharray:4 4' }, P.m);
+    const seen = new Map();
+    list.slice(0, shown + 1).forEach((q, k) => {
+      const key = `${num(q.re, 6)},${num(q.im, 6)}`, rep = seen.get(key) || 0; seen.set(key, rep + 1);
+      cdot(P, q, k === 0 ? 'var(--muted)' : k === 1 ? 'var(--cv)' : 'var(--res)', k === shown ? 7.5 : 5.5);
+      if (rep < 2){ const right = q.re >= -1e-9; txt(P.top, P.X(q.re) + (right ? 9 : -9), P.Y(q.im) + (q.im >= 0 ? -9 : 17) + rep * 15, k === 0 ? 'z⁰ = 1' : `z${SUP(k)}${rep ? '' : ' = ' + ctext(q)}`, 'labS', { 'text-anchor': right ? 'start' : 'end', style: `fill:${k === 1 ? 'var(--cv)' : k === 0 ? 'var(--muted)' : 'var(--res)'}` }); }
+    });
+  }
+  // algebra panel and readout
+  const zs = ctext(z), wsx = ctext(w), A = clean;
+  let alg = '', s = '';
+  if (op === 'add' || op === 'sub'){
+    const sg = op === 'add' ? '+' : '−';
+    alg = `${cp(z)} ${sg} ${cp(w)}<br>= (${T(z.re)} ${sg} ${pn(w.re)}) + (${T(z.im)} ${sg} ${pn(w.im)})i<br>= <b class="ko">${ctext(res)}</b>`;
+    s = `${op === 'add' ? 'Adding' : 'Subtracting'} works part by part, like vectors: ${op === 'add' ? 'slide w so it starts at the tip of z' : 'add −w, the arrow w turned half a turn'}. The real parts and imaginary parts never mix.`;
+  } else if (op === 'mul'){
+    alg = `${cp(z)} · ${cp(w)}<br>= ${pn(z.re)}·${pn(w.re)} + ${pn(z.re)}·${pn(w.im)}i + ${pn(z.im)}i·${pn(w.re)} + ${pn(z.im)}·${pn(w.im)}i²<br>= ${T(z.re * w.re)} + ${pn(z.re * w.im + z.im * w.re)}i + ${pn(z.im * w.im)}·(−1)<br>= <b class="ko">${ctext(res)}</b>`;
+    s = `Lengths multiply: |z| · |w| = ${num(cabs(z), 3)} × ${num(cabs(w), 3)} = ${num(cabs(res), 3)}. Angles add: ${deg(carg(z))} + ${carg(w) < 0 ? '(' + deg(carg(w)) + ')' : deg(carg(w))} = ${deg(carg(z) + carg(w))}${Math.abs(carg(z) + carg(w) - carg(res)) > 1e-6 && cabs(res) > 1e-9 ? ` (the same direction as ${deg(carg(res))})` : ''}. ${cabs(w) === 1 ? 'Since |w| = 1, this is a pure turn.' : ''}`;
+  } else if (op === 'div'){
+    const m = w.re * w.re + w.im * w.im, top = cmul(z, conj(w));
+    alg = `${cp(z)} ÷ ${cp(w)}<br>= ${cp(z)}·${cp(conj(w))} / (${cp(w)}·${cp(conj(w))})<br>= (${ctext(top)}) / ${T(m)}<br>= <b class="ko">${ctext(res)}</b>`;
+    s = `Multiply top and bottom by the conjugate ${ctext(conj(w))}: the bottom becomes the real number ${T(m)} = |w|². In the picture, dividing by w turns back by w’s angle (${deg(carg(w))}) and shrinks by |w| = ${num(cabs(w), 3)}.`;
+  } else if (op === 'conj'){
+    alg = `z = ${zs}<br>z̄ = <b class="ko">${ctext(res)}</b><br>z · z̄ = ${T(z.re)}² + ${T(Math.abs(z.im))}² = ${T(z.re * z.re + z.im * z.im)} = |z|²`;
+    s = `The conjugate flips the sign of the imaginary part: a mirror image in the real axis. Same length, opposite angle, so z · z̄ has angle 0 and is the positive real number |z|² = ${T(z.re * z.re + z.im * z.im)}.`;
+  } else {
+    let p = Z(1, 0); const rows = [];
+    for (let k = 1; k <= n; k++){ p = cmul(p, z); rows.push(`z${SUP(k)} = ${ctext(p)}`); }
+    alg = rows.join('<br>');
+    s = `Each power multiplies by z once more: turn by ${deg(carg(z))} and stretch by |z| = ${num(cabs(z), 3)}. ${Math.abs(cabs(z) - 1) < 1e-9 ? 'With |z| = 1 the points stay on the unit circle.' : cabs(z) > 1 ? 'With |z| > 1 they spiral outward.' : 'With |z| < 1 they spiral inward.'}${A(z.re) === 0 && A(z.im) === 1 ? ' For z = i: i¹ = i, i² = −1, i³ = −i, i⁴ = 1, then it repeats.' : ''}`;
+  }
+  $('pAlg').innerHTML = minus(alg);
+  $('pEq').innerHTML = minus(op === 'conj' ? `conjugate of ${zs} = ${ctext(res)}` : op === 'pow' ? `(${zs})${SUP(n)} = ${ctext(res)}` : `${cp(z)} ${{ add: '+', sub: '−', mul: '×', div: '÷' }[op]} ${cp(w)} = ${ctext(res)}`);
+  $('pOut').innerHTML = minus(s);
+}
+
+/* =====================================================================
+   3. WHERE THE ROOTS ARE
+   ===================================================================== */
+const RP = {
+  quad: [
+    { n: 'x² − 2x − 3', v: [1, -2, -3], d: 'D = 16 > 0: two real roots, −1 and 3, on both pictures.' },
+    { n: 'x² − 4x + 4', v: [1, -4, 4], d: 'D = 0: a double root at 2, the vertex touching the axis.' },
+    { n: 'x² − 4x + 13', v: [1, -4, 13], d: 'D = −36: the roots 2 ± 3i sit straight above and below the axis of symmetry x = 2.' },
+    { n: 'x² + 4', v: [1, 0, 4], d: 'No real roots, but two imaginary ones: ±2i.' },
+    { n: '2x² + 2x + 5', v: [2, 2, 5], d: 'D = −36: x = (−2 ± 6i)/4 = −½ ± 1.5i.' }
+  ],
+  build: [
+    { n: 'x³ − 1', r: '1, -1/2+0.8660254i', d: 'Degree 3: one real root (the graph crosses once) and a conjugate pair hidden off the axis.' },
+    { n: '(x − 2)(x² + 1)', r: '2, i', d: 'The pair ±i is invisible on the graph; the real root 2 is the only crossing.' },
+    { n: 'x⁴ + 4', r: '1+i, -1+i', d: 'Degree 4 with no real roots at all: two conjugate pairs, a square of roots.' },
+    { n: '(x + 1)(x − 1)(x² − 2x + 5)', r: '-1, 1, 1+2i', d: 'Two real crossings and one pair, 1 ± 2i: four roots in all.' },
+    { n: 'x³ − 3x² + 4x − 2', r: '1, 1+i', d: 'Odd degree, so at least one real root (1); the pair 1 ± i lines up above and below it.' }
+  ]
+};
+const RS2 = { mode: 'quad', v: [1, -4, 13], roots: [], stop: null, box: null };
+let rMark = null;
+function rBuild(){
+  $('rPresets').innerHTML = '';
+  rMark = buttons('rPresets', RP[RS2.mode], i => { const p = RP[RS2.mode][i]; rMark(i); $('rDesc').innerHTML = minus(p.d); rHalt(); RS2.box = null;
+    if (RS2.mode === 'quad'){ RS2.v = p.v.slice(); rFill(); } else { $('rL').value = minus(p.r); rRead(); } rDraw(); });
+  $('rIn1').style.display = RS2.mode === 'quad' ? '' : 'none'; $('rIn2').style.display = RS2.mode === 'build' ? '' : 'none'; $('rPlay').style.display = RS2.mode === 'quad' ? '' : 'none';
+  [...$('rMode').children].forEach((b, j) => b.classList.toggle('on', j === (RS2.mode === 'quad' ? 0 : 1)));
+}
+[...$('rMode').children].forEach((b, j) => b.onclick = () => { RS2.mode = j ? 'build' : 'quad'; $('rErr').textContent = ''; rHalt(); rBuild(); $('rPresets').children[0].click(); });
+function rFill(){ ['rA', 'rB', 'rC'].forEach((id, i) => $(id).value = minus(T(RS2.v[i]))); }
+function rHalt(){ if (RS2.stop){ RS2.stop(); RS2.stop = null; } $('rPlay').textContent = 'Play'; }
+// read the list of roots; add the conjugate of every non-real root
+function rRead(){
+  const parts = $('rL').value.split(',').map(s => s.trim()).filter(s => s), zs = parts.map(parseC);
+  if (!parts.length || zs.some(z => !z)){ $('rErr').textContent = 'Type roots like 2, -1, 1+2i, -i separated by commas.'; return false; }
+  if (zs.some(z => Math.abs(z.re) > 5 || Math.abs(z.im) > 5)){ $('rErr').textContent = 'Keep real and imaginary parts between −5 and 5.'; return false; }
+  const all = []; zs.forEach(z => { all.push(Z(z.re, Math.abs(z.im))); if (Math.abs(z.im) > 1e-12) all.push(Z(z.re, -Math.abs(z.im))); });
+  if (all.length > 6){ $('rErr').textContent = 'At most 6 roots in all (each non-real root brings its conjugate).'; return false; }
+  $('rErr').textContent = ''; RS2.roots = all; return true;
+}
+$('rUse').onclick = () => {
+  if (RS2.mode === 'quad'){
+    const v = ['rA', 'rB', 'rC'].map(id => parseNum($(id).value));
+    if (v.some(x => !isFinite(x))){ $('rErr').textContent = 'Fill in every box with a number.'; return; }
+    if (v[0] === 0){ $('rErr').textContent = 'a can’t be 0, or it isn’t a quadratic.'; return; }
+    if (Math.abs(v[0]) > 5 || Math.abs(v[1]) > 20 || Math.abs(v[2]) > 40){ $('rErr').textContent = 'Keep |a| ≤ 5, |b| ≤ 20 and |c| ≤ 40.'; return; }
+    $('rErr').textContent = ''; RS2.v = v;
+  } else if (!rRead()) return;
+  rMark(-1); $('rDesc').textContent = 'Custom.'; rHalt(); RS2.box = null; rDraw();
+};
+['rA', 'rB', 'rC', 'rL'].forEach(id => { $(id).addEventListener('input', () => $('rErr').textContent = ''); $(id).addEventListener('keydown', e => { if (e.key === 'Enter') $('rUse').click(); }); });
+$('rPlay').onclick = () => {
+  if (RS2.stop){ rHalt(); return; }
+  const [a, b] = RS2.v, cz = b * b / (4 * a), s = Math.sign(a), c0 = cz - 5 * s, c1 = cz + 9 * s;
+  $('rPlay').textContent = 'Pause'; RS2.box = null; RS2.v[2] = c0; rDraw();
+  RS2.stop = animate(5000, e => { RS2.v[2] = Math.round((c0 + (c1 - c0) * e) * 4) / 4; rFill(); rDraw(); }, () => { RS2.stop = null; $('rPlay').textContent = 'Play'; });
+};
+function quadRoots(a, b, c){ const D = b * b - 4 * a * c, h = -b / (2 * a); if (D >= 0){ const s = Math.sqrt(D) / (2 * Math.abs(a)); return [Z(h - s, 0), Z(h + s, 0)]; } const k = Math.sqrt(-D) / (2 * Math.abs(a)); return [Z(h, k), Z(h, -k)]; }
+function rDraw(){
+  let C, roots, h = null;
+  if (RS2.mode === 'quad'){ const [a, b, c] = RS2.v; C = [a, b, c]; roots = quadRoots(a, b, c); h = -b / (2 * a); }
+  else {
+    roots = RS2.roots; C = [1];
+    const used = new Set();
+    roots.forEach((z, i) => { if (used.has(i)) return;
+      if (Math.abs(z.im) < 1e-12){ C = pmul(C, [1, -z.re]); used.add(i); }
+      else { const j = roots.findIndex((q, k) => k !== i && !used.has(k) && Math.abs(q.re - z.re) < 1e-12 && Math.abs(q.im + z.im) < 1e-12); C = pmul(C, [1, -2 * z.re, z.re * z.re + z.im * z.im]); used.add(i); used.add(j); } });
+    C = C.map(v => Math.abs(v - Math.round(v)) < 1e-3 ? Math.round(v) : v);
+  }
+  const f = x => peval(C, x), realR = roots.filter(z => Math.abs(z.im) < 1e-9), cplx = roots.filter(z => Math.abs(z.im) >= 1e-9);
+  // real graph
+  if (!RS2.box){
+    if (RS2.mode === 'quad') RS2.box = { x0: h - 5, x1: h + 5, y0: -10, y1: 12 };
+    else { const xs = roots.map(z => z.re), x0 = Math.min(...xs) - 1.8, x1 = Math.max(...xs) + 1.8; let M = 0; for (let k = 0; k <= 200; k++) M = Math.max(M, Math.abs(f(x0 + (x1 - x0) * k / 200))); M = Math.min(M, 60); RS2.box = { x0, x1, y0: -M * 0.7, y1: M * 0.9 }; }
+  }
+  const G = ax2($('rG'), 470, 420, RS2.box, { padL: 44, xT: 'x', yT: 'y' });
+  curve(G, f, { col: 'var(--gr)', w: 3 });
+  if (h !== null) mk('line', { x1: G.X(h), y1: G.T, x2: G.X(h), y2: G.H - G.B, style: 'stroke:var(--muted);stroke-width:1.4;stroke-dasharray:6 5' }, G.cg);
+  realR.forEach(z => dotAt(G, z.re, 0, 'var(--rt)', 7));
+  if (!realR.length) txt(G.top, (G.L + G.W - G.R) / 2, G.T + 20, 'no x-intercepts: no real roots', 'labS', { 'text-anchor': 'middle', style: 'fill:var(--res)' });
+  // complex plane
+  const R = Math.max(3, ...roots.map(z => Math.max(Math.abs(z.re), Math.abs(z.im)))) * 1.25;
+  const P = plane($('rP'), 470, R, { unit: false });
+  mk('line', { x1: P.L, y1: P.Y(0), x2: P.W - P.R, y2: P.Y(0), style: 'stroke:var(--muted);stroke-width:2;stroke-dasharray:7 5;opacity:.7' }, P.cg);
+  if (h !== null) mk('line', { x1: P.X(h), y1: P.T, x2: P.X(h), y2: P.H - P.B, style: 'stroke:var(--muted);stroke-width:1.4;stroke-dasharray:6 5' }, P.cg);
+  const seen = {};
+  roots.forEach(z => {
+    const key = num(z.re, 6) + ',' + num(z.im, 6), k = seen[key] = (seen[key] || 0) + 1, real = Math.abs(z.im) < 1e-9;
+    cdot(P, z, real ? 'var(--rt)' : 'var(--res)', 7.5);
+    if (k === 1) txt(P.top, P.X(z.re) + 10, P.Y(z.im) + (z.im >= 0 ? -8 : 18), ctext(Z(clean(z.re), clean(z.im))), 'labS', { style: `fill:${real ? 'var(--rt)' : 'var(--res)'}` });
+    else txt(P.top, P.X(z.re) + 10, P.Y(z.im) + 18, `×${k}`, 'labS', { style: 'fill:var(--rt)' });
+  });
+  // equation and readout
+  const n = C.length - 1;
+  $('rEq').innerHTML = minus(`y = ${pstr(C.map(v => isRat(v) ? v : r4(v)))}`);
+  let s;
+  if (RS2.mode === 'quad'){
+    const [a, b, c] = C, D = b * b - 4 * a * c;
+    s = `D = ${pn(b)}² − 4·${pn(a)}·${pn(c)} = <b>${T(D)}</b>. `;
+    if (D > 1e-12) s += `Positive: two real roots, ${T(roots[0].re)} and ${T(roots[1].re)}, visible on the graph as x-intercepts and lying on the real axis of the plane.`;
+    else if (Math.abs(D) < 1e-12) s += `Zero: the two roots meet at the vertex x = ${T(h)}, a double root.`;
+    else s += `Negative: √D = √${T(-D)} · i, so x = ${ctext(Z(h, Math.sqrt(-D) / (2 * Math.abs(a))))} or ${ctext(Z(h, -Math.sqrt(-D) / (2 * Math.abs(a))))}. The graph shows no x-intercepts, but the roots are there, straight above and below x = ${T(h)} (the axis of symmetry), a conjugate pair.`;
+  } else {
+    s = `Degree <b>${n}</b>, so <b>${n} roots</b> counting repeats: ${realR.length} real (the x-intercepts) and ${cplx.length} non-real, which come as ${cplx.length / 2} conjugate pair${cplx.length === 2 ? '' : 's'}, mirror images in the real axis. Each pair a ± bi multiplies to the real quadratic x² − 2ax + (a² + b²), which is why the coefficients stay real.${n % 2 ? ' Odd degree, so a real root is guaranteed.' : ''}`;
+  }
+  $('rOut').innerHTML = minus(s);
+}
+
+/* =====================================================================
+   4. CONTEXTS
+   ===================================================================== */
+const XC = [
+  { key: 'rot', lab: 'turn θ (degrees)', lo: -360, hi: 360, v: 90, pre: [['90°: × i', 90], ['180°: × (−1)', 180], ['45°', 45], ['30°', 30], ['−60°', -60]],
+    d: 'A game stores a spaceship as a list of points. To turn it by θ, the engine multiplies every point by the complex number cos θ + i·sin θ, which has length 1. Press Play to spin it.' },
+  { key: 'ac', lab: 'reactance X (Ω)', lo: -10, hi: 10, v: 4, pre: [['coil, X = 4', 4], ['capacitor, X = −4', -4], ['resistor only, X = 0', 0], ['big coil, X = 10', 10]],
+    d: 'An AC circuit with a 3 Ω resistor and a coil or capacitor. Its impedance Z = 3 + Xi (Ω) works like resistance, but it’s complex: |Z| sets the size of the current and the angle of Z sets how far the current lags the voltage. 10 V supply.' },
+  { key: 'spr', lab: 'damping b', lo: 0, hi: 6, v: 0.8, pre: [['no friction, b = 0', 0], ['light, b = 0.8', 0.8], ['heavier, b = 2', 2], ['critical, b = 4', 4], ['thick oil, b = 6', 6]],
+    d: 'A mass on a spring, pulled down and let go. Its motion depends on the roots of r² + b·r + 4 = 0 (b is the friction). Complex roots −b/2 ± νi mean it oscillates: ν is how fast it swings, b/2 how fast it dies down.' }
+];
+const XS = { i: 0, stop: null, t: 0 };
+let xMark = null;
+[...$('xTab').children].forEach((b, j) => b.onclick = () => {
+  xHalt(); XS.i = j; XS.t = 0; [...$('xTab').children].forEach((x, k) => x.classList.toggle('on', k === j));
+  const c = XC[j]; $('xLab').textContent = c.lab; $('xV').value = minus(String(c.v)); $('xDesc').innerHTML = minus(c.d); $('xErr').textContent = '';
+  $('xPresets').innerHTML = ''; xMark = buttons('xPresets', c.pre.map(([n]) => ({ n })), k => { c.v = c.pre[k][1]; $('xV').value = minus(String(c.v)); xMark(k); xHalt(); XS.t = 0; xDraw(); });
+  xDraw();
+});
+function xHalt(){ if (XS.stop){ XS.stop(); XS.stop = null; } $('xPlay').textContent = 'Play'; }
+$('xUse').onclick = () => {
+  const c = XC[XS.i], v = parseNum($('xV').value);
+  if (!isFinite(v)){ $('xErr').textContent = 'Type a number.'; return; }
+  if (v < c.lo || v > c.hi){ $('xErr').textContent = `Use a value from ${c.lo} to ${c.hi}.`; return; }
+  $('xErr').textContent = ''; c.v = v; if (xMark) xMark(-1); xHalt(); XS.t = 0; xDraw();
+};
+$('xV').addEventListener('input', () => $('xErr').textContent = '');
+$('xV').addEventListener('keydown', e => { if (e.key === 'Enter') $('xUse').click(); });
+$('xPlay').onclick = () => {
+  if (XS.stop){ xHalt(); return; }
+  $('xPlay').textContent = 'Pause';
+  const t0 = performance.now() - XS.t * 1000; let id = 0, stopped = false;
+  const tick = now => { if (stopped) return; XS.t = (now - t0) / 1000; xDraw(); if (XS.t < 12) id = requestAnimationFrame(tick); else { XS.stop = null; $('xPlay').textContent = 'Play'; } };
+  id = requestAnimationFrame(tick); XS.stop = () => { stopped = true; cancelAnimationFrame(id); };
+};
+const R3 = z => Z(Math.round(z.re * 1000) / 1000, Math.round(z.im * 1000) / 1000);
+const SHIP = [Z(2.2, 0), Z(-1, 1.1), Z(-0.4, 0), Z(-1, -1.1)];
+function xDraw(){
+  const c = XC[XS.i], v = c.v; let s = '', eq = '';
+  if (c.key === 'rot'){
+    // during Play the ship keeps turning by θ every second
+    const th = v * Math.PI / 180 * (XS.t > 0 ? ease(Math.min(XS.t / 2, 1)) : 1), r = polar(1, th);   // Play turns the ship smoothly from 0 to θ
+    const P = plane($('xPic'), 470, 3.2, { padL: 34 });
+    const poly = (pts, col, op, dash) => mk('polygon', { points: pts.map(q => `${P.X(q.re)},${P.Y(q.im)}`).join(' '), style: `fill:${col};fill-opacity:${op};stroke:${col};stroke-width:2${dash ? ';stroke-dasharray:5 4' : ''}` }, P.m);
+    poly(SHIP, 'var(--muted)', .08, true);
+    const turned = SHIP.map(q => cmul(q, r));
+    poly(turned, 'var(--cv)', .3);
+    cdot(P, SHIP[0], 'var(--muted)', 5); cdot(P, turned[0], 'var(--res)', 6.5);
+    txt(P.top, P.X(SHIP[0].re) + 6, P.Y(SHIP[0].im) + 18, 'nose 2.2', 'labS', { style: 'fill:var(--muted)' });
+    txt(P.top, P.X(turned[0].re) + 8, P.Y(turned[0].im) - 8, ctext(R3(turned[0])), 'labS', { style: 'fill:var(--res)' });
+    const Q = plane($('xG'), 470, 1.5, { padL: 40 });
+    carrow(Q, Z(0, 0), r, 'var(--cv)'); carc(Q, 0.35, 0, Math.atan2(r.im, r.re), 'var(--cv)');
+    txt(Q.top, Q.X(r.re) + 8, Q.Y(r.im) - 8, ctext(R3(r)), 'labS', { style: 'fill:var(--cv)' });
+    eq = `multiply every point by cos θ + i·sin θ = ${ctext(R3(polar(1, v * Math.PI / 180)))}`;
+    s = `Turning by ${num(v)}° means multiplying by the length-1 number ${ctext(R3(polar(1, v * Math.PI / 180)))} (right). The nose at 2.2 moves to ${ctext(R3(polar(2.2, v * Math.PI / 180)))}. ${v === 90 ? 'For 90° the multiplier is exactly i: (x + yi)·i = −y + xi.' : v === 180 ? 'For 180° it is −1: every point flips through the centre.' : 'Turning twice multiplies twice, and the angles add.'} Lengths don’t change, so the ship isn’t distorted.`;
+  } else if (c.key === 'ac'){
+    const Zc = Z(3, v), mag = cabs(Zc), ph = carg(Zc), I = 10 / mag, w = 2 * Math.PI * 0.5, t = XS.t;
+    // left: phasors rotating
+    const P = plane($('xPic'), 470, 11.5, { padL: 34, unit: false });
+    const Vp = polar(10, w * t), Ip = polar(I, w * t - ph);
+    carrow(P, Z(0, 0), Zc, 'var(--gr)', { w: 2.4, dash: '6 4' }); txt(P.top, P.X(Zc.re) + 8, P.Y(Zc.im) + (v >= 0 ? -6 : 16), `Z = ${ctext(Zc)} Ω`, 'labS', { style: 'fill:var(--gr)' });
+    carrow(P, Z(0, 0), Vp, 'var(--cv)', { w: 3.2 }); carrow(P, Z(0, 0), Z(Ip.re * 2.5, Ip.im * 2.5), 'var(--res)', { w: 3.2 });
+    txt(P.top, P.X(Vp.re) + 6, P.Y(Vp.im) - 6, 'V', 'lab', { style: 'fill:var(--cv)' }); txt(P.top, P.X(Ip.re * 2.5) + 6, P.Y(Ip.im * 2.5) - 6, 'I (×2.5)', 'labS', { style: 'fill:var(--res)' });
+    // right: the real parts over time are the sine waves you would measure
+    const G = ax2($('xG'), 470, 380, { x0: 0, x1: 4, y0: -11, y1: 11 }, { padL: 40, xT: 't (s)', yT: 'volts / amps×2.5' });
+    curve(G, x => 10 * Math.cos(w * x), { col: 'var(--cv)', w: 2.4 }); curve(G, x => 2.5 * I * Math.cos(w * x - ph), { col: 'var(--res)', w: 2.4 });
+    const tt = t % 4; mk('line', { x1: G.X(tt), y1: G.T, x2: G.X(tt), y2: G.H - G.B, style: 'stroke:var(--muted);stroke-dasharray:3 3' }, G.cg);
+    eq = `Z = ${ctext(Zc)} Ω,  |Z| = √(3² + ${pn(v)}²) = ${num(mag, 2)} Ω,  current = 10 / ${num(mag, 2)} = ${num(I, 2)} A`;
+    s = `|Z| = ${num(mag, 2)} Ω, so the current peaks at 10/${num(mag, 2)} = <b class="ko">${num(I, 2)} A</b>. The angle of Z is ${deg(ph)}: ${v > 0 ? `the current lags the voltage by ${deg(ph)} (a coil resists change)` : v < 0 ? `the current leads the voltage by ${deg(-ph)} (a capacitor)` : 'voltage and current are in step (a plain resistor)'}. Engineers just divide complex numbers, I = V/Z, instead of solving with sines and cosines. The waves on the right are the real parts of the rotating arrows.`;
+  } else {
+    const b = v, D = b * b - 16, P = plane($('xPic'), 470, 4.5, { padL: 34 });
+    const roots = D < 0 ? [Z(-b / 2, Math.sqrt(-D) / 2), Z(-b / 2, -Math.sqrt(-D) / 2)] : [Z((-b - Math.sqrt(D)) / 2, 0), Z((-b + Math.sqrt(D)) / 2, 0)];
+    roots.forEach((z, k) => { cdot(P, z, D < 0 ? 'var(--res)' : 'var(--rt)', 7.5); txt(P.top, P.X(z.re) + 10, P.Y(z.im) + (k ? 18 : -8), ctext(R3(z)), 'labS', { style: `fill:${D < 0 ? 'var(--res)' : 'var(--rt)'}` }); });
+    txt(P.top, P.L + 6, P.H - P.B - 8, 'ROOTS OF r² + br + 4', 'cap');
+    // displacement x(t) with x(0) = 1, x'(0) = 0
+    let x;
+    if (D < 0){ const nu = Math.sqrt(-D) / 2, al = b / 2; x = t => Math.exp(-al * t) * (Math.cos(nu * t) + al / nu * Math.sin(nu * t)); }
+    else if (D === 0) x = t => (1 + 2 * t) * Math.exp(-2 * t);
+    else { const r1 = roots[0].re, r2 = roots[1].re; x = t => (r2 * Math.exp(r1 * t) - r1 * Math.exp(r2 * t)) / (r2 - r1); }
+    const G = ax2($('xG'), 470, 380, { x0: 0, x1: 10, y0: -1.2, y1: 1.2 }, { padL: 40, xT: 't (s)', yT: 'position' });
+    curve(G, x, { col: 'var(--gr)', w: 2.6 });
+    if (D < 0){ curve(G, t => Math.exp(-b / 2 * t), { col: 'var(--muted)', w: 1.3, dash: '4 4' }); curve(G, t => -Math.exp(-b / 2 * t), { col: 'var(--muted)', w: 1.3, dash: '4 4' }); }
+    const tt = XS.t % 10; dotAt(G, tt, x(tt), 'var(--cv)', 7);
+    eq = `r² + ${num(b)}r + 4 = 0  →  r = ${D < 0 ? `${num(-b / 2, 3)} ± ${num(Math.sqrt(-D) / 2, 3)}i` : D === 0 ? '−2 (double)' : `${num(roots[0].re, 3)}, ${num(roots[1].re, 3)}`}`;
+    s = D < 0 ? `D = ${num(b * b)} − 16 &lt; 0: complex roots ${num(-b / 2, 3)} ± ${num(Math.sqrt(-D) / 2, 3)}i. The imaginary part ${num(Math.sqrt(-D) / 2, 3)} is how fast the mass swings (a full swing every ${num(2 * Math.PI / (Math.sqrt(-D) / 2), 2)} s); the real part ${num(-b / 2, 3)} is how fast the swings shrink (grey envelope).${b === 0 ? ' With no friction the roots are ±2i, purely imaginary: it swings forever.' : ''}`
+      : D === 0 ? 'D = 0: a double real root −2. The mass returns as fast as possible without overshooting (critical damping, what car shock absorbers aim for).'
+      : `D &gt; 0: two real negative roots, no imaginary part, so no oscillation. The mass oozes back slowly, as in thick oil.`;
+  }
+  $('xEq').innerHTML = minus(eq); $('xOut').innerHTML = minus(s);
+}
+
+/* =====================================================================
+   5. TRAPS
+   ===================================================================== */
+(function(){
+  let P = ax2($('tr1'), 300, 190, { x0: -8, x1: 8, y0: -3, y1: 4 }, { padL: 26, padB: 22, padT: 8, padR: 8 });
+  carrow(P, Z(0, 0), Z(0, 2), 'var(--cv)', { w: 2.4, head: 8 }); carrow(P, Z(0, 0), Z(-6, 0), 'var(--res)', { w: 2.6, head: 8 });
+  dotAt(P, 6, 0, 'var(--ng)', 4.5);
+  txt(P.top, P.X(0.4), P.Y(2.4), '2i', 'labS', { style: 'fill:var(--cv)' }); txt(P.top, P.X(-6), P.Y(0) - 8, '−6', 'labS', { style: 'fill:var(--res)' }); txt(P.top, P.X(5.4), P.Y(0) + 16, '6 ✕', 'labS', { style: 'fill:var(--ng)' });
+  P = ax2($('tr2'), 300, 190, { x0: -8, x1: 16, y0: -2, y1: 14 }, { padL: 26, padB: 22, padT: 8, padR: 8 });
+  carrow(P, Z(0, 0), Z(-5, 12), 'var(--res)', { w: 2.6, head: 8 }); dotAt(P, 13, 0, 'var(--ng)', 4.5); carrow(P, Z(0, 0), Z(2, 3), 'var(--cv)', { w: 2.4, head: 8 });
+  txt(P.top, P.X(-5) + 6, P.Y(12) + 4, '−5 + 12i', 'labS', { style: 'fill:var(--res)' }); txt(P.top, P.X(13) - 4, P.Y(0) - 8, '13 ✕', 'labS', { 'text-anchor': 'end', style: 'fill:var(--ng)' });
+  P = ax2($('tr3'), 300, 190, { x0: -3, x1: 3, y0: -4.2, y1: 9 }, { padL: 26, padB: 22, padT: 8, padR: 8 });
+  curve(P, x => x * x + 4, { col: 'var(--gr)', w: 2.6 });
+  dotAt(P, 0, 2, 'var(--res)', 5); dotAt(P, 0, -2, 'var(--res)', 5);
+  txt(P.top, P.X(0) + 8, P.Y(2) + 4, '+2i', 'labS', { style: 'fill:var(--res)' }); txt(P.top, P.X(0) + 8, P.Y(-2) + 4, '−2i', 'labS', { style: 'fill:var(--res)' });
+  txt(P.top, P.X(-2.9), P.Y(-3.6), 'roots marked on the vertical axis', 'tl');
+})();
+
+/* =====================================================================
+   6. QUIZ
+   ===================================================================== */
+const Q = { right: 0, total: 0 };
+let qq = null;
+const qTitles = { arith: 'Complex arithmetic', conj: 'Conjugate, length, divide', solve: 'Solve with D < 0', facts: 'Facts about roots' };
+function shuffle(a){ for (let i = a.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+function qReset(){
+  ['qChoice', 'qExpr'].forEach(id => $(id).innerHTML = ''); $('qFb').className = 'feedback'; $('qFb').innerHTML = ''; $('qErr').textContent = '';
+  $('qIn').style.display = ''; ['q1', 'q2'].forEach(id => $(id).value = ''); $('qF2').style.display = ''; $('qL1').textContent = 'real part'; $('qL2').textContent = 'imaginary part';
+}
+function qScore(ok){ if (qq.counted) return; qq.counted = true; Q.total++; if (ok) Q.right++; $('score').textContent = `Score: ${Q.right} / ${Q.total}`; }
+function qFeedback(ok, html){ $('qFb').className = 'feedback ' + (ok ? 'ok' : 'bad'); $('qFb').innerHTML = (ok ? '<b>Right.</b> ' : '<b>Not quite.</b> ') + minus(html); }
+function qChoices(list, correctIdx, explain){
+  $('qIn').style.display = 'none'; qq.correctIdx = correctIdx; qq.explainFn = explain;
+  list.forEach((c, k) => { const b = document.createElement('button'); b.innerHTML = minus(c); b.onclick = () => { const ok = k === correctIdx; qScore(ok); [...$('qChoice').children].forEach((x, j) => { x.classList.remove('right', 'wrong'); if (j === k) x.classList.add(ok ? 'right' : 'wrong'); }); qFeedback(ok, explain(k)); }; $('qChoice').appendChild(b); });
+}
+const rz = () => Z(nz(-5, 5), nz(-5, 5));
+function qArith(){
+  const kind = pick(['add', 'sub', 'mul', 'mul', 'sq', 'ipow']);
+  let e, ans, why, traps = [];
+  if (kind === 'add' || kind === 'sub'){ const z = rz(), w = rz(); ans = kind === 'add' ? cadd(z, w) : csub(z, w); e = `${cp(z)} ${kind === 'add' ? '+' : '−'} ${cp(w)}`; why = `Real parts: ${T(z.re)} ${kind === 'add' ? '+' : '−'} ${pn(w.re)} = ${ans.re}; imaginary parts: ${T(z.im)} ${kind === 'add' ? '+' : '−'} ${pn(w.im)} = ${ans.im}.`; }
+  else if (kind === 'mul'){ const z = Z(nz(-4, 4), nz(-4, 4)), w = Z(nz(-4, 4), nz(-4, 4)); ans = cmul(z, w); e = `${cp(z)}${cp(w)}`; why = `Distribute: ${z.re * w.re} + ${pn(z.re * w.im)}i + ${pn(z.im * w.re)}i + ${pn(z.im * w.im)}i², and i² = −1, so ${z.re * w.re} − ${pn(z.im * w.im)} = ${ans.re} real and ${z.re * w.im} + ${pn(z.im * w.re)} = ${ans.im} imaginary.`; traps = [[Z(z.re * w.re + z.im * w.im, ans.im), 'You used i² = +1. Remember i² = −1, so the bd term is subtracted.'], [Z(z.re * w.re, z.im * w.im), 'Multiply every part by every part (four products), not just real × real and imaginary × imaginary.']]; }
+  else if (kind === 'sq'){ const z = Z(nz(-4, 4), nz(-4, 4)); ans = cmul(z, z); e = `${cp(z)}²`; why = `(a + bi)² = a² + 2abi + b²i² = (${z.re * z.re} − ${z.im * z.im}) + ${2 * z.re * z.im}i.`; traps = [[Z(z.re * z.re + z.im * z.im, 0), 'Two slips: the middle term 2abi is missing, and b²i² is −b², not +b².'], [Z(z.re * z.re - z.im * z.im, 0), 'Don’t forget the middle term 2abi.'], [Z(z.re * z.re + z.im * z.im, 2 * z.re * z.im), '(bi)² = b²·i² = −b².']]; }
+  else { const k = ri(2, 23); ans = [Z(1, 0), Z(0, 1), Z(-1, 0), Z(0, -1)][k % 4]; e = `i${SUP(k)}`; why = `The powers of i repeat every 4: ${k} = 4·${Math.floor(k / 4)} + ${k % 4}, so i${SUP(k)} = i${SUP(k % 4)} = ${ctext(ans)}.`; }
+  Object.assign(qq, { ans, why, traps });
+  $('qText').innerHTML = 'Work it out and write the answer as a + bi.'; $('qExpr').innerHTML = minus(e);
+}
+function qConj(){
+  const kind = pick(['abs', 'conj', 'div', 'div', 'zz']);
+  if (kind === 'abs'){ const [a, b] = pick([[3, 4], [5, 12], [6, 8], [8, 15], [1, 1], [2, 2]]), s = [pick([1, -1]), pick([1, -1])]; const z = Z(a * s[0], b * s[1]); Object.assign(qq, { kind, ansR: cabs(z), why: `|z| = √(${pn(z.re)}² + ${pn(z.im)}²) = √${a * a + b * b}${isRat(cabs(z)) ? ' = ' + T(cabs(z)) : ' ≈ ' + num(cabs(z), 3)}.` }); $('qText').innerHTML = 'Find the modulus |z| (the distance from 0). Decimals to 2 places are fine.'; $('qExpr').innerHTML = minus(`|${ctext(z)}|`); $('qF2').style.display = 'none'; $('qL1').textContent = '|z| ='; return; }
+  if (kind === 'conj'){ const z = rz(); Object.assign(qq, { kind, ans: conj(z), why: `Flip the sign of the imaginary part only: ${ctext(conj(z))}.`, traps: [[Z(-z.re, -z.im), 'That’s −z. The conjugate keeps the real part and flips only the imaginary part.'], [Z(-z.re, z.im), 'Flip the imaginary part, not the real part.']] }); $('qText').innerHTML = 'Write the conjugate z̄.'; $('qExpr').innerHTML = minus(`z = ${ctext(z)}`); return; }
+  if (kind === 'zz'){ const z = rz(); Object.assign(qq, { kind, ans: Z(z.re * z.re + z.im * z.im, 0), why: `(a + bi)(a − bi) = a² + b² = ${z.re * z.re} + ${z.im * z.im} = ${z.re * z.re + z.im * z.im}: always a positive real number.`, traps: [[Z(z.re * z.re - z.im * z.im, 0), '−b²·i² = +b², so it’s a² + b², not a² − b².']] }); $('qText').innerHTML = 'Multiply a number by its conjugate.'; $('qExpr').innerHTML = minus(`${cp(z)}${cp(conj(z))}`); return; }
+  const w = Z(nz(-3, 3), nz(-3, 3)), q = Z(ri(-4, 4), nz(-4, 4)), z = cmul(q, w), m = w.re * w.re + w.im * w.im;
+  Object.assign(qq, { kind, ans: q, why: `Multiply top and bottom by ${ctext(conj(w))}: the bottom is ${T(w.re)}² + ${T(w.im)}² = ${m}, the top is ${ctext(cmul(z, conj(w)))}. Divide each part by ${m}: ${ctext(q)}. (Check: ${cp(q)}·${cp(w)} = ${ctext(z)}.)` });
+  $('qText').innerHTML = 'Divide, and write the answer as a + bi.'; $('qExpr').innerHTML = minus(`${cp(z)} ÷ ${cp(w)}`);
+}
+function qSolve(){
+  const a = pick([1, 1, 1, 2]), h = ri(-4, 4), k = ri(1, 5), C = [a, -2 * a * h, a * (h * h + k * k)];
+  Object.assign(qq, { ans: Z(h, k), why: `D = ${pn(C[1])}² − 4·${a}·${C[2]} = ${C[1] * C[1] - 4 * a * C[2]} &lt; 0, √D = ${2 * a * k}i, so x = (${T(-C[1])} ± ${2 * a * k}i) / ${2 * a} = ${ctext(Z(h, k))} or ${ctext(Z(h, -k))}.`, traps: [[Z(-h, k), 'Sign slip: the real part is −b/(2a).'], [Z(h * 2 * a, k * 2 * a), 'Remember to divide both parts by 2a.']] });
+  $('qText').innerHTML = 'The roots are a conjugate pair p ± qi. Type p and q (q positive).'; $('qExpr').innerHTML = minus(pstr(C) + ' = 0');
+  $('qL1').textContent = 'p (real part)'; $('qL2').textContent = 'q (imaginary, > 0)';
+}
+function qFacts(){
+  const c = pick([
+    () => { const a = nz(-4, 4), b = ri(1, 5); return { s: `A polynomial with real coefficients has the root ${ctext(Z(a, b))}. Which other number must be a root?`, ok: ctext(Z(a, -b)), bad: [ctext(Z(-a, b)), ctext(Z(-a, -b)), ctext(Z(b, a))], why: `Non-real roots of real polynomials come in conjugate pairs: ${ctext(Z(a, b))} brings ${ctext(Z(a, -b))}, its mirror image.` }; },
+    () => { const n = ri(3, 7); return { s: `How many complex roots, counting repeats, does a polynomial of degree ${n} have?`, ok: String(n), bad: [String(n - 1), String(n + 1), `at most ${n - 1}`], why: `The Fundamental Theorem of Algebra: exactly ${n}, counting multiplicity.` }; },
+    () => ({ s: 'The graph of a real cubic crosses the x-axis exactly once (and doesn’t touch it anywhere else). How many of its roots are not real?', ok: '2', bad: ['0', '1', '3'], why: 'Degree 3 means 3 roots. One is the real crossing; the other two must be a conjugate pair off the axis.' }),
+    () => ({ s: 'Can a polynomial with real coefficients and degree 5 have no real roots?', ok: 'No, it must have at least one', bad: ['Yes, all five could be complex', 'Only if it has a double root', 'Yes, if its leading coefficient is negative'], why: 'Non-real roots come in pairs, and pairs can’t make an odd number: at least one root is real. (The graph’s ends point opposite ways, so it must cross.)' }),
+    () => { const k = ri(1, 6); return { s: `What are the roots of x² + ${k * k} = 0?`, ok: `±${k === 1 ? '' : k}i`, bad: [`±${k}`, 'none at all', `${k === 1 ? '' : k}i only`], why: `x² = −${k * k}, so x = ±√(−${k * k}) = ±${k === 1 ? '' : k}i. No real roots, but two complex ones.` }; },
+    () => ({ s: 'Which equation has the roots 2 + i and 2 − i?', ok: 'x² − 4x + 5 = 0', bad: ['x² + 4x + 5 = 0', 'x² − 4x + 3 = 0', 'x² − 4x − 5 = 0'], why: 'Sum of roots 4 and product (2 + i)(2 − i) = 4 + 1 = 5: x² − 4x + 5.' })
+  ])();
+  const opts = shuffle([c.ok, ...c.bad]), idx = opts.indexOf(c.ok);
+  $('qText').innerHTML = minus(c.s); qChoices(opts, idx, k => (k === idx ? '' : 'Not that one. ') + c.why);
+}
+let lastType = null;
+function qNew(){
+  qReset();
+  let t; do { t = pick(['arith', 'conj', 'solve', 'facts']); } while (t === lastType);
+  lastType = t; qq = { type: t, counted: false };
+  $('qTitle').textContent = qTitles[t];
+  ({ arith: qArith, conj: qConj, solve: qSolve, facts: qFacts })[t]();
+}
+$('qCheck').onclick = () => {
+  $('qErr').textContent = '';
+  if (qq.kind === 'abs'){
+    const v = parseNum($('q1').value); if (!isFinite(v)){ $('qErr').textContent = 'Type a number.'; return; }
+    const ok = Math.abs(v - qq.ansR) < 0.011; let hint = '';
+    if (!ok && Math.abs(v - qq.ansR * qq.ansR) < 1e-9) hint = 'That’s |z|²; take the square root. ';
+    qScore(ok); qFeedback(ok, hint + qq.why); return;
+  }
+  const a = parseNum($('q1').value), b = parseNum($('q2').value);
+  if (!isFinite(a) || !isFinite(b)){ $('qErr').textContent = 'Type a number in both boxes (0 if a part is missing).'; return; }
+  const ok = Math.abs(a - qq.ans.re) < 1e-9 && Math.abs(b - qq.ans.im) < 1e-9;
+  let hint = '';
+  if (!ok){ const t = (qq.traps || []).find(([z]) => Math.abs(a - z.re) < 1e-9 && Math.abs(b - z.im) < 1e-9); if (t) hint = t[1] + ' ';
+    else if (Math.abs(a - qq.ans.re) < 1e-9) hint = 'Your real part is right; recheck the imaginary part. ';
+    else if (Math.abs(b - qq.ans.im) < 1e-9) hint = 'Your imaginary part is right; recheck the real part. '; }
+  qScore(ok); qFeedback(ok, hint + qq.why);
+};
+['q1', 'q2'].forEach(id => { $(id).addEventListener('keydown', e => { if (e.key === 'Enter') $('qCheck').click(); }); $(id).addEventListener('input', () => $('qErr').textContent = ''); });
+$('qShow').onclick = () => {
+  qScore(false);
+  if (qq.correctIdx !== undefined){ [...$('qChoice').children].forEach((b, j) => { if (j === qq.correctIdx) b.classList.add('right'); }); qFeedback(false, qq.explainFn(qq.correctIdx)); return; }
+  if (qq.kind === 'abs') $('q1').value = isRat(qq.ansR) ? frc(qq.ansR) : qq.ansR.toFixed(2);
+  else { $('q1').value = String(qq.ans.re); $('q2').value = String(qq.ans.im); }
+  $('qFb').className = 'feedback bad'; $('qFb').innerHTML = '<b>Answer filled in.</b> ' + minus(qq.why);
+};
+$('qNew').onclick = qNew;
+
+/* =====================================================================
+   7. START
+   ===================================================================== */
+selectOnFocus(['pZa', 'pZb', 'pWa', 'pWb', 'pN', 'rA', 'rB', 'rC', 'rL', 'xV', 'q1', 'q2']);
+$('pPresets').children[3].click();
+rBuild(); $('rPresets').children[2].click();
+$('xTab').children[0].click();
+qNew();
+</script>
+</body></html>

@@ -30,7 +30,7 @@ window.MM_TOC = [
     { id: '3.B.12', title: 'Transforming Graphs' },
     { id: '3.B.13', title: 'Inverse Functions' },
     { id: '3.B.14', title: 'Logarithms', url: 'https://claude.ai/artifact/2z9S6MW54Wv2QaJoxx7HLw', built: true },
-    { id: '3.B.15', title: 'Complex Numbers and Polynomial Roots' },
+    { id: '3.B.15', title: 'Complex Numbers and Polynomial Roots', built: true, url: 'https://claude.ai/artifact/EF9Nmoqb9XjeciRh5jAD8D' },
   ]},
   { ch: 5, title: 'Trigonometry', pages: [
     { id: '5.B.1', title: 'Angles and Radians', built: true, url: 'https://claude.ai/artifact/FBpVrV9tcTSwwi2UQ4LXH3' },

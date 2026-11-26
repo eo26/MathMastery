@@ -36,59 +36,63 @@
   "3df1bc5f-653b-4fff-9f6b-8ce711e866e3"
  ],
  "3-B-1": [
-  "Variables and Expressions",
+  "3.B.1 Variables and Expressions · MathMastery",
   "2dd48e1c-c756-4222-99ed-01497ec5a430"
  ],
  "3-B-2": [
-  "Solving Linear Equations",
+  "3.B.2 Solving Linear Equations · MathMastery",
   "b4550920-83b4-454c-b5b8-073e6a5190b6"
  ],
  "3-B-3": [
-  "Inequalities and Absolute Value",
+  "3.B.3 Inequalities and Absolute Value · MathMastery",
   "6e35da48-531b-4cef-b58f-5a97c3ecb119"
  ],
  "3-B-4": [
-  "Functions",
+  "3.B.4 Functions · MathMastery",
   "41081619-b84a-4669-af3c-d28930050b3c"
  ],
  "3-B-5": [
-  "Lines: Slope and Linear Functions",
+  "3.B.5 Lines: Slope and Linear Functions · MathMastery",
   "f8f4e77a-d869-4a31-9f48-e38b5e939a9a"
  ],
  "3-B-6": [
-  "Systems of Linear Equations",
+  "3.B.6 Systems of Linear Equations · MathMastery",
   "a0cfda2c-b68c-4310-98c4-dcb85d1b0426"
  ],
  "3-B-7": [
-  "Exponents and Exponential Growth",
+  "3.B.7 Exponents and Exponential Growth · MathMastery",
   "308fc60c-e711-4aac-908a-ab16a8318ee0"
  ],
  "3-B-8": [
-  "Polynomials and Factoring",
+  "3.B.8 Polynomials and Factoring · MathMastery",
   "8d30ce3b-f0e6-4486-847a-8f77f881b46d"
  ],
  "3-B-9": [
-  "Quadratics and Parabolas",
+  "3.B.9 Quadratics and Parabolas · MathMastery",
   "0119048d-c3df-4e2f-abb2-a9fa351a93a6"
  ],
  "3-B-10": [
-  "Radicals and Rational Exponents",
+  "3.B.10 Radicals and Rational Exponents · MathMastery",
   "a0862170-d8f0-43de-88d4-3e3e0d5e3338"
  ],
  "3-B-14": [
-  "Logarithms",
+  "3.B.14 Logarithms · MathMastery",
   "1013baf7-955f-4a57-b11d-38639b886c84"
+ ],
+ "3-B-15": [
+  "3.B.15 Complex Numbers and Polynomial Roots · MathMastery",
+  "6b40607a-faec-4397-b7e5-b2fe3fb5b6da"
  ],
  "5-B-1": [
   "5.B.1 Angles and Radians · MathMastery",
   "72e2a679-bd36-4f0a-b2bc-8fbab1baefa2"
  ],
  "5-B-2": [
-  "Sine, Cosine and Tangent",
+  "5.B.2 Sine, Cosine and Tangent · MathMastery",
   "40c344ec-20fe-47d5-aecf-632dd2d8b71e"
  ],
  "5-B-3": [
-  "Laws of Sines and Cosines",
+  "5.B.3 Laws of Sines and Cosines · MathMastery",
   "1c872be1-0841-4d00-9ac9-9ebce6af158c"
  ],
  "5-B-4": [
@@ -108,63 +112,63 @@
   "31275033-0ce4-49d9-8580-a9e5d384cda6"
  ],
  "7-B-4": [
-  "A Matrix Is a Move",
+  "7.B.4 A Matrix Is a Move · MathMastery",
   "6c0405c0-7951-498f-95c2-46dd9d480c28"
  ],
  "7-B-5": [
-  "Matrix Multiplication: One Move After Another",
+  "7.B.5 Matrix Multiplication: One Move After Another · MathMastery",
   "be52c66e-654d-4348-8944-f2c56812253f"
  ],
  "7-B-6": [
-  "The Determinant",
+  "7.B.6 The Determinant · MathMastery",
   "ab868267-2123-4e7a-b632-a850e4732fef"
  ],
  "7-B-7": [
-  "Inverse Matrices",
+  "7.B.7 Inverse Matrices · MathMastery",
   "ed87faf0-3625-46e6-b7df-b0693a869e14"
  ],
  "7-B-8": [
-  "Systems of Equations as Matrices",
+  "7.B.8 Systems of Equations as Matrices · MathMastery",
   "efef4af0-2334-48e1-89ec-bd44b93a025c"
  ],
  "7-B-9": [
-  "Solving Systems by Row Reduction",
+  "7.B.9 Solving Systems by Row Reduction · MathMastery",
   "409a5f10-6cbe-42a2-9865-728db8dc5afa"
  ],
  "7-B-10": [
-  "Into 3D: Vectors and 3×3 Matrices",
+  "7.B.10 Into 3D: Vectors and 3×3 Matrices · MathMastery",
   "dbb46f60-fccf-4725-848d-cbc9cd395d78"
  ],
  "7-B-11": [
-  "Matrices of Any Size: Adding, Scaling and the Transpose",
+  "7.B.11 Matrices of Any Size: Adding, Scaling and the Transpose · MathMastery",
   "77b9e765-e148-49c5-8bed-4851692b5dc8"
  ],
  "7-B-12": [
-  "Independence, Basis and Dimension: A First Look",
+  "7.B.12 Independence, Basis and Dimension: A First Look · MathMastery",
   "3c857609-05ef-475f-9425-d2c2ed59faec"
  ],
  "8-B-1": [
-  "Limits",
+  "8.B.1 Limits · MathMastery",
   "29605135-4943-4869-b1a4-4241da181989"
  ],
  "8-B-2": [
-  "Derivatives",
+  "8.B.2 Derivatives · MathMastery",
   "248d2608-0ca5-4376-b73a-d3bb219f6b6d"
  ],
  "8-B-3": [
-  "Integrals",
+  "8.B.3 Integrals · MathMastery",
   "9133337c-a433-487d-bd01-1af0356f0820"
  ],
  "8-U-1": [
-  "Infinite Series",
+  "8.U.1 Infinite Series · MathMastery",
   "c5ff7404-ee31-4b49-921d-1e2b9f154d23"
  ],
  "8-U-2": [
-  "Power Series",
+  "8.U.2 Power Series · MathMastery",
   "f00dedee-3022-48cd-a89f-8fd6c6afd1c9"
  ],
  "8-U-3": [
-  "Taylor Approximations",
+  "8.U.3 Taylor Approximations · MathMastery",
   "133fab7d-7b5e-4f96-a0ef-33c22dcd4abe"
  ]
 }
