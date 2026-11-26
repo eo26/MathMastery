@@ -148,7 +148,7 @@ button:disabled{opacity:.45;cursor:default}
 <body>
 <style>
 /* ===================== Page-specific styles (1.B.3) ===================== */
-/* shaded pieces / the point = purple, the cuts (denominator) = teal, a second fraction = amber, the zoomed gap = purple tint */
+/* shaded pieces / the point = purple, the cuts (denominator) = teal, a second fraction = amber; remainder clock: steps = purple, the repeating loop = amber, stop (0) = red */
 :root{ --pc:#7F77DD; --pc-soft:#E4E1FB; --cut:#0F8A7A; --f2:#C98A0B; --f2-soft:#FBEFC9; --both:#534AB7; }
 @media (prefers-color-scheme:dark){ :root{ --pc:#9E97EC; --pc-soft:#2c2852; --cut:#5DCAB5; --f2:#F0C24B; --f2-soft:#4a3a0b; --both:#CECBF6; } }
 .pc{color:var(--pt-dark);font-weight:700}.ct{color:var(--cut);font-weight:700}.f2{color:var(--f2);font-weight:700}
@@ -163,6 +163,17 @@ button:disabled{opacity:.45;cursor:default}
 .chip b{font:600 19px var(--mono)}
 .choice{display:flex;gap:8px;margin:0}.choice button{min-width:150px}
 .qtext{font:17px/1.55 var(--serif);margin:4px 0 10px}
+.clocksplit{display:grid;grid-template-columns:500px 1fr;gap:16px;margin-top:10px;align-items:start}
+.clocksplit svg{width:100%;height:auto;display:block;border:1px solid var(--line);border-radius:12px;background:var(--bg)}
+.ldt{border-collapse:collapse;width:100%;font:14px var(--mono)}
+.ldt th{font:600 11.5px var(--sans);letter-spacing:.05em;text-transform:uppercase;color:var(--muted);text-align:left;padding:4px 6px;border-bottom:1px solid var(--line)}
+.ldt td{padding:5px 6px;border-bottom:1px dashed var(--line)}
+.ldt tr.now td{background:var(--accent-bg)}
+.ldt tr.loop td:first-child{box-shadow:inset 4px 0 0 var(--f2)}
+.ldt td.nw{white-space:nowrap}
+.ldt td.dg{font-weight:700;color:var(--pt-dark);font-size:16px}
+.ldt td.z{color:var(--bad);font-weight:700}
+.qpair{font:600 24px var(--mono);margin:6px 0 4px;display:flex;gap:28px;align-items:center}
 </style>
 
 <!-- ===================== Top bar ===================== -->
@@ -176,7 +187,7 @@ button:disabled{opacity:.45;cursor:default}
 <header class="prose hero">
   <div class="kicker">Chapter 1 · Numbers &amp; Arithmetic</div>
   <h1>Fractions, Decimals, and the Gaps Between Them</h1>
-  <p class="dek">The whole numbers leave gaps on the number line. Cut those gaps into equal pieces and you get fractions; keep zooming in by tens and you get decimals. And no matter how far you zoom, there is always another number in between.</p>
+  <p class="dek">The whole numbers leave gaps on the number line. Cut those gaps into equal pieces and you get fractions; write them in tenths, hundredths and thousandths and you get decimals. And no matter how close two numbers are, there is always another one in between.</p>
   <div class="tiers" aria-label="Tier">
     <span class="tier on">Basics <small>you are here</small></span>
     <span class="tier">Undergraduate</span>
@@ -186,7 +197,7 @@ button:disabled{opacity:.45;cursor:default}
     <h3>On this page</h3>
     <ul>
       <li>See a <b>fraction</b> <i class="sym">a</i>/<i class="sym">b</i> as a point: cut each whole into <i class="sym">b</i> equal pieces and count <i class="sym">a</i> of them.</li>
-      <li>See a <b>decimal</b> as an address found by zooming in by tens, and why 1/3 = 0.333… never ends.</li>
+      <li>Turn a fraction into a <b>decimal</b> by long division, and see on the remainder clock why every fraction’s decimal either stops (0.75) or repeats forever (0.333…).</li>
       <li>Find a fraction <b>between</b> any two fractions, every time.</li>
       <li><b>Add</b> fractions by cutting into same-size pieces, and <b>multiply</b> them as parts of parts.</li>
     </ul>
@@ -236,23 +247,37 @@ button:disabled{opacity:.45;cursor:default}
 
 <!-- ===================== §2 Decimals ===================== -->
 <section class="prose">
-  <h2><span class="n">2</span>Decimals: an address by zooming</h2>
-  <p>Fractions can use any piece size. <b>Decimals</b> always cut into <b>tens</b>. To find a point’s decimal, cut the gap it’s in into 10 pieces and note which piece it lands in: that’s the first digit after the decimal point (tenths). Then zoom into that piece, cut it into 10 again, and note the next digit (hundredths). Keep going.</p>
-  <p>For ¾, the first zoom lands in piece 7, the next in piece 5, and then the point sits exactly on a cut: <b>0.75</b>, done. That’s a <b>terminating decimal</b>. But for ⅓, every zoom lands in piece 3, forever: <b>0.333…</b>, a <b>repeating decimal</b>, written 0.<span class="rep">3</span>. The digits never stop, yet the point is perfectly definite: exactly one third of the way from 0 to 1.</p>
+  <h2><span class="n">2</span>Decimals: sharing in tenths</h2>
+  <p>Fractions can use any piece size. <b>Decimals</b> always use tens: tenths, hundredths, thousandths and so on, so 0.75 means 7 tenths and 5 hundredths. To turn a fraction into a decimal, divide the top by the bottom with <b>long division</b>. Think of 3/4 as sharing 3 pizzas among 4 people.</p>
+  <ul>
+    <li>3 pizzas can’t give everyone a whole one, so write <b>0.</b> and cut each pizza into tenths: 30 tenths to share.</li>
+    <li>30 tenths among 4 people is <b>7</b> tenths each (28 tenths), with 2 tenths <b>left over</b>.</li>
+    <li>Cut the 2 left-over tenths into hundredths: 20 hundredths among 4 is <b>5</b> each, with nothing left over.</li>
+  </ul>
+  <p>Nothing is left, so the sharing is finished: 3/4 = <b>0.75</b>. A decimal that stops like this is a <b>terminating decimal</b>.</p>
+  <p>Now try 1/3. 10 tenths among 3 is 3 each, 1 tenth left over. 10 hundredths among 3 is 3 each, 1 left over, and so on forever: <b>0.333…</b>, a <b>repeating decimal</b>, written 0.<span class="rep">3</span>. It repeats because the left-over came back to a number we’d already had (1), so every step after it is a copy of an earlier one.</p>
+  <p>Here’s the key. When you share among <i class="sym">b</i> people, the left-over (the <b>remainder</b>) is always smaller than <i class="sym">b</i>: one of 0, 1, …, <i class="sym">b</i> − 1. There are only <i class="sym">b</i> possibilities. So within <i class="sym">b</i> steps the left-over must either hit 0 (the decimal stops) or come back to one it already had (the digits repeat). <em class="key">Every fraction’s decimal either stops or repeats.</em> The clock below draws exactly that.</p>
 </section>
 <section class="wide">
-  <div class="card" id="zoom">
-    <div class="card-h"><span class="tag">Explore</span><h3>Zoom in by tens</h3>
-      <span class="sub">Type a fraction or a decimal (like 3/4, 1/3, 2/7 or 0.625) and press Play. Each row zooms 10× into the highlighted piece of the row above.</span></div>
-    <div class="row" id="zPresets"></div>
+  <div class="card" id="clock">
+    <div class="card-h"><span class="tag">Explore</span><h3>The remainder clock</h3>
+      <span class="sub">Type a fraction between 0 and 1 and press Play (or Step). The numbers round the clock are every possible left-over, 0 to <i class="sym">b</i> − 1. Each step of long division jumps to the next left-over and writes one digit on the arrow. Landing on <b>0</b> stops the decimal; landing on a left-over you have already visited starts a repeat (amber loop).</span></div>
+    <div class="row" id="cPresets"></div>
+    <div class="desc" id="cDesc"></div>
     <div class="inputs">
-      <label class="field fa"><span>Number</span><input id="inZ" type="text" inputmode="decimal" autocomplete="off" value="3/4"></label>
-      <div class="row" style="margin:0"><button class="primary" id="zPlay">Play</button></div>
+      <label class="field fa"><span>Fraction</span><input id="inC" type="text" inputmode="decimal" autocomplete="off" value="3/4"></label>
+      <div class="row" style="margin:0"><button class="primary" id="cPlay">Play</button><button id="cStep">Step</button><button id="cReset">Reset</button></div>
     </div>
-    <div class="err" id="zErr"></div>
-    <div class="eq" id="zDigits" style="display:inline-block;margin:4px 0 8px"></div>
-    <svg class="nl" id="zSvg" viewBox="0 0 1000 380" role="img" aria-label="Zooming into the number line"></svg>
-    <div class="readout" id="zOut"></div>
+    <div class="err" id="cErr"></div>
+    <div class="eq" id="cDigits" style="display:inline-block;margin:4px 0 8px"></div>
+    <div class="clocksplit"><svg id="cSvg" viewBox="0 0 500 470" role="img" aria-label="Clock of possible remainders with the steps of long division as arrows"></svg>
+      <div><table class="ldt" id="cTab"></table></div></div>
+    <div class="readout" id="cOut"></div>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--pc)"></i><span>a step of long division (digit on the arrow)</span></span>
+      <span><i class="sw" style="background:var(--f2)"></i><span>the loop that repeats forever</span></span>
+      <span><i class="sw" style="background:none;border:2.5px solid var(--bad)"></i><span>left-over 0: the decimal stops</span></span>
+    </div>
   </div>
 </section>
 
@@ -349,7 +374,9 @@ button:disabled{opacity:.45;cursor:default}
     <div class="term"><b>Improper fraction / mixed number</b>A fraction bigger than 1, like 7/3, and the same amount written as wholes plus a fraction, 2⅓.</div>
     <div class="term"><b>Equivalent fractions</b>Different names for the same point: ½ = 2/4 = 3/6.</div>
     <div class="term"><b>Common denominator</b>A shared piece size, needed to add fractions.</div>
-    <div class="term"><b>Decimal</b>A number written by zooming in by tens: tenths, hundredths, thousandths…</div>
+    <div class="term"><b>Decimal</b>A number written in tens: tenths, hundredths, thousandths…; 0.75 is 7 tenths and 5 hundredths.</div>
+    <div class="term"><b>Long division</b>Dividing step by step, one place value at a time, sharing what’s left over into the next smaller place.</div>
+    <div class="term"><b>Remainder</b>What’s left over after sharing; always smaller than the number you divide by.</div>
     <div class="term"><b>Terminating / repeating decimal</b>A decimal that stops (0.75) or one whose digits repeat forever (0.<span class="rep">3</span>).</div>
     <div class="term"><b>Rational number</b>Any number that can be written as a fraction of whole numbers. Its decimal always terminates or repeats.</div>
   </div>
@@ -357,16 +384,18 @@ button:disabled{opacity:.45;cursor:default}
 
 <!-- ===================== Quiz ===================== -->
 <section class="prose"><h2><span class="n">9</span>Check yourself</h2>
-  <p>Four kinds of questions: place a fraction on the line, convert between fractions and decimals, decide whether two fractions are equivalent, and find a fraction in between. Fractions like 3/8 are fine as answers.</p>
+  <p>Five kinds of questions: which of two numbers is bigger, convert between fractions and decimals, decide whether two fractions are equivalent, and find a fraction in between. Fractions like 3/8 are fine as answers.</p>
 </section>
 <section class="wide">
   <div class="card" id="quiz">
     <div class="card-h"><span class="tag">Quiz</span><h3 id="qTitle"></h3><span class="score" id="score">Score: 0 / 0</span></div>
     <div class="qtext" id="qText"></div>
-    <svg class="nl clickable" id="qSvg" viewBox="0 0 1000 170" role="img" aria-label="Quiz number line"></svg>
+    <div class="qpair" id="qPair"></div>
+    <svg class="nl" id="qSvg" viewBox="0 0 1000 150" role="img" aria-label="Both numbers on the number line"></svg>
     <div class="inputs">
       <label class="field fa" id="qField"><span id="qLabel"></span><input id="qIn" type="text" inputmode="decimal" autocomplete="off"></label>
       <div class="choice" id="qChoice"><button id="qYes">Same point</button><button id="qNo">Different points</button></div>
+      <div class="choice" id="qCmp"><button id="qBig1">First is bigger</button><button id="qEq">Equal</button><button id="qBig2">Second is bigger</button></div>
       <div class="row" style="margin:0">
         <button class="primary" id="qCheck">Check</button>
         <button id="qShow">Show answer</button>
@@ -568,69 +597,120 @@ $('play').onclick = playM;
 $('reset').onclick = () => { stopM(); mk1.e = 0; $('play').textContent = 'Play'; drawM(); };
 
 /* =====================================================================
-   3. ZOOM IN BY TENS (decimal digits)
+   3. THE REMAINDER CLOCK (long division)
    ===================================================================== */
-const zm = { f: { n: 3, d: 4 }, shown: 5, timer: 0 };
-['3/4', '1/3', '1/8', '2/7', '0.625', '5/6'].forEach(s => { const b = document.createElement('button'); b.className = 'preset'; b.textContent = s; b.onclick = () => { $('inZ').value = s; playZ(); }; $('zPresets').appendChild(b); });
-function readZ(){
-  const f = parseFrac($('inZ').value);
-  if (!f){ $('zErr').textContent = 'Type a fraction like 3/4 or a decimal like 0.625.'; return false; }
-  if (f.n < 0 || f.n >= f.d){ $('zErr').textContent = 'Use a number between 0 and 1 (like 3/4), so we zoom into the gap from 0 to 1.'; return false; }
-  if (f.d > 10000){ $('zErr').textContent = 'That denominator is too big to zoom nicely; try a simpler fraction.'; return false; }
-  $('zErr').textContent = ''; zm.f = f; return true;
+const ck = { f: { n: 3, d: 4 }, shown: 0, timer: 0, steps: [] };
+const CPRE = [
+  ['3/4', 'Shares out evenly after two steps: the left-over hits 0.'],
+  ['1/8', 'Three steps to reach 0: 0.125. Denominators made only of 2s and 5s always stop.'],
+  ['1/3', 'The left-over is 1 every time: the clock loops on the spot, so 3 repeats forever.'],
+  ['5/6', 'One step that never comes back (8), then a loop on 2: 0.8333…'],
+  ['1/7', 'Visits every left-over from 1 to 6 before coming back: the 6-digit loop 142857.'],
+  ['2/7', 'Same loop as 1/7, entered at a different place: 285714 repeating.'],
+  ['3/11', 'Two left-overs take turns: 0.272727…'],
+  ['7/12', 'Two steps before the loop starts: 0.58333…']
+];
+CPRE.forEach(([s, d], i) => { const b = document.createElement('button'); b.className = 'preset'; b.textContent = s; b.onclick = () => { $('inC').value = s; [...$('cPresets').children].forEach((x, j) => x.classList.toggle('on', j === i)); $('cDesc').textContent = d; playC(); }; $('cPresets').appendChild(b); });
+function readC(){
+  const f = parseFrac($('inC').value);
+  if (!f){ $('cErr').textContent = 'Type a fraction like 3/4 (or a decimal like 0.625).'; return false; }
+  if (f.n <= 0 || f.n >= f.d){ $('cErr').textContent = 'Use a number between 0 and 1, like 3/4.'; return false; }
+  if (f.d > 40){ $('cErr').textContent = 'Keep the denominator at most 40 (in lowest terms) so the clock stays readable.'; return false; }
+  $('cErr').textContent = ''; ck.f = f; ck.steps = stepsOf(f.n, f.d); return true;
 }
-// The decimal digits of n/d (up to k of them) by long division
-function digitsOf(n, d, k){ const out = []; let r = n % d; for (let i = 0; i < k; i++){ r *= 10; out.push(Math.floor(r / d)); r %= d; } return out; }
-function drawZ(){
-  const svg = $('zSvg'); svg.innerHTML = ''; const g = mk('g', {}, svg);
-  const L = 60, R = 940, rowH = 74, rows = 5, { n, d } = zm.f, v = n / d;
-  const dg = digitsOf(n, d, rows), x = decimalOf(n, d);
-  const termLen = x.rep ? Infinity : x.pre.length;        // a terminating decimal stops after this many digits
-  let lo = 0;                                              // left end of the current row's stretch
-  for (let r = 0; r < Math.min(zm.shown, rows); r++){
-    const w = Math.pow(10, -r), y = 30 + r * rowH;
-    const X = t => L + (t - lo) / w * (R - L);
-    mk('line', { x1: L, y1: y, x2: R, y2: y, class: 'ax' }, g);
-    for (let i = 0; i <= 10; i++){
-      const t = lo + i * w / 10;
-      mk('line', { x1: X(t), y1: y - (i % 5 === 0 ? 8 : 5), x2: X(t), y2: y + (i % 5 === 0 ? 8 : 5), class: i === 0 || i === 10 ? 'tkI' : 'tkC' }, g);
-      if (i === 0 || i === 10 || r === 0) txt(g, X(t), y + 22, num(t, r + 1), 'zl');
-    }
-    txt(g, 8, y + 4, r === 0 ? 'whole' : '×' + Math.pow(10, r), 'side');
-    const exactHere = r >= termLen;                        // the point sits exactly on a cut at this level
-    if (!exactHere){
-      const k = dg[r], g0 = lo + k * w / 10;
-      mk('rect', { x: X(g0), y: y - 10, width: X(g0 + w / 10) - X(g0), height: 20, class: 'gap' }, g);
-      mk('rect', { x: X(g0), y: y - 10, width: X(g0 + w / 10) - X(g0), height: 20, class: 'gapEdge' }, g);
-      txt(g, (X(g0) + X(g0 + w / 10)) / 2, y - 16, String(k), 'dig');
-      // the funnel down to the next row, which zooms into this piece
-      if (r + 1 < Math.min(zm.shown, rows)) mk('polygon', { points: `${X(g0)},${y + 10} ${X(g0 + w / 10)},${y + 10} ${R},${y + rowH - 8} ${L},${y + rowH - 8}`, class: 'funnel' }, g);
-      mk('circle', { cx: X(v), cy: y, r: 5.5, class: 'pt' }, g);
-      lo = g0;
-    } else {
-      mk('circle', { cx: X(v), cy: y, r: 7, class: 'pt' }, g);
-      txt(g, X(v), y - 16, 'exactly on a cut: done', 'dig', { style: 'font-size:12px' });
-      break;
-    }
+// The steps of long division: from left-over r, 10r ÷ d gives a digit and a new left-over
+function stepsOf(n, d){
+  const out = [], seen = new Map(); let r = n;
+  for (let i = 0; i <= d + 1; i++){
+    if (r === 0){ out.end = 'stop'; break; }
+    if (seen.has(r)){ out.end = 'loop'; out.loopAt = seen.get(r); break; }
+    seen.set(r, i);
+    const t = r * 10, dig = Math.floor(t / d), nr = t % d;
+    out.push({ r, t, dig, nr });
+    r = nr;
   }
-  // The decimal built so far, and the readout
-  const k = Math.min(zm.shown, rows, termLen === Infinity ? rows : termLen);
-  $('zDigits').innerHTML = `${fracHTML(n, d)} = 0.${dg.slice(0, k).join('')}${termLen === Infinity && zm.shown >= rows ? '…' : ''}`;
-  let h;
-  if (zm.shown < Math.min(rows, termLen + 1)) h = `Zoom ${zm.shown}: the point is in piece <b>${dg[zm.shown - 1]}</b> of 10, so the next digit is ${dg[zm.shown - 1]}.`;
-  else if (termLen !== Infinity) h = `After ${termLen} zoom${termLen === 1 ? '' : 's'} the point lands exactly on a cut, so the decimal stops: <b>${decHTML(n, d)}</b>. A <b>terminating</b> decimal. (Its denominator, ${d}, is built only from 2s and 5s, the factors of 10.)`;
-  else h = `The zooming never ends: the digits ${x.pre ? `start with ${x.pre}, then ` : ''}repeat the block <b>${x.rep}</b> forever. So ${fracHTML(n, d)} = <b>${decHTML(n, d)}</b>, a <b>repeating</b> decimal. (The bar over the digits means “repeat forever.”)`;
-  $('zOut').innerHTML = h;
+  return out;
 }
-function playZ(){
-  if (!readZ()) return;
-  clearTimeout(zm.timer); zm.shown = 1; drawZ();
-  const tick = () => { zm.shown++; drawZ(); const x = decimalOf(zm.f.n, zm.f.d); const lim = x.rep ? 5 : Math.min(5, x.pre.length + 1); if (zm.shown < lim) zm.timer = setTimeout(tick, 850); };
-  zm.timer = setTimeout(tick, 850);
+const placeName = i => ['tenths', 'hundredths', 'thousandths', '10-thousandths', '100-thousandths', 'millionths'][i] || 'of the next place';
+function drawC(){
+  const svg = $('cSvg'); svg.innerHTML = ''; const g = mk('g', {}, svg);
+  const { n, d } = ck.f, S = ck.steps, k = ck.shown, done = k >= S.length;
+  const cx = 250, cy = 240, Rr = 175, nr = d <= 12 ? 17 : d <= 24 ? 12.5 : 9.5, fs = d <= 12 ? 15 : d <= 24 ? 12 : 10;
+  const ang = r => -Math.PI / 2 + 2 * Math.PI * r / d, pos = r => [cx + Rr * Math.cos(ang(r)), cy + Rr * Math.sin(ang(r))];
+  const loopOn = done && S.end === 'loop';
+  mk('circle', { cx, cy, r: Rr, style: 'fill:none;stroke:var(--line2);stroke-width:1.2;stroke-dasharray:3 5' }, g);
+  // arrows for the steps shown so far
+  const ga = mk('g', {}, g);
+  for (let i = 0; i < k; i++){
+    const st = S[i], inLoop = loopOn && i >= S.loopAt, col = inLoop ? 'var(--f2)' : 'var(--pc)', w = i === k - 1 ? 3.2 : 2.2;
+    const [x1, y1] = pos(st.r), [x2, y2] = pos(st.nr);
+    let mx, my;
+    if (st.r === st.nr){                                   // the same left-over again: a small loop outside the clock
+      const a = ang(st.r), ox = cx + (Rr + nr + 22) * Math.cos(a), oy = cy + (Rr + nr + 22) * Math.sin(a);
+      mk('circle', { cx: ox, cy: oy, r: 16, style: `fill:none;stroke:${col};stroke-width:${w}` }, ga);
+      mx = ox + 22 * Math.cos(a); my = oy + 22 * Math.sin(a);
+    } else {
+      const L0 = Math.hypot(x2 - x1, y2 - y1), qx = (x1 + x2) / 2 - (y2 - y1) / L0 * 0.2 * L0, qy = (y1 + y2) / 2 + (x2 - x1) / L0 * 0.2 * L0;   // bend each arrow to its left, so arrows through the middle don't meet
+      // trim both ends so the arrow starts and stops at the node edges
+      const tr = (px, py, tx, ty) => { const L = Math.hypot(tx - px, ty - py); return [px + (tx - px) * (nr + 3) / L, py + (ty - py) * (nr + 3) / L]; };
+      const [sx, sy] = tr(x1, y1, qx, qy), [ex, ey] = tr(x2, y2, qx, qy);
+      mk('path', { d: `M${sx} ${sy}Q${qx} ${qy} ${ex} ${ey}`, style: `fill:none;stroke:${col};stroke-width:${w}` }, ga);
+      const a = Math.atan2(ey - qy, ex - qx), hs = 10;
+      mk('polygon', { points: `${ex},${ey} ${ex - hs * Math.cos(a - 0.4)},${ey - hs * Math.sin(a - 0.4)} ${ex - hs * Math.cos(a + 0.4)},${ey - hs * Math.sin(a + 0.4)}`, style: `fill:${col}` }, ga);
+      mx = 0.25 * sx + 0.5 * qx + 0.25 * ex; my = 0.25 * sy + 0.5 * qy + 0.25 * ey;
+    }
+    mk('circle', { cx: mx, cy: my, r: 11, style: `fill:var(--bg);stroke:${col};stroke-width:2` }, ga);
+    txt(ga, mx, my + 5, String(st.dig), '', { style: `fill:${col};font:700 14px var(--mono);text-anchor:middle` });
+  }
+  // the nodes: every possible left-over
+  const visited = new Set(S.slice(0, k).map(s => s.r)); if (k) visited.add(S[k - 1].nr); else visited.add(n);
+  const cur = k ? S[k - 1].nr : n;
+  for (let r = 0; r < d; r++){
+    const [x, y] = pos(r), isCur = r === cur, vis = visited.has(r);
+    mk('circle', { cx: x, cy: y, r: nr, style: `fill:${isCur ? 'var(--pc)' : vis ? 'var(--pc-soft)' : 'var(--paper)'};stroke:${r === 0 ? 'var(--bad)' : vis ? 'var(--pc)' : 'var(--line2)'};stroke-width:${r === 0 ? 2.5 : 1.4}` }, g);
+    txt(g, x, y + fs * 0.36, String(r), '', { style: `fill:${isCur ? '#fff' : 'var(--ink)'};font:600 ${fs}px var(--mono);text-anchor:middle` });
+  }
+  const lab = (r, s, col) => { const a = ang(r), x = cx + (Rr + nr + (d <= 12 ? 34 : 26)) * Math.cos(a), y = cy + (Rr + nr + (d <= 12 ? 34 : 26)) * Math.sin(a); txt(g, x, y + 4, s, 'side', { style: `fill:${col};text-anchor:${Math.cos(a) > 0.3 ? 'start' : Math.cos(a) < -0.3 ? 'end' : 'middle'}` }); };
+  lab(0, 'stop', 'var(--bad)');
+  if (n !== 0) lab(n, 'start', 'var(--pc)');
+  txt(g, 14, 456, `the ${d} possible left-overs when sharing among ${d}`, 'side');
+  // the table of steps
+  let h = '<tr><th>Step</th><th>Left over</th><th>Trade into</th><th>Share among ' + d + '</th><th>Digit</th><th>Left over now</th></tr>';
+  for (let i = 0; i < k; i++){
+    const st = S[i], inLoop = loopOn && i >= S.loopAt;
+    h += `<tr class="${i === k - 1 ? 'now' : ''}${inLoop ? ' loop' : ''}"><td>${i + 1}</td><td>${st.r}</td><td>${st.t} ${placeName(i)}</td><td class="nw">${st.t} ÷ ${d} = ${st.dig} r ${st.nr}</td><td class="dg">${st.dig}</td><td class="${st.nr === 0 ? 'z' : ''}">${st.nr}</td></tr>`;
+  }
+  $('cTab').innerHTML = h;
+  // digits so far, with the repeating block overlined once it is known
+  const ds = S.slice(0, k).map(s => s.dig).join('');
+  let dec = '0.' + ds;
+  if (loopOn) dec = '0.' + S.slice(0, S.loopAt).map(s => s.dig).join('') + `<span class="rep">${S.slice(S.loopAt).map(s => s.dig).join('')}</span>`;
+  $('cDigits').innerHTML = `${fracHTML(n, d)} = ${k ? dec : '0.?'}${k && !done ? '…' : ''}`;
+  // readout
+  let o;
+  if (!k) o = `Start: share <b>${n}</b> among <b>${d}</b>. That isn’t even one each, so write <b>0.</b> and trade the ${n} for ${n * 10} tenths. The left-over you start with is ${n}: the purple circle.`;
+  else if (!done){ const st = S[k - 1]; o = `Step ${k}: ${st.t} ${placeName(k - 1)} shared among ${d} is <b>${st.dig}</b> each (${st.dig * d}), with <b>${st.nr}</b> left over. Write the digit ${st.dig}, then trade the ${st.nr} left-over for ${st.nr * 10} of the next smaller place.`; }
+  else if (S.end === 'stop') o = `The left-over is <b>0</b>: everything has been shared, so the decimal <b>stops</b>. ${fracHTML(n, d)} = <b>${decHTML(n, d)}</b>, a terminating decimal. (${d} is built only from 2s and 5s, the factors of 10, which is exactly when this happens.)`;
+  else { const back = S[S.length - 1].nr; o = `The left-over is <b>${back}</b> again, a number we’ve already visited. From here every step is a copy of an earlier one, so the amber loop repeats forever: ${fracHTML(n, d)} = <b>${decHTML(n, d)}</b>. With only ${d} possible left-overs, this had to happen (or reach 0) within ${d} steps.`; }
+  $('cOut').innerHTML = o;
 }
-$('zPlay').onclick = playZ;
-$('inZ').addEventListener('focus', e => e.target.select());
-$('inZ').addEventListener('keydown', e => { if (e.key === 'Enter') playZ(); });
+function stopC(){ clearTimeout(ck.timer); $('cPlay').textContent = 'Play'; }
+function playC(){
+  if (!readC()) return;
+  stopC(); ck.shown = 0; drawC(); $('cPlay').textContent = 'Playing…';
+  const tick = () => { ck.shown++; drawC(); if (ck.shown < ck.steps.length) ck.timer = setTimeout(tick, 900); else $('cPlay').textContent = 'Play'; };
+  ck.timer = setTimeout(tick, 900);
+}
+$('cPlay').onclick = playC;
+$('cStep').onclick = () => {
+  const f = parseFrac($('inC').value);
+  if (!f || f.n !== ck.f.n || f.d !== ck.f.d || ck.shown >= ck.steps.length){ if (!readC()) return; if (ck.shown >= ck.steps.length || !f || f.n !== ck.f.n || f.d !== ck.f.d) ck.shown = 0; }
+  stopC(); ck.shown = Math.min(ck.shown + 1, ck.steps.length); drawC();
+};
+$('cReset').onclick = () => { if (!readC()) return; stopC(); ck.shown = 0; drawC(); };
+$('inC').addEventListener('focus', e => e.target.select());
+$('inC').addEventListener('input', () => { $('cErr').textContent = ''; [...$('cPresets').children].forEach(x => x.classList.remove('on')); $('cDesc').textContent = 'Custom.'; });
+$('inC').addEventListener('keydown', e => { if (e.key === 'Enter') playC(); });
 
 /* =====================================================================
    4. ALWAYS ANOTHER BETWEEN
@@ -738,32 +818,45 @@ function drawMul(){
 const rnd = arr => arr[Math.floor(Math.random() * arr.length)];
 const randInt = (lo, hi) => lo + Math.floor(Math.random() * (hi - lo + 1));
 const qz = { counted: false, done: false, right: 0, total: 0, click: null };
-function setMode(choice, showSvg){
-  $('qField').style.display = choice ? 'none' : ''; $('qCheck').style.display = choice ? 'none' : '';
-  $('qChoice').style.display = choice ? '' : 'none'; $('qSvg').style.display = showSvg ? '' : 'none';
+// mode: 'type' (answer box), 'equiv' (same / different), 'cmp' (which is bigger)
+function setMode(mode){
+  $('qField').style.display = mode === 'type' ? '' : 'none'; $('qCheck').style.display = mode === 'type' ? '' : 'none';
+  $('qChoice').style.display = mode === 'equiv' ? '' : 'none'; $('qCmp').style.display = mode === 'cmp' ? '' : 'none';
+  $('qPair').style.display = mode === 'cmp' ? '' : 'none'; $('qSvg').style.display = 'none';
+  [...$('qCmp').children].forEach(b => b.classList.remove('right', 'wrong'));
 }
 function newQuestion(){
   Object.assign(qz, { counted: false, done: false, click: null });
   $('qErr').textContent = ''; $('qFb').className = 'feedback'; $('qFb').innerHTML = ''; $('qIn').value = '';
-  qz.type = rnd(['place', 'place', 'toDec', 'toFrac', 'equiv', 'between']);
-  if (qz.type === 'place'){
-    const b = rnd([2, 3, 4, 5, 6, 8]); let a; do { a = randInt(1, 2 * b - 1); } while (a % b === 0);
-    Object.assign(qz, { a, b });
-    $('qTitle').textContent = 'Place the fraction';
-    $('qText').innerHTML = `Click the number line where ${fracHTML(a, b)} lands (or type it as a decimal).`;
-    $('qLabel').textContent = 'or type a decimal'; setMode(false, true);
+  qz.type = rnd(['cmp', 'cmp', 'toDec', 'toFrac', 'equiv', 'between']);
+  if (qz.type === 'cmp'){
+    // each item: [text, value, html]; a bank of comparisons with a typical trap in each
+    const F = (a, b) => [`${a}/${b}`, a / b, fracHTML(a, b)], D = s => [s, parseFloat(s), s];
+    const bank = [
+      () => { const a = randInt(2, 5), b = a + randInt(1, 4); return { x: F(1, a), y: F(1, b), why: `Cutting into more pieces makes each piece <i>smaller</i>: 1/${b} &lt; 1/${a}.` }; },
+      () => { const t = randInt(2, 4), a = t + randInt(1, 3), b = a + randInt(1, 3); return { x: F(t, a), y: F(t, b), why: `Both take ${t} pieces, but ${b}ths are smaller pieces than ${a}ths.` }; },
+      () => rnd([{ x: D('0.5'), y: D('0.45'), why: 'Compare place by place: 5 tenths beats 4 tenths. More digits doesn’t mean bigger.' }, { x: D('0.3'), y: D('0.29'), why: '0.3 = 0.30, which is more than 0.29.' }, { x: D('0.7'), y: D('0.65'), why: '0.7 = 0.70 &gt; 0.65.' }, { x: D('0.08'), y: D('0.1'), why: '0.08 is 8 hundredths; 0.1 is 10 hundredths.' }]),
+      () => rnd([{ x: F(3, 4), y: D('0.7'), why: '3/4 = 0.75, more than 0.7.' }, { x: F(2, 3), y: D('0.6'), why: '2/3 = 0.666…, more than 0.6.' }, { x: F(3, 5), y: D('0.6'), why: '3/5 = 6/10 = 0.6: the same point.' }, { x: F(1, 8), y: D('0.2'), why: '1/8 = 0.125, less than 0.2.' }, { x: F(1, 4), y: D('0.25'), why: '1/4 = 25/100 = 0.25: the same point.' }, { x: F(2, 5), y: D('0.25'), why: '2/5 = 0.4, more than 0.25.' }]),
+      () => rnd([{ x: F(2, 3), y: F(3, 5), why: 'Common denominator 15: 10/15 vs 9/15.' }, { x: F(5, 8), y: F(3, 5), why: 'Common denominator 40: 25/40 vs 24/40.' }, { x: F(4, 9), y: F(1, 2), why: '4/9 is less than half of 9 (4.5/9).' }, { x: F(3, 7), y: F(2, 5), why: 'Common denominator 35: 15/35 vs 14/35.' }, { x: F(2, 4), y: F(3, 6), why: 'Both are ½: the same point.' }])
+    ];
+    let q = rnd(bank)(); if (Math.random() < 0.5) [q.x, q.y] = [q.y, q.x];
+    Object.assign(qz, q);
+    $('qTitle').textContent = 'Which is bigger?';
+    $('qText').innerHTML = 'Which number is bigger, or are they equal?';
+    $('qPair').innerHTML = `<span>${q.x[2]}</span><span style="color:var(--muted);font-size:18px">or</span><span>${q.y[2]}</span>`;
+    setMode('cmp');
   } else if (qz.type === 'toDec'){
     const [a, b] = rnd([[1, 4], [3, 4], [1, 5], [3, 8], [1, 3], [2, 3], [5, 8], [7, 10], [1, 6], [5, 6], [1, 9], [9, 20]]);
     Object.assign(qz, { a, b });
     $('qTitle').textContent = 'Fraction → decimal';
     $('qText').innerHTML = `Write ${fracHTML(a, b)} as a decimal. For a repeating decimal, type at least 4 digits (like 0.3333).`;
-    $('qLabel').textContent = 'Decimal'; setMode(false, false);
+    $('qLabel').textContent = 'Decimal'; setMode('type');
   } else if (qz.type === 'toFrac'){
     const [a, b] = rnd([[1, 4], [3, 4], [1, 2], [2, 5], [3, 8], [7, 10], [1, 20], [3, 5], [1, 8]]);
     Object.assign(qz, { a, b, dec: decimalOf(a, b) });
     $('qTitle').textContent = 'Decimal → fraction';
     $('qText').innerHTML = `Write <b class="mono">${decHTML(a, b)}</b> as a fraction (like 3/8).`;
-    $('qLabel').textContent = 'Fraction'; setMode(false, false);
+    $('qLabel').textContent = 'Fraction'; setMode('type');
   } else if (qz.type === 'equiv'){
     const [a, b] = rnd([[1, 2], [2, 3], [3, 4], [1, 3], [2, 5], [3, 5]]), k = randInt(2, 4);
     qz.same = Math.random() < 0.5;
@@ -771,54 +864,44 @@ function newQuestion(){
     qz.f2 = qz.same ? { n: a * k, d: b * k } : rnd([{ n: a * k + 1, d: b * k }, { n: a + k, d: b + k }, { n: a * k, d: b * k + 1 }]);
     $('qTitle').textContent = 'Equivalent or not?';
     $('qText').innerHTML = `Do ${fracHTML(qz.f1.n, qz.f1.d)} and ${fracHTML(qz.f2.n, qz.f2.d)} land on the same point?`;
-    setMode(true, false);
+    setMode('equiv');
   } else {
     const pairs = [[{ n: 1, d: 3 }, { n: 1, d: 2 }], [{ n: 2, d: 5 }, { n: 1, d: 2 }], [{ n: 3, d: 4 }, { n: 4, d: 5 }], [{ n: 1, d: 4 }, { n: 1, d: 3 }], [{ n: 5, d: 8 }, { n: 2, d: 3 }]];
     [qz.p, qz.q] = rnd(pairs);
     $('qTitle').textContent = 'Find one in between';
     $('qText').innerHTML = `Type any fraction (or decimal) strictly between ${fracHTML(qz.p.n, qz.p.d)} and ${fracHTML(qz.q.n, qz.q.d)}.`;
-    $('qLabel').textContent = 'A number in between'; setMode(false, false);
+    $('qLabel').textContent = 'A number in between'; setMode('type');
   }
   drawQ();
 }
+// after a comparison is answered: both numbers on a 0-to-1 line
 function drawQ(){
-  if (qz.type !== 'place') return;
-  const svg = $('qSvg'); svg.innerHTML = ''; const g = mk('g', {}, svg);
-  const L = 60, R = 940, y = 90, X = v => L + v / 2 * (R - L);
+  if (qz.type !== 'cmp' || !qz.done) return;
+  const svg = $('qSvg'); svg.innerHTML = ''; svg.style.display = ''; const g = mk('g', {}, svg);
+  const L = 60, R = 940, y = 80, X = v => L + v * (R - L);
   mk('line', { x1: L - 10, y1: y, x2: R + 10, y2: y, class: 'ax' }, g);
-  for (let k = 0; k <= 2; k++){ mk('line', { x1: X(k), y1: y - 10, x2: X(k), y2: y + 10, class: 'tkI' }, g); txt(g, X(k), y + 32, String(k), 'lbI'); }
-  if (qz.done){
-    for (let p = 1; p < 2 * qz.b; p++) if (p % qz.b) mk('line', { x1: X(p / qz.b), y1: y - 6, x2: X(p / qz.b), y2: y + 6, class: 'tkC' }, g);
-    mk('circle', { cx: X(qz.a / qz.b), cy: y, r: 8, class: 'pt' }, g); txt(g, X(qz.a / qz.b), y - 22, fracTxt(qz.a, qz.b), 'ptlbl');
-  }
-  if (qz.click !== null) mk('circle', { cx: X(qz.click), cy: y, r: 6, class: 'click' }, g);
+  for (let k = 0; k <= 10; k++){ mk('line', { x1: X(k / 10), y1: y - (k % 5 ? 5 : 9), x2: X(k / 10), y2: y + (k % 5 ? 5 : 9), class: k % 10 ? 'tkC' : 'tkI' }, g); txt(g, X(k / 10), y + 28, num(k / 10, 1), k % 10 ? 'lbC' : 'lbI'); }
+  const same = Math.abs(qz.x[1] - qz.y[1]) < 1e-12;
+  mk('circle', { cx: X(qz.x[1]), cy: y, r: 8, class: 'pt' }, g); txt(g, X(qz.x[1]), y - 20, qz.x[0] + (same ? ' = ' + qz.y[0] : ''), 'ptlbl');
+  if (!same){ mk('circle', { cx: X(qz.y[1]), cy: y, r: 8, class: 'ptF2' }, g); txt(g, X(qz.y[1]), y + 52, qz.y[0], 'lbF2'); }
 }
-// Clicking the quiz line answers a "place" question
-$('qSvg').addEventListener('click', ev => {
-  if (qz.type !== 'place' || qz.done) return;
-  const svg = $('qSvg'), pt = svg.createSVGPoint(); pt.x = ev.clientX; pt.y = ev.clientY;
-  const p = pt.matrixTransform(svg.getScreenCTM().inverse());
-  qz.click = Math.max(0, Math.min(2, (p.x - 60) / (940 - 60) * 2));
-  checkPlace(qz.click);
-});
+function answerCmp(k){                                     // 0 = first bigger, 1 = equal, 2 = second bigger
+  if (qz.done) return;
+  const a = qz.x[1], b = qz.y[1], truth = Math.abs(a - b) < 1e-12 ? 1 : a > b ? 0 : 2, ok = k === truth;
+  countQ(ok); qz.done = true;
+  [...$('qCmp').children].forEach((x, j) => { if (j === k) x.classList.add(ok ? 'right' : 'wrong'); if (j === truth) x.classList.add('right'); });
+  const rel = truth === 1 ? 'are equal' : `: ${truth === 0 ? qz.x[2] : qz.y[2]} is bigger`;
+  $('qFb').className = 'feedback ' + (ok ? 'ok' : 'bad');
+  $('qFb').innerHTML = `<b>${ok ? 'Right.' : 'Not this time.'}</b> ${qz.x[2]} ≈ ${num(a, 3)} and ${qz.y[2]} ≈ ${num(b, 3)}${truth === 1 ? ' ' : ''}${rel}. ${qz.why}`;
+  drawQ();
+}
 function countQ(ok){ if (qz.counted) return; qz.counted = true; qz.total++; if (ok) qz.right++; $('score').textContent = `Score: ${qz.right} / ${qz.total}`; }
-function checkPlace(v){
-  const t = qz.a / qz.b, tol = 0.5 / qz.b * 0.6;           // within about a third of a piece
-  let ok = Math.abs(v - t) <= tol, msg;
-  if (ok) msg = `<b>Right.</b> ${fracHTML(qz.a, qz.b)}: cut each whole into ${qz.b} pieces and count ${qz.a} of them from 0.`;
-  else if (Math.abs(v - qz.b / qz.a) <= 0.08 && qz.a !== qz.b) msg = `<b>That looks like ${fracHTML(qz.b, qz.a)}, upside down.</b> The bottom number is the piece size; the top is how many pieces.`;
-  else if (Math.abs(v - qz.a / 10) <= 0.04) msg = `<b>That’s ${qz.a} tenths.</b> The pieces here are ${qz.b}ths, not tenths.`;
-  else msg = `<b>Not quite.</b> You clicked near ${num(v, 2)}; ${fracHTML(qz.a, qz.b)} ≈ ${num(t, 2)}. ${t > 1 ? 'It’s more than 1: count past the first whole.' : 'Cut 0-to-1 into ' + qz.b + ' equal pieces and count ' + qz.a + '.'}`;
-  countQ(ok); qz.done = qz.done || ok; drawQ();
-  $('qFb').className = 'feedback ' + (ok ? 'ok' : 'bad'); $('qFb').innerHTML = msg;
-}
 function checkQ(){
   const raw = $('qIn').value.trim();
   if (raw === ''){ $('qErr').textContent = 'Type an answer first.'; return; }
   const f = parseFrac(raw), v = f ? val(f) : NaN;
   if (isNaN(v)){ $('qErr').textContent = 'Type a fraction like 3/8 or a decimal like 0.375.'; return; }
   $('qErr').textContent = '';
-  if (qz.type === 'place') return checkPlace(v);
   let ok = false, msg;
   if (qz.type === 'toDec'){
     const t = qz.a / qz.b, x = decimalOf(qz.a, qz.b), digits = (raw.split('.')[1] || '').length;
@@ -826,10 +909,10 @@ function checkQ(){
     else if (Math.abs(v - t) < 0.01) msg = `<b>Close, but keep more digits.</b> This one repeats: ${decHTML(qz.a, qz.b)}.`;
     else if (Math.abs(v - qz.b / qz.a) < 0.01) msg = `<b>That’s ${fracHTML(qz.b, qz.a)}, upside down.</b> Divide the top by the bottom: ${qz.a} ÷ ${qz.b}.`;
     else if (Math.abs(v - (qz.a + qz.b / 100)) < 0.001 || Math.abs(v - parseFloat(qz.a + '.' + qz.b)) < 0.001) msg = `<b>A fraction isn’t written “top.bottom”.</b> ${fracHTML(qz.a, qz.b)} means ${qz.a} ÷ ${qz.b}.`;
-    else msg = `<b>Not quite.</b> Divide ${qz.a} by ${qz.b} (long division), or zoom in by tens in the explorer.`;
+    else msg = `<b>Not quite.</b> Divide ${qz.a} by ${qz.b} (long division), or step through it on the remainder clock above.`;
   } else if (qz.type === 'toFrac'){
     if (f && Math.abs(v - qz.a / qz.b) < 1e-9){ ok = true; const nf = norm(f.n, f.d); msg = `<b>Right.</b> ${decHTML(qz.a, qz.b)} = ${fracHTML(nf.n, nf.d)}${(f.n !== qz.a || f.d !== qz.b) && raw.includes('/') ? ` (in lowest terms ${fracHTML(qz.a, qz.b)})` : ''}.`; }
-    else msg = `<b>Not quite.</b> Read the decimal’s place value: ${decHTML(qz.a, qz.b)} = ${qz.dec.pre} over ${Math.pow(10, qz.dec.pre.length)}. Then simplify.`;
+    else msg = `<b>Not quite.</b> Read the decimal’s place value: ${decHTML(qz.a, qz.b)} = ${parseInt(qz.dec.pre, 10)} over ${Math.pow(10, qz.dec.pre.length)}. Then simplify.`;
   } else {
     const lo = val(qz.p), hi = val(qz.q);
     if (v > lo + 1e-12 && v < hi - 1e-12){ ok = true; msg = `<b>Right.</b> ${f ? fracHTML(f.n, f.d) : raw} ≈ ${num(v, 4)} is between ${num(lo, 4)} and ${num(hi, 4)}. (One sure-fire choice: the average, ${fracHTML(norm(qz.p.n * qz.q.d + qz.q.n * qz.p.d, 2 * qz.p.d * qz.q.d).n, norm(qz.p.n * qz.q.d + qz.q.n * qz.p.d, 2 * qz.p.d * qz.q.d).d)}.)`; }
@@ -849,16 +932,18 @@ function answerEquiv(same){
     : `${fracHTML(a.n, a.d)} ≈ ${num(val(a), 3)} but ${fracHTML(b.n, b.d)} ≈ ${num(val(b), 3)}. Cross products ${a.n} × ${b.d} = ${cp1} and ${b.n} × ${a.d} = ${cp2} don’t match.` + (b.n - a.n === b.d - a.d ? ' Adding the same number to top and bottom changes the fraction: that’s the adding trap from 1.B.4.' : ''));
 }
 function showQ(){
-  countQ(false); qz.done = true; $('qErr').textContent = ''; drawQ();
+  if (qz.type === 'cmp'){ if (!qz.done){ countQ(false); const a = qz.x[1], b = qz.y[1]; answerCmpShow(Math.abs(a - b) < 1e-12 ? 1 : a > b ? 0 : 2); } return; }
+  countQ(false); qz.done = true; $('qErr').textContent = '';
   const fb = $('qFb'); fb.className = 'feedback info';
-  if (qz.type === 'place') fb.innerHTML = `${fracHTML(qz.a, qz.b)} ≈ ${num(qz.a / qz.b, 3)}, shown on the line with its ${qz.b}ths marked.`;
-  else if (qz.type === 'toDec') fb.innerHTML = `${fracHTML(qz.a, qz.b)} = <b>${decHTML(qz.a, qz.b)}</b>.`;
+  if (qz.type === 'toDec') fb.innerHTML = `${fracHTML(qz.a, qz.b)} = <b>${decHTML(qz.a, qz.b)}</b>.`;
   else if (qz.type === 'toFrac') fb.innerHTML = `${decHTML(qz.a, qz.b)} = <b>${fracHTML(qz.a, qz.b)}</b>.`;
   else if (qz.type === 'equiv') fb.innerHTML = qz.same ? `<b>Same point.</b>` : `<b>Different points.</b> ${num(val(qz.f1), 3)} vs ${num(val(qz.f2), 3)}.`;
   else { const m = norm(qz.p.n * qz.q.d + qz.q.n * qz.p.d, 2 * qz.p.d * qz.q.d); fb.innerHTML = `One answer: the average, <b>${fracHTML(m.n, m.d)}</b> ≈ ${num(val(m), 4)}. Infinitely many others work too.`; }
 }
 $('qCheck').onclick = checkQ; $('qYes').onclick = () => answerEquiv(true); $('qNo').onclick = () => answerEquiv(false);
 $('qShow').onclick = showQ; $('qNew').onclick = newQuestion;
+[...$('qCmp').children].forEach((b, k) => b.onclick = () => answerCmp(k));
+function answerCmpShow(truth){ qz.done = true; [...$('qCmp').children].forEach((x, j) => { if (j === truth) x.classList.add('right'); }); $('qFb').className = 'feedback info'; $('qFb').innerHTML = `${qz.x[2]} ≈ ${num(qz.x[1], 3)}, ${qz.y[2]} ≈ ${num(qz.y[1], 3)}. ${qz.why}`; drawQ(); }
 $('qIn').addEventListener('input', () => { $('qErr').textContent = ''; });
 $('qIn').addEventListener('focus', e => e.target.select());
 $('qIn').addEventListener('keydown', e => { if (e.key === 'Enter') checkQ(); });
@@ -867,7 +952,7 @@ $('qIn').addEventListener('keydown', e => { if (e.key === 'Enter') checkQ(); });
    8. START
    ===================================================================== */
 $('inA').value = '3'; $('inB').value = '4'; markM(1); mk1.e = 1; drawM(); $('play').textContent = 'Replay';
-zm.shown = 5; readZ(); zm.shown = 3; drawZ();
+readC(); ck.shown = ck.steps.length; drawC(); $('cPresets').children[0].classList.add('on'); $('cDesc').textContent = CPRE[0][1];
 drawBt(); drawAdd(); drawMul();
 newQuestion();
 </script>
