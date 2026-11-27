@@ -1,0 +1,1180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>9.B.3 And, Or, Not: Combining Events · MathMastery</title>
+<!-- Fonts: a book serif for prose, a clean sans for UI, a mono for numbers -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<!-- MathJax renders the few formulas on the page (SVG output needs no external stylesheet) -->
+<script>
+  window.MathJax = { tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] }, svg: { fontCache: 'global' } };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<style>
+/* ===================== Theme ===================== */
+:root{
+  --bg:#f7f5ef; --paper:#ffffff; --ink:#1f1e1d; --muted:#6b6a66; --line:#e4e0d5; --line2:#c9c5b8;
+  --accent:#534AB7; --accent-bg:#EEEDFE;
+  --pos:#1D9E75; --neg:#D85A30; --pt:#7F77DD; --pt-soft:#AFA9EC; --pt-dark:#534AB7;
+  --pos-new:#9FE1CB; --neg-new:#F0997B; --ok:#3B6D11; --ok-bg:#EAF3DE; --bad:#A32D2D; --bad-bg:#FCEBEB; --note-bg:#FAF3E3; --note-line:#E7C98A;
+  --serif:"Source Serif 4", Georgia, "Times New Roman", serif;
+  --sans:"IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#191817; --paper:#232220; --ink:#ecebe6; --muted:#a3a29c; --line:#383733; --line2:#55534e;
+    --accent:#AFA9EC; --accent-bg:#2c2852; --pt-dark:#CECBF6; --pt-soft:#6f68b8; --pos-new:#5DCAA5; --neg-new:#F5C4B3;
+    --ok:#C0DD97; --ok-bg:#24400d; --bad:#F7C1C1; --bad-bg:#5a1c1c; --note-bg:#2b261b; --note-line:#6b5626;
+  }
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.7 var(--serif);-webkit-font-smoothing:antialiased}
+
+/* ===================== Layout ===================== */
+.topbar{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1000px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:14px;font:500 13px/1 var(--sans);color:var(--muted)}
+.brand{color:var(--ink);font-weight:600;letter-spacing:.02em}
+.brand b{color:var(--accent)}
+.crumbs{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pid{font-family:var(--mono);color:var(--accent);background:var(--accent-bg);padding:4px 8px;border-radius:6px}
+.prose{max-width:720px;margin:0 auto;padding:0 20px}
+.wide{max-width:1000px;margin:0 auto;padding:0 20px}
+
+/* ===================== Hero ===================== */
+.hero{padding:48px 0 12px}
+.kicker{font:600 13px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1{font:700 46px/1.1 var(--serif);margin:12px 0 14px;letter-spacing:-.01em}
+.dek{font-size:21px;color:var(--muted);margin:0 0 22px;font-style:italic}
+.tiers{display:flex;gap:6px;flex-wrap:wrap;font:500 13px/1 var(--sans);margin-bottom:8px}
+.tier{padding:7px 12px;border-radius:999px;border:1px solid var(--line2);color:var(--muted)}
+.tier.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.tier small{opacity:.7;margin-left:4px}
+
+/* ===================== Text elements ===================== */
+h2{font:700 28px/1.25 var(--serif);margin:56px 0 10px;display:flex;gap:12px;align-items:baseline}
+h2 .n{font:600 14px/1 var(--mono);color:var(--accent);min-width:28px}
+p{margin:0 0 16px}
+em.key{font-style:normal;background:linear-gradient(transparent 62%,var(--accent-bg) 62%);padding:0 2px}
+.goals{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:18px 22px;margin:22px 0 0;font:15.5px/1.6 var(--sans)}
+.goals h3{font:600 12px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
+.goals ul{margin:0;padding-left:20px}
+.note{background:var(--note-bg);border-left:4px solid var(--note-line);border-radius:0 10px 10px 0;padding:14px 18px;margin:20px 0;font:15.5px/1.6 var(--sans)}
+.note b{font-weight:600}
+.notice{list-style:none;padding:0;margin:8px 0 18px;counter-reset:n}
+.notice li{position:relative;padding:12px 0 12px 46px;border-top:1px solid var(--line)}
+.notice li:last-child{border-bottom:1px solid var(--line)}
+.notice li::before{counter-increment:n;content:counter(n);position:absolute;left:4px;top:13px;width:26px;height:26px;border-radius:50%;background:var(--accent-bg);color:var(--accent);font:600 13px/26px var(--mono);text-align:center}
+.goes{list-style:none;padding:0;margin:8px 0 18px}
+.goes li{padding:12px 0;border-top:1px solid var(--line)}
+.goes li:last-child{border-bottom:1px solid var(--line)}
+.math{overflow-x:auto;margin:12px 0 18px;padding:14px 18px;background:var(--paper);border:1px solid var(--line);border-radius:12px}
+.math .cap{font:14px/1.5 var(--sans);color:var(--muted);margin-top:4px}
+.mono{font-family:var(--mono);font-size:.92em;white-space:nowrap}
+.pos{color:var(--pos);font-weight:600}.neg{color:var(--neg);font-weight:600}.pt{color:var(--pt-dark);font-weight:600}
+
+/* ===================== Vocabulary ===================== */
+.vocab{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin:14px 0 8px}
+.term{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font:14.5px/1.5 var(--sans)}
+.term b{display:block;font:600 15px/1.3 var(--serif);margin-bottom:4px}
+
+/* ===================== Interactive cards ===================== */
+.card{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:18px 20px 20px;margin:26px 0;box-shadow:0 1px 0 var(--line),0 12px 32px -22px rgba(0,0,0,.25);font-family:var(--sans)}
+.card-h{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.card-h .tag{font:600 11px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--accent);background:var(--accent-bg);padding:5px 8px;border-radius:6px}
+.card-h h3{font:600 18px/1.3 var(--sans);margin:0}
+.card-h .sub{color:var(--muted);font-size:14.5px;flex-basis:100%}
+.panel-label{font:600 11px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:12px 0 4px;display:flex;justify-content:space-between}
+.panel-label span:last-child{letter-spacing:0;text-transform:none;font-weight:500}
+svg.nl{display:block;width:100%;height:auto;border:1px solid var(--line);border-radius:12px;background:var(--bg);touch-action:manipulation}
+svg.clickable{cursor:pointer}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:12px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0}
+button{font:500 14px/1 var(--sans);padding:9px 14px;border-radius:9px;border:1px solid var(--line2);background:var(--paper);color:var(--ink);cursor:pointer;transition:background .15s,border-color .15s}
+button:hover{border-color:var(--ink)}
+button.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+button.preset.on{background:var(--accent-bg);border-color:var(--accent);color:var(--accent)}
+button:disabled{opacity:.45;cursor:default}
+.desc{min-height:24px;color:var(--muted);font-size:14.5px;margin:2px 0 6px}
+.inputs{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;margin:12px 0 4px}
+.field{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.field input{width:92px;font:500 18px/1 var(--mono);padding:9px 10px;border-radius:9px;border:2px solid var(--line2);background:var(--bg);color:var(--ink);text-align:center}
+.field input:focus{outline:none;border-color:var(--accent)}
+.field i,.eq i,.sym{font:italic 600 1.15em var(--serif);text-transform:none;letter-spacing:0;color:var(--pt-dark)}
+.field.start input{border-color:var(--pt-soft)}
+.field.slide input{border-color:var(--pt)}
+.eq{font:500 20px/1 var(--mono);padding:10px 14px;background:var(--bg);border-radius:10px;border:1px solid var(--line)}
+.err{color:var(--bad);font-size:14px;min-height:20px;margin:2px 0}
+.readout{margin-top:12px;padding:12px 14px;background:var(--bg);border-radius:10px;border:1px solid var(--line);font-size:15px;line-height:1.55;min-height:48px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:12px;font-size:13px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{display:inline-block;width:14px;height:14px;border-radius:50%}
+.sw.pos{background:var(--pos)}.sw.neg{border:2.4px solid var(--neg)}
+.sw.x{position:relative;background:var(--pos);opacity:.45}.sw.x::after{content:'✕';position:absolute;inset:-1px 0 0 0;color:var(--neg);font:700 13px/1 var(--sans);text-align:center}
+.sw.posnew{background:var(--pos-new);border:1.5px solid var(--pos)}.sw.negnew{border:2.4px solid var(--neg-new)}.sw.pt{background:var(--pt)}
+.sw.mv{width:22px;height:4px;border-radius:2px;background:var(--pt-soft)}
+.sw.rl{width:22px;height:0;border-top:2px dashed var(--ink);border-radius:0;opacity:.7}
+.feedback{margin-top:10px;padding:12px 14px;border-radius:10px;font-size:15px;line-height:1.55;display:none}
+.feedback.ok{display:block;background:var(--ok-bg);color:var(--ok)}
+.feedback.bad{display:block;background:var(--bad-bg);color:var(--bad)}
+.feedback.info{display:block;background:var(--accent-bg);color:var(--accent)}
+.score{margin-left:auto;font:600 14px/1 var(--mono);color:var(--muted)}
+
+/* ===================== Footer nav ===================== */
+.pager{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:56px 0 18px;font-family:var(--sans)}
+.pager a,.pager div{display:block;padding:16px 18px;border:1px solid var(--line);border-radius:14px;background:var(--paper);color:var(--ink);text-decoration:none}
+.pager small{display:block;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.pager .next{text-align:right}
+.pager .soon{opacity:.6}
+.meta{font:13px/1.6 var(--sans);color:var(--muted);text-align:center;padding:10px 0 50px}
+
+@media (max-width:720px){
+  body{font-size:17px}
+  h1{font-size:34px}
+  .dek{font-size:18px}
+  h2{font-size:24px}
+  .card{padding:14px 12px 16px;border-radius:14px}
+  .crumbs{display:none}
+  svg.nl{min-width:640px}
+}
+</style>
+<meta name="mm-site" content="1">
+<link rel="stylesheet" href="../shared/nav.css">
+</head>
+<body>
+<style>
+/* ===================== Page-specific styles (9.B.3) ===================== */
+/* event A = blue, event B = yellow, both = green (blue + yellow mix), neither = grey */
+:root{ --a:#2F78D0; --a-bg:#D6E6FA; --b:#C98F00; --b-bg:#FBEBB8; --ab:#2E9E5B; --ab-bg:#CDEBD8; --nn:#8A8F98; --nn-bg:#ECEDEF; --red:#D8443A; --yel:#E0A800; --gold:#C99700; }
+@media (prefers-color-scheme:dark){ :root{ --a:#7FB0F0; --a-bg:#1E3552; --b:#FFD24D; --b-bg:#4A3D12; --ab:#6FD08F; --ab-bg:#1C4430; --nn:#9AA0AA; --nn-bg:#2A2D33; --red:#F07B72; --yel:#FFD24D; --gold:#FFD24D; } }
+.ka{color:var(--a);font-weight:700}.kb{color:var(--b);font-weight:700}.kab{color:var(--ab);font-weight:700}
+svg{user-select:none;-webkit-user-select:none}
+svg text.lab,svg text.labS{fill:var(--ink)}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:10px;align-items:start}
+.split svg{width:100%;height:auto;display:block;background:var(--bg);border:1px solid var(--line);border-radius:10px}
+.mainsplit{display:grid;grid-template-columns:600px 1fr;gap:16px;margin-top:10px;align-items:start}
+.mainsplit svg{width:100%;height:auto;display:block;background:var(--bg);border:1px solid var(--line);border-radius:10px}
+.panel{border:1px solid var(--line);border-radius:10px;background:var(--bg);padding:12px 14px;font-size:15px;line-height:1.65}
+.panel .big{font:700 21px var(--mono);margin:6px 0}
+.chips{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:8px 0 0}
+.chips .lbl{font:600 12px var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-right:4px;min-width:44px}
+.chips button.on{background:var(--accent-bg);border-color:var(--accent);color:var(--accent)}
+.chips.ca button.on{background:var(--a-bg);border-color:var(--a);color:var(--ink)}
+.chips.cb button.on{background:var(--b-bg);border-color:var(--b);color:var(--ink)}
+table.tw{border-collapse:collapse;font:14px var(--mono);margin:8px 0}
+table.tw th,table.tw td{border:1px solid var(--line);padding:5px 10px;text-align:center}
+table.tw th{font:600 13px var(--sans);background:var(--paper)}
+table.tw td.on-a{background:var(--a-bg)}table.tw td.on-b{background:var(--b-bg)}table.tw td.on-ab{background:var(--ab-bg)}table.tw td.on-n{background:var(--nn-bg)}
+table.tw td.on-a,table.tw td.on-b,table.tw td.on-ab,table.tw td.on-n{font-weight:700;outline:2px solid var(--ink);outline-offset:-2px}
+table.tw td.tot{color:var(--muted)}
+.tsplit{display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:start;margin-top:10px}
+pre.code{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:12px 16px;overflow-x:auto;font:13.5px/1.6 var(--mono);margin:10px 0 16px}
+.traps{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:8px}
+.traps .t{border:1px solid var(--line);border-radius:10px;background:var(--bg);padding:10px}
+.traps .t h4{margin:0 0 4px;font:600 15px var(--sans)}
+.traps .t p{margin:6px 0 0;font-size:14.5px;line-height:1.5;color:var(--muted)}
+.traps svg{width:100%;height:auto;display:block}
+.qtext{font:17px/1.55 var(--serif);margin:4px 0 10px}
+.choice{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 0}.choice button{min-width:110px;text-align:left}
+.choice button.right{border-color:var(--ok);background:var(--ok-bg);color:var(--ok)}.choice button.wrong{border-color:var(--bad);background:var(--bad-bg);color:var(--bad)}
+</style>
+
+<!-- ===================== Top bar ===================== -->
+<div class="topbar"><div class="topbar-in">
+  <span class="brand">Math<b>Mastery</b></span>
+  <span class="crumbs">Chapter 9 · Probability › Basics</span>
+  <span class="pid">9.B.3</span>
+</div></div>
+
+<!-- ===================== Hero ===================== -->
+<header class="prose hero">
+  <div class="kicker">Chapter 9 · Probability</div>
+  <h1>And, Or, Not: Combining Events</h1>
+  <p class="dek">“Not”, “or” and “and” build new events out of old ones. See them as cells lighting up on a grid and as overlapping regions, and learn when to subtract, when to add and when to multiply.</p>
+  <div class="tiers" aria-label="Tier">
+    <span class="tier on">Basics <small>you are here</small></span>
+    <span class="tier">Undergraduate</span>
+    <span class="tier">Masters</span>
+  </div>
+  <div class="goals">
+    <h3>On this page</h3>
+    <ul>
+      <li>Build <b>compound events</b> with <b>and</b>, <b>or</b> and <b>not</b>, and picture them in a <b>Venn diagram</b> and a <b>two-way table</b>.</li>
+      <li>Use the <b>addition rule</b>: P(A or B) = P(A) + P(B) − P(A and B), and its shortcut for <b>mutually exclusive</b> events.</li>
+      <li>Use the <b>multiplication rule</b> for <b>independent events</b>, and spot <b>dependent</b> ones where it fails.</li>
+      <li>Use the <b>complement</b> to find the chance of <b>at least one</b>.</li>
+    </ul>
+  </div>
+</header>
+
+<main>
+<!-- ===================== §1 ===================== -->
+<section class="prose">
+  <h2><span class="n">1</span>New events from old ones</h2>
+  <p>Roll two dice. “The first die is 6” is an event, call it <span class="ka">A</span>. “The second die is 6” is another, <span class="kb">B</span>. Joining them with small words makes new events, called <b>compound events</b>:</p>
+  <ul>
+    <li><b>A and B</b>: both happen (double six). The outcomes in both events form their <b>overlap</b>, also called the <b>intersection</b>.</li>
+    <li><b>A or B</b>: at least one of them happens. In maths “or” is always the <b>inclusive or</b>: A only, B only, <em>or both</em>. All the outcomes together form the <b>union</b>.</li>
+    <li><b>not A</b>: A doesn’t happen. That’s the <b>complement</b> from 9.B.1. <b>Neither</b> means not A and not B.</li>
+  </ul>
+  <p>When outcomes are equally likely, each compound event is still a count, favourable ÷ total. In the grid below, cells in <span class="ka">A</span> only are blue, cells in <span class="kb">B</span> only are yellow, and cells in both are <span class="kab">green</span>, the mix of the two. Pick what to show, and the cells in that event stay bright.</p>
+</section>
+<section class="wide">
+  <div class="card" id="grid">
+    <div class="card-h"><span class="tag">Explore</span><h3>Light up the grid</h3>
+      <span class="sub">Every cell is one equally likely outcome. Choose events A and B, then what to show. Press Play to watch “A or B” being counted.</span></div>
+    <div class="row" id="gPresets"></div>
+    <div class="desc" id="gDesc"></div>
+    <div class="chips ca" id="gA"></div>
+    <div class="chips cb" id="gB"></div>
+    <div class="chips" id="gOps"></div>
+    <div class="row" style="margin-top:8px"><button class="primary" id="gPlay">Play: count A or B</button><button id="gReset">Reset</button></div>
+    <div class="mainsplit"><svg id="gG" viewBox="0 0 600 400" role="img" aria-label="Grid of outcomes"></svg><div class="panel" id="gPanel"></div></div>
+    <div class="readout" id="gOut"></div>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--a-bg);border:2px solid var(--a)"></i><span>in A only</span></span>
+      <span><i class="sw" style="background:var(--b-bg);border:2px solid var(--b)"></i><span>in B only</span></span>
+      <span><i class="sw" style="background:var(--ab-bg);border:2px solid var(--ab)"></i><span>in both A and B</span></span>
+      <span><i class="sw" style="background:var(--bg);border:2px solid var(--line)"></i><span>in neither</span></span>
+      <span><i class="sw" style="background:var(--ink)"></i><span>outline: in the event shown</span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §2 ===================== -->
+<section class="prose">
+  <h2><span class="n">2</span>“Or”: add, then subtract the overlap</h2>
+  <p>To count “first die is 6 <em>or</em> second die is 6”, you might add: 6 outcomes in A plus 6 in B makes 12. But double six is in both lists, so it was counted twice. Take it away once: 6 + 6 − 1 = 11 outcomes, and P = 11/36. Press Play above to watch this happen. Dividing every count by the total gives the <b>addition rule</b>:</p>
+  <div class="math">\[ P(A \text{ or } B) = P(A) + P(B) - P(A \text{ and } B). \]</div>
+  <p>Sometimes there is no overlap: a card can’t be both red and a club. Events that can’t happen together are <b>mutually exclusive</b> (or <b>disjoint</b>). Their circles in a Venn diagram don’t touch, nothing is counted twice, and the rule shrinks to plain adding: P(red or club) = ½ + ¼ = ¾.</p>
+
+  <h2><span class="n">3</span>“And”: multiply, if one doesn’t affect the other</h2>
+  <p>Flip a coin and roll a die. Half the time the coin shows heads, and in ⅙ of <em>those</em> times the die shows 6, so heads-and-six happens in ½ of ⅙ = 1/12 of all tries. That works because the coin can’t influence the die: the events are <b>independent</b>. For independent events there’s a <b>multiplication rule</b>:</p>
+  <div class="math">\[ \text{independent:}\quad P(A \text{ and } B) = P(A) \times P(B). \]</div>
+  <p>Many events are <b>dependent</b>: one changes the chance of the other. A traffic jam makes a late bus much more likely, and windy days are more often rainy. Multiplying their probabilities gives the wrong answer. In the explorer below, the <b>area square</b> shows the difference at a glance: the square has area 1, each region’s area is its probability, and the yellow B band runs straight across the square exactly when A and B are independent.</p>
+</section>
+<section class="wide">
+  <div class="card" id="venn">
+    <div class="card-h"><span class="tag">Explore</span><h3>Venn diagram, area square and table</h3>
+      <span class="sub">Three pictures of the same two events. Type the probabilities (or, for a survey, the counts), then choose what to shade. All three views shade together.</span></div>
+    <div class="row" id="vPresets"></div>
+    <div class="desc" id="vDesc"></div>
+    <div class="inputs">
+      <label class="field" id="vNf"><span>Total <i>N</i></span><input id="vN" type="text" inputmode="decimal" autocomplete="off"></label>
+      <label class="field"><span id="vAl">P(A)</span><input id="vA" type="text" inputmode="decimal" autocomplete="off" style="border-color:var(--a)"></label>
+      <label class="field"><span id="vBl">P(B)</span><input id="vB" type="text" inputmode="decimal" autocomplete="off" style="border-color:var(--b)"></label>
+      <label class="field"><span id="vABl">P(A and B)</span><input id="vAB" type="text" inputmode="decimal" autocomplete="off" style="border-color:var(--ab);width:120px"></label>
+      <div class="eq" id="vNames" style="padding-bottom:10px"></div>
+    </div>
+    <div class="err" id="vErr"></div>
+    <div class="chips" id="vOps"></div>
+    <div class="split"><svg id="vV" viewBox="0 0 470 300" role="img" aria-label="Venn diagram"></svg><svg id="vS" viewBox="0 0 470 300" role="img" aria-label="Area square"></svg></div>
+    <div class="tsplit"><div id="vT"></div><div class="readout" id="vOut" style="margin-top:8px"></div></div>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--a)"></i><span>A only</span></span>
+      <span><i class="sw" style="background:var(--b)"></i><span>B only</span></span>
+      <span><i class="sw" style="background:var(--ab)"></i><span>A and B</span></span>
+      <span><i class="sw" style="background:var(--nn)"></i><span>neither</span></span>
+      <span><span>Bright = shaded (in the event shown). Venn circles are not to scale; areas in the square are.</span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §4 ===================== -->
+<section class="prose">
+  <h2><span class="n">4</span>Two-way tables</h2>
+  <p>Survey results are often given as a <b>two-way table</b>: one event down the side, the other across the top, and totals at the ends. The four inside cells are the same four regions as in the Venn diagram: A and B, A only, B only, neither. Pick “Sport and music” above: 18 of 30 students play a sport, 12 play music, and 7 do both. So 18 + 12 − 7 = 23 do at least one, and 30 − 23 = 7 do neither. The table makes the “subtract the overlap” step hard to forget, because each student sits in exactly one inside cell.</p>
+  <p>Real survey data is rarely <em>exactly</em> independent. In the survey, P(sport) × P(music) = 0.6 × 0.4 = 0.24, while P(both) = 7/30 ≈ 0.233. That’s close, so the two are nearly independent. Whether a small gap like that is real or just chance is a question for statistics (chapter 10).</p>
+
+  <h2><span class="n">5</span>“Not” and the “at least one” trick</h2>
+  <p>Roll a die four times. What’s the chance of <b>at least one</b> six? “At least one” covers many cases: one six, two sixes, three, four. Its complement is just one case: <em>no</em> sixes. Each roll misses 6 with probability ⅚, and the rolls are independent, so</p>
+  <div class="math">\[ P(\text{at least one six}) = 1 - P(\text{no sixes}) = 1 - \left(\tfrac56\right)^4 \approx 0.518. \]</div>
+  <p>Slightly better than even. Adding ⅙ four times gives ⅔, which is far too big, and with six rolls it would claim a six is certain. A quick simulation settles the argument:</p>
+  <pre class="code"><code>import random                                          # Python's random-number tools
+trials = 100_000                                       # how many times to repeat the experiment
+hits = 0                                               # experiments with at least one six
+for _ in range(trials):                                # repeat the experiment many times
+    rolls = [random.randint(1, 6) for _ in range(4)]   # roll a fair die four times
+    if 6 in rolls:                                     # did any of the four rolls show a 6?
+        hits += 1                                      # yes: count this experiment
+print(hits / trials)                                   # simulated chance: about 0.518
+print(1 - (5/6)**4)                                    # the complement rule: 0.5177...
+print(4 * (1/6))                                       # the adding mistake: 0.667, far too big</code></pre>
+  <p>The same trick explains why backups work. If each of three independent alarm clocks fails 1 time in 10, the chance all three fail is 0.1³ = 0.001, so at least one rings with probability 0.999.</p>
+
+  <h2><span class="n">6</span>Traps</h2>
+</section>
+<section class="wide">
+  <div class="card" id="traps">
+    <div class="card-h"><span class="tag">Compare</span><h3>Easy to get wrong</h3></div>
+    <div class="traps">
+      <div class="t"><h4 style="color:var(--bad)">✕ Counting the overlap twice</h4><svg id="tr1" viewBox="0 0 300 220"></svg><p>P(heart or face card) is not 13/52 + 12/52. The jack, queen and king of hearts are in both groups. Subtract them once: 13 + 12 − 3 = 22, so P = 22/52.</p></div>
+      <div class="t"><h4 style="color:var(--bad)">✕ Adding for “at least one”</h4><svg id="tr2" viewBox="0 0 300 220"></svg><p>Adding ⅙ per roll says 6 rolls make a six certain, and 7 rolls make it more than certain. The true chance, 1 − (⅚)ⁿ, creeps toward 1 but never reaches it.</p></div>
+      <div class="t"><h4 style="color:var(--bad)">✕ Multiplying dependent events</h4><svg id="tr3" viewBox="0 0 300 220"></svg><p>P(traffic jam) = 0.25 and P(bus late) = 0.2, but 0.25 × 0.2 = 0.05 is wrong: jams cause late buses, so both happen 15% of the time. Multiply only when the events are independent.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §7 ===================== -->
+<section class="prose">
+  <h2><span class="n">7</span>Now, in symbols</h2>
+  <p>Set notation from chapter 2 gives short names: <i>A</i> ∩ <i>B</i> (“A intersect B”) for A and B, <i>A</i> ∪ <i>B</i> (“A union B”) for A or B, and <i>A</i>ᶜ or <i>A</i>′ for not A. Counts use |<i>A</i>|, as in 9.B.1.</p>
+  <div class="math">\[ |A \cup B| = |A| + |B| - |A \cap B|, \qquad P(A \cup B) = P(A) + P(B) - P(A \cap B) \]</div>
+  <div class="math">\[ \text{mutually exclusive: } P(A \cap B) = 0, \quad P(A \cup B) = P(A) + P(B) \]</div>
+  <div class="math">\[ \text{independent: } P(A \cap B) = P(A)\,P(B) \]</div>
+  <div class="math">\[ P(A^{c}) = 1 - P(A), \qquad P(\text{at least one success in } n \text{ independent tries}) = 1 - (1-p)^{n} \]</div>
+  <p>Careful with the last pair of words: mutually exclusive events (with nonzero chances) are never independent. If A happens, B can’t, so knowing about A changes everything about B.</p>
+</section>
+
+<!-- ===================== §8 ===================== -->
+<section class="prose">
+  <h2><span class="n">8</span>Where this goes</h2>
+  <ul class="goes">
+    <li><b>Next:</b> 9.B.4 Conditional probability asks “what is the chance of B, given that A happened?”. In the area square, that’s the height of the yellow band inside the A column.</li>
+    <li><b>Later in this book:</b> the probability axioms and inclusion–exclusion for many events (9.U), independence of random variables (9.U), Bayes’ theorem (9.U), and the logic of AND, OR and NOT in chapter 2, where the same three words run computer circuits.</li>
+    <li><b>In the world:</b> backup systems in planes and hospitals (at least one keeps working), weather forecasts that combine rain and wind, survey reports, medical screening, and spotting when two things are linked rather than independent.</li>
+  </ul>
+</section>
+
+<!-- ===================== §9 ===================== -->
+<section class="prose">
+  <h2><span class="n">9</span>Words to know</h2>
+  <div class="vocab">
+    <div class="term"><b>Compound event</b>An event built from others with and, or, not.</div>
+    <div class="term"><b>A and B</b>Both happen. Also called the intersection, A ∩ B.</div>
+    <div class="term"><b>Overlap / intersection</b>The outcomes in both events.</div>
+    <div class="term"><b>A or B</b>At least one happens: A only, B only, or both. Also called the union, A ∪ B.</div>
+    <div class="term"><b>Inclusive or</b>“Or” that includes both. In maths, “or” always means this.</div>
+    <div class="term"><b>Union</b>All outcomes in A, in B, or in both.</div>
+    <div class="term"><b>Complement (not A)</b>Every outcome not in A. P(not A) = 1 − P(A).</div>
+    <div class="term"><b>Neither</b>Not A and not B: outside both circles.</div>
+    <div class="term"><b>Venn diagram</b>Overlapping circles inside a box (the sample space) showing how events overlap.</div>
+    <div class="term"><b>Two-way table</b>A table with one event down the side and one across the top, with totals.</div>
+    <div class="term"><b>Addition rule</b>P(A or B) = P(A) + P(B) − P(A and B).</div>
+    <div class="term"><b>Mutually exclusive (disjoint)</b>Events that can’t happen together: P(A and B) = 0.</div>
+    <div class="term"><b>Independent events</b>One doesn’t change the chance of the other.</div>
+    <div class="term"><b>Dependent events</b>One changes the chance of the other.</div>
+    <div class="term"><b>Multiplication rule</b>For independent events, P(A and B) = P(A) × P(B).</div>
+    <div class="term"><b>At least one</b>One or more. Easiest found as 1 − P(none).</div>
+    <div class="term"><b>Area square</b>A square of area 1 split into regions whose areas are the probabilities.</div>
+  </div>
+</section>
+
+<!-- ===================== Quiz ===================== -->
+<section class="prose"><h2><span class="n">10</span>Check yourself</h2>
+  <p>Four kinds of questions: not and at least one, or, and, and spot the trap. Type answers as a fraction, a decimal or a percent (1/4, 0.25 and 25% all work).</p>
+</section>
+<section class="wide">
+  <div class="card" id="quiz">
+    <div class="card-h"><span class="tag">Quiz</span><h3 id="qTitle"></h3><span class="score" id="score">Score: 0 / 0</span></div>
+    <div class="qtext" id="qText"></div>
+    <div id="qPic"></div>
+    <div class="choice" id="qChoice"></div>
+    <div class="inputs" id="qIn">
+      <label class="field"><span id="qL1">P =</span><input id="q1" type="text" autocomplete="off" style="width:160px;border-color:var(--ab)"></label>
+      <div class="row" style="margin:0"><button class="primary" id="qCheck">Check</button></div>
+    </div>
+    <div class="row" style="margin:10px 0 0"><button id="qShow">Show answer</button><button id="qNew">New question</button></div>
+    <div class="err" id="qErr"></div>
+    <div class="feedback" id="qFb" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ===================== Pager (filled in by the shared navigation) ===================== -->
+<nav class="wide">
+  <div class="pager"></div>
+  <div class="meta">9.B.3 · Prerequisites: 9.B.1 (probability, complement), 9.B.2 (counting outcomes) · Leads to: 9.B.4 (conditional probability), 9.B.5 (expected value)</div>
+</nav>
+</main>
+
+<script>
+/* =====================================================================
+   1. HELPERS (shared with the other pages)
+   ===================================================================== */
+const NS = 'http://www.w3.org/2000/svg';
+const $ = id => document.getElementById(id);
+function mk(tag, attrs, parent){                           // create an SVG element with attributes
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function txt(parent, x, y, s, cls, extra){                 // create an SVG text element
+  extra = Object.assign({}, extra || {});
+  if (extra['text-anchor']){ extra.style = (extra.style ? extra.style + ';' : '') + 'text-anchor:' + extra['text-anchor']; delete extra['text-anchor']; }
+  const t = mk('text', Object.assign({ x, y, class: cls || '' }, extra), parent);
+  t.textContent = s;
+  return t;
+}
+// round for display, use a true minus sign, never show −0
+function num(x, d){ if (d === undefined) d = 2; const r = Math.round(x * Math.pow(10, d)) / Math.pow(10, d); return r === 0 ? '0' : (r < 0 ? '−' : '') + String(Math.abs(r)); }
+const pn = x => x < 0 ? `(${num(x)})` : num(x);              // wrap negatives in brackets when substituting
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const ri = (a, b) => a + Math.floor(Math.random() * (b - a + 1));   // random whole number from a to b
+const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+function parseNum(s){                                     // integers, decimals, minus, simple fractions
+  s = String(s).trim().replace(/[−–]/g, '-').replace(/\s+/g, '');
+  if (/^-?\d+(\.\d+)?$|^-?\.\d+$/.test(s)) return parseFloat(s);
+  const m = s.match(/^(-?\d+)\/(\d+)$/);
+  if (m && +m[2] !== 0) return +m[1] / +m[2];
+  return NaN;
+}
+function selectOnFocus(ids){ ids.forEach(id => $(id).addEventListener('focus', e => e.target.select())); }
+function buttons(boxId, list, onPick){                    // a row of preset buttons; returns a function that marks one as on
+  list.forEach((p, i) => { const b = document.createElement('button'); b.className = 'preset'; b.textContent = p.n; b.onclick = () => onPick(i); $(boxId).appendChild(b); });
+  return i => [...$(boxId).children].forEach((b, j) => b.classList.toggle('on', j === i));
+}
+function svgPt(svg, ev){                                  // mouse position in the SVG's own coordinates
+  const p = svg.createSVGPoint(); p.x = ev.clientX; p.y = ev.clientY;
+  return p.matrixTransform(svg.getScreenCTM().inverse());
+}
+const svgCss = document.createElement('style');
+svgCss.textContent = `
+  .grid{stroke:var(--line);stroke-width:1}
+  .axis{stroke:var(--ink);stroke-width:1.4;opacity:.7}
+  .tl{fill:var(--muted);font:500 11.5px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:3px}
+  .lab{font:700 14px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:5px}
+  .labS{font:600 12.5px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+  .cap{fill:var(--muted);font:600 12px var(--sans);letter-spacing:.06em;paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+  .oval{fill:var(--paper);stroke:var(--line);stroke-width:1.5}
+`;
+document.head.appendChild(svgCss);
+let clipN = 0;                                            // unique clip-path ids
+
+/* ---------- axes: a coordinate grid inside an SVG, with separate x and y scales ---------- */
+function axes(svg, W, H, b, o){
+  o = o || {};
+  svg.innerHTML = '';
+  const L = o.padL ?? 44, R = o.padR ?? 16, T = o.padT ?? 16, B = o.padB ?? 30;
+  const sx = (W - L - R) / (b.x1 - b.x0), sy = (H - T - B) / (b.y1 - b.y0);   // pixels per unit
+  const X = x => L + (x - b.x0) * sx, Y = y => T + (b.y1 - y) * sy;
+  const step = (s, px) => (o.half ? [0.5, 1, 2, 5, 10, 20, 50, 100] : [1, 2, 5, 10, 20, 50, 100]).find(k => k * s >= px) || 200;   // a round step at least px pixels wide
+  const xg = o.xg || step(sx, 9), yg = o.yg || step(sy, 9);        // grid-line spacing
+  const xt = o.xt || step(sx, 34), yt = o.yt || step(sy, 26);      // tick-label spacing
+  const gGrid = mk('g', {}, svg), id = 'clp' + (++clipN);
+  const cp = mk('clipPath', { id }, svg); mk('rect', { x: L, y: T, width: W - L - R, height: H - T - B }, cp);
+  const cg = mk('g', { 'clip-path': `url(#${id})` }, svg);         // clipped layer for curves
+  const m = mk('g', {}, svg), top = mk('g', {}, svg);              // free layer, then labels on top
+  const near = (v, s) => Math.abs(v / s - Math.round(v / s)) < 1e-6;
+  for (let x = Math.ceil(b.x0 / xg) * xg; x <= b.x1 + 1e-9; x += xg) mk('line', { x1: X(x), y1: T, x2: X(x), y2: H - B, class: 'grid' }, gGrid);
+  for (let y = Math.ceil(b.y0 / yg) * yg; y <= b.y1 + 1e-9; y += yg) mk('line', { x1: L, y1: Y(y), x2: W - R, y2: Y(y), class: 'grid' }, gGrid);
+  const ay = (b.y0 <= 0 && b.y1 >= 0) ? Y(0) : H - B;              // where the x-axis is drawn
+  const ax = (b.x0 <= 0 && b.x1 >= 0) ? X(0) : L;                  // where the y-axis is drawn
+  mk('line', { x1: L, y1: ay, x2: W - R, y2: ay, class: 'axis' }, gGrid);
+  mk('line', { x1: ax, y1: T, x2: ax, y2: H - B, class: 'axis' }, gGrid);
+  const fx = o.fx || (v => num(v)), fy = o.fy || (v => num(v));
+  for (let x = Math.ceil(b.x0 / xt) * xt; x <= b.x1 + 1e-9; x += xt){
+    if (Math.abs(x) < 1e-9 && ax === X(0) && !o.zeroX) continue;
+    txt(top, X(x), ay + 16, fx(x), 'tl', { 'text-anchor': 'middle' });
+  }
+  for (let y = Math.ceil(b.y0 / yt) * yt; y <= b.y1 + 1e-9; y += yt){
+    if (Math.abs(y) < 1e-9 && ay === Y(0)) continue;
+    txt(top, ax - 6, Y(y) + 4, fy(y), 'tl', { 'text-anchor': 'end' });
+  }
+  if (o.xT) txt(top, W - R - 2, ay - 8, o.xT, 'cap', { 'text-anchor': 'end' });
+  if (o.yT) txt(top, ax + 8, T + 12, o.yT, 'cap');
+  return { svg, X, Y, sx, sy, cg, m, top, b, L, R, T, B, W, H, ay, ax,
+           inv: (px, py) => [b.x0 + (px - L) / sx, b.y1 - (py - T) / sy] };
+}
+function dPath(P, pts){ return pts.map((p, i) => (i ? 'L' : 'M') + P.X(p[0]).toFixed(1) + ' ' + P.Y(p[1]).toFixed(1)).join(''); }
+// sample y = f(x) from a to b, breaking the curve where f is undefined or jumps
+function sample(f, a, b, n, ok){
+  const out = []; let cur = [];
+  for (let i = 0; i <= n; i++){
+    const x = a + (b - a) * i / n, y = (ok && !ok(x)) ? NaN : f(x);
+    if (!isFinite(y)){ if (cur.length > 1) out.push(cur); cur = []; continue; }
+    if (cur.length && Math.abs(y - cur[cur.length - 1][1]) > 40){ if (cur.length > 1) out.push(cur); cur = []; }
+    cur.push([x, y]);
+  }
+  if (cur.length > 1) out.push(cur);
+  return out;
+}
+function dot(P, x, y, col, o){                              // a filled (or open) point
+  o = o || {};
+  return mk('circle', { cx: P.X(x), cy: P.Y(y), r: o.r || 6, style: o.open ? `fill:var(--bg);stroke:${col};stroke-width:2.6` : `fill:${col};stroke:var(--bg);stroke-width:1.5` }, o.layer || P.m);
+}
+function vline(P, x, col, o){ o = o || {}; return mk('line', { x1: P.X(x), y1: o.y0 !== undefined ? P.Y(o.y0) : P.T, x2: P.X(x), y2: o.y1 !== undefined ? P.Y(o.y1) : P.H - P.B, style: `stroke:${col};stroke-width:${o.w || 2.5};${o.dash ? 'stroke-dasharray:' + o.dash : ''}` }, o.layer || P.m); }
+function hline(P, y, col, o){ o = o || {}; return mk('line', { x1: o.x0 !== undefined ? P.X(o.x0) : P.L, y1: P.Y(y), x2: o.x1 !== undefined ? P.X(o.x1) : P.W - P.R, y2: P.Y(y), style: `stroke:${col};stroke-width:${o.w || 2.5};${o.dash ? 'stroke-dasharray:' + o.dash : ''}` }, o.layer || P.m); }
+function arrowHead(g, x1, y1, x2, y2, col, size){            // a small triangle at (x2, y2) pointing away from (x1, y1)
+  const a = Math.atan2(y2 - y1, x2 - x1), s = size || 9;
+  const p = [[x2, y2], [x2 - s * Math.cos(a - 0.4), y2 - s * Math.sin(a - 0.4)], [x2 - s * Math.cos(a + 0.4), y2 - s * Math.sin(a + 0.4)]];
+  mk('polygon', { points: p.map(q => q.join(',')).join(' '), style: `fill:${col}` }, g);
+}
+
+/* ---------- arrow diagram: inputs in a left oval, outputs in a right oval, one arrow per pair ---------- */
+// pairs: [[in, out], ...]; o.ins / o.outs give the order (defaults: sorted values); o.fmt formats a value;
+// o.hl = input to highlight (others fade); o.lit = [in, out] arrow drawn thick; o.dead = inputs shown crossed out
+function arrowDiagram(svg, W, H, pairs, o){
+  o = o || {};
+  svg.innerHTML = '';
+  const fmt = o.fmt || (v => typeof v === 'number' ? num(v) : v);
+  const key = v => String(v);
+  const uniq = arr => { const s = new Set(), r = []; arr.forEach(v => { if (!s.has(key(v))){ s.add(key(v)); r.push(v); } }); return r; };
+  const srt = arr => arr.every(v => typeof v === 'number') ? arr.slice().sort((a, b) => a - b) : arr;
+  const ins = o.ins || srt(uniq(pairs.map(p => p[0]))), outs = o.outs || srt(uniq(pairs.map(p => p[1])));
+  const top = o.top ?? 34, bot = H - (o.bottom ?? 14);
+  const lx = W * 0.25, rx = W * 0.75, ow = Math.min(W * 0.17, 90);
+  mk('ellipse', { cx: lx, cy: (top + bot) / 2, rx: ow, ry: (bot - top) / 2, class: 'oval' }, svg);
+  mk('ellipse', { cx: rx, cy: (top + bot) / 2, rx: ow, ry: (bot - top) / 2, class: 'oval' }, svg);
+  txt(svg, lx, 18, o.inLab || 'INPUTS x', 'cap', { 'text-anchor': 'middle', style: 'fill:var(--in)' });
+  txt(svg, rx, 18, o.outLab || 'OUTPUTS y', 'cap', { 'text-anchor': 'middle', style: 'fill:var(--out)' });
+  const ypos = (i, n) => n === 1 ? (top + bot) / 2 : top + 26 + (bot - top - 52) * i / (n - 1);
+  const iy = {}, oy = {};
+  ins.forEach((v, i) => iy[key(v)] = ypos(i, ins.length));
+  outs.forEach((v, i) => oy[key(v)] = ypos(i, outs.length));
+  const cnt = {}; pairs.forEach(p => cnt[key(p[0])] = (cnt[key(p[0])] || 0) + 1);   // how many outputs each input has
+  const dx = Math.min(ow * 0.45, 34), fs = ins.length > 9 || outs.length > 9 ? 'labS' : 'lab';
+  const ga = mk('g', {}, svg), gd = mk('g', {}, svg);
+  pairs.forEach(p => {                                     // arrows
+    const k = key(p[0]), bad = cnt[k] > 1, faded = o.hl !== undefined && o.hl !== null && key(o.hl) !== k;
+    const lit = o.lit && key(o.lit[0]) === k && key(o.lit[1]) === key(p[1]);
+    const col = bad ? 'var(--no)' : 'var(--pt)';
+    const x1 = lx + dx + 8, y1 = iy[k], x2 = rx - dx - 9, y2 = oy[key(p[1])];
+    mk('line', { x1, y1, x2, y2, style: `stroke:${col};stroke-width:${lit ? 4.5 : 2.4};opacity:${faded ? .18 : 1}` }, ga);
+    if (!faded) arrowHead(ga, x1, y1, x2, y2, col, lit ? 12 : 10);
+  });
+  ins.forEach(v => {                                       // input dots and labels
+    const k = key(v), dead = o.dead && o.dead.map(key).includes(k), bad = cnt[k] > 1;
+    const faded = o.hl !== undefined && o.hl !== null && key(o.hl) !== k;
+    const col = dead ? 'var(--muted)' : bad ? 'var(--no)' : 'var(--in)';
+    mk('circle', { cx: lx + dx, cy: iy[k], r: o.hl !== undefined && key(o.hl) === k ? 8 : 6, style: `fill:${col};opacity:${faded ? .35 : 1}` }, gd);
+    const t = txt(gd, lx + dx - 12, iy[k] + 5, fmt(v), fs, { 'text-anchor': 'end', style: `fill:${col};opacity:${faded ? .45 : 1}${dead ? ';text-decoration:line-through' : ''}` });
+  });
+  outs.forEach(v => {                                      // output dots and labels
+    const k = key(v);
+    mk('circle', { cx: rx - dx, cy: oy[k], r: 6, style: 'fill:var(--out)' }, gd);
+    txt(gd, rx - dx + 12, oy[k] + 5, fmt(v), fs, { style: 'fill:var(--out)' });
+  });
+  return { ins, outs };
+}
+// group pairs by input: Map from input to its list of distinct outputs
+function byInput(pairs){
+  const m = new Map();
+  pairs.forEach(([x, y]) => { const k = String(x); if (!m.has(k)) m.set(k, { x, ys: [] }); const e = m.get(k); if (!e.ys.some(v => String(v) === String(y))) e.ys.push(y); });
+  return m;
+}
+const setStr = arr => '{' + arr.map(v => num(v)).join(', ') + '}';
+
+
+/* ---------- helpers for zoomable graphs (any scale) ---------- */
+const niceStep = raw => { const p = Math.pow(10, Math.floor(Math.log10(raw))), m = raw / p; return (m <= 1 ? 1 : m <= 2 ? 2 : m <= 5 ? 5 : 10) * p; };
+const decs = st => Math.max(0, -Math.floor(Math.log10(st) + 1e-9));
+function fmt(v, st){ const d = decs(st); const r = Number(v.toFixed(d)); return r === 0 ? '0' : (r < 0 ? '−' : '') + Math.abs(r).toFixed(d); }
+// a coordinate system with any box (tiny or huge), labelled ticks, a clipped layer for curves
+function ax2(svg, W, H, b, o){
+  o = o || {}; svg.innerHTML = '';
+  const L = o.padL ?? 52, R = o.padR ?? 14, T = o.padT ?? 14, B = o.padB ?? 28;
+  const sx = (W - L - R) / (b.x1 - b.x0), sy = (H - T - B) / (b.y1 - b.y0), X = x => L + (x - b.x0) * sx, Y = y => T + (b.y1 - y) * sy;
+  const gx = niceStep((b.x1 - b.x0) / 8), gy = niceStep((b.y1 - b.y0) / 7);
+  const g = mk('g', {}, svg), id = 'c' + Math.random().toString(36).slice(2);
+  const cp = mk('clipPath', { id }, svg); mk('rect', { x: L, y: T, width: W - L - R, height: H - T - B }, cp);
+  const cg = mk('g', { 'clip-path': `url(#${id})` }, svg), m = mk('g', {}, svg), top = mk('g', {}, svg);
+  for (let v = Math.ceil(b.x0 / gx) * gx; v <= b.x1 + gx * 1e-6; v += gx){ mk('line', { x1: X(v), y1: T, x2: X(v), y2: H - B, class: 'grid' }, g); txt(top, X(v), H - B + 16, o.fx ? o.fx(v) : fmt(v, gx), 'tl', { 'text-anchor': 'middle' }); }
+  for (let v = Math.ceil(b.y0 / gy) * gy; v <= b.y1 + gy * 1e-6; v += gy){ mk('line', { x1: L, y1: Y(v), x2: W - R, y2: Y(v), class: 'grid' }, g); txt(top, L - 6, Y(v) + 4, fmt(v, gy), 'tl', { 'text-anchor': 'end' }); }
+  if (b.y0 < 0 && b.y1 > 0) mk('line', { x1: L, y1: Y(0), x2: W - R, y2: Y(0), class: 'axis' }, g);
+  if (b.x0 < 0 && b.x1 > 0) mk('line', { x1: X(0), y1: T, x2: X(0), y2: H - B, class: 'axis' }, g);
+  mk('rect', { x: L, y: T, width: W - L - R, height: H - T - B, style: 'fill:none;stroke:var(--line2)' }, g);
+  if (o.xT) txt(top, W - R - 4, H - B - 6, o.xT, 'cap', { 'text-anchor': 'end' });
+  if (o.yT) txt(top, L + 6, T + 14, o.yT, 'cap');
+  return { X, Y, sx, sy, cg, m, top, b, L, R, T, B, W, H, inv: (px, py) => [b.x0 + (px - L) / sx, b.y1 - (py - T) / sy] };
+}
+// sample a curve across the box, breaking at undefined points, at listed jumps, and at big leaps
+function curve(P, f, o){
+  o = o || {}; const b = P.b, n = o.n || 900, brk = o.breaks || [], polys = []; let cur = [];
+  const lim = (b.y1 - b.y0) * 3;
+  for (let i = 0; i <= n; i++){
+    const x = b.x0 + (b.x1 - b.x0) * i / n, y = f(x);
+    const crossed = cur.length && brk.some(c => (cur[cur.length - 1][0] - c) * (x - c) <= 0);
+    if (!isFinite(y) || crossed || (cur.length && Math.abs(y - cur[cur.length - 1][1]) > lim)){ if (cur.length > 1) polys.push(cur); cur = []; if (!isFinite(y)) continue; }
+    cur.push([x, Math.max(b.y0 - lim, Math.min(b.y1 + lim, y))]);
+  }
+  if (cur.length > 1) polys.push(cur);
+  polys.forEach(p => mk('path', { d: dPath(P, p), style: `fill:none;stroke:${o.col || 'var(--cv)'};stroke-width:${o.w || 3};${o.dash ? 'stroke-dasharray:' + o.dash : ''}` }, P.cg));
+}
+const holeAt = (P, x, y, col) => mk('circle', { cx: P.X(x), cy: P.Y(y), r: 6, style: `fill:var(--bg);stroke:${col || 'var(--cv)'};stroke-width:2.5` }, P.m);
+const dotAt = (P, x, y, col, r) => mk('circle', { cx: P.X(x), cy: P.Y(y), r: r || 6, style: `fill:${col || 'var(--cv)'};stroke:var(--bg);stroke-width:1.5` }, P.m);
+const sig = v => !isFinite(v) ? (v > 0 ? '∞' : v < 0 ? '−∞' : 'undefined') : Math.abs(v) >= 1e5 ? v.toExponential(2).replace('-', '−') : num(v, 6);
+function parseLim(s){
+  const t = String(s).trim().toLowerCase().replace(/\s+/g, '').replace(/[−–]/g, '-');
+  if (/^(dne|none|doesnotexist|noLimit|nolimit|no)$/i.test(t)) return 'DNE';
+  if (/^\+?(inf|infinity|∞|oo)$/.test(t)) return Infinity;
+  if (/^-(inf|infinity|∞|oo)$/.test(t)) return -Infinity;
+  return parseNum(s);
+}
+
+const minus = s => String(s).replace(/(^|[\s(,=>→\/·+×])-(\d)/g, '$1−$2');
+const r4 = v => Number((Math.abs(v) < 1e-300 ? 0 : v).toPrecision(5));
+const SUP = k => String(k).replace(/-/g, '⁻').replace(/\d/g, d => '⁰¹²³⁴⁵⁶⁷⁸⁹'[d]);
+const sci = v => { if (v === 0) return '0'; const a = Math.abs(v); if (a >= 1e-3 && a < 1e7) return minus(String(r4(v))); let e = Math.floor(Math.log10(a)); if (Math.abs(v / Math.pow(10, e)) >= 9.995) e++; const m = v / Math.pow(10, e); return minus(`${m.toFixed(2)}×10${SUP(e)}`); };
+const gcd = (a, b) => b ? gcd(b, a % b) : Math.abs(a);
+function frc(x){ if (Math.abs(x - Math.round(x)) < 1e-9) return num(Math.round(x)); for (let d = 2; d <= 10000; d++){ const n = x * d; if (Math.abs(n - Math.round(n)) < 1e-9 * d && gcd(Math.round(n), d) === 1) return (x < 0 ? '−' : '') + Math.abs(Math.round(n)) + '/' + d; } return sci(x); }
+// a readable value: whole numbers with commas, otherwise 4–5 significant figures
+const big = v => Math.abs(v) >= 1e7 ? sci(v) : Math.abs(v - Math.round(v)) < 1e-9 ? Math.round(v).toLocaleString().replace('-', '−') : minus(String(r4(v)));
+
+const pct = p => num(p * 100, 1) + '%';                                    // 0.25 -> "25%"
+const dec = p => num(p, 3);                                                // 0.16666 -> "0.167"
+const fr = (k, n) => { const g = gcd(k, n) || 1; return n === 0 ? '0' : k === 0 ? '0' : k === n ? '1' : `${k / g}/${n / g}`; };   // reduced fraction
+function word(p){                                                          // the word on the probability scale
+  if (p <= 1e-12) return 'impossible'; if (p >= 1 - 1e-12) return 'certain';
+  if (Math.abs(p - 0.5) < 1e-12) return 'even chance'; return p < 0.5 ? 'unlikely' : 'likely';
+}
+// parse a probability typed as a fraction, a decimal or a percent
+function parseP(s){ s = String(s).trim().replace(/−/g, '-'); if (/%$/.test(s)){ const v = parseNum(s.slice(0, -1)); return v / 100; } return parseNum(s); }
+
+// the probability scale: a 0-to-1 bar with the five words and a marker at p
+function scaleBar(svg, W, p, o){
+  o = o || {}; svg.innerHTML = ''; const L = 18, R = W - 18, y = 34, X = v => L + v * (R - L);
+  mk('rect', { x: L, y: y - 7, width: R - L, height: 14, rx: 7, style: 'fill:var(--paper);stroke:var(--line)' }, svg);
+  mk('rect', { x: L, y: y - 7, width: (R - L) / 2, height: 14, rx: 7, style: 'fill:var(--line);opacity:.5' }, svg);
+  [[0, '0'], [0.25, '¼'], [0.5, '½'], [0.75, '¾'], [1, '1']].forEach(([v, l]) => { mk('line', { x1: X(v), y1: y - 10, x2: X(v), y2: y + 10, style: 'stroke:var(--muted);stroke-width:1.3' }, svg); txt(svg, X(v), y + 24, l, 'tl', { 'text-anchor': 'middle' }); });
+  [[0, 'impossible', 'start'], [0.25, 'unlikely', 'middle'], [0.5, 'even', 'middle'], [0.75, 'likely', 'middle'], [1, 'certain', 'end']].forEach(([v, l, a]) => txt(svg, X(v) + (a === 'start' ? -4 : a === 'end' ? 4 : 0), y + 44, l, 'cap', { 'text-anchor': a }));
+  if (p !== null && isFinite(p)){
+    const x = X(clamp(p, 0, 1));
+    mk('path', { d: `M${x} ${y - 8} l-8 -14 h16 z`, style: `fill:${o.col || 'var(--hit)'}` }, svg);
+    txt(svg, clamp(x, L + 14, R - 14), y - 25, o.lab || '', 'labS', { 'text-anchor': 'middle', style: `fill:${o.col || 'var(--hit)'}` });
+  }
+}
+
+/* ---------- small pictures: die faces, coins, cards, marbles ---------- */
+const PIPS = { 1: [[0, 0]], 2: [[-1, -1], [1, 1]], 3: [[-1, -1], [0, 0], [1, 1]], 4: [[-1, -1], [1, -1], [-1, 1], [1, 1]], 5: [[-1, -1], [1, -1], [0, 0], [-1, 1], [1, 1]], 6: [[-1, -1], [1, -1], [-1, 0], [1, 0], [-1, 1], [1, 1]] };
+function dieFace(g, cx, cy, s, n, o){                  // a die face of side s centred at (cx, cy)
+  o = o || {};
+  mk('rect', { x: cx - s / 2, y: cy - s / 2, width: s, height: s, rx: s * 0.18, style: `fill:${o.fill || 'var(--paper)'};stroke:${o.stroke || 'var(--ink)'};stroke-width:${o.sw || 1.6}` }, g);
+  (PIPS[n] || []).forEach(([a, b]) => mk('circle', { cx: cx + a * s * 0.26, cy: cy + b * s * 0.26, r: s * 0.085, style: `fill:${o.pip || 'var(--ink)'}` }, g));
+}
+function coin(g, cx, cy, r, face, o){                  // a coin showing H or T
+  o = o || {};
+  mk('circle', { cx, cy, r, style: `fill:${face === 'H' ? 'var(--yel)' : 'var(--paper)'};stroke:${o.stroke || 'var(--gold)'};stroke-width:${o.sw || 2}` }, g);
+  txt(g, cx, cy + r * 0.36, face, '', { 'text-anchor': 'middle', style: `font:700 ${r}px var(--sans);fill:var(--ink)` });
+}
+function marble(g, cx, cy, r, col){ mk('circle', { cx, cy, r, style: `fill:${col};stroke:var(--ink);stroke-width:1;opacity:.95` }, g); mk('circle', { cx: cx - r * 0.35, cy: cy - r * 0.35, r: r * 0.25, style: 'fill:#fff;opacity:.55' }, g); }
+const SUITS = ['♠', '♥', '♦', '♣'], RANKS = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+function card(g, x, y, w, h, r, s){                    // a playing card: rank r (0-12) of suit s (0-3)
+  const col = s === 1 || s === 2 ? 'var(--red)' : 'var(--ink)';
+  mk('rect', { x, y, width: w, height: h, rx: 4, style: 'fill:var(--paper);stroke:var(--muted);stroke-width:1' }, g);
+  txt(g, x + w / 2, y + h * 0.42, RANKS[r], '', { 'text-anchor': 'middle', style: `font:700 ${w * 0.34}px var(--sans);fill:${col}` });
+  txt(g, x + w / 2, y + h * 0.82, SUITS[s], '', { 'text-anchor': 'middle', style: `font:${w * 0.38}px var(--sans);fill:${col}` });
+}
+// a spinner: sectors [{p, col, l}], highlighted indices hi, optional pointer angle (radians, 0 = up, clockwise)
+function spinner(g, cx, cy, r, secs, o){
+  o = o || {}; let a = 0;
+  secs.forEach((s, i) => {
+    const a2 = a + s.p * 2 * Math.PI, P = t => [cx + r * Math.sin(t), cy - r * Math.cos(t)], [x1, y1] = P(a), [x2, y2] = P(a2);
+    const big = a2 - a > Math.PI ? 1 : 0, on = o.hi ? o.hi.has(i) : false;
+    const path = mk('path', { d: s.p >= 0.9999 ? `M${cx - r} ${cy}a${r} ${r} 0 1 0 ${2 * r} 0a${r} ${r} 0 1 0 ${-2 * r} 0` : `M${cx} ${cy}L${x1} ${y1}A${r} ${r} 0 ${big} 1 ${x2} ${y2}Z`, style: `fill:${s.col};stroke:${on ? 'var(--hit)' : 'var(--bg)'};stroke-width:${on ? 4 : 2};opacity:${o.hi && !on ? 0.3 : 0.9}` }, g);
+    if (o.click) { path.classList.add('cellg'); path.addEventListener('click', () => o.click(i)); }
+    const m = (a + a2) / 2, lr = r * (s.p < 0.2 ? 0.72 : 0.6);
+    if (s.l) txt(g, cx + lr * Math.sin(m), cy - lr * Math.cos(m) + 6, s.l, 'lab', { 'text-anchor': 'middle', style: 'pointer-events:none' });
+    a = a2;
+  });
+  if (o.ptr !== undefined && o.ptr !== null){
+    const t = o.ptr, px = cx + r * 0.92 * Math.sin(t), py = cy - r * 0.92 * Math.cos(t);
+    mk('line', { x1: cx, y1: cy, x2: px, y2: py, style: 'stroke:var(--ink);stroke-width:5;stroke-linecap:round' }, g);
+    arrowHead(g, cx, cy, px + 6 * Math.sin(t), py - 6 * Math.cos(t), 'var(--ink)', 12);
+    mk('circle', { cx, cy, r: 8, style: 'fill:var(--ink)' }, g);
+  }
+}
+
+const range = n => [...Array(n).keys()];                                    // [0, 1, ..., n-1]
+const fracK = (k, n) => fr(k, n) === `${k}/${n}` ? `${k}/${n}` : `${k}/${n} = ${fr(k, n)}`;   // "6/36 = 1/6"
+// a probability shown neatly: short decimals as decimals, others as a fraction (1/12)
+const fmtP = p => Math.abs(p * 1000 - Math.round(p * 1000)) < 1e-6 ? num(p, 3) : frc(p);
+// which of the four regions an outcome is in: both, A only, B only, neither
+const region = (inA, inB) => inA && inB ? 'ab' : inA ? 'a' : inB ? 'b' : 'n';
+// which regions each "show" option keeps bright
+const OPS = [
+  { k: 'A', n: 'A', on: ['ab', 'a'] }, { k: 'B', n: 'B', on: ['ab', 'b'] },
+  { k: 'and', n: 'A and B', on: ['ab'] }, { k: 'or', n: 'A or B', on: ['a', 'ab', 'b'] },
+  { k: 'notA', n: 'not A', on: ['b', 'n'] }, { k: 'neither', n: 'neither', on: ['n'] },
+  { k: 'one', n: 'exactly one', on: ['a', 'b'] }
+];
+const RCOL = { a: 'var(--a)', b: 'var(--b)', ab: 'var(--ab)', n: 'var(--nn)' };            // strong colours
+const RBG = { a: 'var(--a-bg)', b: 'var(--b-bg)', ab: 'var(--ab-bg)', n: 'var(--bg)' };    // light tints for grid cells
+// a row of chip buttons with a label; returns a function that marks one as on
+function chipRow(boxId, label, names, onPick){
+  const box = $(boxId); box.innerHTML = `<span class="lbl">${label}</span>`;
+  names.forEach((n, i) => { const b = document.createElement('button'); b.innerHTML = n; b.onclick = () => onPick(i); box.appendChild(b); });
+  return i => [...box.querySelectorAll('button')].forEach((b, j) => b.classList.toggle('on', j === i));
+}
+// the two-way table: v = {ab, a, b, n} region values, tot = {A, nA, B, nB, all}, on = regions to highlight, f = formatter
+function twTable(v, tot, nameA, nameB, on, f){
+  const td = r => `<td class="${on.includes(r) ? 'on-' + r : ''}">${f(v[r])}</td>`;
+  return `<table class="tw"><tr><th></th><th><span class="kb">B</span>${nameB ? ': ' + nameB : ''}</th><th>not B</th><th>Total</th></tr>
+    <tr><th><span class="ka">A</span>${nameA ? ': ' + nameA : ''}</th>${td('ab')}${td('a')}<td class="tot">${f(tot.A)}</td></tr>
+    <tr><th>not A</th>${td('b')}${td('n')}<td class="tot">${f(tot.nA)}</td></tr>
+    <tr><th>Total</th><td class="tot">${f(tot.B)}</td><td class="tot">${f(tot.nB)}</td><td class="tot">${f(tot.all)}</td></tr></table>`;
+}
+
+/* =====================================================================
+   2. LIGHT UP THE GRID (equally likely outcomes)
+   ===================================================================== */
+// --- outcome lists for each preset ---
+const diceOuts = () => { const o = []; for (let a = 1; a <= 6; a++) for (let b = 1; b <= 6; b++) o.push({ a, b, row: a - 1, col: b - 1 }); return o; };
+const cardOuts = () => { const o = []; for (let s = 0; s < 4; s++) for (let r = 0; r < 13; r++) o.push({ s, r, row: s, col: r }); return o; };
+const coinDieOuts = () => { const o = []; ['H', 'T'].forEach((h, i) => { for (let d = 1; d <= 6; d++) o.push({ h, d, row: i, col: d - 1 }); }); return o; };
+const RAIN = [2, 3, 7, 8, 12, 15, 16, 19, 22, 23, 27, 28], WIND = [3, 8, 9, 15, 16, 21, 23, 28, 29];   // a made-up June
+const juneOuts = () => range(30).map(i => { const day = i + 1; return { day, row: Math.floor(i / 7), col: i % 7, rain: RAIN.includes(day), wind: WIND.includes(day), we: i % 7 >= 5 }; });
+const NAMES = ['Ava', 'Ben', 'Chen', 'Dev', 'Eli', 'Fay', 'Gus', 'Hana', 'Ira', 'Jo', 'Kai', 'Lena', 'Max', 'Nia', 'Omar', 'Pia', 'Quin', 'Rosa', 'Sam', 'Tia', 'Uma', 'Vic', 'Wes', 'Xia', 'Yara', 'Zed', 'Amir', 'Bea', 'Cole', 'Dina'];
+const SPORT = [0, 1, 2, 4, 5, 7, 9, 10, 13, 14, 15, 18, 20, 21, 24, 25, 28, 29], MUSIC = [1, 4, 6, 9, 11, 14, 17, 20, 22, 25, 27, 29], PET = [0, 3, 4, 7, 8, 11, 12, 15, 16, 19, 20, 23, 24, 27, 28];
+const classOuts = () => NAMES.map((nm, i) => ({ nm, row: Math.floor(i / 6), col: i % 6, sport: SPORT.includes(i), music: MUSIC.includes(i), pet: PET.includes(i) }));
+
+// --- presets: outcomes, layout, how to draw one cell, and the events on offer ---
+const GP = [
+  { n: 'Two dice', d: 'A first die and a second die: 36 equally likely pairs. Rows are the first die, columns the second.', outs: diceOuts(), rows: 6, cols: 6, h: 54,
+    rowLabs: range(6).map(i => String(i + 1)), colLabs: range(6).map(i => String(i + 1)), rowT: '1st die', colT: '2nd die →',
+    cell: (g, o, x, y, w, h, fill) => { dieFace(g, x + w / 2 - 16, y + h / 2, 24, o.a, { fill, sw: 1.2 }); dieFace(g, x + w / 2 + 16, y + h / 2, 24, o.b, { fill, sw: 1.2 }); },
+    evs: [['first die is 6', o => o.a === 6], ['second die is 6', o => o.b === 6], ['a total of 7', o => o.a + o.b === 7], ['doubles', o => o.a === o.b],
+          ['a total of 10 or more', o => o.a + o.b >= 10], ['first die is even', o => o.a % 2 === 0], ['second die is 1 or 2', o => o.b <= 2]], A: 0, B: 1 },
+  { n: 'Deck of cards', d: 'One card from a shuffled 52-card deck. Rows are the four suits, columns the thirteen ranks.', outs: cardOuts(), rows: 4, cols: 13, h: 66,
+    cell: (g, o, x, y, w, h) => { const col = o.s === 1 || o.s === 2 ? 'var(--red)' : 'var(--ink)';
+      txt(g, x + w / 2, y + h * 0.45, RANKS[o.r], '', { 'text-anchor': 'middle', style: `font:700 15px var(--sans);fill:${col}` });
+      txt(g, x + w / 2, y + h * 0.8, SUITS[o.s], '', { 'text-anchor': 'middle', style: `font:17px var(--sans);fill:${col}` }); },
+    evs: [['a heart', o => o.s === 1], ['a red card', o => o.s === 1 || o.s === 2], ['a face card (J, Q, K)', o => o.r >= 10], ['a king', o => o.r === 12],
+          ['an ace', o => o.r === 0], ['a club', o => o.s === 3], ['a number card 2–5', o => o.r >= 1 && o.r <= 4], ['a spade', o => o.s === 0]], A: 0, B: 2 },
+  { n: 'Coin and die', d: 'Flip a coin and roll a die: 12 equally likely results. The coin can’t affect the die.', outs: coinDieOuts(), rows: 2, cols: 6, h: 74,
+    rowLabs: ['H', 'T'], colLabs: range(6).map(i => String(i + 1)), rowT: 'coin', colT: 'die →',
+    cell: (g, o, x, y, w, h, fill) => { coin(g, x + w / 2 - 18, y + h / 2, 14, o.h); dieFace(g, x + w / 2 + 16, y + h / 2, 26, o.d, { fill, sw: 1.2 }); },
+    evs: [['heads', o => o.h === 'H'], ['a six', o => o.d === 6], ['an even number', o => o.d % 2 === 0], ['tails', o => o.h === 'T'], ['a number above 4', o => o.d > 4]], A: 0, B: 1 },
+  { n: 'A month of weather', d: 'A made-up June: pick one of its 30 days at random. Each day is marked rain, wind, both or neither.', outs: juneOuts(), rows: 5, cols: 7, h: 58,
+    colLabs: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+    cell: (g, o, x, y, w, h) => { txt(g, x + 8, y + 18, String(o.day), '', { style: 'font:700 14px var(--mono);fill:var(--ink)' });
+      const tags = [o.rain ? 'rain' : '', o.wind ? 'wind' : ''].filter(Boolean).join(' · ');
+      txt(g, x + w / 2, y + h - 10, tags, '', { 'text-anchor': 'middle', style: 'font:600 11.5px var(--sans);fill:var(--muted)' }); },
+    evs: [['a rainy day', o => o.rain], ['a windy day', o => o.wind], ['a weekend day', o => o.we], ['a dry day', o => !o.rain]], A: 0, B: 1 },
+  { n: 'Class survey', d: 'A class of 30 students; pick one at random. Each answered: do you play a sport? play music? have a pet?', outs: classOuts(), rows: 5, cols: 6, h: 62,
+    cell: (g, o, x, y, w, h) => { txt(g, x + w / 2, y + 20, o.nm, '', { 'text-anchor': 'middle', style: 'font:600 14px var(--sans);fill:var(--ink)' });
+      txt(g, x + w / 2, y + 38, [o.sport ? 'sport' : '', o.music ? 'music' : ''].filter(Boolean).join(' · '), '', { 'text-anchor': 'middle', style: 'font:500 11px var(--sans);fill:var(--muted)' });
+      txt(g, x + w / 2, y + 53, o.pet ? 'pet' : '', '', { 'text-anchor': 'middle', style: 'font:500 11px var(--sans);fill:var(--muted)' }); },
+    evs: [['plays a sport', o => o.sport], ['plays music', o => o.music], ['has a pet', o => o.pet], ['plays no sport', o => !o.sport]], A: 0, B: 1 }
+];
+
+const GS = { i: 0, A: 0, B: 1, op: 3, step: null, timer: 0 };                  // op = index into OPS (3 = "A or B")
+let gAMark, gBMark;
+const gMark = buttons('gPresets', GP, i => { gStop(); GS.i = i; gMark(i); $('gDesc').textContent = GP[i].d; GS.A = GP[i].A; GS.B = GP[i].B; gChips(); gDraw(); });
+const gOpMark = chipRow('gOps', 'Show', OPS.map(o => o.n), k => { gStop(); GS.op = k; gOpMark(k); gDraw(); });
+function gChips(){                                                          // rebuild the A and B chip rows for this preset
+  const names = GP[GS.i].evs.map(e => e[0]);
+  gAMark = chipRow('gA', 'A =', names, k => { gStop(); GS.A = k; gAMark(k); gDraw(); });
+  gBMark = chipRow('gB', 'B =', names, k => { gStop(); GS.B = k; gBMark(k); gDraw(); });
+  gAMark(GS.A); gBMark(GS.B);
+}
+function gStop(){ clearTimeout(GS.timer); GS.timer = 0; GS.step = null; $('gPlay').textContent = 'Play: count A or B'; }
+// the counts for the current choice of A and B
+function gCounts(){
+  const p = GP[GS.i], fA = p.evs[GS.A][1], fB = p.evs[GS.B][1];
+  const c = { a: 0, b: 0, ab: 0, n: 0 };
+  p.outs.forEach(o => c[region(fA(o), fB(o))]++);
+  return { N: p.outs.length, nA: c.a + c.ab, nB: c.b + c.ab, nAB: c.ab, c };
+}
+function gDraw(){
+  const p = GP[GS.i], svg = $('gG'); svg.innerHTML = '';
+  const L = p.rowLabs ? 46 : 8, T = p.rowT ? 44 : p.colLabs ? 30 : 8, w = (592 - L) / p.cols, h = p.h, H = T + p.rows * h + 8;
+  svg.setAttribute('viewBox', `0 0 600 ${H}`);
+  const fA = p.evs[GS.A][1], fB = p.evs[GS.B][1], on = OPS[GS.op].on, st = GS.step;
+  // column and row labels, plus what they mean
+  if (p.colLabs) p.colLabs.forEach((s, c) => txt(svg, L + (c + 0.5) * w, T - 9, s, 'tl', { 'text-anchor': 'middle' }));
+  if (p.rowLabs) p.rowLabs.forEach((s, r) => txt(svg, L - 12, T + (r + 0.5) * h + 4, s, 'tl', { 'text-anchor': 'end' }));
+  if (p.rowT) { txt(svg, 4, 14, p.rowT + ' ↓', 'cap', {}); txt(svg, 596, 14, p.colT, 'cap', { 'text-anchor': 'end' }); }
+  // the cells: colour = which region it's in; dim = not in the event shown (unless Play is counting)
+  p.outs.forEach(o => {
+    const rg = region(fA(o), fB(o)), x = L + o.col * w + 2, y = T + o.row * h + 2, cw = w - 4, ch = h - 4;
+    const lit = st !== null ? (st >= 1 && rg !== 'n' && (st >= 2 || rg !== 'b')) || st === 0 : on.includes(rg);
+    const g = mk('g', { style: `opacity:${lit ? 1 : 0.28}` }, svg);
+    mk('rect', { x, y, width: cw, height: ch, rx: 6, style: `fill:${RBG[rg]};stroke:${rg === 'n' ? 'var(--line)' : RCOL[rg]};stroke-width:${rg === 'n' ? 1 : 1.6}` }, g);
+    p.cell(g, o, x, y, cw, ch, RBG[rg]);
+    if (st === null && on.includes(rg)) mk('rect', { x: x - 1, y: y - 1, width: cw + 2, height: ch + 2, rx: 7, style: 'fill:none;stroke:var(--ink);stroke-width:2.2' }, svg);
+    // Play badges: how many times this cell has been counted so far
+    if (st !== null && st >= 1){
+      const times = (rg === 'a' || rg === 'ab' ? 1 : 0) + (st >= 2 && (rg === 'b' || rg === 'ab') ? 1 : 0);
+      if (times){
+        const bx = x + cw - 9, by = y + 9, col = rg === 'ab' && st >= 2 ? 'var(--bad)' : RCOL[rg === 'b' ? 'b' : 'a'];
+        mk('circle', { cx: bx, cy: by, r: 8.5, style: `fill:var(--bg);stroke:${col};stroke-width:2` }, svg);
+        txt(svg, bx, by + 4, String(times), '', { 'text-anchor': 'middle', style: `font:700 11px var(--mono);fill:${col}` });
+        if (rg === 'ab' && st >= 3){ mk('circle', { cx: bx, cy: by, r: 8.5, style: 'fill:var(--bg);stroke:var(--ab);stroke-width:2' }, svg); txt(svg, bx, by + 4, '1', '', { 'text-anchor': 'middle', style: 'font:700 11px var(--mono);fill:var(--ab)' });
+          txt(svg, x + 4, y + 11, '2 − 1', '', { style: 'font:700 10.5px var(--mono);fill:var(--bad);paint-order:stroke;stroke:var(--bg);stroke-width:3px' }); }
+      }
+    }
+  });
+  gPanel();
+}
+function gPanel(){
+  const p = GP[GS.i], k = gCounts(), N = k.N, nA = p.evs[GS.A][0], nB = p.evs[GS.B][0], op = OPS[GS.op], st = GS.step;
+  const nOr = k.nA + k.nB - k.nAB, val = { A: k.nA, B: k.nB, and: k.nAB, or: nOr, notA: N - k.nA, neither: N - nOr, one: nOr - k.nAB }[op.k];
+  let how = '';
+  if (op.k === 'A' || op.k === 'B') how = `Count the outcomes in ${op.k}.`;
+  if (op.k === 'and') how = `The green cells are in both. ` + (k.nAB === 0 ? 'There are none: A and B are <b>mutually exclusive</b>.' : '');
+  if (op.k === 'or') how = `|A or B| = |A| + |B| − |A and B| = ${k.nA} + ${k.nB} − ${k.nAB} = ${nOr}.` + (k.nAB ? ' The green cells were counted in A and again in B, so take them away once.' : ' No overlap, so just add.');
+  if (op.k === 'notA') how = `|not A| = ${N} − ${k.nA} = ${N - k.nA}, so P(not A) = 1 − P(A).`;
+  if (op.k === 'neither') how = `Outside A and B: ${N} − |A or B| = ${N} − ${nOr} = ${N - nOr}.`;
+  if (op.k === 'one') how = `A or B, but not both: ${nOr} − ${k.nAB} = ${nOr - k.nAB}.`;
+  // independence check on the counts: P(A)P(B) = P(A and B) exactly when nA·nB = nAB·N
+  const ind = k.nA * k.nB === k.nAB * N;
+  const indLine = k.nA === 0 || k.nB === 0 || k.nA === N || k.nB === N ? '' :
+    `<div style="margin-top:6px;font-size:14px">P(A) × P(B) = ${fr(k.nA, N)} × ${fr(k.nB, N)} = ${fr(k.nA * k.nB, N * N)}${ind ? ' = ' : ' ≠ '}P(A and B) = ${fr(k.nAB, N)}: ` +
+    (ind ? '<b>independent</b>.' : k.nAB === 0 ? '<b>dependent</b> (mutually exclusive: if A happens, B can’t).' : '<b>dependent</b>.') + '</div>';
+  const tot = { A: k.nA, nA: N - k.nA, B: k.nB, nB: N - k.nB, all: N };
+  $('gPanel').innerHTML = `<div><span class="ka">A</span> = ${nA}</div><div><span class="kb">B</span> = ${nB}</div>
+    <div class="big">P(${op.n}) = ${fracK(val, N)}</div><div style="color:var(--muted);font-size:14px">≈ ${dec(val / N)} = ${pct(val / N)}</div>
+    <div style="margin-top:6px">${how}</div>${twTable(k.c, tot, '', '', st === null ? op.on : ['a', 'ab', 'b'], String)}${indLine}`;
+  // the readout narrates Play, otherwise sums up
+  const steps = ['Count “A or B”: watch each cell get counted.',
+    `Step 1, count A: ${k.nA} cells, each gets a 1.`,
+    `Step 2, add B: ${k.nB} more, ${k.nA} + ${k.nB} = ${k.nA + k.nB}. But the ${k.nAB} green cell${k.nAB === 1 ? '' : 's'} now ${k.nAB === 1 ? 'has' : 'have'} been counted twice.`,
+    `Step 3, subtract the overlap once: ${k.nA + k.nB} − ${k.nAB} = ${nOr}. So P(A or B) = ${fracK(nOr, N)}.`];
+  $('gOut').innerHTML = st !== null ? steps[st] : `${op.n}: ${val} of the ${N} equally likely outcomes, so P = ${fracK(val, N)} ≈ ${dec(val / N)} = ${pct(val / N)}.`;
+}
+// Play: step through the counting of "A or B"
+function gNext(){
+  if (GS.step === 3){ GS.timer = 0; $('gPlay').textContent = 'Play: count A or B'; return; }
+  GS.step++; gDraw(); GS.timer = setTimeout(gNext, 1400);
+}
+$('gPlay').onclick = () => {
+  if (GS.timer){ clearTimeout(GS.timer); GS.timer = 0; $('gPlay').textContent = 'Play: count A or B'; return; }
+  GS.op = 3; gOpMark(3); if (GS.step === null || GS.step === 3) GS.step = -1;
+  $('gPlay').textContent = 'Pause'; gNext();
+};
+$('gReset').onclick = () => { gStop(); gDraw(); };
+
+/* =====================================================================
+   3. VENN DIAGRAM, AREA SQUARE AND TWO-WAY TABLE
+   ===================================================================== */
+const VP = [
+  { n: 'Rain and wind', d: 'On a day like tomorrow: P(rain) = 0.3, P(wind) = 0.4, and both happen 20% of the time. Windy days bring rain.', A: 'rain', B: 'wind', v: [0.3, 0.4, 0.2] },
+  { n: 'Sport and music', d: 'A class of 30: 18 play a sport, 12 play music, 7 do both. Pick a student at random.', A: 'sport', B: 'music', N: 30, v: [18, 12, 7] },
+  { n: 'Coin and die', d: 'Heads on a coin and a six on a die. The coin can’t affect the die: independent.', A: 'heads', B: 'six', v: [1 / 2, 1 / 6, 1 / 12], t: ['1/2', '1/6', '1/12'] },
+  { n: 'Traffic and a late bus', d: 'P(traffic jam) = 0.25, P(bus late) = 0.2, and both happen 15% of the time. Jams make the bus late.', A: 'jam', B: 'late', v: [0.25, 0.2, 0.15] },
+  { n: 'Dogs and cats', d: 'A street of 25 households: 10 have a dog, 8 have a cat, 3 have both.', A: 'dog', B: 'cat', N: 25, v: [10, 8, 3] },
+  { n: 'Alarm and bus', d: 'Your alarm fails 10% of mornings, the bus is late 20% of mornings, and the two have nothing to do with each other.', A: 'alarm fails', B: 'bus late', v: [0.1, 0.2, 0.02] },
+  { n: 'Red card or club', d: 'One card: red, or a club? No card is both, so the events are mutually exclusive.', A: 'red', B: 'club', v: [0.5, 0.25, 0] },
+  { n: 'Heart inside red', d: 'One card: red, and a heart. Every heart is red, so the heart circle sits inside the red one.', A: 'red', B: 'heart', v: [0.5, 0.25, 0.25] }
+];
+const VS = { i: 0, N: null, A: 'rain', B: 'wind', pa: 0, pb: 0, pab: 0, cnt: null, op: 3, ok: true };
+const vMark = buttons('vPresets', VP, i => vPreset(i));
+const vOpMark = chipRow('vOps', 'Shade', OPS.map(o => o.n), k => { VS.op = k; vOpMark(k); vDraw(); });
+function vPreset(i){
+  const p = VP[i]; VS.i = i; vMark(i); $('vDesc').textContent = p.d; VS.A = p.A; VS.B = p.B; VS.N = p.N || null;
+  $('vNf').style.display = VS.N ? '' : 'none';
+  if (VS.N) $('vN').value = VS.N;
+  ['vA', 'vB', 'vAB'].forEach((id, k) => $(id).value = p.t ? p.t[k] : String(p.v[k]));
+  vRead();
+}
+// read and check the typed values, then draw
+function vRead(){
+  const cnt = !!VS.N || $('vNf').style.display !== 'none';
+  $('vAl').textContent = cnt ? 'n(A)' : 'P(A)'; $('vBl').textContent = cnt ? 'n(B)' : 'P(B)'; $('vABl').textContent = cnt ? 'n(A and B)' : 'P(A and B)';
+  $('vNames').innerHTML = `<span class="ka">A</span> = ${VS.A} &nbsp; <span class="kb">B</span> = ${VS.B}`;
+  const raw = ['vA', 'vB', 'vAB'].map(id => $(id).value), vals = raw.map(cnt ? parseNum : parseP), N = cnt ? parseNum($('vN').value) : 1;
+  let err = '';
+  if (raw.some(s => s.trim() === '') || vals.some(v => !isFinite(v)) || !isFinite(N)) err = 'Fill in every box with a number.';
+  else if (cnt && (N <= 0 || N !== Math.round(N) || vals.some(v => v !== Math.round(v) || v < 0))) err = 'Counts must be whole numbers, and the total must be more than 0.';
+  else if (!cnt && vals.some(v => v < 0 || v > 1)) err = 'Probabilities run from 0 to 1.';
+  else if (cnt && vals.some(v => v > N)) err = `No count can be bigger than the total, ${N}.`;
+  else if (vals[2] > Math.min(vals[0], vals[1]) + 1e-9) err = `“A and B” can’t be bigger than A or B on its own: the overlap has to fit inside both.`;
+  else if (vals[0] + vals[1] - vals[2] > N + 1e-9) err = `A or B would be ${cnt ? num(vals[0] + vals[1] - vals[2]) + ', more than the total' : num(vals[0] + vals[1] - vals[2], 3) + ', more than 1'}: there isn’t room for that much.`;
+  $('vErr').textContent = err; VS.ok = !err;
+  if (err) return;
+  VS.cnt = cnt ? { N, a: vals[0], b: vals[1], ab: vals[2] } : null;
+  VS.pa = vals[0] / N; VS.pb = vals[1] / N; VS.pab = vals[2] / N;
+  vDraw();
+}
+['vN', 'vA', 'vB', 'vAB'].forEach(id => $(id).addEventListener('input', () => { vMark(-1); $('vDesc').textContent = 'Custom: your own numbers.'; vRead(); }));
+// region values {ab, a, b, n} as probabilities
+const vRegions = () => ({ ab: VS.pab, a: VS.pa - VS.pab, b: VS.pb - VS.pab, n: 1 - VS.pa - VS.pb + VS.pab });
+// show a value: a count in survey mode, otherwise a probability
+const vf = p => VS.cnt ? num(p * VS.cnt.N) : fmtP(p);
+function vDraw(){
+  if (!VS.ok) return;
+  const R = vRegions(), on = OPS[VS.op].on;
+  vVenn(R, on); vSquare(R, on);
+  const tot = { A: VS.pa, nA: 1 - VS.pa, B: VS.pb, nB: 1 - VS.pb, all: 1 };
+  $('vT').innerHTML = twTable(R, tot, VS.A, VS.B, on, vf);
+  vReadout(R);
+}
+// --- the Venn diagram (circles roughly sized, regions labelled exactly) ---
+function vVenn(R, on){
+  const svg = $('vV'); svg.innerHTML = '';
+  const bx = 12, by = 30, bw = 446, bh = 258, cy = 165;
+  mk('rect', { x: bx, y: by, width: bw, height: bh, rx: 8, style: 'fill:none;stroke:var(--muted);stroke-width:1.4' }, svg);
+  txt(svg, bx + 6, by - 9, 'S: everything that can happen', 'cap', {});
+  const rA = Math.max(14, 115 * Math.sqrt(VS.pa)), rB = Math.max(14, 115 * Math.sqrt(VS.pb)), mn = Math.min(VS.pa, VS.pb);
+  // distance between centres: apart if no overlap, nested if one is inside the other
+  let d;
+  if (VS.pab <= 1e-12 || mn <= 1e-12) d = rA + rB + 14;
+  else { const dMax = rA + rB - 12, dMin = Math.max(0, Math.abs(rA - rB) - 6), t = VS.pab / mn; d = dMax - t * (dMax - dMin); }
+  // the smaller circle always sits on the right: if A is inside B, B's centre moves left
+  let xA = 0, xB = d;
+  if (VS.pab >= mn - 1e-12 && mn > 1e-12 && VS.pa < VS.pb - 1e-12) xB = -d;
+  const lo = Math.min(xA - rA, xB - rB), hi = Math.max(xA + rA, xB + rB), sh = bx + bw / 2 - (lo + hi) / 2;
+  const cxA = xA + sh, cxB = xB + sh;
+  // masks and clips to cut the four regions out of the circles
+  const defs = mk('defs', {}, svg), id = 'v' + (clipN++);
+  const mask = (nm, holes) => { const m = mk('mask', { id: id + nm }, defs); mk('rect', { x: 0, y: 0, width: 470, height: 300, style: 'fill:#fff' }, m); holes.forEach(([cx, r]) => mk('circle', { cx, cy, r, style: 'fill:#000' }, m)); };
+  mask('nB', [[cxB, rB]]); mask('nA', [[cxA, rA]]); mask('nn', [[cxA, rA], [cxB, rB]]);
+  const cl = mk('clipPath', { id: id + 'cB' }, defs); mk('circle', { cx: cxB, cy, r: rB }, cl);
+  const op = rg => `fill:${RCOL[rg]};opacity:${on.includes(rg) ? 0.55 : 0.07}`;
+  mk('rect', { x: bx, y: by, width: bw, height: bh, rx: 8, mask: `url(#${id}nn)`, style: op('n') }, svg);
+  mk('circle', { cx: cxA, cy, r: rA, mask: `url(#${id}nB)`, style: op('a') }, svg);
+  mk('circle', { cx: cxB, cy, r: rB, mask: `url(#${id}nA)`, style: op('b') }, svg);
+  mk('circle', { cx: cxA, cy, r: rA, 'clip-path': `url(#${id}cB)`, style: op('ab') }, svg);
+  mk('circle', { cx: cxA, cy, r: rA, style: 'fill:none;stroke:var(--a);stroke-width:2.5' }, svg);
+  mk('circle', { cx: cxB, cy, r: rB, style: 'fill:none;stroke:var(--b);stroke-width:2.5' }, svg);
+  // circle names above each circle
+  const nested = VS.pab >= mn - 1e-12 && mn > 1e-12;
+  txt(svg, cxA - rA * 0.35, cy - rA - 8, 'A: ' + VS.A, 'labS', { 'text-anchor': 'end', style: 'fill:var(--a)' });
+  txt(svg, cxB + rB * 0.35, cy - rB - 8, 'B: ' + VS.B, 'labS', { 'text-anchor': 'start', style: 'fill:var(--b)' });
+  // region values
+  const lab = (x, y, rg) => txt(svg, x, y, vf(R[rg]), 'lab', { 'text-anchor': 'middle' });
+  const big = rA >= rB, inner = big ? { cx: cxB, r: rB } : { cx: cxA, r: rA }, outer = big ? { cx: cxA, r: rA } : { cx: cxB, r: rB };
+  if (VS.pab > 1e-12){
+    if (nested){ lab(inner.cx, cy + 5, 'ab'); lab((outer.cx - outer.r + inner.cx - inner.r) / 2, cy + 5, big ? 'a' : 'b'); }   // inner circle is on the right, so the outer-only part is on the left
+    else { lab((cxA + rA + cxB - rB) / 2, cy + 5, 'ab'); lab((cxA - rA + cxB - rB) / 2, cy + 5, 'a'); lab((cxA + rA + cxB + rB) / 2, cy + 5, 'b'); }
+  } else { lab(cxA, cy + 5, 'a'); lab(cxB, cy + 5, 'b'); txt(svg, (cxA + rA + cxB - rB) / 2, cy + 5, vf(0), 'tl', { 'text-anchor': 'middle' }); }
+  txt(svg, bx + bw - 10, by + bh - 12, 'neither: ' + vf(R.n), 'lab', { 'text-anchor': 'end' });
+}
+// --- the area square: column A has width P(A); the B band's height in each column is the share of B there ---
+function vSquare(R, on){
+  const svg = $('vS'); svg.innerHTML = '';
+  const X0 = 70, Y0 = 40, W = 330, H = 222, wA = VS.pa * W;
+  const hA = VS.pa > 1e-12 ? VS.pab / VS.pa * H : 0, hN = VS.pa < 1 - 1e-12 ? (VS.pb - VS.pab) / (1 - VS.pa) * H : 0;
+  const dashY = VS.pa > 1e-12 && VS.pa < 1 - 1e-12 ? Y0 + hA : -99;
+  const box = (x, y, w, h, rg) => {
+    let ly = y + h / 2 + 5; if (Math.abs(ly - 5 - dashY) < 11) ly = dashY + (dashY + 20 < y + h ? 18 : -8);   // dodge the dashed line
+    mk('rect', { x, y, width: Math.max(0, w), height: Math.max(0, h), style: `fill:${RCOL[rg]};opacity:${on.includes(rg) ? 0.6 : 0.1};stroke:var(--bg);stroke-width:1.5` }, svg);
+    if (w > 36 && h > 20) txt(svg, x + w / 2, ly, vf(R[rg]), 'lab', { 'text-anchor': 'middle' });
+  };
+  box(X0, Y0, wA, hA, 'ab'); box(X0, Y0 + hA, wA, H - hA, 'a'); box(X0 + wA, Y0, W - wA, hN, 'b'); box(X0 + wA, Y0 + hN, W - wA, H - hN, 'n');
+  mk('rect', { x: X0, y: Y0, width: W, height: H, style: 'fill:none;stroke:var(--ink);stroke-width:1.4' }, svg);
+  // column labels on top: widths are P(A) and P(not A)
+  if (wA > 0) txt(svg, X0 + wA / 2, Y0 - 10, 'A', 'labS', { 'text-anchor': 'middle', style: 'fill:var(--a)' });
+  if (W - wA > 0) txt(svg, X0 + wA + (W - wA) / 2, Y0 - 10, 'not A', 'labS', { 'text-anchor': 'middle', style: 'fill:var(--muted)' });
+  txt(svg, X0 - 8, Y0 + 12, 'B ↓', 'labS', { 'text-anchor': 'end', style: 'fill:var(--b)' });
+  txt(svg, X0 + W + 8, Y0 + 12, 'area 1', 'cap', {});
+  // the dashed level: where the B band sits in the A column, carried across
+  if (VS.pa > 1e-12 && VS.pa < 1 - 1e-12){
+    const same = Math.abs(hA - hN) < 0.5;
+    mk('line', { x1: X0, y1: Y0 + hA, x2: X0 + W, y2: Y0 + hA, style: `stroke:var(--ink);stroke-width:1.6;stroke-dasharray:5 4;opacity:.75` }, svg);
+    if (!same) mk('line', { x1: X0 + wA, y1: Y0 + hN, x2: X0 + W, y2: Y0 + hN, style: 'stroke:var(--b);stroke-width:2.5' }, svg);
+    txt(svg, X0 + W / 2, Y0 + H + 24, same ? 'The B band is level across: independent.' : VS.pab < 1e-12 ? 'No B at all in the A column: mutually exclusive.' : hA > hN ? 'B is taller in the A column: A makes B more likely.' : 'B is shorter in the A column: A makes B less likely.', 'cap', { 'text-anchor': 'middle' });
+  }
+}
+function vReadout(R){
+  const op = OPS[VS.op].k, c = VS.cnt, s = v => vf(v), pOr = VS.pa + VS.pb - VS.pab;
+  const tail = c ? ` That’s ${num(R2(op, R) * c.N)} of ${c.N}, so P = ${fracK(Math.round(R2(op, R) * c.N), c.N)}.` : '';
+  const N = c ? 'n' : 'P';
+  let t = {
+    A: `${N}(A) = A only + both = ${s(R.a)} + ${s(R.ab)} = ${s(VS.pa)}.`,
+    B: `${N}(B) = B only + both = ${s(R.b)} + ${s(R.ab)} = ${s(VS.pb)}.`,
+    and: `${N}(A and B) = ${s(VS.pab)}: the green overlap.`,
+    or: `${N}(A or B) = ${N}(A) + ${N}(B) − ${N}(A and B) = ${s(VS.pa)} + ${s(VS.pb)} − ${s(VS.pab)} = ${s(pOr)}.` + (VS.pab > 1e-12 ? ' Adding A and B counts the overlap twice, so take it away once.' : ' No overlap, so just add.'),
+    notA: `${N}(not A) = ${c ? c.N : 1} − ${s(VS.pa)} = ${s(1 - VS.pa)}.`,
+    neither: `${N}(neither) = ${c ? c.N : 1} − ${N}(A or B) = ${c ? c.N : 1} − ${s(pOr)} = ${s(R.n)}.`,
+    one: `${N}(exactly one) = ${N}(A or B) − ${N}(A and B) = ${s(pOr)} − ${s(VS.pab)} = ${s(R.a + R.b)}.`
+  }[op] + (c && !['A', 'B'].includes(op) ? tail : '');
+  // independence check
+  const prod = VS.pa * VS.pb, gap = Math.abs(prod - VS.pab);
+  let ind = '';
+  if (VS.pa > 1e-12 && VS.pb > 1e-12 && VS.pa < 1 - 1e-12 && VS.pb < 1 - 1e-12){
+    ind = `<br>Independence check: P(A) × P(B) = ${fmtP(VS.pa)} × ${fmtP(VS.pb)} = ${num(prod, 4)}, and P(A and B) = ${num(VS.pab, 4)}. `;
+    if (gap < 1e-9) ind += '<b>Independent</b>: knowing A happened doesn’t change the chance of B.';
+    else if (VS.pab < 1e-12) ind += '<b>Mutually exclusive</b>, so <b>dependent</b>: if A happens, B can’t.';
+    else if (gap / prod < 0.1) ind += `Close, but not exact: <b>nearly independent</b>.`;
+    else ind += `<b>Dependent</b>: when A happens, B is ${VS.pab > prod ? 'more' : 'less'} likely than usual.`;
+  }
+  $('vOut').innerHTML = t + ind;
+}
+// the probability of the shaded event
+function R2(op, R){ return OPS.find(o => o.k === op).on.reduce((s, rg) => s + R[rg], 0); }
+
+/* =====================================================================
+   4. TRAPS
+   ===================================================================== */
+function drawTraps(){
+  // 1: heart or face card on a mini deck
+  let g = $('tr1'); g.innerHTML = '';
+  const cw = 20, ch = 24, x0 = 20, y0 = 14;
+  for (let s = 0; s < 4; s++) for (let r = 0; r < 13; r++){
+    const rg = region(s === 1, r >= 10), x = x0 + r * cw, y = y0 + s * ch;
+    mk('rect', { x: x + 1, y: y + 1, width: cw - 2, height: ch - 2, rx: 3, style: `fill:${RBG[rg]};stroke:${rg === 'n' ? 'var(--line)' : RCOL[rg]};stroke-width:1.2` }, g);
+    txt(g, x + cw / 2, y + ch / 2 + 4, rg === 'ab' ? '2' : RANKS[r], '', { 'text-anchor': 'middle', style: `font:${rg === 'ab' ? 700 : 500} 10px var(--mono);fill:${rg === 'ab' ? 'var(--bad)' : s === 1 || s === 2 ? 'var(--red)' : 'var(--ink)'}` });
+  }
+  txt(g, x0 - 4, y0 + ch * 1.5 + 4, '♥', '', { 'text-anchor': 'end', style: 'font:14px var(--sans);fill:var(--red)' });
+  txt(g, x0 + 11.5 * cw, y0 + 4 * ch + 14, 'J Q K', 'tl', { 'text-anchor': 'middle' });
+  txt(g, 150, 160, '13 + 12 = 25 ✕', 'lab', { 'text-anchor': 'middle', style: 'fill:var(--bad)' });
+  txt(g, 150, 186, '13 + 12 − 3 = 22 ✓', 'lab', { 'text-anchor': 'middle', style: 'fill:var(--ok)' });
+  txt(g, 150, 208, 'the “2” cards are counted twice', 'cap', { 'text-anchor': 'middle' });
+  // 2: adding 1/6 per roll versus 1 - (5/6)^n
+  g = $('tr2'); g.innerHTML = '';
+  const L = 34, B = 186, T = 20, Wd = 254, ymax = 1.4, X = n => L + (n - 0.5) * Wd / 8, Y = v => B - v / ymax * (B - T);
+  [0, 0.5, 1].forEach(v => { mk('line', { x1: L, y1: Y(v), x2: L + Wd, y2: Y(v), class: 'grid' }, g); txt(g, L - 5, Y(v) + 4, v === 0.5 ? '½' : String(v), 'tl', { 'text-anchor': 'end' }); });
+  mk('line', { x1: L, y1: Y(1), x2: L + Wd, y2: Y(1), style: 'stroke:var(--ink);stroke-width:1.5' }, g);
+  txt(g, L + 4, Y(1) - 5, 'certain', 'cap', {});
+  for (let n = 1; n <= 8; n++){
+    const v = 1 - Math.pow(5 / 6, n);
+    mk('rect', { x: X(n) - 11, y: Y(v), width: 22, height: B - Y(v), rx: 2, style: 'fill:var(--ab);opacity:.8' }, g);
+    txt(g, X(n), B + 14, String(n), 'tl', { 'text-anchor': 'middle' });
+  }
+  mk('path', { d: range(8).map(i => (i ? 'L' : 'M') + X(i + 1) + ' ' + Y((i + 1) / 6)).join(''), style: 'fill:none;stroke:var(--bad);stroke-width:2.2;stroke-dasharray:6 4' }, g);
+  range(8).forEach(i => mk('circle', { cx: X(i + 1), cy: Y((i + 1) / 6), r: 3.5, style: 'fill:var(--bad)' }, g));
+  txt(g, X(7.6), Y(8 / 6) + 2, 'n × ⅙', 'labS', { 'text-anchor': 'end', style: 'fill:var(--bad)' });
+  txt(g, X(5), Y(0.3), '1 − (⅚)ⁿ', 'labS', { 'text-anchor': 'middle' });
+  txt(g, L + Wd / 2, 214, 'number of rolls, n', 'cap', { 'text-anchor': 'middle' });
+  // 3: traffic jam and a late bus: if independent vs the real thing
+  g = $('tr3'); g.innerHTML = '';
+  const sq = (x0, hA, hN, title, val, col) => {
+    const w = 120, h = 120, y0 = 40, wA = 0.25 * w;
+    [[x0, y0, wA, hA * h, 'ab'], [x0, y0 + hA * h, wA, h - hA * h, 'a'], [x0 + wA, y0, w - wA, hN * h, 'b'], [x0 + wA, y0 + hN * h, w - wA, h - hN * h, 'n']]
+      .forEach(([x, y, ww, hh, rg]) => mk('rect', { x, y, width: ww, height: hh, style: `fill:${RCOL[rg]};opacity:${rg === 'ab' ? 0.75 : 0.22};stroke:var(--bg);stroke-width:1` }, g));
+    mk('rect', { x: x0, y: y0, width: w, height: h, style: 'fill:none;stroke:var(--ink);stroke-width:1.2' }, g);
+    txt(g, x0 + w / 2, 26, title, 'cap', { 'text-anchor': 'middle' });
+    txt(g, x0 + wA / 2, y0 + h + 14, 'jam', 'tl', { 'text-anchor': 'middle' });
+    txt(g, x0 + w / 2, y0 + h + 40, val, 'lab', { 'text-anchor': 'middle', style: `fill:${col}` });
+  };
+  sq(20, 0.2, 0.2, 'if independent', '0.25 × 0.2 = 0.05', 'var(--bad)');
+  sq(160, 0.6, 0.05 / 0.75, 'what really happens', 'both: 0.15', 'var(--ok)');
+  txt(g, 150, 214, 'green area = P(jam and late)', 'cap', { 'text-anchor': 'middle' });
+}
+
+/* =====================================================================
+   5. QUIZ
+   ===================================================================== */
+const Q = { right: 0, total: 0 };
+let qq = null;
+const qTitles = { not: 'Not, and at least one', or: '“Or”: the addition rule', and: '“And”: independent events', trap: 'Spot the trap' };
+function shuffle(a){ for (let i = a.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+function qReset(){ ['qChoice', 'qPic'].forEach(id => $(id).innerHTML = ''); $('qFb').className = 'feedback'; $('qFb').innerHTML = ''; $('qErr').textContent = ''; $('qIn').style.display = ''; $('q1').value = ''; }
+function qScore(ok){ if (qq.counted) return; qq.counted = true; Q.total++; if (ok) Q.right++; $('score').textContent = `Score: ${Q.right} / ${Q.total}`; }
+function qFeedback(ok, html){ $('qFb').className = 'feedback ' + (ok ? 'ok' : 'bad'); $('qFb').innerHTML = (ok ? '<b>Right.</b> ' : '<b>Not quite.</b> ') + html; }
+function qChoices(list, correctIdx, explain){
+  $('qIn').style.display = 'none'; qq.correctIdx = correctIdx; qq.explainFn = explain;
+  list.forEach((c, k) => { const b = document.createElement('button'); b.innerHTML = c; b.onclick = () => { const ok = k === correctIdx; qScore(ok); [...$('qChoice').children].forEach((x, j) => { x.classList.remove('right', 'wrong'); if (j === k) x.classList.add(ok ? 'right' : 'wrong'); }); qFeedback(ok, explain(k)); }; $('qChoice').appendChild(b); });
+}
+// --- not / at least one ---
+function qNot(){
+  const c = pick([
+    () => { const n = ri(2, 5), a = 1 - Math.pow(5 / 6, n); return { s: `A fair die is rolled ${n} times. What is the probability of <b>at least one</b> six?`, a, l: 'P(at least one 6) =',
+      why: `The complement of “at least one six” is “no sixes”. Each roll misses 6 with probability 5/6, and the rolls are independent: P = 1 − (5/6)<sup>${n}</sup> ≈ ${dec(a)}.`,
+      traps: [[n / 6, `That’s adding 1/6 ${n} times, which counts the cases with two or more sixes several times.`], [Math.pow(1 / 6, n), 'That’s the chance that <b>every</b> roll is a six.'], [Math.pow(5 / 6, n), 'That’s the chance of <b>no</b> sixes. Take it away from 1.']] }; },
+    () => { const n = ri(2, 6), a = 1 - Math.pow(0.5, n); return { s: `A fair coin is flipped ${n} times. What is the probability of <b>at least one</b> head?`, a, l: 'P(at least one H) =',
+      why: `Only one result has no heads at all: all tails, with probability (1/2)<sup>${n}</sup> = 1/${Math.pow(2, n)}. So P = 1 − 1/${Math.pow(2, n)} = ${Math.pow(2, n) - 1}/${Math.pow(2, n)}.`,
+      traps: [[Math.pow(0.5, n), 'That’s the chance of <b>no</b> heads (all tails). Take it away from 1.']] }; },
+    () => { const p = pick([0.6, 0.7, 0.8]), n = 3, a = 1 - Math.pow(1 - p, n); return { s: `A basketball player makes each free throw with probability ${p}, independently. She takes ${n} shots. What is the probability she makes <b>at least one</b>?`, a, l: 'P(at least one) =',
+      why: `The complement is missing all ${n}: (1 − ${p})<sup>${n}</sup> = ${num(Math.pow(1 - p, n), 3)}. So P = 1 − ${num(Math.pow(1 - p, n), 3)} = ${num(a, 3)}.`,
+      traps: [[Math.pow(p, n), 'That’s the chance she makes <b>all three</b>.'], [Math.pow(1 - p, n), 'That’s the chance she misses all three. Take it away from 1.']] }; },
+    () => { const f = pick([0.1, 0.2, 0.05]), a = 1 - Math.pow(f, 3); return { s: `Each of 3 alarm clocks fails with probability ${f}, independently. What is the probability that <b>at least one</b> rings?`, a, l: 'P(at least one rings) =',
+      why: `The only way to oversleep is all three failing: ${f}<sup>3</sup> = ${num(Math.pow(f, 3), 6)}. So P = 1 − ${num(Math.pow(f, 3), 6)} = ${num(a, 6)}.`,
+      traps: [[Math.pow(1 - f, 3), 'That’s the chance that <b>all three</b> ring.'], [Math.pow(f, 3), 'That’s the chance all three fail. Take it away from 1.']] }; },
+    () => { const e = pick([['doubles', 6], ['a total of 7', 6], ['a total of 12', 1], ['a total of 11', 2]]); return { s: `Two fair dice are rolled. What is the probability of <b>not</b> getting ${e[0]}?`, a: 1 - e[1] / 36, l: `P(not ${e[0]}) =`,
+      why: `${e[1]} of the 36 pairs give ${e[0]}, so P(not) = 1 − ${e[1]}/36 = ${fracK(36 - e[1], 36)}.`, traps: [[e[1] / 36, 'That’s the probability of the event itself. “Not” is 1 minus it.']] }; }
+  ])();
+  Object.assign(qq, { ans: c.a, why: c.why, traps: c.traps }); $('qText').innerHTML = c.s; $('qL1').textContent = c.l;
+}
+// --- or ---
+function qOr(){
+  const t = pick(['card', 'dice', 'survey', 'prob']);
+  let s, a, aSum, aAnd, why, l = 'P(A or B) =';
+  if (t === 'card'){
+    const e = pick([['a heart', 'a face card (J, Q, K)', 13, 12, 3], ['a red card', 'a king', 26, 4, 2], ['a heart', 'an ace', 13, 4, 1], ['a club', 'a red card', 13, 26, 0], ['a spade', 'a number card from 2 to 5', 13, 16, 4], ['a face card', 'an ace', 12, 4, 0]]);
+    s = `One card is drawn from a shuffled 52-card deck. What is P(${e[0]} <b>or</b> ${e[1]})?`; a = (e[2] + e[3] - e[4]) / 52; aSum = (e[2] + e[3]) / 52; aAnd = e[4] / 52;
+    why = `${e[2]} + ${e[3]} − ${e[4]} = ${e[2] + e[3] - e[4]} cards, so P = ${fracK(e[2] + e[3] - e[4], 52)}.` + (e[4] ? ` The ${e[4]} card${e[4] > 1 ? 's' : ''} that ${e[4] > 1 ? 'are' : 'is'} both would otherwise be counted twice.` : ' No card is both: mutually exclusive, so just add.');
+    l = 'P =';
+  } else if (t === 'dice'){
+    const e = pick([['the first die is 6', 'the second die is 6', 6, 6, 1], ['doubles', 'a total of 7', 6, 6, 0], ['a total of 10 or more', 'doubles', 6, 6, 2], ['the first die is even', 'a total of 7', 18, 6, 3]]);
+    s = `Two fair dice are rolled. What is P(${e[0]} <b>or</b> ${e[1]})?`; a = (e[2] + e[3] - e[4]) / 36; aSum = (e[2] + e[3]) / 36; aAnd = e[4] / 36;
+    why = `${e[2]} + ${e[3]} − ${e[4]} = ${e[2] + e[3] - e[4]} of the 36 pairs, so P = ${fracK(e[2] + e[3] - e[4], 36)}.` + (e[4] ? ` ${e[4]} pair${e[4] > 1 ? 's are' : ' is'} in both lists.` : ' No pair is in both: mutually exclusive, so just add.');
+  } else if (t === 'survey'){
+    const N = pick([20, 25, 30, 40]); let x, y, z;
+    do { x = ri(5, N - 6); y = ri(4, N - 8); z = ri(1, Math.min(x, y) - 1); } while (x + y - z > N - 1);
+    const pair = pick([['play a sport', 'play music'], ['have a dog', 'have a cat'], ['walk to school', 'bring lunch'], ['like maths', 'like art']]);
+    s = `In a group of ${N} people, ${x} ${pair[0]}, ${y} ${pair[1]}, and ${z} ${z === 1 ? 'does' : 'do'} both. One person is picked at random. What is the probability they ${pair[0]} <b>or</b> ${pair[1]}?`;
+    a = (x + y - z) / N; aSum = (x + y) / N; aAnd = z / N; l = 'P(either or both) =';
+    why = `${x} + ${y} − ${z} = ${x + y - z} people, so P = ${fracK(x + y - z, N)}. ${z === 1 ? 'The 1 who does both was' : `The ${z} who do both were`} in both counts.`;
+  } else {
+    let pa, pb, pab; do { pa = ri(2, 6) / 10; pb = ri(2, 5) / 10; pab = ri(1, Math.round(Math.min(pa, pb) * 10) - 1) / 10; } while (pa + pb - pab > 1 || pab <= 0);
+    const ev = pick([['rain', 'wind'], ['a test in maths', 'a test in science'], ['the bus is late', 'it rains']]);
+    s = `On a given day, P(${ev[0]}) = ${pa}, P(${ev[1]}) = ${pb}, and P(both) = ${pab}. What is P(${ev[0]} <b>or</b> ${ev[1]})?`; a = pa + pb - pab; aSum = pa + pb; aAnd = pab; l = 'P(or) =';
+    why = `P = ${pa} + ${pb} − ${pab} = ${num(a, 2)}.`;
+  }
+  const traps = [[aAnd, 'That’s P(A <b>and</b> B), only the overlap. “Or” means at least one.'], [1 - a, 'That’s P(neither), the complement.']];
+  if (Math.abs(aSum - a) > 1e-9) traps.unshift([aSum, 'You added without subtracting the overlap, so the outcomes in both were counted twice.']);
+  Object.assign(qq, { ans: a, why, traps }); $('qText').innerHTML = s; $('qL1').textContent = l;
+}
+// --- and ---
+const SEP = [['a fair coin lands heads', 1 / 2, 'coin'], ['a die shows 6', 1 / 6, 'die'], ['a die shows an even number', 1 / 2, 'die'], ['a card drawn from a deck is a heart', 1 / 4, 'card'],
+  ['a spinner with 5 equal sectors, 2 of them red, lands on red', 2 / 5, 'spin'], ['your alarm fails (probability 0.1)', 0.1, 'alarm'], ['the train is late (probability 0.3)', 0.3, 'train'], ['a free-throw shooter makes her shot (probability 0.8)', 0.8, 'shot']];
+function qAnd(){
+  if (Math.random() < 0.35){
+    // decide from survey counts whether two events are independent
+    const pa = pick([0.2, 0.4, 0.5, 0.6]), pb = pick([0.1, 0.2, 0.3, 0.5]), ind = Math.random() < 0.5;
+    const nA = Math.round(pa * 100), nB = Math.round(pb * 100); let nAB = Math.round(pa * pb * 100);
+    if (!ind){ do { nAB = Math.round(pa * pb * 100) + pick([-1, 1]) * ri(3, 8); } while (nAB < 1 || nAB > Math.min(nA, nB) || nA + nB - nAB > 100); }
+    const ev = pick([['wear glasses', 'are left-handed'], ['own a bike', 'live in town'], ['were rained on', 'were late'], ['play chess', 'play an instrument']]);
+    $('qText').innerHTML = `Of 100 people, ${nA} ${ev[0]}, ${nB} ${ev[1]}, and ${nAB} do both. Are “${ev[0]}” and “${ev[1]}” independent?`;
+    const ok = nAB === Math.round(pa * pb * 100);
+    qChoices(['Independent', 'Dependent'], ok ? 0 : 1, () => `P(A) × P(B) = ${pa} × ${pb} = ${num(pa * pb, 3)}, and P(both) = ${nAB}/100 = ${num(nAB / 100, 2)}. ` + (ok ? 'They match, so <b>independent</b>.' : `They don’t match, so <b>dependent</b>: one makes the other ${nAB / 100 > pa * pb ? 'more' : 'less'} likely.`));
+    return;
+  }
+  let x, y; do { x = pick(SEP); y = pick(SEP); } while (x[2] === y[2]);
+  const a = x[1] * y[1];
+  $('qText').innerHTML = `These two things happen separately, and neither affects the other: ${x[0]}, and ${y[0]}. What is the probability that <b>both</b> happen?`;
+  $('qL1').textContent = 'P(both) =';
+  Object.assign(qq, { ans: a, why: `Independent events: multiply. ${frc(x[1])} × ${frc(y[1])} = ${frc(a)}${frc(a).includes('/') ? ' ≈ ' + dec(a) : ''}.`,
+    traps: [[x[1] + y[1], 'You added. Adding is for “or” (and even then the overlap must come off). For “and” with independent events, multiply.'], [(x[1] + y[1]) / 2, 'That’s the average of the two. “Both” is less likely than either one alone: multiply.']] });
+}
+// --- traps ---
+function qTrap(){
+  const c = pick([
+    () => ({ s: 'Two events are mutually exclusive, and each has probability 0.3. Are they independent?', ok: 'No: if one happens the other can’t, so P(both) = 0, not 0.09', bad: ['Yes: mutually exclusive means independent', 'Yes: they have nothing to do with each other', 'Can’t tell without more information'], why: 'Independent means P(A and B) = P(A) × P(B) = 0.09. But mutually exclusive events never happen together, so P(A and B) = 0. Knowing one happened tells you the other didn’t: that’s as dependent as it gets.' }),
+    () => ({ s: 'P(rain) = 0.6 and P(wind) = 0.5. Which of these can <b>not</b> be P(rain and wind)?', ok: '0.7', bad: ['0.1', '0.3', '0.5'], why: '“Both” can’t be more likely than either one alone, so P(rain and wind) ≤ 0.5. (It must also be at least 0.1, because P(rain or wind) = 0.6 + 0.5 − P(both) can’t go above 1.)' }),
+    () => ({ s: 'Sam says P(heart or king) = 13/52 + 4/52 = 17/52. What went wrong?', ok: 'The king of hearts was counted twice; the answer is 16/52', bad: ['Nothing, 17/52 is right', 'He should multiply: 13/52 × 4/52', 'He should add 1/52 for the king of hearts: 18/52'], why: 'The king of hearts is a heart and a king, so it’s in both lists. Subtract it once: 13 + 4 − 1 = 16 cards.' }),
+    () => ({ s: 'Ella rolls a die 6 times and says P(at least one six) = 6 × 1/6 = 1, so a six is certain. Is she right?', ok: 'No: it’s 1 − (5/6)⁶ ≈ 0.665', bad: ['Yes: six rolls guarantee a six', 'No: it’s (1/6)⁶', 'No: it’s 1/6, because every roll is the same'], why: 'Adding counts the cases with two or more sixes several times. Use the complement: P(no sixes) = (5/6)⁶ ≈ 0.335, so P(at least one) ≈ 0.665.' }),
+    () => ({ s: 'Which pair of events is most likely to be independent?', ok: 'Heads on a coin, and a 6 on a die', bad: ['Rain today, and a traffic jam today', 'Drawing a heart, and the same card being red', 'Being over 2 m tall, and playing basketball'], why: 'A coin can’t influence a die. Rain causes jams, every heart is red, and tall people are more likely to play basketball: all of those are dependent.' }),
+    () => ({ s: 'In maths, “A or B” includes which outcomes?', ok: 'A only, B only, and both', bad: ['A only and B only, not both', 'Only the outcomes in both', 'Neither'], why: 'Maths uses the inclusive or: at least one of them. “One but not both” is called <i>exactly one</i>.' }),
+    () => ({ s: 'P(A) = 0.5, P(B) = 0.4 and P(A and B) = 0.2. What can you say about A and B?', ok: 'They are independent, since 0.5 × 0.4 = 0.2', bad: ['They are mutually exclusive', 'They are dependent, since 0.2 is less than 0.4', 'P(A or B) = 0.9'], why: 'P(A) × P(B) = 0.2 = P(A and B), which is exactly the test for independence. They overlap, so they aren’t mutually exclusive, and P(A or B) = 0.5 + 0.4 − 0.2 = 0.7.' })
+  ])();
+  const opts = shuffle([c.ok, ...c.bad]), idx = opts.indexOf(c.ok);
+  $('qText').innerHTML = c.s; qChoices(opts, idx, () => c.why);
+}
+let lastType = null;
+function qNew(){
+  qReset();
+  let t; do { t = pick(['not', 'or', 'and', 'trap']); } while (t === lastType);
+  lastType = t; qq = { type: t, counted: false }; $('qTitle').textContent = qTitles[t];
+  ({ not: qNot, or: qOr, and: qAnd, trap: qTrap })[t]();
+}
+$('qCheck').onclick = () => {
+  $('qErr').textContent = '';
+  const raw = $('q1').value, v = parseP(raw);
+  if (raw.trim() === '' || !isFinite(v)){ $('qErr').textContent = 'Type a probability: a fraction (3/8), a decimal (0.375) or a percent (37.5%).'; return; }
+  const ok = Math.abs(v - qq.ans) < 0.0015 || (Math.abs(v - qq.ans) < 0.006 && !/\//.test(raw)); let why = qq.why;
+  if (!ok){
+    const t = (qq.traps || []).find(([x]) => isFinite(x) && Math.abs(x - qq.ans) > 1e-9 && Math.abs(v - x) < 0.0015);
+    if (t) why = t[1] + ' ' + why;
+    else if (v > 1) why = 'A probability can’t be more than 1. ' + (/%/.test(raw) ? '' : 'If you meant a percent, add the % sign. ') + why;
+  }
+  qScore(ok); qFeedback(ok, why);
+};
+$('q1').addEventListener('keydown', e => { if (e.key === 'Enter') $('qCheck').click(); });
+$('q1').addEventListener('input', () => $('qErr').textContent = '');
+$('qShow').onclick = () => {
+  qScore(false);
+  if (qq.correctIdx !== undefined){ [...$('qChoice').children].forEach((b, j) => { if (j === qq.correctIdx) b.classList.add('right'); }); qFeedback(false, qq.explainFn(qq.correctIdx)); }
+  else { $('q1').value = frc(qq.ans).length > 9 ? dec(qq.ans) : frc(qq.ans); $('qFb').className = 'feedback bad'; $('qFb').innerHTML = '<b>Answer filled in.</b> ' + qq.why; }
+};
+$('qNew').onclick = qNew;
+
+/* =====================================================================
+   6. START
+   ===================================================================== */
+selectOnFocus(['q1', 'vN', 'vA', 'vB', 'vAB']);
+$('gPresets').children[0].click(); gOpMark(GS.op);
+vOpMark(VS.op); vPreset(0);
+drawTraps();
+qNew();
+</script>
+<script src="../shared/toc.js"></script>
+<script src="../shared/nav.js"></script>
+</body></html>
