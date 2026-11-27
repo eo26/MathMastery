@@ -1,0 +1,830 @@
+<style>
+/* ===================== Page-specific styles (9.B.2) ===================== */
+/* each stage of a tree / each slot gets its own colour; the highlighted branch is orange */
+:root{ --s0:#7F77DD; --s1:#1D9E75; --s2:#3A7BD5; --s3:#B86E00; --hit:#D85A30; --hit-bg:#FBE3D9; --ghost:#b9b9b9; }
+@media (prefers-color-scheme:dark){ :root{ --s0:#AFA9EC; --s1:#5DCAA5; --s2:#7FB0F0; --s3:#FFB547; --hit:#FF9A6B; --hit-bg:#4A2A1C; --ghost:#5a5a5a; } }
+.kh{color:var(--hit);font-weight:700}.k0{color:var(--s0);font-weight:700}.k1{color:var(--s1);font-weight:700}.k2{color:var(--s2);font-weight:700}
+svg{user-select:none;-webkit-user-select:none}
+svg text.lab,svg text.labS{fill:var(--ink)}
+.node{cursor:pointer}
+.full svg{width:100%;height:auto;display:block;background:var(--bg);border:1px solid var(--line);border-radius:10px}
+.full{margin-top:10px}
+.mainsplit{display:grid;grid-template-columns:1fr 330px;gap:14px;margin-top:10px;align-items:start}
+.mainsplit svg{width:100%;height:auto;display:block;background:var(--bg);border:1px solid var(--line);border-radius:10px}
+.toggle button.on{background:var(--accent-bg);border-color:var(--accent);color:var(--accent)}
+.toggle button:disabled{opacity:.45;cursor:not-allowed}
+.field.sm input{width:64px}
+.bigpoly{font:600 17px var(--mono);margin:10px 0 0;padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);overflow-x:auto;white-space:nowrap}
+.ttab{border-collapse:collapse;font:14px var(--mono);margin-top:10px}
+.ttab th,.ttab td{border:1px solid var(--line);padding:6px 10px;text-align:center}
+.ttab th.r{color:var(--s0)}.ttab th.c{color:var(--s1)}
+.ttab td{background:var(--bg);cursor:pointer}.ttab td.on{background:var(--hit-bg);border-color:var(--hit);color:var(--hit);font-weight:700}
+.list{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;font:13px var(--mono)}
+.list span{padding:3px 8px;border:1px solid var(--line);border-radius:6px;background:var(--bg)}
+.grp{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;align-items:center;margin-top:8px;font:13px var(--mono)}
+.grp .g{font-weight:700;color:var(--hit);padding:3px 8px;border:2px solid var(--hit);border-radius:999px;background:var(--hit-bg);text-align:center}
+.grp .os{display:flex;gap:6px;flex-wrap:wrap}.grp .os span{padding:2px 7px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--muted)}
+.panel{border:1px solid var(--line);border-radius:10px;background:var(--bg);padding:12px 14px;font-size:15px;line-height:1.6}
+pre.code{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:12px 16px;overflow-x:auto;font:13.5px/1.6 var(--mono);margin:10px 0 16px}
+.traps{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:8px}
+.traps .t{border:1px solid var(--line);border-radius:10px;background:var(--bg);padding:10px}
+.traps .t h4{margin:0 0 4px;font:600 15px var(--sans)}
+.traps .t p{margin:6px 0 0;font-size:14.5px;line-height:1.5;color:var(--muted)}
+.traps svg{width:100%;height:auto;display:block}
+.qtext{font:17px/1.55 var(--serif);margin:4px 0 10px}
+.choice{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 0}.choice button{min-width:110px;font-family:var(--mono)}
+.choice button.right{border-color:var(--ok);background:var(--ok-bg);color:var(--ok)}.choice button.wrong{border-color:var(--bad);background:var(--bad-bg);color:var(--bad)}
+</style>
+
+<!-- ===================== Top bar ===================== -->
+<div class="topbar"><div class="topbar-in">
+  <span class="brand">Math<b>Mastery</b></span>
+  <span class="crumbs">Chapter 9 · Probability › Basics</span>
+  <span class="pid">9.B.2</span>
+</div></div>
+
+<!-- ===================== Hero ===================== -->
+<header class="prose hero">
+  <div class="kicker">Chapter 9 · Probability</div>
+  <h1>Counting Outcomes</h1>
+  <p class="dek">To find a probability you often need to count the outcomes, and there can be far too many to list. A tree shows why the counts multiply, and a row of slots turns that into a quick calculation for codes, line-ups and teams.</p>
+  <div class="tiers" aria-label="Tier">
+    <span class="tier on">Basics <small>you are here</small></span>
+    <span class="tier">Undergraduate</span>
+    <span class="tier">Masters</span>
+  </div>
+  <div class="goals">
+    <h3>On this page</h3>
+    <ul>
+      <li>List outcomes <b>systematically</b> with a list, a <b>two-way table</b> or a <b>tree diagram</b>.</li>
+      <li>Use the <b>multiplication principle</b>: <i>m</i> ways and then <i>n</i> ways make <i>m</i> × <i>n</i> ways.</li>
+      <li>Count codes and passwords, where symbols can repeat (<b>with repetition</b>).</li>
+      <li>Count <b>arrangements</b> where <b>order matters</b> and nothing repeats, using the <b>factorial</b> <i>n</i>!.</li>
+      <li>Count <b>combinations</b>, groups where <b>order doesn’t matter</b>, by dividing out the repeats, and meet <b>Pascal’s triangle</b>.</li>
+      <li>Turn counts into probabilities: favourable ÷ total, from 9.B.1.</li>
+    </ul>
+  </div>
+</header>
+
+<main>
+<!-- ===================== §1 ===================== -->
+<section class="prose">
+  <h2><span class="n">1</span>Listing without missing any</h2>
+  <p>You have 3 shirts and 2 pairs of pants. How many outfits? You could list them, but lists are easy to get wrong: you miss one or count one twice. The fix is to list <b>systematically</b>: take the first shirt and pair it with every pair of pants, then the second shirt, and so on.</p>
+  <p>For two choices, a <b>two-way table</b> does this automatically: shirts down the side, pants across the top, one outfit in each cell. For three or more choices, use a <b>tree diagram</b>. Each choice is a <b>stage</b>. Start from a single point, draw a branch for every option at stage 1, then from the end of every one of those branches, draw a branch for every option at stage 2, and so on. Every path from the root to a leaf is one outcome, and each appears exactly once.</p>
+</section>
+<section class="wide">
+  <div class="card" id="tree">
+    <div class="card-h"><span class="tag">Explore</span><h3>Grow a tree</h3>
+      <span class="sub">Press Play to grow the tree one stage at a time. Change how many options each stage has. Click any branch point to light up every outcome that goes through it.</span></div>
+    <div class="row" id="tPresets"></div>
+    <div class="desc" id="tDesc"></div>
+    <div class="inputs" id="tIns"></div>
+    <div class="row toggle" id="tView" style="margin-top:8px"><button class="on">Tree</button><button>Table</button><span style="flex:1"></span><button class="primary" id="tPlay">Play</button><button id="tStep">Next stage</button><button id="tReset">Reset</button></div>
+    <div class="err" id="tErr"></div>
+    <div class="bigpoly" id="tEq"></div>
+    <div class="full" id="tWrap"><svg id="tG" viewBox="0 0 960 400" role="img" aria-label="Tree diagram"></svg></div>
+    <div class="readout" id="tOut"></div>
+    <div class="legend" id="tLeg"></div>
+  </div>
+</section>
+
+<!-- ===================== §2 ===================== -->
+<section class="prose">
+  <h2><span class="n">2</span>The multiplication principle</h2>
+  <p>Look at the tree. Each of the 3 shirt branches splits into 2 pants branches: 3 × 2 = 6 paths. If each of those splits into 2 pairs of shoes, there are 6 × 2 = 12. That’s the <b>multiplication principle</b> (also called the fundamental counting principle):</p>
+  <div class="math">\[ \text{if one choice can be made in } m \text{ ways and then another in } n \text{ ways, together they can be made in } m \times n \text{ ways.} \]</div>
+  <p>It works for any number of stages, and it lets you count without drawing anything. A bike lock with 3 dials of 10 digits has 10 × 10 × 10 = 10³ = 1000 codes. Because a digit can be used again, every dial has all 10 choices: that’s counting <b>with repetition</b>. Each extra character multiplies the count again, which is why longer passwords are so much safer.</p>
+
+  <h2><span class="n">3</span>Order matters: arrangements</h2>
+  <p>Eight runners race. How many ways can gold, silver and bronze be awarded? 8 runners could win gold. Whoever wins, only 7 are left for silver, then 6 for bronze: 8 × 7 × 6 = 336. This is counting <b>without repetition</b>, because nobody can win two medals. An ordering like this is an <b>arrangement</b> (also called a permutation), and here <b>order matters</b>: Ana gold and Ben silver is a different result from Ben gold and Ana silver.</p>
+  <p>Lining up <i>all</i> of 4 friends: 4 × 3 × 2 × 1 = 24 ways. A product counting all the way down to 1 is so common it has a name, <b><i>n</i> factorial</b>, written <i>n</i>!: 4! = 24, 5! = 120, 10! = 3,628,800. Factorials grow astonishingly fast. A shuffled deck of cards can be in 52! ≈ 8 × 10⁶⁷ orders, so every proper shuffle is almost certainly an order no deck has ever been in before.</p>
+
+  <h2><span class="n">4</span>Order doesn’t matter: choosing a group</h2>
+  <p>Now choose a team of 2 from 5 friends. Counting in order gives 5 × 4 = 20, but the team {Ana, Ben} is the same as {Ben, Ana}: each team was counted twice, once for each order. So there are 20 ÷ 2 = 10 teams. A group chosen where order doesn’t matter is a <b>combination</b>. In general, count the arrangements, then divide by the number of ways to order each group, <i>k</i>!:</p>
+  <div class="math">\[ \text{3 toppings from 8: } \frac{8 \times 7 \times 6}{3 \times 2 \times 1} = \frac{336}{6} = 56. \]</div>
+  <p>This number is called “8 choose 3”. The “choose” numbers fill <b>Pascal’s triangle</b>, where each number is the sum of the two above it.</p>
+</section>
+<section class="wide">
+  <div class="card" id="slots">
+    <div class="card-h"><span class="tag">Explore</span><h3>Fill the slots</h3>
+      <span class="sub">Each box is a slot to fill, with the number of choices underneath. Press Play to fill them one by one: watch the pool shrink when nothing can repeat. For groups, see every arrangement sorted into its group.</span></div>
+    <div class="row toggle" id="xMode"><button class="on">Codes (repeats allowed)</button><button>Arrangements (order matters)</button><button>Groups (order doesn’t matter)</button></div>
+    <div class="row" id="xPresets" style="margin-top:8px"></div>
+    <div class="desc" id="xDesc"></div>
+    <div class="inputs">
+      <label class="field sm"><span id="xNL">symbols <i>n</i></span><input id="xN" type="text" inputmode="numeric" autocomplete="off" style="border-color:var(--s0)"></label>
+      <label class="field sm"><span id="xKL">slots <i>k</i></span><input id="xK" type="text" inputmode="numeric" autocomplete="off" style="border-color:var(--s1)"></label>
+      <div class="row" style="margin:0"><button id="xUse">Use these</button><button class="primary" id="xPlay">Play</button></div>
+    </div>
+    <div class="err" id="xErr"></div>
+    <div class="bigpoly" id="xEq"></div>
+    <div class="full"><svg id="xG" viewBox="0 0 960 250" role="img" aria-label="Slots"></svg></div>
+    <div class="mainsplit"><div class="panel" id="xList"></div><div class="panel" id="xSide"></div></div>
+    <div class="readout" id="xOut"></div>
+  </div>
+</section>
+
+<!-- ===================== §5 ===================== -->
+<section class="prose">
+  <h2><span class="n">5</span>From counting to probability</h2>
+  <p>Once you can count, 9.B.1’s rule works on big problems: P = favourable ÷ total. Guessing a 4-digit PIN in one try: 1/10,000. Three coins: 2 × 2 × 2 = 8 outcomes, and exactly two heads happens in 3 of them (HHT, HTH, THH), so P = 3/8. A team of 2 picked at random from 5 friends contains both Ana and Ben with probability 1/10, because that’s one team out of ten.</p>
+  <p>A computer can check a count by listing everything, which is how you test a formula:</p>
+  <pre class="code"><code>from itertools import permutations, combinations   # tools that list arrangements and groups
+friends = ['Ana', 'Ben', 'Cy', 'Dee', 'Eli']          # the 5 people to choose from
+ordered = list(permutations(friends, 2))              # every (first, second) pair: order matters
+teams = list(combinations(friends, 2))                # every pair as a group: order doesn't
+print(len(ordered), len(teams))                       # 20 10: each team was counted twice in order</code></pre>
+
+  <h2><span class="n">6</span>Traps</h2>
+</section>
+<section class="wide">
+  <div class="card" id="traps">
+    <div class="card-h"><span class="tag">Compare</span><h3>Easy to get wrong</h3></div>
+    <div class="traps">
+      <div class="t"><h4 style="color:var(--bad)">✕ Adding instead of multiplying</h4><svg id="tr1" viewBox="0 0 300 200"></svg><p>3 shirts and 2 pants is not 3 + 2 = 5 outfits. Each shirt goes with every pair of pants: 3 × 2 = 6. Add only when you pick <em>one</em> thing from either list (a shirt <em>or</em> a pair of pants: 5 ways).</p></div>
+      <div class="t"><h4 style="color:var(--bad)">✕ Counting a group twice</h4><svg id="tr2" viewBox="0 0 300 200"></svg><p>For a team, Ana-then-Ben and Ben-then-Ana are the same team. 5 × 4 = 20 counts each pair twice: there are 20 ÷ 2 = 10 teams. Ask “does order matter?” before you count.</p></div>
+      <div class="t"><h4 style="color:var(--bad)">✕ Forgetting nothing repeats</h4><svg id="tr3" viewBox="0 0 300 200"></svg><p>Gold, silver, bronze from 8 runners is not 8 × 8 × 8 = 512: that would let one runner win all three medals. Each medal leaves one fewer runner: 8 × 7 × 6 = 336.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §7 ===================== -->
+<section class="prose">
+  <h2><span class="n">7</span>Now, in symbols</h2>
+  <p>Here <i>n</i> is the number of things to choose from and <i>k</i> the number of slots, exactly as in the slots explorer.</p>
+  <div class="math">\[ \text{multiplication principle: } m \times n, \qquad \text{codes (repeats allowed): } n^k \]</div>
+  <div class="math">\[ n! = n \times (n-1) \times \cdots \times 2 \times 1, \qquad 0! = 1 \]</div>
+  <div class="math">\[ \text{arrangements (order matters): } P(n, k) = n \times (n-1) \times \cdots \times (n-k+1) = \frac{n!}{(n-k)!} \]</div>
+  <div class="math">\[ \text{groups (order doesn't matter): } \binom{n}{k} = \frac{P(n,k)}{k!} = \frac{n!}{k!\,(n-k)!}, \qquad \binom{n}{k} = \binom{n-1}{k-1} + \binom{n-1}{k} \]</div>
+</section>
+
+<!-- ===================== §8 ===================== -->
+<section class="prose">
+  <h2><span class="n">8</span>Where this goes</h2>
+  <ul class="goes">
+    <li><b>Next:</b> 9.B.3 combines events with “and”, “or” and “not”, and 9.B.4 handles “given that”. Counting gives the numbers both rely on.</li>
+    <li><b>Later in this book:</b> the binomial distribution (9.U.3), whose probabilities are built from “<i>n</i> choose <i>k</i>”; combinatorics, the pigeonhole principle and graphs (2.U.5–2.U.6); and the binomial theorem for expanding (<i>a</i> + <i>b</i>)<sup><i>n</i></sup>.</li>
+    <li><b>In the world:</b> password and PIN security, licence plates and phone numbers, lotteries, tournament schedules, genetics (combinations of genes), and the number of ways a computer program might have to search.</li>
+  </ul>
+</section>
+
+<!-- ===================== §9 ===================== -->
+<section class="prose">
+  <h2><span class="n">9</span>Words to know</h2>
+  <div class="vocab">
+    <div class="term"><b>Systematic list</b>A list made in a fixed order so nothing is missed or repeated.</div>
+    <div class="term"><b>Two-way table</b>A grid with one choice down the side and another across the top.</div>
+    <div class="term"><b>Tree diagram</b>Branches for each option at each stage; each path is one outcome.</div>
+    <div class="term"><b>Stage</b>One step of the choice: shirt, then pants, then shoes.</div>
+    <div class="term"><b>Multiplication principle</b><i>m</i> ways, then <i>n</i> ways: <i>m</i> × <i>n</i> ways in all.</div>
+    <div class="term"><b>With / without repetition</b>Whether a symbol or person can be used again.</div>
+    <div class="term"><b>Arrangement (permutation)</b>An ordering of things, where order matters.</div>
+    <div class="term"><b>Order matters</b>AB and BA count as different (a podium, a code).</div>
+    <div class="term"><b>Factorial</b><i>n</i>! = <i>n</i> × (<i>n</i> − 1) × … × 1, the number of ways to order <i>n</i> things.</div>
+    <div class="term"><b>Combination</b>A group chosen where order doesn’t matter (a team, pizza toppings).</div>
+    <div class="term"><b>n choose k</b>The number of groups of <i>k</i> from <i>n</i>, written (<i>n</i> over <i>k</i>).</div>
+    <div class="term"><b>Pascal’s triangle</b>The triangle of “choose” numbers; each is the sum of the two above.</div>
+  </div>
+</section>
+
+<!-- ===================== Quiz ===================== -->
+<section class="prose"><h2><span class="n">10</span>Check yourself</h2>
+  <p>Four kinds of questions: count with the multiplication principle, decide whether order matters, turn a count into a probability, and spot the trap.</p>
+</section>
+<section class="wide">
+  <div class="card" id="quiz">
+    <div class="card-h"><span class="tag">Quiz</span><h3 id="qTitle"></h3><span class="score" id="score">Score: 0 / 0</span></div>
+    <div class="qtext" id="qText"></div>
+    <div class="choice" id="qChoice"></div>
+    <div class="inputs" id="qIn">
+      <label class="field"><span id="qL1">Answer</span><input id="q1" type="text" autocomplete="off" style="width:170px;border-color:var(--hit)"></label>
+      <div class="row" style="margin:0"><button class="primary" id="qCheck">Check</button></div>
+    </div>
+    <div class="row" style="margin:10px 0 0"><button id="qShow">Show answer</button><button id="qNew">New question</button></div>
+    <div class="err" id="qErr"></div>
+    <div class="feedback" id="qFb" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ===================== Pager (filled in by the shared navigation) ===================== -->
+<nav class="wide">
+  <div class="pager"></div>
+  <div class="meta">9.B.2 · Prerequisites: 9.B.1 (probability), 1.B.2 (multiplication), 3.B.7 (exponents) · Leads to: 9.B.3 (combining events), 9.U.3 (binomial distribution), 2.U.5 (combinatorics)</div>
+</nav>
+</main>
+
+<script>
+/* =====================================================================
+   1. HELPERS (shared with the other pages)
+   ===================================================================== */
+const NS = 'http://www.w3.org/2000/svg';
+const $ = id => document.getElementById(id);
+function mk(tag, attrs, parent){                           // create an SVG element with attributes
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function txt(parent, x, y, s, cls, extra){                 // create an SVG text element
+  extra = Object.assign({}, extra || {});
+  if (extra['text-anchor']){ extra.style = (extra.style ? extra.style + ';' : '') + 'text-anchor:' + extra['text-anchor']; delete extra['text-anchor']; }
+  const t = mk('text', Object.assign({ x, y, class: cls || '' }, extra), parent);
+  t.textContent = s;
+  return t;
+}
+// round for display, use a true minus sign, never show −0
+function num(x, d){ if (d === undefined) d = 2; const r = Math.round(x * Math.pow(10, d)) / Math.pow(10, d); return r === 0 ? '0' : (r < 0 ? '−' : '') + String(Math.abs(r)); }
+const pn = x => x < 0 ? `(${num(x)})` : num(x);              // wrap negatives in brackets when substituting
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const ri = (a, b) => a + Math.floor(Math.random() * (b - a + 1));   // random whole number from a to b
+const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+function parseNum(s){                                     // integers, decimals, minus, simple fractions
+  s = String(s).trim().replace(/[−–]/g, '-').replace(/\s+/g, '');
+  if (/^-?\d+(\.\d+)?$|^-?\.\d+$/.test(s)) return parseFloat(s);
+  const m = s.match(/^(-?\d+)\/(\d+)$/);
+  if (m && +m[2] !== 0) return +m[1] / +m[2];
+  return NaN;
+}
+function selectOnFocus(ids){ ids.forEach(id => $(id).addEventListener('focus', e => e.target.select())); }
+function buttons(boxId, list, onPick){                    // a row of preset buttons; returns a function that marks one as on
+  list.forEach((p, i) => { const b = document.createElement('button'); b.className = 'preset'; b.textContent = p.n; b.onclick = () => onPick(i); $(boxId).appendChild(b); });
+  return i => [...$(boxId).children].forEach((b, j) => b.classList.toggle('on', j === i));
+}
+function svgPt(svg, ev){                                  // mouse position in the SVG's own coordinates
+  const p = svg.createSVGPoint(); p.x = ev.clientX; p.y = ev.clientY;
+  return p.matrixTransform(svg.getScreenCTM().inverse());
+}
+const svgCss = document.createElement('style');
+svgCss.textContent = `
+  .grid{stroke:var(--line);stroke-width:1}
+  .axis{stroke:var(--ink);stroke-width:1.4;opacity:.7}
+  .tl{fill:var(--muted);font:500 11.5px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:3px}
+  .lab{font:700 14px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:5px}
+  .labS{font:600 12.5px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+  .cap{fill:var(--muted);font:600 12px var(--sans);letter-spacing:.06em;paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+  .oval{fill:var(--paper);stroke:var(--line);stroke-width:1.5}
+`;
+document.head.appendChild(svgCss);
+let clipN = 0;                                            // unique clip-path ids
+
+/* ---------- axes: a coordinate grid inside an SVG, with separate x and y scales ---------- */
+function axes(svg, W, H, b, o){
+  o = o || {};
+  svg.innerHTML = '';
+  const L = o.padL ?? 44, R = o.padR ?? 16, T = o.padT ?? 16, B = o.padB ?? 30;
+  const sx = (W - L - R) / (b.x1 - b.x0), sy = (H - T - B) / (b.y1 - b.y0);   // pixels per unit
+  const X = x => L + (x - b.x0) * sx, Y = y => T + (b.y1 - y) * sy;
+  const step = (s, px) => (o.half ? [0.5, 1, 2, 5, 10, 20, 50, 100] : [1, 2, 5, 10, 20, 50, 100]).find(k => k * s >= px) || 200;   // a round step at least px pixels wide
+  const xg = o.xg || step(sx, 9), yg = o.yg || step(sy, 9);        // grid-line spacing
+  const xt = o.xt || step(sx, 34), yt = o.yt || step(sy, 26);      // tick-label spacing
+  const gGrid = mk('g', {}, svg), id = 'clp' + (++clipN);
+  const cp = mk('clipPath', { id }, svg); mk('rect', { x: L, y: T, width: W - L - R, height: H - T - B }, cp);
+  const cg = mk('g', { 'clip-path': `url(#${id})` }, svg);         // clipped layer for curves
+  const m = mk('g', {}, svg), top = mk('g', {}, svg);              // free layer, then labels on top
+  const near = (v, s) => Math.abs(v / s - Math.round(v / s)) < 1e-6;
+  for (let x = Math.ceil(b.x0 / xg) * xg; x <= b.x1 + 1e-9; x += xg) mk('line', { x1: X(x), y1: T, x2: X(x), y2: H - B, class: 'grid' }, gGrid);
+  for (let y = Math.ceil(b.y0 / yg) * yg; y <= b.y1 + 1e-9; y += yg) mk('line', { x1: L, y1: Y(y), x2: W - R, y2: Y(y), class: 'grid' }, gGrid);
+  const ay = (b.y0 <= 0 && b.y1 >= 0) ? Y(0) : H - B;              // where the x-axis is drawn
+  const ax = (b.x0 <= 0 && b.x1 >= 0) ? X(0) : L;                  // where the y-axis is drawn
+  mk('line', { x1: L, y1: ay, x2: W - R, y2: ay, class: 'axis' }, gGrid);
+  mk('line', { x1: ax, y1: T, x2: ax, y2: H - B, class: 'axis' }, gGrid);
+  const fx = o.fx || (v => num(v)), fy = o.fy || (v => num(v));
+  for (let x = Math.ceil(b.x0 / xt) * xt; x <= b.x1 + 1e-9; x += xt){
+    if (Math.abs(x) < 1e-9 && ax === X(0) && !o.zeroX) continue;
+    txt(top, X(x), ay + 16, fx(x), 'tl', { 'text-anchor': 'middle' });
+  }
+  for (let y = Math.ceil(b.y0 / yt) * yt; y <= b.y1 + 1e-9; y += yt){
+    if (Math.abs(y) < 1e-9 && ay === Y(0)) continue;
+    txt(top, ax - 6, Y(y) + 4, fy(y), 'tl', { 'text-anchor': 'end' });
+  }
+  if (o.xT) txt(top, W - R - 2, ay - 8, o.xT, 'cap', { 'text-anchor': 'end' });
+  if (o.yT) txt(top, ax + 8, T + 12, o.yT, 'cap');
+  return { svg, X, Y, sx, sy, cg, m, top, b, L, R, T, B, W, H, ay, ax,
+           inv: (px, py) => [b.x0 + (px - L) / sx, b.y1 - (py - T) / sy] };
+}
+function dPath(P, pts){ return pts.map((p, i) => (i ? 'L' : 'M') + P.X(p[0]).toFixed(1) + ' ' + P.Y(p[1]).toFixed(1)).join(''); }
+// sample y = f(x) from a to b, breaking the curve where f is undefined or jumps
+function sample(f, a, b, n, ok){
+  const out = []; let cur = [];
+  for (let i = 0; i <= n; i++){
+    const x = a + (b - a) * i / n, y = (ok && !ok(x)) ? NaN : f(x);
+    if (!isFinite(y)){ if (cur.length > 1) out.push(cur); cur = []; continue; }
+    if (cur.length && Math.abs(y - cur[cur.length - 1][1]) > 40){ if (cur.length > 1) out.push(cur); cur = []; }
+    cur.push([x, y]);
+  }
+  if (cur.length > 1) out.push(cur);
+  return out;
+}
+function dot(P, x, y, col, o){                              // a filled (or open) point
+  o = o || {};
+  return mk('circle', { cx: P.X(x), cy: P.Y(y), r: o.r || 6, style: o.open ? `fill:var(--bg);stroke:${col};stroke-width:2.6` : `fill:${col};stroke:var(--bg);stroke-width:1.5` }, o.layer || P.m);
+}
+function vline(P, x, col, o){ o = o || {}; return mk('line', { x1: P.X(x), y1: o.y0 !== undefined ? P.Y(o.y0) : P.T, x2: P.X(x), y2: o.y1 !== undefined ? P.Y(o.y1) : P.H - P.B, style: `stroke:${col};stroke-width:${o.w || 2.5};${o.dash ? 'stroke-dasharray:' + o.dash : ''}` }, o.layer || P.m); }
+function hline(P, y, col, o){ o = o || {}; return mk('line', { x1: o.x0 !== undefined ? P.X(o.x0) : P.L, y1: P.Y(y), x2: o.x1 !== undefined ? P.X(o.x1) : P.W - P.R, y2: P.Y(y), style: `stroke:${col};stroke-width:${o.w || 2.5};${o.dash ? 'stroke-dasharray:' + o.dash : ''}` }, o.layer || P.m); }
+function arrowHead(g, x1, y1, x2, y2, col, size){            // a small triangle at (x2, y2) pointing away from (x1, y1)
+  const a = Math.atan2(y2 - y1, x2 - x1), s = size || 9;
+  const p = [[x2, y2], [x2 - s * Math.cos(a - 0.4), y2 - s * Math.sin(a - 0.4)], [x2 - s * Math.cos(a + 0.4), y2 - s * Math.sin(a + 0.4)]];
+  mk('polygon', { points: p.map(q => q.join(',')).join(' '), style: `fill:${col}` }, g);
+}
+
+/* ---------- arrow diagram: inputs in a left oval, outputs in a right oval, one arrow per pair ---------- */
+// pairs: [[in, out], ...]; o.ins / o.outs give the order (defaults: sorted values); o.fmt formats a value;
+// o.hl = input to highlight (others fade); o.lit = [in, out] arrow drawn thick; o.dead = inputs shown crossed out
+function arrowDiagram(svg, W, H, pairs, o){
+  o = o || {};
+  svg.innerHTML = '';
+  const fmt = o.fmt || (v => typeof v === 'number' ? num(v) : v);
+  const key = v => String(v);
+  const uniq = arr => { const s = new Set(), r = []; arr.forEach(v => { if (!s.has(key(v))){ s.add(key(v)); r.push(v); } }); return r; };
+  const srt = arr => arr.every(v => typeof v === 'number') ? arr.slice().sort((a, b) => a - b) : arr;
+  const ins = o.ins || srt(uniq(pairs.map(p => p[0]))), outs = o.outs || srt(uniq(pairs.map(p => p[1])));
+  const top = o.top ?? 34, bot = H - (o.bottom ?? 14);
+  const lx = W * 0.25, rx = W * 0.75, ow = Math.min(W * 0.17, 90);
+  mk('ellipse', { cx: lx, cy: (top + bot) / 2, rx: ow, ry: (bot - top) / 2, class: 'oval' }, svg);
+  mk('ellipse', { cx: rx, cy: (top + bot) / 2, rx: ow, ry: (bot - top) / 2, class: 'oval' }, svg);
+  txt(svg, lx, 18, o.inLab || 'INPUTS x', 'cap', { 'text-anchor': 'middle', style: 'fill:var(--in)' });
+  txt(svg, rx, 18, o.outLab || 'OUTPUTS y', 'cap', { 'text-anchor': 'middle', style: 'fill:var(--out)' });
+  const ypos = (i, n) => n === 1 ? (top + bot) / 2 : top + 26 + (bot - top - 52) * i / (n - 1);
+  const iy = {}, oy = {};
+  ins.forEach((v, i) => iy[key(v)] = ypos(i, ins.length));
+  outs.forEach((v, i) => oy[key(v)] = ypos(i, outs.length));
+  const cnt = {}; pairs.forEach(p => cnt[key(p[0])] = (cnt[key(p[0])] || 0) + 1);   // how many outputs each input has
+  const dx = Math.min(ow * 0.45, 34), fs = ins.length > 9 || outs.length > 9 ? 'labS' : 'lab';
+  const ga = mk('g', {}, svg), gd = mk('g', {}, svg);
+  pairs.forEach(p => {                                     // arrows
+    const k = key(p[0]), bad = cnt[k] > 1, faded = o.hl !== undefined && o.hl !== null && key(o.hl) !== k;
+    const lit = o.lit && key(o.lit[0]) === k && key(o.lit[1]) === key(p[1]);
+    const col = bad ? 'var(--no)' : 'var(--pt)';
+    const x1 = lx + dx + 8, y1 = iy[k], x2 = rx - dx - 9, y2 = oy[key(p[1])];
+    mk('line', { x1, y1, x2, y2, style: `stroke:${col};stroke-width:${lit ? 4.5 : 2.4};opacity:${faded ? .18 : 1}` }, ga);
+    if (!faded) arrowHead(ga, x1, y1, x2, y2, col, lit ? 12 : 10);
+  });
+  ins.forEach(v => {                                       // input dots and labels
+    const k = key(v), dead = o.dead && o.dead.map(key).includes(k), bad = cnt[k] > 1;
+    const faded = o.hl !== undefined && o.hl !== null && key(o.hl) !== k;
+    const col = dead ? 'var(--muted)' : bad ? 'var(--no)' : 'var(--in)';
+    mk('circle', { cx: lx + dx, cy: iy[k], r: o.hl !== undefined && key(o.hl) === k ? 8 : 6, style: `fill:${col};opacity:${faded ? .35 : 1}` }, gd);
+    const t = txt(gd, lx + dx - 12, iy[k] + 5, fmt(v), fs, { 'text-anchor': 'end', style: `fill:${col};opacity:${faded ? .45 : 1}${dead ? ';text-decoration:line-through' : ''}` });
+  });
+  outs.forEach(v => {                                      // output dots and labels
+    const k = key(v);
+    mk('circle', { cx: rx - dx, cy: oy[k], r: 6, style: 'fill:var(--out)' }, gd);
+    txt(gd, rx - dx + 12, oy[k] + 5, fmt(v), fs, { style: 'fill:var(--out)' });
+  });
+  return { ins, outs };
+}
+// group pairs by input: Map from input to its list of distinct outputs
+function byInput(pairs){
+  const m = new Map();
+  pairs.forEach(([x, y]) => { const k = String(x); if (!m.has(k)) m.set(k, { x, ys: [] }); const e = m.get(k); if (!e.ys.some(v => String(v) === String(y))) e.ys.push(y); });
+  return m;
+}
+const setStr = arr => '{' + arr.map(v => num(v)).join(', ') + '}';
+
+
+/* ---------- helpers for zoomable graphs (any scale) ---------- */
+const niceStep = raw => { const p = Math.pow(10, Math.floor(Math.log10(raw))), m = raw / p; return (m <= 1 ? 1 : m <= 2 ? 2 : m <= 5 ? 5 : 10) * p; };
+const decs = st => Math.max(0, -Math.floor(Math.log10(st) + 1e-9));
+function fmt(v, st){ const d = decs(st); const r = Number(v.toFixed(d)); return r === 0 ? '0' : (r < 0 ? '−' : '') + Math.abs(r).toFixed(d); }
+// a coordinate system with any box (tiny or huge), labelled ticks, a clipped layer for curves
+function ax2(svg, W, H, b, o){
+  o = o || {}; svg.innerHTML = '';
+  const L = o.padL ?? 52, R = o.padR ?? 14, T = o.padT ?? 14, B = o.padB ?? 28;
+  const sx = (W - L - R) / (b.x1 - b.x0), sy = (H - T - B) / (b.y1 - b.y0), X = x => L + (x - b.x0) * sx, Y = y => T + (b.y1 - y) * sy;
+  const gx = niceStep((b.x1 - b.x0) / 8), gy = niceStep((b.y1 - b.y0) / 7);
+  const g = mk('g', {}, svg), id = 'c' + Math.random().toString(36).slice(2);
+  const cp = mk('clipPath', { id }, svg); mk('rect', { x: L, y: T, width: W - L - R, height: H - T - B }, cp);
+  const cg = mk('g', { 'clip-path': `url(#${id})` }, svg), m = mk('g', {}, svg), top = mk('g', {}, svg);
+  for (let v = Math.ceil(b.x0 / gx) * gx; v <= b.x1 + gx * 1e-6; v += gx){ mk('line', { x1: X(v), y1: T, x2: X(v), y2: H - B, class: 'grid' }, g); txt(top, X(v), H - B + 16, o.fx ? o.fx(v) : fmt(v, gx), 'tl', { 'text-anchor': 'middle' }); }
+  for (let v = Math.ceil(b.y0 / gy) * gy; v <= b.y1 + gy * 1e-6; v += gy){ mk('line', { x1: L, y1: Y(v), x2: W - R, y2: Y(v), class: 'grid' }, g); txt(top, L - 6, Y(v) + 4, fmt(v, gy), 'tl', { 'text-anchor': 'end' }); }
+  if (b.y0 < 0 && b.y1 > 0) mk('line', { x1: L, y1: Y(0), x2: W - R, y2: Y(0), class: 'axis' }, g);
+  if (b.x0 < 0 && b.x1 > 0) mk('line', { x1: X(0), y1: T, x2: X(0), y2: H - B, class: 'axis' }, g);
+  mk('rect', { x: L, y: T, width: W - L - R, height: H - T - B, style: 'fill:none;stroke:var(--line2)' }, g);
+  if (o.xT) txt(top, W - R - 4, H - B - 6, o.xT, 'cap', { 'text-anchor': 'end' });
+  if (o.yT) txt(top, L + 6, T + 14, o.yT, 'cap');
+  return { X, Y, sx, sy, cg, m, top, b, L, R, T, B, W, H, inv: (px, py) => [b.x0 + (px - L) / sx, b.y1 - (py - T) / sy] };
+}
+// sample a curve across the box, breaking at undefined points, at listed jumps, and at big leaps
+function curve(P, f, o){
+  o = o || {}; const b = P.b, n = o.n || 900, brk = o.breaks || [], polys = []; let cur = [];
+  const lim = (b.y1 - b.y0) * 3;
+  for (let i = 0; i <= n; i++){
+    const x = b.x0 + (b.x1 - b.x0) * i / n, y = f(x);
+    const crossed = cur.length && brk.some(c => (cur[cur.length - 1][0] - c) * (x - c) <= 0);
+    if (!isFinite(y) || crossed || (cur.length && Math.abs(y - cur[cur.length - 1][1]) > lim)){ if (cur.length > 1) polys.push(cur); cur = []; if (!isFinite(y)) continue; }
+    cur.push([x, Math.max(b.y0 - lim, Math.min(b.y1 + lim, y))]);
+  }
+  if (cur.length > 1) polys.push(cur);
+  polys.forEach(p => mk('path', { d: dPath(P, p), style: `fill:none;stroke:${o.col || 'var(--cv)'};stroke-width:${o.w || 3};${o.dash ? 'stroke-dasharray:' + o.dash : ''}` }, P.cg));
+}
+const holeAt = (P, x, y, col) => mk('circle', { cx: P.X(x), cy: P.Y(y), r: 6, style: `fill:var(--bg);stroke:${col || 'var(--cv)'};stroke-width:2.5` }, P.m);
+const dotAt = (P, x, y, col, r) => mk('circle', { cx: P.X(x), cy: P.Y(y), r: r || 6, style: `fill:${col || 'var(--cv)'};stroke:var(--bg);stroke-width:1.5` }, P.m);
+const sig = v => !isFinite(v) ? (v > 0 ? '∞' : v < 0 ? '−∞' : 'undefined') : Math.abs(v) >= 1e5 ? v.toExponential(2).replace('-', '−') : num(v, 6);
+function parseLim(s){
+  const t = String(s).trim().toLowerCase().replace(/\s+/g, '').replace(/[−–]/g, '-');
+  if (/^(dne|none|doesnotexist|noLimit|nolimit|no)$/i.test(t)) return 'DNE';
+  if (/^\+?(inf|infinity|∞|oo)$/.test(t)) return Infinity;
+  if (/^-(inf|infinity|∞|oo)$/.test(t)) return -Infinity;
+  return parseNum(s);
+}
+
+const minus = s => String(s).replace(/(^|[\s(,=>→\/·+×])-(\d)/g, '$1−$2');
+const r4 = v => Number((Math.abs(v) < 1e-300 ? 0 : v).toPrecision(5));
+const SUP = k => String(k).replace(/-/g, '⁻').replace(/\d/g, d => '⁰¹²³⁴⁵⁶⁷⁸⁹'[d]);
+const sci = v => { if (v === 0) return '0'; const a = Math.abs(v); if (a >= 1e-3 && a < 1e7) return minus(String(r4(v))); let e = Math.floor(Math.log10(a)); if (Math.abs(v / Math.pow(10, e)) >= 9.995) e++; const m = v / Math.pow(10, e); return minus(`${m.toFixed(2)}×10${SUP(e)}`); };
+const gcd = (a, b) => b ? gcd(b, a % b) : Math.abs(a);
+function frc(x){ if (Math.abs(x - Math.round(x)) < 1e-9) return num(Math.round(x)); for (let d = 2; d <= 10000; d++){ const n = x * d; if (Math.abs(n - Math.round(n)) < 1e-9 * d && gcd(Math.round(n), d) === 1) return (x < 0 ? '−' : '') + Math.abs(Math.round(n)) + '/' + d; } return sci(x); }
+// a readable value: whole numbers with commas, otherwise 4–5 significant figures
+const big = v => Math.abs(v) >= 1e7 ? sci(v) : Math.abs(v - Math.round(v)) < 1e-9 ? Math.round(v).toLocaleString().replace('-', '−') : minus(String(r4(v)));
+
+const range = n => [...Array(n).keys()];
+const SC = ['var(--s0)', 'var(--s1)', 'var(--s2)', 'var(--s3)'];          // stage / slot colours
+const fr = (k, n) => { const g = gcd(k, n) || 1; return k === 0 ? '0' : k === n ? '1' : `${k / g}/${n / g}`; };
+const pct = p => num(p * 100, p < 0.01 ? 3 : 1) + '%';
+const fact = n => { let f = 1; for (let i = 2; i <= n; i++) f *= i; return f; };
+const perm = (n, k) => { let f = 1; for (let i = 0; i < k; i++) f *= n - i; return f; };
+const choose = (n, k) => k < 0 || k > n ? 0 : Math.round(perm(n, k) / fact(k));
+const B = v => Math.abs(v) >= 1e7 ? sci(v) : Math.round(v).toLocaleString();   // big counts
+function parseP(s){ s = String(s).trim().replace(/−/g, '-').replace(/,/g, ''); if (/%$/.test(s)) return parseNum(s.slice(0, -1)) / 100; return parseNum(s); }
+const shuffle = a => { for (let i = a.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+function dur(sec){                                       // a time in words
+  const u = [[31557600e9, 'billion years'], [31557600e6, 'million years'], [31557600, 'years'], [86400, 'days'], [3600, 'hours'], [60, 'minutes'], [1, 'seconds']];
+  if (sec < 1) return 'under a second';
+  for (const [s, w] of u) if (sec >= s){ const v = sec / s; return `${v >= 100 ? B(v) : num(v, 1)} ${w}`; }
+}
+// list every ordering of k items chosen from arr (only called for small counts)
+function perms(arr, k){ if (k === 0) return [[]]; const out = []; arr.forEach((x, i) => perms(arr.filter((_, j) => j !== i), k - 1).forEach(p => out.push([x, ...p]))); return out; }
+function combos(arr, k, st){ st = st || 0; if (k === 0) return [[]]; const out = []; for (let i = st; i <= arr.length - k; i++) combos(arr, k - 1, i + 1).forEach(c => out.push([arr[i], ...c])); return out; }
+
+/* =====================================================================
+   2. GROW A TREE
+   ===================================================================== */
+const TP = [
+  { n: 'Outfits', d: '3 shirts, 2 pairs of pants and 2 pairs of shoes. Every shirt goes with every pair of pants, and every one of those with every pair of shoes.', st: [['shirt', ['red', 'blue', 'green', 'white', 'black', 'grey']], ['pants', ['jeans', 'khakis', 'shorts', 'cargo', 'joggers', 'chinos']], ['shoes', ['sneakers', 'boots', 'sandals', 'loafers', 'flats', 'heels']]], c: [3, 2, 2] },
+  { n: 'Lunch menu', d: 'A lunch deal: one main and one drink. Two stages, so a two-way table works as well as a tree.', st: [['main', ['burger', 'pizza', 'salad', 'wrap', 'soup', 'pasta']], ['drink', ['juice', 'milk', 'water', 'lemonade', 'tea', 'soda']]], c: [3, 2] },
+  { n: 'Three coin flips', d: 'Flip a coin three times. Each flip has 2 outcomes, so the tree doubles at every stage: 2 × 2 × 2 = 8.', st: [['1st flip', ['H', 'T']], ['2nd flip', ['H', 'T']], ['3rd flip', ['H', 'T']]], c: [2, 2, 2], max: 2 },
+  { n: 'Die, then coin', d: 'Roll a die, then flip a coin: 6 × 2 = 12 outcomes, from 1H to 6T.', st: [['die', ['1', '2', '3', '4', '5', '6']], ['coin', ['H', 'T']]], c: [6, 2], max: [6, 2] },
+  { n: 'Ice cream', d: 'Cone or cup, then a flavour, then a topping.', st: [['holder', ['cone', 'cup']], ['flavour', ['vanilla', 'chocolate', 'mint', 'strawberry', 'lemon', 'coffee']], ['topping', ['sprinkles', 'nuts', 'sauce', 'none', 'fudge', 'fruit']]], c: [2, 4, 2], max: [2, 6, 6] }
+];
+const TS = { i: 0, c: [3, 2, 2], grown: 0, e: 1, hi: null, view: 0, timer: 0, raf: 0 };
+const tMark = buttons('tPresets', TP, i => { tStop(); TS.i = i; TS.c = TP[i].c.slice(); TS.hi = null; tMark(i); $('tDesc').textContent = TP[i].d; tInputs(); TS.grown = TS.c.length; TS.e = 1; tDraw(); });
+function tMax(s){ const m = TP[TS.i].max; return Array.isArray(m) ? m[s] : m || 6; }
+function tInputs(){
+  const p = TP[TS.i]; $('tIns').innerHTML = '';
+  p.st.forEach(([name], s) => {
+    const l = document.createElement('label'); l.className = 'field sm';
+    l.innerHTML = `<span style="color:${SC[s]}">${name} options</span><input type="text" inputmode="numeric" autocomplete="off" style="border-color:${SC[s]}" value="${TS.c[s]}">`;
+    const inp = l.querySelector('input'); inp.addEventListener('focus', () => inp.select());
+    inp.addEventListener('input', () => {
+      const v = parseNum(inp.value), mx = tMax(s);
+      if (!Number.isInteger(v) || v < 1 || v > mx){ $('tErr').textContent = `Use a whole number from 1 to ${mx} for the ${name} options.`; return; }
+      $('tErr').textContent = ''; TS.c[s] = v; TS.hi = null; tMark(-1); tStop(); TS.grown = TS.c.length; TS.e = 1; tDraw();
+    });
+    $('tIns').appendChild(l);
+  });
+}
+[...$('tView').querySelectorAll('button')].slice(0, 2).forEach((b, j) => b.onclick = () => { if (b.disabled) return; TS.view = j; tDraw(); });
+function tStop(){ clearTimeout(TS.timer); cancelAnimationFrame(TS.raf); TS.timer = 0; $('tPlay').textContent = 'Play'; }
+function grow(s, done){                                   // animate stage s growing out of the previous one
+  const t0 = performance.now(); TS.grown = s; TS.e = 0;
+  const f = now => { TS.e = Math.min(1, (now - t0) / 900); tDraw(); if (TS.e < 1) TS.raf = requestAnimationFrame(f); else done && done(); };
+  TS.raf = requestAnimationFrame(f);
+}
+$('tPlay').onclick = () => {
+  if (TS.timer || $('tPlay').textContent === 'Pause'){ tStop(); return; }
+  TS.view = 0; TS.hi = null; $('tPlay').textContent = 'Pause'; let s = 1;
+  const next = () => grow(s, () => { if (s < TS.c.length){ s++; TS.timer = setTimeout(next, 500); } else { TS.timer = 0; $('tPlay').textContent = 'Play'; } });
+  TS.grown = 0; tDraw(); TS.timer = setTimeout(next, 300);
+};
+$('tStep').onclick = () => { tStop(); TS.view = 0; if (TS.grown >= TS.c.length) { TS.grown = 0; TS.e = 1; tDraw(); return; } grow(TS.grown + 1); };
+$('tReset').onclick = () => { tStop(); TS.grown = 0; TS.e = 1; TS.hi = null; tDraw(); };
+const optName = (s, j) => TP[TS.i].st[s][1][j];
+function tDraw(){
+  const p = TP[TS.i], c = TS.c, S = c.length, L = c.reduce((a, b) => a * b, 1);
+  const vb = [...$('tView').querySelectorAll('button')];
+  vb[1].disabled = S !== 2; if (S !== 2 && TS.view === 1) TS.view = 0;
+  vb.slice(0, 2).forEach((b, j) => b.classList.toggle('on', j === TS.view));
+  // equation chip, growing with the stages shown
+  const shown = Math.max(TS.grown - (TS.e < 1 ? 1 : 0), 0), prod = c.slice(0, TS.grown).reduce((a, b) => a * b, 1);
+  $('tEq').innerHTML = TS.grown === 0 ? 'one starting point' : c.slice(0, TS.grown).map((v, s) => `<span style="color:${SC[s]}">${v}</span>`).join(' × ') + ` = ${prod} ${TS.grown === S ? p.st.length === 3 || S === 3 ? 'outcomes' : 'outcomes' : 'branches so far'}`;
+  $('tLeg').innerHTML = p.st.map(([n], s) => `<span><i class="sw" style="background:${SC[s]}"></i><span>stage ${s + 1}: ${n}</span></span>`).join('') + '<span><i class="sw" style="background:var(--hit)"></i><span>outcomes through the clicked point</span></span>';
+  // which leaves are highlighted? TS.hi = [stage, path prefix]
+  const inHi = path => TS.hi && TS.hi.every((v, s) => path[s] === v);
+  const nHi = TS.hi ? L / c.slice(0, TS.hi.length).reduce((a, b) => a * b, 1) : 0;
+  if (TS.view === 1){                                      // ----- two-way table -----
+    let h = `<table class="ttab"><tr><th></th>${range(c[1]).map(j => `<th class="c">${optName(1, j)}</th>`).join('')}</tr>`;
+    for (let i = 0; i < c[0]; i++) h += `<tr><th class="r">${optName(0, i)}</th>${range(c[1]).map(j => `<td data-i="${i}" data-j="${j}" class="${inHi([i, j]) ? 'on' : ''}">${optName(0, i)} + ${optName(1, j)}</td>`).join('')}</tr>`;
+    $('tWrap').innerHTML = h + '</table>';
+    $('tWrap').querySelectorAll('td').forEach(td => td.onclick = () => { TS.hi = [+td.dataset.i, +td.dataset.j]; tDraw(); });
+    $('tOut').innerHTML = `${c[0]} rows × ${c[1]} columns = <b>${L}</b> cells, one for each combination. ` + (TS.hi ? `You picked <b class="kh">${optName(0, TS.hi[0])} + ${optName(1, TS.hi[1])}</b>: chosen at random, it would come up with probability 1/${L}.` : 'Click a cell.');
+    return;
+  }
+  if (!$('tG')) $('tWrap').innerHTML = '<svg id="tG" viewBox="0 0 960 400" role="img" aria-label="Tree diagram"></svg>';
+  const svg = $('tG'); svg.innerHTML = '';
+  if (L > 72){ svg.setAttribute('viewBox', '0 0 960 120'); txt(svg, 480, 66, `${B(L)} outcomes: too many to draw, but the multiplication principle counts them anyway.`, 'labS', { 'text-anchor': 'middle' }); $('tOut').innerHTML = `${c.join(' × ')} = <b>${B(L)}</b>.`; return; }
+  const sp = clamp(600 / L, 15, 42), H = Math.max(200, L * sp + 50); svg.setAttribute('viewBox', `0 0 960 ${H}`);
+  const X0 = 40, XL = 960 - 300, colW = (XL - X0) / S, X = s => X0 + s * colW;
+  for (let s = 0; s < S; s++) txt(svg, X(s + 1), 22, p.st[s][0], 'cap', { 'text-anchor': 'middle', style: `fill:${SC[s]};opacity:${s < TS.grown ? 1 : 0.3}` });
+  const leafY = q => 40 + (q + 0.5) * sp;
+  // walk the tree: node at depth d with path; its leaves are a contiguous block
+  const walk = (d, path, q0) => {
+    const span = c.slice(d).reduce((a, b) => a * b, 1), y = leafY(q0 + (span - 1) / 2);
+    if (d < S && d < TS.grown){
+      const childSpan = span / c[d];
+      for (let j = 0; j < c[d]; j++){
+        const np = [...path, j], cy = leafY(q0 + j * childSpan + (childSpan - 1) / 2), e = d === TS.grown - 1 ? TS.e : 1;
+        const x1 = X(d), x2 = X(d) + (X(d + 1) - X(d)) * e, y2 = y + (cy - y) * e, on = inHi(np) || (TS.hi && TS.hi.length > d + 1 && inHi(np.concat(TS.hi.slice(d + 1))));
+        const hiEdge = TS.hi && np.length <= TS.hi.length ? TS.hi.slice(0, np.length).every((v, s) => v === np[s]) : inHi(np);
+        mk('line', { x1, y1: y, x2, y2, style: `stroke:${hiEdge ? 'var(--hit)' : SC[d]};stroke-width:${hiEdge ? 3.4 : 2};opacity:${TS.hi && !hiEdge ? 0.35 : 0.9}` }, svg);
+        if (e === 1) walk(d + 1, np, q0 + j * childSpan);
+      }
+    }
+    // the node itself (clickable), with its label
+    if (d === 0) mk('circle', { cx: X(0), cy: y, r: 6, style: 'fill:var(--ink)' }, svg);
+    else {
+      const on = TS.hi && TS.hi.length <= path.length ? TS.hi.every((v, s) => v === path[s]) : false;
+      const g = mk('g', { class: 'node' }, svg); g.addEventListener('click', () => { TS.hi = TS.hi && TS.hi.length === path.length && TS.hi.every((v, s) => v === path[s]) ? null : path.slice(); tDraw(); });
+      mk('circle', { cx: X(d), cy: y, r: sp < 20 && d === S ? 4 : 6, style: `fill:${on ? 'var(--hit)' : SC[d - 1]};stroke:var(--bg);stroke-width:1.5` }, g);
+      if (d < S || sp >= 15) txt(g, X(d) + 9, y + 4, optName(d - 1, path[d - 1]), 'tl', { style: `fill:${on ? 'var(--hit)' : SC[d - 1]};font-weight:600;font-size:${sp < 18 ? 10.5 : 12}px` });
+      if (d === S && S === TS.grown){
+        txt(svg, XL + 92, y + 4, `${q0 + 1}. ` + path.map((v, s) => optName(s, v)).join(' · '), 'tl', { style: `fill:${on ? 'var(--hit)' : 'var(--ink)'};font-weight:${on ? 700 : 500};font-size:${sp < 18 ? 10.5 : 12}px` });
+      }
+    }
+  };
+  walk(0, [], 0);
+  // readout
+  let s;
+  if (TS.grown === 0) s = 'One starting point. Press Play or Next stage.';
+  else if (TS.grown < S || TS.e < 1) s = `Stage ${TS.grown}: ${TS.grown === 1 ? `${c[0]} ${p.st[0][0]} options give ${c[0]} branches.` : `each of the ${c.slice(0, TS.grown - 1).reduce((a, b) => a * b, 1)} branches splits into ${c[TS.grown - 1]} (${p.st[TS.grown - 1][0]}), giving ${c.slice(0, TS.grown - 1).reduce((a, b) => a * b, 1)} × ${c[TS.grown - 1]} = ${prod}.`}`;
+  else {
+    s = `Every path from the start to the right-hand end is one outcome: ${c.join(' × ')} = <b>${L}</b>. Each stage <b>multiplies</b> the number of branches. `;
+    if (TS.hi){
+      const desc = TS.hi.map((v, q) => optName(q, v)).join(' then ');
+      s += `<b class="kh">${nHi}</b> of the ${L} ${nHi === 1 ? 'goes' : 'go'} through <b class="kh">${desc}</b>, so if the outcome is chosen at random, P(${desc}) = ${nHi}/${L}${fr(nHi, L) !== `${nHi}/${L}` ? ' = ' + fr(nHi, L) : ''}.`;
+    } else s += 'Click a branch point to see how many outcomes go through it.';
+  }
+  $('tOut').innerHTML = s;
+}
+
+/* =====================================================================
+   3. FILL THE SLOTS
+   ===================================================================== */
+const DIG = '0123456789'.split(''), LET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split(''), LOW = 'abcdefghijklmnopqrstuvwxyz'.split('');
+const RUN = ['Ana', 'Ben', 'Cy', 'Dee', 'Eli', 'Fay', 'Gus', 'Hal', 'Ivy', 'Jo', 'Kai', 'Lu', 'Max', 'Ned', 'Oz', 'Pia', 'Quin', 'Rae', 'Sam', 'Tia'];
+const TOP = ['cheese', 'ham', 'olive', 'onion', 'pepper', 'mushroom', 'pineapple', 'basil', 'tomato', 'bacon', 'chilli', 'corn', 'spinach', 'garlic', 'egg', 'feta', 'salami', 'tuna', 'anchovy', 'rocket'];
+const sym = n => n <= 10 ? DIG.slice(0, n) : n <= 26 ? LET.slice(0, n) : n <= 36 ? [...DIG, ...LET].slice(0, n) : n <= 62 ? [...DIG, ...LET, ...LOW].slice(0, n) : null;
+const XP = [
+  [ { n: 'Bike lock: 3 dials', nn: 10, k: 3, d: 'Three dials, each 0–9. Digits can repeat (007 is fine), so every dial has all 10 choices.', hand: true },
+    { n: '4-digit PIN', nn: 10, k: 4, d: 'A bank card PIN: 4 digits, repeats allowed.', hand: true },
+    { n: 'Licence plate ABC 123', slots: [26, 26, 26, 10, 10, 10], d: 'Three letters then three digits. The slots don’t all have the same number of choices, but the principle is the same: multiply.' },
+    { n: 'Password: 8 lowercase', nn: 26, k: 8, d: '8 characters, each a lowercase letter a–z.' },
+    { n: 'Password: 8 of 62', nn: 62, k: 8, d: '8 characters from 62: digits, capitals and lowercase. Compare with lowercase only.' },
+    { n: 'Password: 12 lowercase', nn: 26, k: 12, d: 'Length beats variety: 12 lowercase letters is far more than 8 characters from 62.' } ],
+  [ { n: 'Podium: 8 runners', nn: 8, k: 3, d: 'Gold, silver and bronze from 8 runners. Nobody can win twice, and gold-silver-bronze order matters.', items: RUN },
+    { n: 'Line up 4 friends', nn: 4, k: 4, d: 'Arrange all 4 friends in a row for a photo: 4! = 24 orders.', items: RUN },
+    { n: 'Seat 5 at a table', nn: 5, k: 5, d: '5 people, 5 chairs in a row: 5! = 120.', items: RUN },
+    { n: 'Batting order of 9', nn: 9, k: 9, d: 'A baseball batting order: 9 players in order, 9! = 362,880.', items: RUN },
+    { n: 'President & VP of 10', nn: 10, k: 2, d: 'A club of 10 elects a president and a vice-president: two different jobs, so order matters.', items: RUN } ],
+  [ { n: 'Team of 2 from 5', nn: 5, k: 2, d: 'Pick 2 friends from 5 to form a team. {Ana, Ben} is the same team as {Ben, Ana}.', items: RUN },
+    { n: '3 toppings from 8', nn: 8, k: 3, d: 'Choose 3 different toppings from 8. A pizza with ham, olive and onion is the same pizza whatever order they go on.', items: TOP },
+    { n: '3 of 4 friends', nn: 4, k: 3, d: 'Invite 3 of your 4 friends. Small enough to see every arrangement sorted into its group.', items: RUN },
+    { n: 'Lottery: 6 of 49', nn: 49, k: 6, d: 'Choose 6 numbers from 1 to 49; the order they’re drawn doesn’t matter.', items: range(49).map(i => String(i + 1)) },
+    { n: 'Choose 5 of 10', nn: 10, k: 5, d: 'Pick 5 of 10 players for a basketball team.', items: RUN } ]
+];
+const XS = { m: 0, i: 0, nn: 10, k: 3, slots: null, items: null, fill: [], timer: 0 };
+let xMark = null;
+function xSetMode(m){
+  XS.m = m; [...$('xMode').children].forEach((b, j) => b.classList.toggle('on', j === m));
+  $('xNL').innerHTML = m === 0 ? 'symbols <i>n</i>' : 'items <i>n</i>'; $('xKL').innerHTML = m === 2 ? 'choose <i>k</i>' : 'slots <i>k</i>';
+  $('xPresets').innerHTML = ''; xMark = buttons('xPresets', XP[m], i => xPreset(i)); xPreset(0);
+}
+[...$('xMode').children].forEach((b, j) => b.onclick = () => { xStop(); xSetMode(j); });
+function xPreset(i){
+  xStop(); const p = XP[XS.m][i]; XS.i = i; xMark(i); $('xDesc').textContent = p.d; $('xErr').textContent = '';
+  XS.slots = p.slots || null; XS.nn = p.nn || 0; XS.k = p.slots ? p.slots.length : p.k; XS.items = p.items || null; XS.hand = !!p.hand; XS.fill = [];
+  $('xN').value = p.slots ? '—' : XS.nn; $('xK').value = XS.k; $('xN').disabled = !!p.slots; xDraw();
+}
+$('xUse').onclick = () => {
+  xStop(); const n = parseNum($('xN').value), k = parseNum($('xK').value), m = XS.m;
+  const nMax = m === 0 ? 62 : 20, kMax = m === 0 ? 12 : n;
+  if (!Number.isInteger(n) || n < 1 || n > nMax){ $('xErr').textContent = `Use a whole number of ${m === 0 ? 'symbols' : 'items'} from 1 to ${nMax}.`; return; }
+  if (!Number.isInteger(k) || k < 1 || k > kMax){ $('xErr').textContent = m === 0 ? 'Use 1 to 12 slots.' : `k must be a whole number from 1 to n = ${n}: you can’t fill more slots than you have items when nothing repeats.`; return; }
+  $('xErr').textContent = ''; xMark(-1); Object.assign(XS, { nn: n, k, slots: null, fill: [], hand: false, items: m === 1 ? RUN : m === 2 ? (XS.items && XS.items.length >= n ? XS.items : RUN) : null }); $('xN').disabled = false; xDraw();
+};
+['xN', 'xK'].forEach(id => $(id).addEventListener('keydown', e => { if (e.key === 'Enter') $('xUse').click(); }));
+['xN', 'xK'].forEach(id => $(id).addEventListener('input', () => $('xErr').textContent = ''));
+function xStop(){ clearTimeout(XS.timer); XS.timer = 0; $('xPlay').textContent = 'Play'; }
+const xSizes = () => XS.slots ? XS.slots.slice() : XS.m === 0 ? Array(XS.k).fill(XS.nn) : range(XS.k).map(i => XS.nn - i);
+const xPool = () => XS.m === 0 ? null : XS.items.slice(0, XS.nn);
+$('xPlay').onclick = () => {
+  if (XS.timer){ xStop(); return; }
+  XS.fill = []; $('xPlay').textContent = 'Pause'; const sizes = xSizes();
+  const step = () => {
+    const q = XS.fill.length;
+    if (XS.m === 0){ const set = XS.slots ? (sizes[q] === 26 ? LET : DIG) : sym(XS.nn); XS.fill.push(pick(set)); }
+    else { const left = xPool().filter(x => !XS.fill.includes(x)); XS.fill.push(pick(left)); }
+    xDraw(); if (XS.fill.length < XS.k) XS.timer = setTimeout(step, 750); else xStop();
+  };
+  xDraw(); XS.timer = setTimeout(step, 400);
+};
+function xDraw(){
+  const m = XS.m, k = XS.k, sizes = xSizes(), svg = $('xG'); svg.innerHTML = '';
+  const total = sizes.reduce((a, b) => a * b, 1), groups = m === 2 ? total / fact(k) : total;
+  // ----- pool of items (arrangements and groups) -----
+  const pool = xPool(); let y0 = 30;
+  if (pool && XS.nn <= 20){
+    txt(svg, 20, 22, 'the pool', 'cap');
+    const w = Math.min(90, 920 / pool.length);
+    pool.forEach((x, q) => { const used = XS.fill.includes(x), cx = 20 + q * w;
+      mk('rect', { x: cx, y: 30, width: w - 6, height: 26, rx: 6, style: `fill:${used ? 'var(--paper)' : 'var(--bg)'};stroke:${used ? 'var(--ghost)' : 'var(--s0)'};stroke-width:1.5;opacity:${used ? 0.6 : 1}` }, svg);
+      txt(svg, cx + (w - 6) / 2, 48, x, 'tl', { 'text-anchor': 'middle', style: `fill:${used ? 'var(--ghost)' : 'var(--ink)'};font-size:${w < 50 ? 10 : 12}px` });
+      if (used) txt(svg, cx + w - 10, 36, '✕', 'labS', { 'text-anchor': 'middle', style: 'fill:var(--hit);font-size:11px' }); });
+    y0 = 80;
+  } else if (m === 0){ const set = XS.slots ? null : sym(XS.nn); txt(svg, 20, 22, XS.slots ? 'letters A–Z, then digits 0–9' : `each slot: any of ${XS.nn} symbols (${set.slice(0, 3).join(', ')}, …, ${set[set.length - 1]}); repeats allowed`, 'cap'); y0 = 50; }
+  else { txt(svg, 20, 22, `${XS.nn} items to choose from`, 'cap'); y0 = 50; }
+  // ----- the slots, with choices underneath and × between -----
+  const bw = Math.min(78, 760 / k - 22), gap = 22, x0 = 20;
+  sizes.forEach((sz, q) => {
+    const x = x0 + q * (bw + gap), f = XS.fill[q], col = SC[q % 4];
+    mk('rect', { x, y: y0 + 20, width: bw, height: 56, rx: 8, style: `fill:${f !== undefined ? 'var(--hit-bg)' : 'var(--bg)'};stroke:${f !== undefined ? 'var(--hit)' : 'var(--line)'};stroke-width:2` }, svg);
+    if (f !== undefined) txt(svg, x + bw / 2, y0 + 54, f, 'lab', { 'text-anchor': 'middle', style: `font-size:${String(f).length > 4 ? 11 : 16}px` });
+    txt(svg, x + bw / 2, y0 + 100, sz, 'lab', { 'text-anchor': 'middle', style: 'fill:var(--s0);font-size:17px' });
+    if (m !== 0 && q > 0) txt(svg, x + bw / 2, y0 + 118, `${XS.nn}−${q}`, 'tl', { 'text-anchor': 'middle' });
+    if (q < k - 1) txt(svg, x + bw + gap / 2, y0 + 100, '×', 'lab', { 'text-anchor': 'middle' });
+    txt(svg, x + bw / 2, y0 + 12, m === 1 && XS.i === 0 && !XS.slots && XS.k === 3 && $('xN').value == 8 ? ['gold', 'silver', 'bronze'][q] : `slot ${q + 1}`, 'tl', { 'text-anchor': 'middle' });
+  });
+  const xe = x0 + k * (bw + gap) - gap + 14;
+  txt(svg, xe, y0 + 100, `= ${B(total)}`, 'lab', { style: 'font-size:17px' });
+  if (m === 2) txt(svg, xe, y0 + 124, `÷ ${k}! = ÷ ${B(fact(k))}  →  ${B(groups)} groups`, 'lab', { style: 'fill:var(--hit);font-size:15px' });
+  svg.setAttribute('viewBox', `0 0 960 ${y0 + 140}`);
+  // ----- formula chip -----
+  const prodStr = sizes.join(' × ');
+  $('xEq').innerHTML = m === 0 ? (XS.slots ? `26³ × 10³ = ${prodStr} = ${B(total)}` : `${XS.nn}<sup>${k}</sup> = ${k <= 8 ? prodStr + ' = ' : ''}${B(total)}`)
+    : m === 1 ? `P(${XS.nn}, ${k}) = ${k <= 9 ? prodStr + ' = ' : ''}${B(total)}${k === XS.nn ? `  (= ${XS.nn}!)` : ''}`
+    : `${XS.nn} choose ${k} = ${k <= 6 ? '(' + prodStr + ') ÷ ' + k + '!' : 'P(' + XS.nn + ', ' + k + ') ÷ ' + k + '!'} = ${B(total)} ÷ ${B(fact(k))} = ${B(groups)}`;
+  // ----- list of everything (when small) -----
+  let L = '';
+  if (m === 2 && total <= 72){
+    const pl = xPool(), cs = combos(pl, k);
+    L = `<div><b>Every arrangement, sorted into groups</b>: each row is one group, listed in all ${fact(k)} of its orders.</div><div class="grp">` + cs.map(g => `<span class="g">{${g.join(', ')}}</span><span class="os">${perms(g, k).map(o => `<span>${o.join('-')}</span>`).join('')}</span>`).join('') + '</div>';
+  } else if (m !== 0 && total <= 72){
+    L = `<div><b>All ${total} arrangements</b></div><div class="list">` + perms(xPool(), k).map(o => `<span>${o.join('-')}</span>`).join('') + '</div>';
+  } else if (m === 0 && total <= 100){
+    const set = sym(XS.nn); const all = []; const rec = (pre) => { if (pre.length === k) { all.push(pre.join('')); return; } set.forEach(c => rec([...pre, c])); }; rec([]);
+    L = `<div><b>All ${total} codes</b></div><div class="list">` + all.map(c => `<span>${c}</span>`).join('') + '</div>';
+  } else L = `<div><b>${B(m === 2 ? groups : total)}</b> ${m === 0 ? 'codes' : m === 1 ? 'arrangements' : 'groups'}: too many to list. ${m === 0 ? '' : `${k === 1 ? '' : `Listing just a few: ${perms(xPool().slice(0, Math.min(XS.nn, 4)), Math.min(k, 3)).slice(0, 4).map(o => o.join('-')).join(', ')}, …`}`}</div>`;
+  $('xList').innerHTML = L;
+  // ----- side panel: probability of a random guess, and Pascal's triangle for groups -----
+  const N = m === 2 ? groups : total;
+  let side = `<div>Guess at random, one try:</div><div style="font:700 20px var(--mono)">P = 1/${B(N)}</div><div style="color:var(--muted)">${1 / N >= 1e-5 ? '= ' + pct(1 / N) : 'less than 0.001%'}</div>`;
+  if (m === 0) side += `<div style="margin-top:6px">Trying every one:<br>at 1 per second: <b>${dur(N)}</b><br>a computer at a billion per second: <b>${dur(N / 1e9)}</b></div>`;
+  if (m === 2){ side += '<svg id="xPas" viewBox="0 0 300 230" style="margin-top:8px;width:100%"></svg>'; }
+  $('xSide').innerHTML = side;
+  if (m === 2) pascal($('xPas'), XS.nn, k);
+  // ----- readout -----
+  let s;
+  if (m === 0) s = `Each slot can be filled ${XS.slots ? 'with any letter (26) or digit (10)' : `with any of the ${XS.nn} symbols, even one already used`}, so multiply: ${XS.slots ? prodStr : `${XS.nn} × ${XS.nn} × …, ${k} times`} = <b>${B(total)}</b>. ` + (XS.hand ? 'A thief trying codes by hand needs a while; a computer would need no time at all, which is why banks lock the card after a few wrong tries.' : XS.nn === 62 && k === 8 ? 'Compare the 12-lowercase preset: each extra slot multiplies the count, so length beats variety.' : k >= 8 ? 'Every extra character multiplies the count by the number of symbols again.' : '');
+  else if (m === 1) s = `${XS.nn} choices for the first slot, then one fewer each time because nothing repeats: ${prodStr} = <b>${B(total)}</b>. Order matters, so ${XS.items[0]}-${XS.items[1]} and ${XS.items[1]}-${XS.items[0]} are different.` + (k === XS.nn ? ` Arranging all ${k} is ${k}! (“${k} factorial”).` : '');
+  else s = `In order there would be ${prodStr} = ${B(total)}, but every group of ${k} appears in ${k}! = ${B(fact(k))} different orders. Dividing gives <b>${B(groups)}</b> different groups (“${XS.nn} choose ${k}”).`;
+  $('xOut').innerHTML = s;
+}
+// Pascal's triangle, rows 0 to 10, highlighting row n, entry k (if n is at most 10)
+function pascal(svg, n, k){
+  svg.innerHTML = ''; const R = 10, dx = 26, dy = 19;
+  txt(svg, 150, 14, 'Pascal’s triangle', 'cap', { 'text-anchor': 'middle' });
+  for (let r = 0; r <= R; r++) for (let c = 0; c <= r; c++){
+    const x = 150 + (c - r / 2) * dx, y = 34 + r * dy, on = r === n && c === k, row = r === n;
+    if (on) mk('circle', { cx: x, cy: y - 4, r: 11, style: 'fill:var(--hit-bg);stroke:var(--hit);stroke-width:2' }, svg);
+    const v = choose(r, c);
+    txt(svg, x, y, v, 'tl', { 'text-anchor': 'middle', style: `font-size:${v >= 100 ? 8.5 : 10.5}px;fill:${on ? 'var(--hit)' : row ? 'var(--ink)' : 'var(--muted)'};font-weight:${on || row ? 700 : 400}` });
+  }
+  txt(svg, 150, 34 + (R + 1) * dy + 2, n <= R ? `row ${n}, entry ${k} (counting from 0) = ${choose(n, k)}` : `row ${n} is below this picture`, 'labS', { 'text-anchor': 'middle', style: 'font-size:11px' });
+}
+
+/* =====================================================================
+   4. TRAPS
+   ===================================================================== */
+(function(){
+  // trap 1: 3 + 2 = 5 dots versus the 3 x 2 grid of outfits
+  const g = $('tr1'), sh = ['var(--red,#D8443A)', '#3A7BD5', '#2E9E5B'], pa = ['jeans', 'khakis'];
+  txt(g, 70, 20, '3 + 2 = 5 ✕', 'labS', { 'text-anchor': 'middle', style: 'fill:var(--bad)' }); txt(g, 215, 20, '3 × 2 = 6 ✓', 'labS', { 'text-anchor': 'middle', style: 'fill:var(--ok)' });
+  ['#D8443A', '#3A7BD5', '#2E9E5B'].forEach((c, i) => mk('rect', { x: 20 + i * 34, y: 40, width: 26, height: 26, rx: 5, style: `fill:${c}` }, g));
+  pa.forEach((c, i) => mk('rect', { x: 37 + i * 34, y: 80, width: 26, height: 26, rx: 5, style: 'fill:var(--muted)' }, g));
+  ['#D8443A', '#3A7BD5', '#2E9E5B'].forEach((c, i) => pa.forEach((p, j) => { const x = 160 + j * 60, y = 34 + i * 48;
+    mk('rect', { x, y, width: 24, height: 36, rx: 5, style: `fill:${c}` }, g); mk('rect', { x: x + 26, y: y + 10, width: 20, height: 26, rx: 4, style: 'fill:var(--muted)' }, g); }));
+  txt(g, 70, 140, 'a shirt OR pants', 'tl', { 'text-anchor': 'middle' }); txt(g, 215, 192, 'a shirt AND pants', 'tl', { 'text-anchor': 'middle' });
+  // trap 2: the 20 ordered pairs, paired off into 10 teams
+  const g2 = $('tr2'), F = ['A', 'B', 'C', 'D', 'E'];
+  txt(g2, 150, 18, '5 × 4 = 20 in order → 10 teams', 'labS', { 'text-anchor': 'middle' });
+  combos(F, 2).forEach((t, i) => { const x = 14 + (i % 5) * 56, y = 36 + Math.floor(i / 5) * 78;
+    mk('rect', { x, y, width: 50, height: 66, rx: 8, style: 'fill:var(--hit-bg);stroke:var(--hit);stroke-width:1.5' }, g2);
+    txt(g2, x + 25, y + 26, `${t[0]}${t[1]}`, 'labS', { 'text-anchor': 'middle' }); txt(g2, x + 25, y + 50, `${t[1]}${t[0]}`, 'labS', { 'text-anchor': 'middle', style: 'fill:var(--muted)' }); });
+  txt(g2, 150, 196, 'each box: one team, counted twice', 'tl', { 'text-anchor': 'middle' });
+  // trap 3: slot rows 8 8 8 vs 8 7 6
+  const g3 = $('tr3');
+  [[[8, 8, 8], '= 512 ✕', 'var(--bad)', 40], [[8, 7, 6], '= 336 ✓', 'var(--ok)', 120]].forEach(([s, l, c, y]) => {
+    s.forEach((v, i) => { mk('rect', { x: 14 + i * 58, y, width: 44, height: 44, rx: 7, style: `fill:var(--bg);stroke:${c};stroke-width:2` }, g3); txt(g3, 36 + i * 58, y + 28, v, 'lab', { 'text-anchor': 'middle' }); if (i < 2) txt(g3, 65 + i * 58, y + 28, '×', 'labS', { 'text-anchor': 'middle' }); });
+    txt(g3, 190, y + 28, l, 'labS', { style: `fill:${c}` });
+  });
+  txt(g3, 14, 32, 'gold   silver   bronze', 'tl'); txt(g3, 14, 186, 'the gold winner can’t also win silver', 'tl');
+})();
+
+/* =====================================================================
+   5. QUIZ
+   ===================================================================== */
+const Q = { right: 0, total: 0 };
+let qq = null;
+const qTitles = { mult: 'Count with the multiplication principle', order: 'Order matters or not?', prob: 'Probability from counting', trap: 'Spot the trap' };
+function qReset(){ $('qChoice').innerHTML = ''; $('qFb').className = 'feedback'; $('qFb').innerHTML = ''; $('qErr').textContent = ''; $('qIn').style.display = ''; $('q1').value = ''; }
+function qScore(ok){ if (qq.counted) return; qq.counted = true; Q.total++; if (ok) Q.right++; $('score').textContent = `Score: ${Q.right} / ${Q.total}`; }
+function qFeedback(ok, html){ $('qFb').className = 'feedback ' + (ok ? 'ok' : 'bad'); $('qFb').innerHTML = (ok ? '<b>Right.</b> ' : '<b>Not quite.</b> ') + html; }
+function qChoices(list, correctIdx, explain){
+  $('qIn').style.display = 'none'; qq.correctIdx = correctIdx; qq.explainFn = explain;
+  list.forEach((c, k) => { const b = document.createElement('button'); b.innerHTML = c; b.onclick = () => { const ok = k === correctIdx; qScore(ok); [...$('qChoice').children].forEach((x, j) => { x.classList.remove('right', 'wrong'); if (j === k) x.classList.add(ok ? 'right' : 'wrong'); }); qFeedback(ok, explain(k)); }; $('qChoice').appendChild(b); });
+}
+function qMult(){
+  const c = pick([
+    () => { const a = ri(2, 6), b = ri(2, 5), d = ri(2, 4); return [`A café offers ${a} sandwiches, ${b} drinks and ${d} desserts. A meal deal is one of each. How many different meal deals are there?`, a * b * d, `${a} × ${b} × ${d} = ${a * b * d}: every sandwich goes with every drink, and each of those with every dessert.`, [[a + b + d, 'You added. Each choice goes with every other choice, so multiply.']]]; },
+    () => { const k = ri(2, 4); return [`A lock has ${k} dials, each showing a digit 0–9. How many codes are possible?`, 10 ** k, `10 choices per dial, repeats allowed: 10${SUP(k)} = ${B(10 ** k)}.`, [[10 * k, 'That’s 10 + 10 + …: multiply, don’t add.'], [perm(10, k), 'Digits can repeat on a lock (like 007), so every dial has all 10 choices.']]]; },
+    () => { const a = ri(3, 6), b = ri(2, 5); return [`You have ${a} T-shirts and ${b} pairs of shorts. How many outfits of one T-shirt and one pair of shorts?`, a * b, `${a} × ${b} = ${a * b}.`, [[a + b, 'You added. Each T-shirt goes with every pair of shorts: multiply.']]]; },
+    () => [`A licence plate has 2 letters (A–Z) followed by 3 digits (0–9). How many plates are possible?`, 26 * 26 * 1000, `26 × 26 × 10 × 10 × 10 = ${B(676000)}.`, [[26 * 2 + 30, 'Multiply the choices for each slot.']]],
+    () => { const k = ri(2, 4); return [`A coin is flipped ${k + 1} times. How many different sequences of heads and tails are there?`, 2 ** (k + 1), `2 outcomes each time: 2${SUP(k + 1)} = ${2 ** (k + 1)}.`, [[2 * (k + 1), 'That’s 2 + 2 + …: each flip doubles the number of sequences.']]]; }
+  ])();
+  Object.assign(qq, { ans: c[1], why: c[2], traps: c[3] }); $('qText').innerHTML = c[0]; $('qL1').textContent = 'How many?';
+}
+function qOrder(){
+  const c = pick([
+    () => { const n = ri(5, 9); return { s: `${n} runners race. In how many ways can 1st, 2nd and 3rd place be filled?`, ord: true, n, k: 3 }; },
+    () => { const n = ri(5, 9); return { s: `Choose 3 toppings from ${n} for a pizza. How many different pizzas?`, ord: false, n, k: 3 }; },
+    () => { const n = ri(5, 8); return { s: `Pick a team of 2 from ${n} friends. How many different teams?`, ord: false, n, k: 2 }; },
+    () => { const n = ri(5, 9); return { s: `A club of ${n} elects a president and a treasurer (different people). How many ways?`, ord: true, n, k: 2 }; },
+    () => { const n = ri(4, 6); return { s: `Line up ${n} friends in a row for a photo. How many orders?`, ord: true, n, k: n }; },
+    () => { const n = ri(6, 9); return { s: `A teacher picks 4 of ${n} students to go on a trip. How many different groups?`, ord: false, n, k: 4 }; }
+  ])();
+  const P = perm(c.n, c.k), C = choose(c.n, c.k), pw = c.n ** c.k, ans = c.ord ? P : C;
+  const opts = [...new Set([P, C, pw, c.n * c.k])].slice(0, 4); while (opts.length < 4) opts.push(ans + opts.length * 3);
+  const sh = shuffle(opts.slice()), idx = sh.indexOf(ans);
+  $('qText').innerHTML = c.s + ' <i>First decide: does order matter?</i>';
+  qChoices(sh.map(v => B(v)), idx, j => {
+    const v = sh[j], base = c.ord ? `Order matters (${c.k === c.n ? 'each position in the row is different' : 'the positions are different'}): ${range(c.k).map(i => c.n - i).join(' × ')} = ${B(P)}.` : `Order doesn’t matter (a group is a group): ${range(c.k).map(i => c.n - i).join(' × ')} = ${B(P)} in order, ÷ ${c.k}! = ${fact(c.k)} gives ${B(C)}.`;
+    if (j === idx) return base;
+    return (v === P ? 'That counts each group in every order. ' : v === C ? 'That treats the positions as interchangeable, but here they’re different. ' : v === pw ? 'That lets the same person or topping be used again. ' : 'That multiplies n by k. ') + base;
+  });
+}
+function qProb(){
+  const c = pick([
+    () => [`You guess a 3-digit lock code (0–9 on each dial) at random. What is the probability you’re right first time?`, 1 / 1000, '10 × 10 × 10 = 1000 codes, one correct: P = 1/1000.'],
+    () => { const n = ri(3, 5); return [`${n} friends line up in a random order. What is the probability that Ana is first?`, 1 / n, `Ana is equally likely to be in any of the ${n} positions, so P = 1/${n}. (Or: (${n} − 1)! of the ${n}! orders start with Ana.)`]; },
+    () => [`Three coins are flipped. What is the probability of exactly two heads?`, 3 / 8, '2 × 2 × 2 = 8 equally likely outcomes; HHT, HTH and THH have exactly two heads: P = 3/8.'],
+    () => { const n = ri(4, 6); return [`A team of 2 is picked at random from ${n} friends, including Ana and Ben. What is the probability the team is exactly Ana and Ben?`, 1 / choose(n, 2), `There are ${n} × ${n - 1} ÷ 2 = ${choose(n, 2)} possible teams and one of them is {Ana, Ben}: P = 1/${choose(n, 2)}.`]; },
+    () => [`An outfit is chosen at random from 3 shirts (one is red) and 4 pairs of pants. What is P(red shirt)?`, 1 / 3, '12 outfits, 4 of them with the red shirt: P = 4/12 = 1/3.'],
+    () => [`A two-digit code uses the digits 0–9 (repeats allowed). What is the probability both digits are the same?`, 1 / 10, '100 codes, 10 with matching digits (00, 11, …, 99): P = 10/100 = 1/10.']
+  ])();
+  Object.assign(qq, { ans: c[1], why: c[2], prob: true }); $('qText').innerHTML = c[0] + ' <span style="color:var(--muted)">(fraction, decimal or percent)</span>'; $('qL1').textContent = 'P =';
+}
+function qTrap(){
+  const c = pick([
+    () => ({ s: 'Sam has 4 hats and 3 scarves. He says he can make 7 different hat-and-scarf combinations. What’s wrong?', ok: 'He added: it’s 4 × 3 = 12', bad: ['Nothing, 7 is right', 'It should be 4³ = 64', 'It should be 4 × 3 ÷ 2 = 6'], why: 'Each hat goes with every scarf: 4 × 3 = 12. Adding counts choosing a hat OR a scarf.' }),
+    () => ({ s: 'How many handshakes happen when 6 people each shake hands once with everyone else?', ok: '15', bad: ['30', '36', '720'], why: '6 × 5 = 30 counts each handshake twice (Ana–Ben and Ben–Ana are the same handshake): 30 ÷ 2 = 15. It’s “6 choose 2”.' }),
+    () => ({ s: 'In how many ways can 3 different prizes go to 3 of 10 students, if no one can win twice?', ok: '10 × 9 × 8 = 720', bad: ['10 × 10 × 10 = 1000', '10 + 9 + 8 = 27', '10 × 9 × 8 ÷ 6 = 120'], why: 'Different prizes, so order matters; no one wins twice, so the choices drop: 10 × 9 × 8 = 720. 1000 would let one student win all three.' }),
+    () => ({ s: 'Which situation is a combination (order doesn’t matter)?', ok: 'Choosing 5 cards for a poker hand', bad: ['Setting a 4-digit PIN', 'Awarding gold, silver and bronze', 'Arranging books on a shelf'], why: 'A hand of cards is the same hand whatever order you were dealt it. PINs, podiums and shelves all care about order.' }),
+    () => ({ s: 'What is 5!?', ok: '120', bad: ['5', '25', '15'], why: '5! = 5 × 4 × 3 × 2 × 1 = 120, the number of ways to arrange 5 things in a row. (5 + 4 + 3 + 2 + 1 = 15 is a different thing.)' })
+  ])();
+  const opts = shuffle([c.ok, ...c.bad]), idx = opts.indexOf(c.ok);
+  $('qText').innerHTML = c.s; qChoices(opts, idx, () => c.why);
+}
+let lastType = null;
+function qNew(){
+  qReset();
+  let t; do { t = pick(['mult', 'order', 'prob', 'trap']); } while (t === lastType);
+  lastType = t; qq = { type: t, counted: false }; $('qTitle').textContent = qTitles[t];
+  ({ mult: qMult, order: qOrder, prob: qProb, trap: qTrap })[t]();
+}
+$('qCheck').onclick = () => {
+  $('qErr').textContent = '';
+  const raw = $('q1').value, v = qq.prob ? parseP(raw) : parseNum(raw.replace(/,/g, '').trim());
+  if (raw.trim() === '' || !isFinite(v)){ $('qErr').textContent = qq.prob ? 'Type a probability: a fraction (1/8), a decimal (0.125) or a percent (12.5%).' : 'Type a whole number.'; return; }
+  const ok = qq.prob ? Math.abs(v - qq.ans) < Math.max(0.0015, qq.ans * 0.002) || (Math.abs(v - qq.ans) < 0.006 && !/\//.test(raw)) : v === qq.ans;
+  let why = qq.why;
+  if (!ok){ const t = (qq.traps || []).find(([x]) => x === v); if (t) why = t[1] + ' ' + why; else if (qq.prob && v > 1) why = 'A probability can’t be more than 1. ' + why; }
+  qScore(ok); qFeedback(ok, why);
+};
+$('q1').addEventListener('keydown', e => { if (e.key === 'Enter') $('qCheck').click(); });
+$('q1').addEventListener('input', () => $('qErr').textContent = '');
+$('qShow').onclick = () => {
+  qScore(false);
+  if (qq.correctIdx !== undefined){ [...$('qChoice').children].forEach((b, j) => { if (j === qq.correctIdx) b.classList.add('right'); }); qFeedback(false, qq.explainFn(qq.correctIdx)); return; }
+  $('q1').value = qq.prob ? frc(qq.ans) : String(qq.ans); $('qFb').className = 'feedback bad'; $('qFb').innerHTML = '<b>Answer filled in.</b> ' + qq.why;
+};
+$('qNew').onclick = qNew;
+
+/* =====================================================================
+   6. START
+   ===================================================================== */
+selectOnFocus(['xN', 'xK', 'q1']);
+$('tPresets').children[0].click();
+xSetMode(0);
+qNew();
+</script>
+</body></html>
