@@ -1,0 +1,1003 @@
+<style>
+/* ===================== Page-specific styles (9.B.4) ===================== */
+/* same event colours as 9.B.3: A (what we're told) = blue, B = yellow, both = green, neither = grey */
+:root{ --a:#2F78D0; --a-bg:#D6E6FA; --b:#C98F00; --b-bg:#FBEBB8; --ab:#2E9E5B; --ab-bg:#CDEBD8; --nn:#8A8F98; --nn-bg:#ECEDEF; --red:#D8443A; --yel:#E0A800; --gold:#C99700; --wht:#F4F1EA; }
+@media (prefers-color-scheme:dark){ :root{ --a:#7FB0F0; --a-bg:#1E3552; --b:#FFD24D; --b-bg:#4A3D12; --ab:#6FD08F; --ab-bg:#1C4430; --nn:#9AA0AA; --nn-bg:#2A2D33; --red:#F07B72; --yel:#FFD24D; --gold:#FFD24D; --wht:#E8E4DA; } }
+.ka{color:var(--a);font-weight:700}.kb{color:var(--b);font-weight:700}.kab{color:var(--ab);font-weight:700}
+svg{user-select:none;-webkit-user-select:none}
+svg text.lab,svg text.labS{fill:var(--ink)}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:10px;align-items:start}
+.split svg{width:100%;height:auto;display:block;background:var(--bg);border:1px solid var(--line);border-radius:10px}
+.mainsplit{display:grid;grid-template-columns:600px 1fr;gap:16px;margin-top:10px;align-items:start}
+.mainsplit svg{width:100%;height:auto;display:block;background:var(--bg);border:1px solid var(--line);border-radius:10px}
+.panel{border:1px solid var(--line);border-radius:10px;background:var(--bg);padding:12px 14px;font-size:15px;line-height:1.65}
+.panel .big{font:700 21px var(--mono);margin:6px 0}
+.chips{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:8px 0 0}
+.chips .lbl{font:600 12px var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-right:4px;min-width:70px}
+.chips button.on{background:var(--accent-bg);border-color:var(--accent);color:var(--accent)}
+.chips.ca button.on{background:var(--a-bg);border-color:var(--a);color:var(--ink)}
+.chips.cb button.on{background:var(--b-bg);border-color:var(--b);color:var(--ink)}
+table.tw{border-collapse:collapse;font:14px var(--mono);margin:8px 0}
+table.tw th,table.tw td{border:1px solid var(--line);padding:5px 10px;text-align:center}
+table.tw th{font:600 13px var(--sans);background:var(--paper)}
+table.tw td.den{background:var(--a-bg)}
+table.tw td.num{background:var(--ab-bg);font-weight:700;outline:2px solid var(--ink);outline-offset:-2px}
+table.tw td.tot{color:var(--muted)} table.tw td.tot.den{color:var(--ink);font-weight:700}
+table.tw td.ghost{opacity:.3}
+.tsplit{display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:start;margin-top:10px}
+pre.code{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:12px 16px;overflow-x:auto;font:13.5px/1.6 var(--mono);margin:10px 0 16px}
+.traps{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:8px}
+.traps .t{border:1px solid var(--line);border-radius:10px;background:var(--bg);padding:10px}
+.traps .t h4{margin:0 0 4px;font:600 15px var(--sans)}
+.traps .t p{margin:6px 0 0;font-size:14.5px;line-height:1.5;color:var(--muted)}
+.traps svg{width:100%;height:auto;display:block}
+.qtext{font:17px/1.55 var(--serif);margin:4px 0 10px}
+.choice{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 0}.choice button{min-width:110px;text-align:left}
+.choice button.right{border-color:var(--ok);background:var(--ok-bg);color:var(--ok)}.choice button.wrong{border-color:var(--bad);background:var(--bad-bg);color:var(--bad)}
+#qPic svg{max-width:470px;width:100%;height:auto;display:block;margin:4px 0 8px;background:var(--bg);border:1px solid var(--line);border-radius:10px}
+</style>
+
+<!-- ===================== Top bar ===================== -->
+<div class="topbar"><div class="topbar-in">
+  <span class="brand">Math<b>Mastery</b></span>
+  <span class="crumbs">Chapter 9 · Probability › Basics</span>
+  <span class="pid">9.B.4</span>
+</div></div>
+
+<!-- ===================== Hero ===================== -->
+<header class="prose hero">
+  <div class="kicker">Chapter 9 · Probability</div>
+  <h1>Conditional Probability</h1>
+  <p class="dek">New information changes the odds. “Given that A happened” throws away every outcome where A didn’t, and the chance of B is recounted inside what’s left.</p>
+  <div class="tiers" aria-label="Tier">
+    <span class="tier on">Basics <small>you are here</small></span>
+    <span class="tier">Undergraduate</span>
+    <span class="tier">Masters</span>
+  </div>
+  <div class="goals">
+    <h3>On this page</h3>
+    <ul>
+      <li>Find a <b>conditional probability</b> P(B | A), read “B <b>given</b> A”, by shrinking the sample space to the <b>reduced sample space</b> A.</li>
+      <li>Read conditional probabilities from a two-way table, and handle draws <b>with</b> and <b>without replacement</b>.</li>
+      <li>Use a <b>tree diagram</b>: multiply along each <b>path</b>, then add the paths you want.</li>
+      <li>Tell P(B | A) from P(A | B), and see why a positive result on a good test can still mean you probably don’t have a rare condition.</li>
+    </ul>
+  </div>
+</header>
+
+<main>
+<!-- ===================== §1 ===================== -->
+<section class="prose">
+  <h2><span class="n">1</span>Being told something changes the chance</h2>
+  <p>Two dice are rolled behind a screen. The chance the first die shows 6 is 1/6. Now a friend peeks and says: “the total is 10 or more.” Only six pairs give a total that high: (4,6), (5,5), (6,4), (5,6), (6,5), (6,6). Every other outcome is ruled out. Of the six that remain, three have a 6 on the first die, so the chance is now 3/6 = ½.</p>
+  <p>That’s a <b>conditional probability</b>. We write it P(B | A) and read it “the probability of B <b>given</b> A”: the chance of B once we know A happened. The bar “|” means “given”. Knowing A shrinks the sample space to just the outcomes in A, the <b>reduced sample space</b>, and B is recounted inside it:</p>
+  <div class="math">\[ P(B \mid A) = \frac{\text{outcomes in both A and B}}{\text{outcomes in A}} = \frac{|A \text{ and } B|}{|A|}. \]</div>
+  <p>In the explorer, A (what we’re told) is blue and B is yellow, as in 9.B.3, and outcomes in both are <span class="kab">green</span>. Choose “P(B | A)” and everything outside A is crossed out. Press Play to watch the recount.</p>
+</section>
+<section class="wide">
+  <div class="card" id="zoom">
+    <div class="card-h"><span class="tag">Explore</span><h3>Zoom in on what you know</h3>
+      <span class="sub">Every cell is one equally likely outcome. Pick what you’re told (A) and what you want (B), then the probability to find.</span></div>
+    <div class="row" id="zPresets"></div>
+    <div class="desc" id="zDesc"></div>
+    <div class="chips ca" id="zA"></div>
+    <div class="chips cb" id="zB"></div>
+    <div class="chips" id="zOps"></div>
+    <div class="row" style="margin-top:8px"><button class="primary" id="zPlay">Play</button><button id="zReset">Reset</button></div>
+    <div class="mainsplit"><svg id="zG" viewBox="0 0 600 400" role="img" aria-label="Grid of outcomes"></svg><div class="panel" id="zPanel"></div></div>
+    <div class="readout" id="zOut"></div>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--a-bg);border:2px solid var(--a)"></i><span>in A (what we’re told)</span></span>
+      <span><i class="sw" style="background:var(--b-bg);border:2px solid var(--b)"></i><span>in B only</span></span>
+      <span><i class="sw" style="background:var(--ab-bg);border:2px solid var(--ab)"></i><span>in both</span></span>
+      <span><i class="sw" style="background:var(--bg);border:2px solid var(--line);opacity:.4"></i><span>faded with ✕: ruled out by what we know</span></span>
+      <span><i class="sw" style="background:var(--ink)"></i><span>outline: counted on top of the fraction</span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §2 ===================== -->
+<section class="prose">
+  <h2><span class="n">2</span>From counts to a formula</h2>
+  <p>Divide the top and bottom of the count by the total number of outcomes and you get probabilities instead of counts:</p>
+  <div class="math">\[ P(B \mid A) = \frac{P(A \text{ and } B)}{P(A)}. \]</div>
+  <p>In a two-way table, “given A” means: use only A’s row. The row total is the new denominator. In the class survey, 12 students play music and 7 of them also play a sport, so P(sport | music) = 7/12 ≈ 0.58. Compare P(sport) = 18/30 = 0.6 for the whole class: knowing a student plays music barely changes the chance, which fits what 9.B.3 found: sport and music are nearly <b>independent</b>. In fact independence means exactly P(B | A) = P(B): being told A doesn’t change the chance of B.</p>
+
+  <h2><span class="n">3</span>Without replacement</h2>
+  <p>Draw two marbles from a bag of 3 red and 2 white. If you put the first one back before drawing again, that’s drawing <b>with replacement</b>: the second draw is a fresh start, still 3/5 red. Usually you keep it, which is drawing <b>without replacement</b>, and then the second draw depends on the first. After a red, the bag holds 2 red and 2 white, so P(second red | first red) = 2/4 = ½. Try the “Two marbles” example above: the diagonal is crossed out because you can’t draw the same marble twice, leaving 5 × 4 = 20 equally likely ordered pairs.</p>
+  <p>Cards work the same way. P(first card is an ace) = 4/52; given that, only 3 aces are left among 51 cards, so P(second ace | first ace) = 3/51.</p>
+
+  <h2><span class="n">4</span>Tree diagrams</h2>
+  <p>Rearranging the formula gives the general <b>multiplication rule</b>, which works whether or not the events are independent:</p>
+  <div class="math">\[ P(A \text{ and } B) = P(A) \times P(B \mid A). \]</div>
+  <p>A <b>tree diagram</b> organises this. The first set of <b>branches</b> splits on A or not A, and each branch then splits on B or not B, labelled with the chance of B <em>given</em> the branch you’re on. Follow a <b>path</b> from the root to a leaf and multiply the numbers along it: that’s the chance of that whole story. The paths don’t overlap, so to find the chance of B overall you add every path that ends in B. Adding up the cases like this is called the <b>law of total probability</b>. The explorer below draws the tree beside 1,000 dots, one for each of 1,000 tries, so you can count instead of multiplying.</p>
+</section>
+<section class="wide">
+  <div class="card" id="tree">
+    <div class="card-h"><span class="tag">Explore</span><h3>Trees and 1,000 tries</h3>
+      <span class="sub">Set the first stage and the conditional chances of the second, then choose what to find. The tree, the dots and the table show the same answer.</span></div>
+    <div class="row" id="tPresets"></div>
+    <div class="desc" id="tDesc"></div>
+    <div class="inputs">
+      <label class="field"><span id="t1l">P(A)</span><input id="t1" type="text" inputmode="decimal" autocomplete="off" style="border-color:var(--a)"></label>
+      <label class="field"><span id="t2l">P(B | A)</span><input id="t2" type="text" inputmode="decimal" autocomplete="off" style="border-color:var(--ab)"></label>
+      <label class="field" id="t3f"><span id="t3l">P(B | not A)</span><input id="t3" type="text" inputmode="decimal" autocomplete="off" style="border-color:var(--b)"></label>
+      <div class="chips" id="tRep" style="margin:0 0 6px"></div>
+      <div class="eq" id="tNames" style="padding-bottom:10px"></div>
+    </div>
+    <div class="err" id="tErr"></div>
+    <div class="chips" id="tOps"></div>
+    <div class="split"><svg id="tT" viewBox="0 0 470 320" role="img" aria-label="Tree diagram"></svg><svg id="tD" viewBox="0 0 470 320" role="img" aria-label="1,000 tries as dots"></svg></div>
+    <div class="tsplit"><div id="tTab"></div><div class="readout" id="tOut" style="margin-top:8px"></div></div>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--ab)"></i><span>A and B</span></span>
+      <span><i class="sw" style="background:var(--a)"></i><span>A, not B</span></span>
+      <span><i class="sw" style="background:var(--b)"></i><span>not A, but B</span></span>
+      <span><i class="sw" style="background:var(--nn)"></i><span>neither</span></span>
+      <span><span>Thick branches and bright dots: the part being counted. Faded: ruled out.</span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §5 ===================== -->
+<section class="prose">
+  <h2><span class="n">5</span>P(A | B) is not P(B | A)</h2>
+  <p>Most people who play professional basketball are tall, but most tall people don’t play professional basketball. P(tall | pro player) is high; P(pro player | tall) is tiny. Swapping what’s given changes the denominator, and that changes everything.</p>
+  <p>This matters most for tests. Suppose 1% of people have a condition. A screening test catches it 90% of the time, but also comes back positive for 9% of people who don’t have it: a <b>false positive</b>. (A <b>false negative</b> is the opposite: a negative result for someone who does have it.) You test positive. What’s the chance you have the condition? Not 90%. Picture 1,000 people, which is called using <b>natural frequencies</b>: 10 have the condition and 9 of them test positive; 990 don’t, and about 89 of them test positive anyway. Of the 98 positives, only 9 have the condition, about 9%. The test is good, but the condition is rare: its <b>base rate</b> is low, so the false positives from the huge healthy group swamp the true ones. Choose the “Medical test” example and “P(A | B)” above to see it in dots.</p>
+  <p>A simulation of a million people agrees:</p>
+  <pre class="code"><code>import random                                      # Python's random-number tools
+people = 1_000_000                                 # simulate a million people
+positive = 0                                       # how many test positive
+sick_and_positive = 0                              # how many test positive AND have the condition
+for _ in range(people):                            # go through the people one at a time
+    has_it = random.random() &lt; 0.01                # 1% have the condition
+    if has_it:                                     # someone who has it...
+        test = random.random() &lt; 0.90              # ...tests positive 90% of the time
+    else:                                          # someone who doesn't have it...
+        test = random.random() &lt; 0.09              # ...still tests positive 9% of the time
+    positive += test                               # True counts as 1, False as 0
+    sick_and_positive += has_it and test           # positives who really have it
+print(sick_and_positive / positive)                # P(has it | positive): about 0.09, not 0.9</code></pre>
+  <p>This is why a positive screening result is usually followed by a second, different test. Turning P(B | A) into P(A | B) like this is Bayes’ theorem, which 9.U develops in full.</p>
+
+  <h2><span class="n">6</span>Traps</h2>
+</section>
+<section class="wide">
+  <div class="card" id="traps">
+    <div class="card-h"><span class="tag">Compare</span><h3>Easy to get wrong</h3></div>
+    <div class="traps">
+      <div class="t"><h4 style="color:var(--bad)">✕ Flipping the condition</h4><svg id="tr1" viewBox="0 0 300 220"></svg><p>P(positive | condition) = 90% describes the test. P(condition | positive) = 9% describes you after a positive result. Different denominators: the 10 people with the condition versus the 98 positives.</p></div>
+      <div class="t"><h4 style="color:var(--bad)">✕ Dividing by the wrong total</h4><svg id="tr2" viewBox="0 0 300 220"></svg><p>P(sport | music) uses only the 12 music students: 7/12. Dividing by the whole class, 7/30, gives P(sport and music) instead.</p></div>
+      <div class="t"><h4 style="color:var(--bad)">✕ Forgetting the first draw</h4><svg id="tr3" viewBox="0 0 300 220"></svg><p>Two cards: P(both aces) is not 4/52 × 4/52. After one ace is gone, 3 aces are left among 51 cards: 4/52 × 3/51 = 1/221.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §7 ===================== -->
+<section class="prose">
+  <h2><span class="n">7</span>Now, in symbols</h2>
+  <div class="math">\[ P(B \mid A) = \frac{P(A \cap B)}{P(A)} \quad (P(A) > 0), \qquad \text{equally likely outcomes: } P(B \mid A) = \frac{|A \cap B|}{|A|} \]</div>
+  <div class="math">\[ P(A \cap B) = P(A)\,P(B \mid A) = P(B)\,P(A \mid B) \]</div>
+  <div class="math">\[ P(B) = P(A)\,P(B \mid A) + P(A^{c})\,P(B \mid A^{c}) \qquad \text{(law of total probability: add the paths)} \]</div>
+  <div class="math">\[ A, B \text{ independent} \iff P(B \mid A) = P(B), \qquad P(A \mid B) = \frac{P(A)\,P(B \mid A)}{P(B)} \]</div>
+  <p>The last formula is Bayes’ theorem: it is just “path to A and B” ÷ “all paths to B”, the calculation the tree does when you choose P(A | B).</p>
+</section>
+
+<!-- ===================== §8 ===================== -->
+<section class="prose">
+  <h2><span class="n">8</span>Where this goes</h2>
+  <ul class="goes">
+    <li><b>Next:</b> 9.B.5 Expected value weighs each outcome by its probability to find the long-run average, and 9.B.6 simulates chance with a computer.</li>
+    <li><b>Later in this book:</b> Bayes’ theorem and updating beliefs with evidence (9.U), conditional distributions and expectation (9.U), Markov chains, where the next step depends only on the current one (9.M), and classifiers in machine learning (chapter 15).</li>
+    <li><b>In the world:</b> medical screening, spam filters, weather forecasts that update through the day, insurance and safety records, and courtroom evidence, where swapping P(evidence | innocent) for P(innocent | evidence) is a famous error.</li>
+  </ul>
+</section>
+
+<!-- ===================== §9 ===================== -->
+<section class="prose">
+  <h2><span class="n">9</span>Words to know</h2>
+  <div class="vocab">
+    <div class="term"><b>Conditional probability</b>The chance of an event once you know another happened.</div>
+    <div class="term"><b>Given</b>“We know this happened”. Written with a bar: P(B | A).</div>
+    <div class="term"><b>P(B | A)</b>The probability of B given A: |A and B| ÷ |A|.</div>
+    <div class="term"><b>Reduced sample space</b>What’s left of the sample space once the given information rules outcomes out.</div>
+    <div class="term"><b>With replacement</b>Each item is put back before the next draw: draws don’t affect each other.</div>
+    <div class="term"><b>Without replacement</b>Items are kept: later draws depend on earlier ones.</div>
+    <div class="term"><b>Tree diagram</b>Branches for each stage, labelled with conditional probabilities.</div>
+    <div class="term"><b>Branch / path</b>One split of the tree / a route from the root to a leaf.</div>
+    <div class="term"><b>Multiplication rule</b>P(A and B) = P(A) × P(B | A): multiply along a path.</div>
+    <div class="term"><b>Law of total probability</b>Add the paths: P(B) = P(A)P(B | A) + P(not A)P(B | not A).</div>
+    <div class="term"><b>Independent</b>P(B | A) = P(B): knowing A doesn’t change the chance of B.</div>
+    <div class="term"><b>False positive / false negative</b>A test says yes when the truth is no / says no when the truth is yes.</div>
+    <div class="term"><b>Base rate</b>How common something is before any test or evidence: P(A).</div>
+    <div class="term"><b>Natural frequencies</b>Counts out of a round number (“9 of 98 people”) instead of probabilities.</div>
+  </div>
+</section>
+
+<!-- ===================== Quiz ===================== -->
+<section class="prose"><h2><span class="n">10</span>Check yourself</h2>
+  <p>Four kinds of questions: read a two-way table, draw without replacement, follow a tree, and spot the trap. Type answers as a fraction, a decimal or a percent.</p>
+</section>
+<section class="wide">
+  <div class="card" id="quiz">
+    <div class="card-h"><span class="tag">Quiz</span><h3 id="qTitle"></h3><span class="score" id="score">Score: 0 / 0</span></div>
+    <div class="qtext" id="qText"></div>
+    <div id="qPic"></div>
+    <div class="choice" id="qChoice"></div>
+    <div class="inputs" id="qIn">
+      <label class="field"><span id="qL1">P =</span><input id="q1" type="text" autocomplete="off" style="width:160px;border-color:var(--ab)"></label>
+      <div class="row" style="margin:0"><button class="primary" id="qCheck">Check</button></div>
+    </div>
+    <div class="row" style="margin:10px 0 0"><button id="qShow">Show answer</button><button id="qNew">New question</button></div>
+    <div class="err" id="qErr"></div>
+    <div class="feedback" id="qFb" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ===================== Pager (filled in by the shared navigation) ===================== -->
+<nav class="wide">
+  <div class="pager"></div>
+  <div class="meta">9.B.4 · Prerequisites: 9.B.1 (probability), 9.B.3 (and, or, not; independence) · Leads to: 9.B.5 (expected value), 9.U (Bayes’ theorem)</div>
+</nav>
+</main>
+
+<script>
+/* =====================================================================
+   1. HELPERS (shared with the other pages)
+   ===================================================================== */
+const NS = 'http://www.w3.org/2000/svg';
+const $ = id => document.getElementById(id);
+function mk(tag, attrs, parent){                           // create an SVG element with attributes
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function txt(parent, x, y, s, cls, extra){                 // create an SVG text element
+  extra = Object.assign({}, extra || {});
+  if (extra['text-anchor']){ extra.style = (extra.style ? extra.style + ';' : '') + 'text-anchor:' + extra['text-anchor']; delete extra['text-anchor']; }
+  const t = mk('text', Object.assign({ x, y, class: cls || '' }, extra), parent);
+  t.textContent = s;
+  return t;
+}
+// round for display, use a true minus sign, never show −0
+function num(x, d){ if (d === undefined) d = 2; const r = Math.round(x * Math.pow(10, d)) / Math.pow(10, d); return r === 0 ? '0' : (r < 0 ? '−' : '') + String(Math.abs(r)); }
+const pn = x => x < 0 ? `(${num(x)})` : num(x);              // wrap negatives in brackets when substituting
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const ri = (a, b) => a + Math.floor(Math.random() * (b - a + 1));   // random whole number from a to b
+const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+function parseNum(s){                                     // integers, decimals, minus, simple fractions
+  s = String(s).trim().replace(/[−–]/g, '-').replace(/\s+/g, '');
+  if (/^-?\d+(\.\d+)?$|^-?\.\d+$/.test(s)) return parseFloat(s);
+  const m = s.match(/^(-?\d+)\/(\d+)$/);
+  if (m && +m[2] !== 0) return +m[1] / +m[2];
+  return NaN;
+}
+function selectOnFocus(ids){ ids.forEach(id => $(id).addEventListener('focus', e => e.target.select())); }
+function buttons(boxId, list, onPick){                    // a row of preset buttons; returns a function that marks one as on
+  list.forEach((p, i) => { const b = document.createElement('button'); b.className = 'preset'; b.textContent = p.n; b.onclick = () => onPick(i); $(boxId).appendChild(b); });
+  return i => [...$(boxId).children].forEach((b, j) => b.classList.toggle('on', j === i));
+}
+function svgPt(svg, ev){                                  // mouse position in the SVG's own coordinates
+  const p = svg.createSVGPoint(); p.x = ev.clientX; p.y = ev.clientY;
+  return p.matrixTransform(svg.getScreenCTM().inverse());
+}
+const svgCss = document.createElement('style');
+svgCss.textContent = `
+  .grid{stroke:var(--line);stroke-width:1}
+  .axis{stroke:var(--ink);stroke-width:1.4;opacity:.7}
+  .tl{fill:var(--muted);font:500 11.5px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:3px}
+  .lab{font:700 14px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:5px}
+  .labS{font:600 12.5px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+  .cap{fill:var(--muted);font:600 12px var(--sans);letter-spacing:.06em;paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+  .oval{fill:var(--paper);stroke:var(--line);stroke-width:1.5}
+`;
+document.head.appendChild(svgCss);
+let clipN = 0;                                            // unique clip-path ids
+
+/* ---------- axes: a coordinate grid inside an SVG, with separate x and y scales ---------- */
+function axes(svg, W, H, b, o){
+  o = o || {};
+  svg.innerHTML = '';
+  const L = o.padL ?? 44, R = o.padR ?? 16, T = o.padT ?? 16, B = o.padB ?? 30;
+  const sx = (W - L - R) / (b.x1 - b.x0), sy = (H - T - B) / (b.y1 - b.y0);   // pixels per unit
+  const X = x => L + (x - b.x0) * sx, Y = y => T + (b.y1 - y) * sy;
+  const step = (s, px) => (o.half ? [0.5, 1, 2, 5, 10, 20, 50, 100] : [1, 2, 5, 10, 20, 50, 100]).find(k => k * s >= px) || 200;   // a round step at least px pixels wide
+  const xg = o.xg || step(sx, 9), yg = o.yg || step(sy, 9);        // grid-line spacing
+  const xt = o.xt || step(sx, 34), yt = o.yt || step(sy, 26);      // tick-label spacing
+  const gGrid = mk('g', {}, svg), id = 'clp' + (++clipN);
+  const cp = mk('clipPath', { id }, svg); mk('rect', { x: L, y: T, width: W - L - R, height: H - T - B }, cp);
+  const cg = mk('g', { 'clip-path': `url(#${id})` }, svg);         // clipped layer for curves
+  const m = mk('g', {}, svg), top = mk('g', {}, svg);              // free layer, then labels on top
+  const near = (v, s) => Math.abs(v / s - Math.round(v / s)) < 1e-6;
+  for (let x = Math.ceil(b.x0 / xg) * xg; x <= b.x1 + 1e-9; x += xg) mk('line', { x1: X(x), y1: T, x2: X(x), y2: H - B, class: 'grid' }, gGrid);
+  for (let y = Math.ceil(b.y0 / yg) * yg; y <= b.y1 + 1e-9; y += yg) mk('line', { x1: L, y1: Y(y), x2: W - R, y2: Y(y), class: 'grid' }, gGrid);
+  const ay = (b.y0 <= 0 && b.y1 >= 0) ? Y(0) : H - B;              // where the x-axis is drawn
+  const ax = (b.x0 <= 0 && b.x1 >= 0) ? X(0) : L;                  // where the y-axis is drawn
+  mk('line', { x1: L, y1: ay, x2: W - R, y2: ay, class: 'axis' }, gGrid);
+  mk('line', { x1: ax, y1: T, x2: ax, y2: H - B, class: 'axis' }, gGrid);
+  const fx = o.fx || (v => num(v)), fy = o.fy || (v => num(v));
+  for (let x = Math.ceil(b.x0 / xt) * xt; x <= b.x1 + 1e-9; x += xt){
+    if (Math.abs(x) < 1e-9 && ax === X(0) && !o.zeroX) continue;
+    txt(top, X(x), ay + 16, fx(x), 'tl', { 'text-anchor': 'middle' });
+  }
+  for (let y = Math.ceil(b.y0 / yt) * yt; y <= b.y1 + 1e-9; y += yt){
+    if (Math.abs(y) < 1e-9 && ay === Y(0)) continue;
+    txt(top, ax - 6, Y(y) + 4, fy(y), 'tl', { 'text-anchor': 'end' });
+  }
+  if (o.xT) txt(top, W - R - 2, ay - 8, o.xT, 'cap', { 'text-anchor': 'end' });
+  if (o.yT) txt(top, ax + 8, T + 12, o.yT, 'cap');
+  return { svg, X, Y, sx, sy, cg, m, top, b, L, R, T, B, W, H, ay, ax,
+           inv: (px, py) => [b.x0 + (px - L) / sx, b.y1 - (py - T) / sy] };
+}
+function dPath(P, pts){ return pts.map((p, i) => (i ? 'L' : 'M') + P.X(p[0]).toFixed(1) + ' ' + P.Y(p[1]).toFixed(1)).join(''); }
+// sample y = f(x) from a to b, breaking the curve where f is undefined or jumps
+function sample(f, a, b, n, ok){
+  const out = []; let cur = [];
+  for (let i = 0; i <= n; i++){
+    const x = a + (b - a) * i / n, y = (ok && !ok(x)) ? NaN : f(x);
+    if (!isFinite(y)){ if (cur.length > 1) out.push(cur); cur = []; continue; }
+    if (cur.length && Math.abs(y - cur[cur.length - 1][1]) > 40){ if (cur.length > 1) out.push(cur); cur = []; }
+    cur.push([x, y]);
+  }
+  if (cur.length > 1) out.push(cur);
+  return out;
+}
+function dot(P, x, y, col, o){                              // a filled (or open) point
+  o = o || {};
+  return mk('circle', { cx: P.X(x), cy: P.Y(y), r: o.r || 6, style: o.open ? `fill:var(--bg);stroke:${col};stroke-width:2.6` : `fill:${col};stroke:var(--bg);stroke-width:1.5` }, o.layer || P.m);
+}
+function vline(P, x, col, o){ o = o || {}; return mk('line', { x1: P.X(x), y1: o.y0 !== undefined ? P.Y(o.y0) : P.T, x2: P.X(x), y2: o.y1 !== undefined ? P.Y(o.y1) : P.H - P.B, style: `stroke:${col};stroke-width:${o.w || 2.5};${o.dash ? 'stroke-dasharray:' + o.dash : ''}` }, o.layer || P.m); }
+function hline(P, y, col, o){ o = o || {}; return mk('line', { x1: o.x0 !== undefined ? P.X(o.x0) : P.L, y1: P.Y(y), x2: o.x1 !== undefined ? P.X(o.x1) : P.W - P.R, y2: P.Y(y), style: `stroke:${col};stroke-width:${o.w || 2.5};${o.dash ? 'stroke-dasharray:' + o.dash : ''}` }, o.layer || P.m); }
+function arrowHead(g, x1, y1, x2, y2, col, size){            // a small triangle at (x2, y2) pointing away from (x1, y1)
+  const a = Math.atan2(y2 - y1, x2 - x1), s = size || 9;
+  const p = [[x2, y2], [x2 - s * Math.cos(a - 0.4), y2 - s * Math.sin(a - 0.4)], [x2 - s * Math.cos(a + 0.4), y2 - s * Math.sin(a + 0.4)]];
+  mk('polygon', { points: p.map(q => q.join(',')).join(' '), style: `fill:${col}` }, g);
+}
+
+/* ---------- arrow diagram: inputs in a left oval, outputs in a right oval, one arrow per pair ---------- */
+// pairs: [[in, out], ...]; o.ins / o.outs give the order (defaults: sorted values); o.fmt formats a value;
+// o.hl = input to highlight (others fade); o.lit = [in, out] arrow drawn thick; o.dead = inputs shown crossed out
+function arrowDiagram(svg, W, H, pairs, o){
+  o = o || {};
+  svg.innerHTML = '';
+  const fmt = o.fmt || (v => typeof v === 'number' ? num(v) : v);
+  const key = v => String(v);
+  const uniq = arr => { const s = new Set(), r = []; arr.forEach(v => { if (!s.has(key(v))){ s.add(key(v)); r.push(v); } }); return r; };
+  const srt = arr => arr.every(v => typeof v === 'number') ? arr.slice().sort((a, b) => a - b) : arr;
+  const ins = o.ins || srt(uniq(pairs.map(p => p[0]))), outs = o.outs || srt(uniq(pairs.map(p => p[1])));
+  const top = o.top ?? 34, bot = H - (o.bottom ?? 14);
+  const lx = W * 0.25, rx = W * 0.75, ow = Math.min(W * 0.17, 90);
+  mk('ellipse', { cx: lx, cy: (top + bot) / 2, rx: ow, ry: (bot - top) / 2, class: 'oval' }, svg);
+  mk('ellipse', { cx: rx, cy: (top + bot) / 2, rx: ow, ry: (bot - top) / 2, class: 'oval' }, svg);
+  txt(svg, lx, 18, o.inLab || 'INPUTS x', 'cap', { 'text-anchor': 'middle', style: 'fill:var(--in)' });
+  txt(svg, rx, 18, o.outLab || 'OUTPUTS y', 'cap', { 'text-anchor': 'middle', style: 'fill:var(--out)' });
+  const ypos = (i, n) => n === 1 ? (top + bot) / 2 : top + 26 + (bot - top - 52) * i / (n - 1);
+  const iy = {}, oy = {};
+  ins.forEach((v, i) => iy[key(v)] = ypos(i, ins.length));
+  outs.forEach((v, i) => oy[key(v)] = ypos(i, outs.length));
+  const cnt = {}; pairs.forEach(p => cnt[key(p[0])] = (cnt[key(p[0])] || 0) + 1);   // how many outputs each input has
+  const dx = Math.min(ow * 0.45, 34), fs = ins.length > 9 || outs.length > 9 ? 'labS' : 'lab';
+  const ga = mk('g', {}, svg), gd = mk('g', {}, svg);
+  pairs.forEach(p => {                                     // arrows
+    const k = key(p[0]), bad = cnt[k] > 1, faded = o.hl !== undefined && o.hl !== null && key(o.hl) !== k;
+    const lit = o.lit && key(o.lit[0]) === k && key(o.lit[1]) === key(p[1]);
+    const col = bad ? 'var(--no)' : 'var(--pt)';
+    const x1 = lx + dx + 8, y1 = iy[k], x2 = rx - dx - 9, y2 = oy[key(p[1])];
+    mk('line', { x1, y1, x2, y2, style: `stroke:${col};stroke-width:${lit ? 4.5 : 2.4};opacity:${faded ? .18 : 1}` }, ga);
+    if (!faded) arrowHead(ga, x1, y1, x2, y2, col, lit ? 12 : 10);
+  });
+  ins.forEach(v => {                                       // input dots and labels
+    const k = key(v), dead = o.dead && o.dead.map(key).includes(k), bad = cnt[k] > 1;
+    const faded = o.hl !== undefined && o.hl !== null && key(o.hl) !== k;
+    const col = dead ? 'var(--muted)' : bad ? 'var(--no)' : 'var(--in)';
+    mk('circle', { cx: lx + dx, cy: iy[k], r: o.hl !== undefined && key(o.hl) === k ? 8 : 6, style: `fill:${col};opacity:${faded ? .35 : 1}` }, gd);
+    const t = txt(gd, lx + dx - 12, iy[k] + 5, fmt(v), fs, { 'text-anchor': 'end', style: `fill:${col};opacity:${faded ? .45 : 1}${dead ? ';text-decoration:line-through' : ''}` });
+  });
+  outs.forEach(v => {                                      // output dots and labels
+    const k = key(v);
+    mk('circle', { cx: rx - dx, cy: oy[k], r: 6, style: 'fill:var(--out)' }, gd);
+    txt(gd, rx - dx + 12, oy[k] + 5, fmt(v), fs, { style: 'fill:var(--out)' });
+  });
+  return { ins, outs };
+}
+// group pairs by input: Map from input to its list of distinct outputs
+function byInput(pairs){
+  const m = new Map();
+  pairs.forEach(([x, y]) => { const k = String(x); if (!m.has(k)) m.set(k, { x, ys: [] }); const e = m.get(k); if (!e.ys.some(v => String(v) === String(y))) e.ys.push(y); });
+  return m;
+}
+const setStr = arr => '{' + arr.map(v => num(v)).join(', ') + '}';
+
+
+/* ---------- helpers for zoomable graphs (any scale) ---------- */
+const niceStep = raw => { const p = Math.pow(10, Math.floor(Math.log10(raw))), m = raw / p; return (m <= 1 ? 1 : m <= 2 ? 2 : m <= 5 ? 5 : 10) * p; };
+const decs = st => Math.max(0, -Math.floor(Math.log10(st) + 1e-9));
+function fmt(v, st){ const d = decs(st); const r = Number(v.toFixed(d)); return r === 0 ? '0' : (r < 0 ? '−' : '') + Math.abs(r).toFixed(d); }
+// a coordinate system with any box (tiny or huge), labelled ticks, a clipped layer for curves
+function ax2(svg, W, H, b, o){
+  o = o || {}; svg.innerHTML = '';
+  const L = o.padL ?? 52, R = o.padR ?? 14, T = o.padT ?? 14, B = o.padB ?? 28;
+  const sx = (W - L - R) / (b.x1 - b.x0), sy = (H - T - B) / (b.y1 - b.y0), X = x => L + (x - b.x0) * sx, Y = y => T + (b.y1 - y) * sy;
+  const gx = niceStep((b.x1 - b.x0) / 8), gy = niceStep((b.y1 - b.y0) / 7);
+  const g = mk('g', {}, svg), id = 'c' + Math.random().toString(36).slice(2);
+  const cp = mk('clipPath', { id }, svg); mk('rect', { x: L, y: T, width: W - L - R, height: H - T - B }, cp);
+  const cg = mk('g', { 'clip-path': `url(#${id})` }, svg), m = mk('g', {}, svg), top = mk('g', {}, svg);
+  for (let v = Math.ceil(b.x0 / gx) * gx; v <= b.x1 + gx * 1e-6; v += gx){ mk('line', { x1: X(v), y1: T, x2: X(v), y2: H - B, class: 'grid' }, g); txt(top, X(v), H - B + 16, o.fx ? o.fx(v) : fmt(v, gx), 'tl', { 'text-anchor': 'middle' }); }
+  for (let v = Math.ceil(b.y0 / gy) * gy; v <= b.y1 + gy * 1e-6; v += gy){ mk('line', { x1: L, y1: Y(v), x2: W - R, y2: Y(v), class: 'grid' }, g); txt(top, L - 6, Y(v) + 4, fmt(v, gy), 'tl', { 'text-anchor': 'end' }); }
+  if (b.y0 < 0 && b.y1 > 0) mk('line', { x1: L, y1: Y(0), x2: W - R, y2: Y(0), class: 'axis' }, g);
+  if (b.x0 < 0 && b.x1 > 0) mk('line', { x1: X(0), y1: T, x2: X(0), y2: H - B, class: 'axis' }, g);
+  mk('rect', { x: L, y: T, width: W - L - R, height: H - T - B, style: 'fill:none;stroke:var(--line2)' }, g);
+  if (o.xT) txt(top, W - R - 4, H - B - 6, o.xT, 'cap', { 'text-anchor': 'end' });
+  if (o.yT) txt(top, L + 6, T + 14, o.yT, 'cap');
+  return { X, Y, sx, sy, cg, m, top, b, L, R, T, B, W, H, inv: (px, py) => [b.x0 + (px - L) / sx, b.y1 - (py - T) / sy] };
+}
+// sample a curve across the box, breaking at undefined points, at listed jumps, and at big leaps
+function curve(P, f, o){
+  o = o || {}; const b = P.b, n = o.n || 900, brk = o.breaks || [], polys = []; let cur = [];
+  const lim = (b.y1 - b.y0) * 3;
+  for (let i = 0; i <= n; i++){
+    const x = b.x0 + (b.x1 - b.x0) * i / n, y = f(x);
+    const crossed = cur.length && brk.some(c => (cur[cur.length - 1][0] - c) * (x - c) <= 0);
+    if (!isFinite(y) || crossed || (cur.length && Math.abs(y - cur[cur.length - 1][1]) > lim)){ if (cur.length > 1) polys.push(cur); cur = []; if (!isFinite(y)) continue; }
+    cur.push([x, Math.max(b.y0 - lim, Math.min(b.y1 + lim, y))]);
+  }
+  if (cur.length > 1) polys.push(cur);
+  polys.forEach(p => mk('path', { d: dPath(P, p), style: `fill:none;stroke:${o.col || 'var(--cv)'};stroke-width:${o.w || 3};${o.dash ? 'stroke-dasharray:' + o.dash : ''}` }, P.cg));
+}
+const holeAt = (P, x, y, col) => mk('circle', { cx: P.X(x), cy: P.Y(y), r: 6, style: `fill:var(--bg);stroke:${col || 'var(--cv)'};stroke-width:2.5` }, P.m);
+const dotAt = (P, x, y, col, r) => mk('circle', { cx: P.X(x), cy: P.Y(y), r: r || 6, style: `fill:${col || 'var(--cv)'};stroke:var(--bg);stroke-width:1.5` }, P.m);
+const sig = v => !isFinite(v) ? (v > 0 ? '∞' : v < 0 ? '−∞' : 'undefined') : Math.abs(v) >= 1e5 ? v.toExponential(2).replace('-', '−') : num(v, 6);
+function parseLim(s){
+  const t = String(s).trim().toLowerCase().replace(/\s+/g, '').replace(/[−–]/g, '-');
+  if (/^(dne|none|doesnotexist|noLimit|nolimit|no)$/i.test(t)) return 'DNE';
+  if (/^\+?(inf|infinity|∞|oo)$/.test(t)) return Infinity;
+  if (/^-(inf|infinity|∞|oo)$/.test(t)) return -Infinity;
+  return parseNum(s);
+}
+
+const minus = s => String(s).replace(/(^|[\s(,=>→\/·+×])-(\d)/g, '$1−$2');
+const r4 = v => Number((Math.abs(v) < 1e-300 ? 0 : v).toPrecision(5));
+const SUP = k => String(k).replace(/-/g, '⁻').replace(/\d/g, d => '⁰¹²³⁴⁵⁶⁷⁸⁹'[d]);
+const sci = v => { if (v === 0) return '0'; const a = Math.abs(v); if (a >= 1e-3 && a < 1e7) return minus(String(r4(v))); let e = Math.floor(Math.log10(a)); if (Math.abs(v / Math.pow(10, e)) >= 9.995) e++; const m = v / Math.pow(10, e); return minus(`${m.toFixed(2)}×10${SUP(e)}`); };
+const gcd = (a, b) => b ? gcd(b, a % b) : Math.abs(a);
+function frc(x){ if (Math.abs(x - Math.round(x)) < 1e-9) return num(Math.round(x)); for (let d = 2; d <= 10000; d++){ const n = x * d; if (Math.abs(n - Math.round(n)) < 1e-9 * d && gcd(Math.round(n), d) === 1) return (x < 0 ? '−' : '') + Math.abs(Math.round(n)) + '/' + d; } return sci(x); }
+// a readable value: whole numbers with commas, otherwise 4–5 significant figures
+const big = v => Math.abs(v) >= 1e7 ? sci(v) : Math.abs(v - Math.round(v)) < 1e-9 ? Math.round(v).toLocaleString().replace('-', '−') : minus(String(r4(v)));
+
+const pct = p => num(p * 100, 1) + '%';                                    // 0.25 -> "25%"
+const dec = p => num(p, 3);                                                // 0.16666 -> "0.167"
+const fr = (k, n) => { const g = gcd(k, n) || 1; return n === 0 ? '0' : k === 0 ? '0' : k === n ? '1' : `${k / g}/${n / g}`; };   // reduced fraction
+function word(p){                                                          // the word on the probability scale
+  if (p <= 1e-12) return 'impossible'; if (p >= 1 - 1e-12) return 'certain';
+  if (Math.abs(p - 0.5) < 1e-12) return 'even chance'; return p < 0.5 ? 'unlikely' : 'likely';
+}
+// parse a probability typed as a fraction, a decimal or a percent
+function parseP(s){ s = String(s).trim().replace(/−/g, '-'); if (/%$/.test(s)){ const v = parseNum(s.slice(0, -1)); return v / 100; } return parseNum(s); }
+
+// the probability scale: a 0-to-1 bar with the five words and a marker at p
+function scaleBar(svg, W, p, o){
+  o = o || {}; svg.innerHTML = ''; const L = 18, R = W - 18, y = 34, X = v => L + v * (R - L);
+  mk('rect', { x: L, y: y - 7, width: R - L, height: 14, rx: 7, style: 'fill:var(--paper);stroke:var(--line)' }, svg);
+  mk('rect', { x: L, y: y - 7, width: (R - L) / 2, height: 14, rx: 7, style: 'fill:var(--line);opacity:.5' }, svg);
+  [[0, '0'], [0.25, '¼'], [0.5, '½'], [0.75, '¾'], [1, '1']].forEach(([v, l]) => { mk('line', { x1: X(v), y1: y - 10, x2: X(v), y2: y + 10, style: 'stroke:var(--muted);stroke-width:1.3' }, svg); txt(svg, X(v), y + 24, l, 'tl', { 'text-anchor': 'middle' }); });
+  [[0, 'impossible', 'start'], [0.25, 'unlikely', 'middle'], [0.5, 'even', 'middle'], [0.75, 'likely', 'middle'], [1, 'certain', 'end']].forEach(([v, l, a]) => txt(svg, X(v) + (a === 'start' ? -4 : a === 'end' ? 4 : 0), y + 44, l, 'cap', { 'text-anchor': a }));
+  if (p !== null && isFinite(p)){
+    const x = X(clamp(p, 0, 1));
+    mk('path', { d: `M${x} ${y - 8} l-8 -14 h16 z`, style: `fill:${o.col || 'var(--hit)'}` }, svg);
+    txt(svg, clamp(x, L + 14, R - 14), y - 25, o.lab || '', 'labS', { 'text-anchor': 'middle', style: `fill:${o.col || 'var(--hit)'}` });
+  }
+}
+
+/* ---------- small pictures: die faces, coins, cards, marbles ---------- */
+const PIPS = { 1: [[0, 0]], 2: [[-1, -1], [1, 1]], 3: [[-1, -1], [0, 0], [1, 1]], 4: [[-1, -1], [1, -1], [-1, 1], [1, 1]], 5: [[-1, -1], [1, -1], [0, 0], [-1, 1], [1, 1]], 6: [[-1, -1], [1, -1], [-1, 0], [1, 0], [-1, 1], [1, 1]] };
+function dieFace(g, cx, cy, s, n, o){                  // a die face of side s centred at (cx, cy)
+  o = o || {};
+  mk('rect', { x: cx - s / 2, y: cy - s / 2, width: s, height: s, rx: s * 0.18, style: `fill:${o.fill || 'var(--paper)'};stroke:${o.stroke || 'var(--ink)'};stroke-width:${o.sw || 1.6}` }, g);
+  (PIPS[n] || []).forEach(([a, b]) => mk('circle', { cx: cx + a * s * 0.26, cy: cy + b * s * 0.26, r: s * 0.085, style: `fill:${o.pip || 'var(--ink)'}` }, g));
+}
+function coin(g, cx, cy, r, face, o){                  // a coin showing H or T
+  o = o || {};
+  mk('circle', { cx, cy, r, style: `fill:${face === 'H' ? 'var(--yel)' : 'var(--paper)'};stroke:${o.stroke || 'var(--gold)'};stroke-width:${o.sw || 2}` }, g);
+  txt(g, cx, cy + r * 0.36, face, '', { 'text-anchor': 'middle', style: `font:700 ${r}px var(--sans);fill:var(--ink)` });
+}
+function marble(g, cx, cy, r, col){ mk('circle', { cx, cy, r, style: `fill:${col};stroke:var(--ink);stroke-width:1;opacity:.95` }, g); mk('circle', { cx: cx - r * 0.35, cy: cy - r * 0.35, r: r * 0.25, style: 'fill:#fff;opacity:.55' }, g); }
+const SUITS = ['♠', '♥', '♦', '♣'], RANKS = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+function card(g, x, y, w, h, r, s){                    // a playing card: rank r (0-12) of suit s (0-3)
+  const col = s === 1 || s === 2 ? 'var(--red)' : 'var(--ink)';
+  mk('rect', { x, y, width: w, height: h, rx: 4, style: 'fill:var(--paper);stroke:var(--muted);stroke-width:1' }, g);
+  txt(g, x + w / 2, y + h * 0.42, RANKS[r], '', { 'text-anchor': 'middle', style: `font:700 ${w * 0.34}px var(--sans);fill:${col}` });
+  txt(g, x + w / 2, y + h * 0.82, SUITS[s], '', { 'text-anchor': 'middle', style: `font:${w * 0.38}px var(--sans);fill:${col}` });
+}
+// a spinner: sectors [{p, col, l}], highlighted indices hi, optional pointer angle (radians, 0 = up, clockwise)
+function spinner(g, cx, cy, r, secs, o){
+  o = o || {}; let a = 0;
+  secs.forEach((s, i) => {
+    const a2 = a + s.p * 2 * Math.PI, P = t => [cx + r * Math.sin(t), cy - r * Math.cos(t)], [x1, y1] = P(a), [x2, y2] = P(a2);
+    const big = a2 - a > Math.PI ? 1 : 0, on = o.hi ? o.hi.has(i) : false;
+    const path = mk('path', { d: s.p >= 0.9999 ? `M${cx - r} ${cy}a${r} ${r} 0 1 0 ${2 * r} 0a${r} ${r} 0 1 0 ${-2 * r} 0` : `M${cx} ${cy}L${x1} ${y1}A${r} ${r} 0 ${big} 1 ${x2} ${y2}Z`, style: `fill:${s.col};stroke:${on ? 'var(--hit)' : 'var(--bg)'};stroke-width:${on ? 4 : 2};opacity:${o.hi && !on ? 0.3 : 0.9}` }, g);
+    if (o.click) { path.classList.add('cellg'); path.addEventListener('click', () => o.click(i)); }
+    const m = (a + a2) / 2, lr = r * (s.p < 0.2 ? 0.72 : 0.6);
+    if (s.l) txt(g, cx + lr * Math.sin(m), cy - lr * Math.cos(m) + 6, s.l, 'lab', { 'text-anchor': 'middle', style: 'pointer-events:none' });
+    a = a2;
+  });
+  if (o.ptr !== undefined && o.ptr !== null){
+    const t = o.ptr, px = cx + r * 0.92 * Math.sin(t), py = cy - r * 0.92 * Math.cos(t);
+    mk('line', { x1: cx, y1: cy, x2: px, y2: py, style: 'stroke:var(--ink);stroke-width:5;stroke-linecap:round' }, g);
+    arrowHead(g, cx, cy, px + 6 * Math.sin(t), py - 6 * Math.cos(t), 'var(--ink)', 12);
+    mk('circle', { cx, cy, r: 8, style: 'fill:var(--ink)' }, g);
+  }
+}
+
+const range = n => [...Array(n).keys()];                                    // [0, 1, ..., n-1]
+const fracK = (k, n) => fr(k, n) === `${k}/${n}` ? `${k}/${n}` : `${k}/${n} = ${fr(k, n)}`;   // "6/36 = 1/6"
+// a probability shown neatly: short decimals as decimals, others as a fraction (1/12)
+const fmtP = p => Math.abs(p * 1000 - Math.round(p * 1000)) < 1e-6 ? num(p, 3) : frc(p);
+// which of the four regions an outcome is in: both, A only, B only, neither
+const region = (inA, inB) => inA && inB ? 'ab' : inA ? 'a' : inB ? 'b' : 'n';
+// which regions each "show" option keeps bright
+const OPS = [
+  { k: 'A', n: 'A', on: ['ab', 'a'] }, { k: 'B', n: 'B', on: ['ab', 'b'] },
+  { k: 'and', n: 'A and B', on: ['ab'] }, { k: 'or', n: 'A or B', on: ['a', 'ab', 'b'] },
+  { k: 'notA', n: 'not A', on: ['b', 'n'] }, { k: 'neither', n: 'neither', on: ['n'] },
+  { k: 'one', n: 'exactly one', on: ['a', 'b'] }
+];
+const RCOL = { a: 'var(--a)', b: 'var(--b)', ab: 'var(--ab)', n: 'var(--nn)' };            // strong colours
+const RBG = { a: 'var(--a-bg)', b: 'var(--b-bg)', ab: 'var(--ab-bg)', n: 'var(--bg)' };    // light tints for grid cells
+// a row of chip buttons with a label; returns a function that marks one as on
+function chipRow(boxId, label, names, onPick){
+  const box = $(boxId); box.innerHTML = `<span class="lbl">${label}</span>`;
+  names.forEach((n, i) => { const b = document.createElement('button'); b.innerHTML = n; b.onclick = () => onPick(i); box.appendChild(b); });
+  return i => [...box.querySelectorAll('button')].forEach((b, j) => b.classList.toggle('on', j === i));
+}
+// the two-way table: v = {ab, a, b, n} region values, tot = {A, nA, B, nB, all}, on = regions to highlight, f = formatter
+function twTable(v, tot, nameA, nameB, on, f){
+  const td = r => `<td class="${on.includes(r) ? 'on-' + r : ''}">${f(v[r])}</td>`;
+  return `<table class="tw"><tr><th></th><th><span class="kb">B</span>${nameB ? ': ' + nameB : ''}</th><th>not B</th><th>Total</th></tr>
+    <tr><th><span class="ka">A</span>${nameA ? ': ' + nameA : ''}</th>${td('ab')}${td('a')}<td class="tot">${f(tot.A)}</td></tr>
+    <tr><th>not A</th>${td('b')}${td('n')}<td class="tot">${f(tot.nA)}</td></tr>
+    <tr><th>Total</th><td class="tot">${f(tot.B)}</td><td class="tot">${f(tot.nB)}</td><td class="tot">${f(tot.all)}</td></tr></table>`;
+}
+
+const ZOPS = [{ k: 'B', n: 'P(B)' }, { k: 'BgA', n: 'P(B | A)' }, { k: 'AgB', n: 'P(A | B)' }, { k: 'and', n: 'P(A and B)' }];
+// a two-way table: v = {ab, a, b, n}; num = cells on top of the fraction; den = cells in the denominator; f = formatter
+function tw2(v, nameA, nameB, num, den, f, ghost){
+  const tot = { A: v.ab + v.a, nA: v.b + v.n, B: v.ab + v.b, nB: v.a + v.n, all: v.ab + v.a + v.b + v.n };
+  const cls = k => num.includes(k) ? 'num' : den.includes(k) ? 'den' : (ghost || []).includes(k) ? 'ghost' : '';
+  const td = (k, val, tot) => `<td class="${tot ? 'tot ' : ''}${cls(k)}">${f(val)}</td>`;
+  return `<table class="tw"><tr><th></th><th><span class="kb">B</span>${nameB ? ': ' + nameB : ''}</th><th>not B</th><th>Total</th></tr>
+    <tr><th><span class="ka">A</span>${nameA ? ': ' + nameA : ''}</th>${td('ab', v.ab)}${td('a', v.a)}${td('A', tot.A, 1)}</tr>
+    <tr><th>not A</th>${td('b', v.b)}${td('n', v.n)}${td('nA', tot.nA, 1)}</tr>
+    <tr><th>Total</th>${td('B', tot.B, 1)}${td('nB', tot.nB, 1)}${td('all', tot.all, 1)}</tr></table>`;
+}
+// which table cells form the numerator and the denominator for each question
+const ZNUM = { B: ['ab', 'b'], BgA: ['ab'], AgB: ['ab'], and: ['ab'] };
+const ZDEN = { B: ['all'], BgA: ['a', 'A'], AgB: ['b', 'B'], and: ['all'] };
+
+/* =====================================================================
+   2. ZOOM IN ON WHAT YOU KNOW (grid of equally likely outcomes)
+   ===================================================================== */
+const diceOuts = () => { const o = []; for (let a = 1; a <= 6; a++) for (let b = 1; b <= 6; b++) o.push({ a, b, row: a - 1, col: b - 1 }); return o; };
+const cardOuts = () => { const o = []; for (let s = 0; s < 4; s++) for (let r = 0; r < 13; r++) o.push({ s, r, row: s, col: r }); return o; };
+const BAG = ['R1', 'R2', 'R3', 'W1', 'W2'];                                  // 3 red and 2 white marbles
+const bagOuts = () => { const o = []; for (let i = 0; i < 5; i++) for (let j = 0; j < 5; j++) if (i !== j) o.push({ f: BAG[i], s: BAG[j], row: i, col: j }); return o; };
+const RAIN = [2, 3, 7, 8, 12, 15, 16, 19, 22, 23, 27, 28], WIND = [3, 8, 9, 15, 16, 21, 23, 28, 29];   // the same made-up June as 9.B.3
+const juneOuts = () => range(30).map(i => { const day = i + 1; return { day, row: Math.floor(i / 7), col: i % 7, rain: RAIN.includes(day), wind: WIND.includes(day), we: i % 7 >= 5 }; });
+const NAMES = ['Ava', 'Ben', 'Chen', 'Dev', 'Eli', 'Fay', 'Gus', 'Hana', 'Ira', 'Jo', 'Kai', 'Lena', 'Max', 'Nia', 'Omar', 'Pia', 'Quin', 'Rosa', 'Sam', 'Tia', 'Uma', 'Vic', 'Wes', 'Xia', 'Yara', 'Zed', 'Amir', 'Bea', 'Cole', 'Dina'];
+const SPORT = [0, 1, 2, 4, 5, 7, 9, 10, 13, 14, 15, 18, 20, 21, 24, 25, 28, 29], MUSIC = [1, 4, 6, 9, 11, 14, 17, 20, 22, 25, 27, 29], PET = [0, 3, 4, 7, 8, 11, 12, 15, 16, 19, 20, 23, 24, 27, 28];
+const classOuts = () => NAMES.map((nm, i) => ({ nm, row: Math.floor(i / 6), col: i % 6, sport: SPORT.includes(i), music: MUSIC.includes(i), pet: PET.includes(i) }));
+const mcol = m => m[0] === 'R' ? 'var(--red)' : 'var(--wht)';
+
+const ZP = [
+  { n: 'Two dice', d: 'A first die and a second die: 36 equally likely pairs. Rows are the first die, columns the second.', outs: diceOuts(), rows: 6, cols: 6, h: 54,
+    rowLabs: range(6).map(i => String(i + 1)), colLabs: range(6).map(i => String(i + 1)), rowT: '1st die', colT: '2nd die →',
+    cell: (g, o, x, y, w, h, fill) => { dieFace(g, x + w / 2 - 16, y + h / 2, 24, o.a, { fill, sw: 1.2 }); dieFace(g, x + w / 2 + 16, y + h / 2, 24, o.b, { fill, sw: 1.2 }); },
+    evs: [['the total is 10 or more', o => o.a + o.b >= 10], ['the first die is 6', o => o.a === 6], ['at least one 6', o => o.a === 6 || o.b === 6], ['doubles', o => o.a === o.b],
+          ['a total of 7', o => o.a + o.b === 7], ['the first die is 4', o => o.a === 4], ['the first die is even', o => o.a % 2 === 0]], A: 0, B: 1 },
+  { n: 'Deck of cards', d: 'One card from a shuffled deck. Someone tells you something about it.', outs: cardOuts(), rows: 4, cols: 13, h: 66,
+    cell: (g, o, x, y, w, h) => { const col = o.s === 1 || o.s === 2 ? 'var(--red)' : 'var(--ink)';
+      txt(g, x + w / 2, y + h * 0.45, RANKS[o.r], '', { 'text-anchor': 'middle', style: `font:700 15px var(--sans);fill:${col}` });
+      txt(g, x + w / 2, y + h * 0.8, SUITS[o.s], '', { 'text-anchor': 'middle', style: `font:17px var(--sans);fill:${col}` }); },
+    evs: [['a face card (J, Q, K)', o => o.r >= 10], ['a king', o => o.r === 12], ['a red card', o => o.s === 1 || o.s === 2], ['a heart', o => o.s === 1], ['an ace', o => o.r === 0], ['a spade', o => o.s === 0]], A: 0, B: 1 },
+  { n: 'Two marbles', d: 'A bag of 3 red and 2 white marbles; draw two, one after the other, without putting the first back. The diagonal is crossed out: the same marble can’t come out twice.', outs: bagOuts(), rows: 5, cols: 5, h: 54,
+    rowLabs: BAG, colLabs: BAG, rowT: '1st draw', colT: '2nd draw →', diag: true,
+    cell: (g, o, x, y, w, h) => { [[o.f, -20], [o.s, 20]].forEach(([m, dx]) => { marble(g, x + w / 2 + dx, y + h / 2, 13, mcol(m)); txt(g, x + w / 2 + dx, y + h / 2 + 4, m, '', { 'text-anchor': 'middle', style: `font:700 9.5px var(--mono);fill:${m[0] === 'R' ? '#fff' : '#333'}` }); });
+      txt(g, x + w / 2, y + h / 2 + 4, '→', '', { 'text-anchor': 'middle', style: 'font:12px var(--sans);fill:var(--muted)' }); },
+    evs: [['the first is red', o => o.f[0] === 'R'], ['the second is red', o => o.s[0] === 'R'], ['both are red', o => o.f[0] === 'R' && o.s[0] === 'R'], ['the first is white', o => o.f[0] === 'W'], ['the second is white', o => o.s[0] === 'W'], ['at least one white', o => o.f[0] === 'W' || o.s[0] === 'W']], A: 0, B: 1 },
+  { n: 'A month of weather', d: 'The made-up June from 9.B.3: pick one of its 30 days at random.', outs: juneOuts(), rows: 5, cols: 7, h: 58,
+    colLabs: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+    cell: (g, o, x, y, w, h) => { txt(g, x + 8, y + 18, String(o.day), '', { style: 'font:700 14px var(--mono);fill:var(--ink)' });
+      txt(g, x + w / 2, y + h - 10, [o.rain ? 'rain' : '', o.wind ? 'wind' : ''].filter(Boolean).join(' · '), '', { 'text-anchor': 'middle', style: 'font:600 11.5px var(--sans);fill:var(--muted)' }); },
+    evs: [['a windy day', o => o.wind], ['a rainy day', o => o.rain], ['a weekend day', o => o.we], ['a dry day', o => !o.rain]], A: 0, B: 1 },
+  { n: 'Class survey', d: 'The class of 30 from 9.B.3; pick a student at random.', outs: classOuts(), rows: 5, cols: 6, h: 62,
+    cell: (g, o, x, y, w, h) => { txt(g, x + w / 2, y + 20, o.nm, '', { 'text-anchor': 'middle', style: 'font:600 14px var(--sans);fill:var(--ink)' });
+      txt(g, x + w / 2, y + 38, [o.sport ? 'sport' : '', o.music ? 'music' : ''].filter(Boolean).join(' · '), '', { 'text-anchor': 'middle', style: 'font:500 11px var(--sans);fill:var(--muted)' });
+      txt(g, x + w / 2, y + 53, o.pet ? 'pet' : '', '', { 'text-anchor': 'middle', style: 'font:500 11px var(--sans);fill:var(--muted)' }); },
+    evs: [['plays music', o => o.music], ['plays a sport', o => o.sport], ['has a pet', o => o.pet], ['plays no sport', o => !o.sport]], A: 0, B: 1 }
+];
+
+const ZS = { i: 0, A: 0, B: 1, op: 1, step: null, timer: 0 };
+let zAMark, zBMark;
+const zMark = buttons('zPresets', ZP, i => { zStop(); ZS.i = i; zMark(i); $('zDesc').textContent = ZP[i].d; ZS.A = ZP[i].A; ZS.B = ZP[i].B; zChips(); zDraw(); });
+const zOpMark = chipRow('zOps', 'Find', ZOPS.map(o => o.n), k => { zStop(); ZS.op = k; zOpMark(k); zDraw(); });
+function zChips(){
+  const names = ZP[ZS.i].evs.map(e => e[0]);
+  zAMark = chipRow('zA', 'Given A =', names, k => { zStop(); ZS.A = k; zAMark(k); zDraw(); });
+  zBMark = chipRow('zB', 'Find B =', names, k => { zStop(); ZS.B = k; zBMark(k); zDraw(); });
+  zAMark(ZS.A); zBMark(ZS.B);
+}
+function zStop(){ clearTimeout(ZS.timer); ZS.timer = 0; ZS.step = null; $('zPlay').textContent = 'Play'; }
+function zCounts(){
+  const p = ZP[ZS.i], fA = p.evs[ZS.A][1], fB = p.evs[ZS.B][1], c = { a: 0, b: 0, ab: 0, n: 0 };
+  p.outs.forEach(o => c[region(fA(o), fB(o))]++);
+  return { N: p.outs.length, nA: c.a + c.ab, nB: c.b + c.ab, nAB: c.ab, c };
+}
+// what the current question rules out, and what it puts on top of the fraction
+function zRole(rg, k, st){
+  const ruled = (k === 'BgA' && rg !== 'a' && rg !== 'ab') || (k === 'AgB' && rg !== 'b' && rg !== 'ab');
+  const top = k === 'B' ? (rg === 'ab' || rg === 'b') : rg === 'ab';
+  if (st === null) return { ruled, top };
+  return { ruled: st >= 1 && ruled, top: st >= 3 && top };                // Play reveals these one step at a time
+}
+function zDraw(){
+  const p = ZP[ZS.i], svg = $('zG'); svg.innerHTML = '';
+  const L = p.rowLabs ? 46 : 8, T = p.rowT ? 44 : p.colLabs ? 30 : 8, w = (592 - L) / p.cols, h = p.h, H = T + p.rows * h + 8;
+  svg.setAttribute('viewBox', `0 0 600 ${H}`);
+  const fA = p.evs[ZS.A][1], fB = p.evs[ZS.B][1], k = ZOPS[ZS.op].k, st = ZS.step;
+  if (p.colLabs) p.colLabs.forEach((s, c) => txt(svg, L + (c + 0.5) * w, T - 9, s, 'tl', { 'text-anchor': 'middle' }));
+  if (p.rowLabs) p.rowLabs.forEach((s, r) => txt(svg, L - 12, T + (r + 0.5) * h + 4, s, 'tl', { 'text-anchor': 'end' }));
+  if (p.rowT){ txt(svg, 4, 14, p.rowT + ' ↓', 'cap', {}); txt(svg, 596, 14, p.colT, 'cap', { 'text-anchor': 'end' }); }
+  // impossible cells (the same marble twice)
+  if (p.diag) for (let r = 0; r < p.rows; r++){
+    const x = L + r * w + 2, y = T + r * h + 2;
+    mk('rect', { x, y, width: w - 4, height: h - 4, rx: 6, style: 'fill:none;stroke:var(--line);stroke-dasharray:4 3' }, svg);
+    txt(svg, x + (w - 4) / 2, y + (h - 4) / 2 + 4, 'same marble', 'cap', { 'text-anchor': 'middle' });
+  }
+  let count = 0;                                                         // Play numbers the cells that are left
+  p.outs.forEach(o => {
+    const rg = region(fA(o), fB(o)), x = L + o.col * w + 2, y = T + o.row * h + 2, cw = w - 4, ch = h - 4, role = zRole(rg, k, st);
+    const g = mk('g', { style: `opacity:${role.ruled ? 0.18 : 1}` }, svg);
+    mk('rect', { x, y, width: cw, height: ch, rx: 6, style: `fill:${RBG[rg]};stroke:${rg === 'n' ? 'var(--line)' : RCOL[rg]};stroke-width:${rg === 'n' ? 1 : 1.6}` }, g);
+    p.cell(g, o, x, y, cw, ch, RBG[rg]);
+    if (role.ruled) txt(svg, x + cw - 7, y + 13, '✕', '', { 'text-anchor': 'middle', style: 'font:700 12px var(--sans);fill:var(--muted)' });
+    if (role.top) mk('rect', { x: x - 1, y: y - 1, width: cw + 2, height: ch + 2, rx: 7, style: 'fill:none;stroke:var(--ink);stroke-width:2.4' }, svg);
+    if (st !== null && st >= 2 && !role.ruled){                          // step 2: number what's left
+      count++; const bx = x + cw - 9, by = y + 9;
+      mk('circle', { cx: bx, cy: by, r: 8.5, style: 'fill:var(--bg);stroke:var(--a);stroke-width:1.8' }, svg);
+      txt(svg, bx, by + 4, String(count), '', { 'text-anchor': 'middle', style: `font:700 ${count > 9 ? 9 : 11}px var(--mono);fill:var(--ink)` });
+    }
+  });
+  zPanel();
+}
+function zPanel(){
+  const p = ZP[ZS.i], z = zCounts(), N = z.N, k = ZOPS[ZS.op].k, nA = p.evs[ZS.A][0], nB = p.evs[ZS.B][0];
+  const top = k === 'B' ? z.nB : z.nAB, bot = k === 'BgA' ? z.nA : k === 'AgB' ? z.nB : N;
+  const val = bot ? top / bot : NaN;
+  let how = '', cmp = '';
+  if (k === 'BgA'){
+    how = bot ? `Keep only the ${z.nA} outcomes in A. ${z.nAB} of them ${z.nAB === 1 ? 'is' : 'are'} also in B.` : 'A never happens, so “given A” makes no sense here.';
+    const pB = z.nB / N;
+    if (bot) cmp = `Without being told anything, P(B) = ${fracK(z.nB, N)}. ` + (Math.abs(val - pB) < 1e-12 ? 'Knowing A doesn’t change it: A and B are <b>independent</b>.' : `Knowing A makes B <b>${val > pB ? 'more' : 'less'}</b> likely.`) +
+      ` And the other way round, P(A | B) = ${z.nB ? fracK(z.nAB, z.nB) : 'undefined'}.`;
+  }
+  if (k === 'AgB'){
+    how = bot ? `Keep only the ${z.nB} outcomes in B. ${z.nAB} of them ${z.nAB === 1 ? 'is' : 'are'} also in A.` : 'B never happens, so “given B” makes no sense here.';
+    if (bot) cmp = `Compare P(B | A) = ${z.nA ? fracK(z.nAB, z.nA) : 'undefined'}: the same top, ${z.nAB}, but a different bottom, ${z.nA}.`;
+  }
+  if (k === 'B') how = `No information: count B among all ${N} outcomes.`;
+  if (k === 'and') how = `Both at once, out of all ${N}. Compare P(B | A) = ${z.nA ? fracK(z.nAB, z.nA) : 'undefined'}, which divides by |A| = ${z.nA} instead.`;
+  const label = ZOPS[ZS.op].n, frac = bot ? fracK(top, bot) : 'undefined';
+  $('zPanel').innerHTML = `<div><span class="ka">A</span> = ${nA}</div><div><span class="kb">B</span> = ${nB}</div>
+    <div class="big">${label} = ${frac}</div><div style="color:var(--muted);font-size:14px">${bot ? `${k === 'BgA' ? '|A and B| ÷ |A|' : k === 'AgB' ? '|A and B| ÷ |B|' : k === 'B' ? '|B| ÷ total' : '|A and B| ÷ total'} ≈ ${dec(val)} = ${pct(val)}` : ''}</div>
+    <div style="margin-top:6px">${how}</div>${tw2(z.c, '', '', ZNUM[k], ZDEN[k], String, k === 'BgA' ? ['b', 'n', 'nA'] : k === 'AgB' ? ['a', 'n', 'nB'] : [])}
+    <div style="font-size:14px">${cmp}</div>`;
+  const st = ZS.step, gv = k === 'AgB' ? 'B' : 'A', gn = k === 'AgB' ? z.nB : z.nA;
+  const steps = [`We’re told ${gv} happened (${gv === 'A' ? nA : nB}).`, `Step 1: cross out every outcome outside ${gv}. They can’t have happened.`,
+    `Step 2: ${gn} outcome${gn === 1 ? '' : 's'} left. That’s the new total, the reduced sample space.`,
+    `Step 3: ${z.nAB} of those ${gn} ${z.nAB === 1 ? 'is' : 'are'} in ${gv === 'A' ? 'B' : 'A'} too. So ${label} = ${frac}.`];
+  $('zOut').innerHTML = st !== null ? steps[st] : `${label} = ${frac}${bot ? ` ≈ ${dec(val)} = ${pct(val)}` : ''}.`;
+}
+function zNext(){
+  if (ZS.step === 3){ ZS.timer = 0; $('zPlay').textContent = 'Play'; return; }
+  ZS.step++; zDraw(); ZS.timer = setTimeout(zNext, 1500);
+}
+$('zPlay').onclick = () => {
+  if (ZS.timer){ clearTimeout(ZS.timer); ZS.timer = 0; $('zPlay').textContent = 'Play'; return; }
+  if (ZOPS[ZS.op].k !== 'AgB'){ ZS.op = 1; zOpMark(1); }                    // Play shows a "given" question
+  if (ZS.step === null || ZS.step === 3) ZS.step = -1;
+  $('zPlay').textContent = 'Pause'; zNext();
+};
+$('zReset').onclick = () => { zStop(); zDraw(); };
+
+/* =====================================================================
+   3. TREES AND 1,000 TRIES
+   ===================================================================== */
+const TP = [
+  { n: 'Two marbles', d: 'A bag of red and white marbles; draw two. A = the first is red, B = the second is red.', A: '1st red', B: '2nd red', bag: [5, 3], nm: ['red', 'white'] },
+  { n: 'Two aces', d: 'Deal two cards from a deck. A = the first is an ace, B = the second is an ace.', A: '1st ace', B: '2nd ace', bag: [4, 48], nm: ['aces', 'others'] },
+  { n: 'Clouds and rain', d: '40% of mornings are cloudy. It rains on half the cloudy days, but only 1 in 10 clear days.', A: 'cloudy', B: 'rain', p: [0.4, 0.5, 0.1] },
+  { n: 'Traffic and a late bus', d: 'There’s a jam a quarter of the time. In a jam the bus is late 60% of the time, otherwise 8%.', A: 'jam', B: 'late', p: [0.25, 0.6, 0.08] },
+  { n: 'Medical test', d: '1% of people have a condition. The test is positive for 90% of people who have it, and for 9% of people who don’t.', A: 'has it', B: 'positive', p: [0.01, 0.9, 0.09] },
+  { n: 'Smoke alarm', d: 'A real fire on a given day is rare (0.2%). The alarm sounds for 99% of fires, but also on 5% of ordinary days: burnt toast, steam.', A: 'fire', B: 'alarm', p: [0.002, 0.99, 0.05] },
+  { n: 'Spam filter', d: '20% of email is spam. The filter flags 95% of spam and 5% of real email.', A: 'spam', B: 'flagged', p: [0.2, 0.95, 0.05] }
+];
+const TOPS = [{ k: 'and', n: 'P(A and B)' }, { k: 'B', n: 'P(B)' }, { k: 'BgA', n: 'P(B | A)' }, { k: 'AgB', n: 'P(A | B)' }];
+const TS = { i: 0, rep: false, op: 1, ok: true, pA: 0, pBA: 0, pBnA: 0, txt: null };
+const tMark = buttons('tPresets', TP, i => tPreset(i));
+const tOpMark = chipRow('tOps', 'Find', TOPS.map(o => o.n), k => { TS.op = k; tOpMark(k); tDraw(); });
+const tRepMark = chipRow('tRep', 'Draws', ['without replacement', 'with replacement'], k => { TS.rep = k === 1; tRepMark(k); tRead(); });
+function tPreset(i){
+  const p = TP[i]; TS.i = i; tMark(i); $('tDesc').textContent = p.d;
+  const bag = !!p.bag;
+  $('tRep').style.display = bag ? '' : 'none'; $('t3f').style.display = bag ? 'none' : '';
+  if (bag){ $('t1l').textContent = 'Number ' + p.nm[0]; $('t2l').textContent = 'Number ' + p.nm[1]; $('t1').value = p.bag[0]; $('t2').value = p.bag[1]; TS.rep = false; tRepMark(0); }
+  else { $('t1l').textContent = 'P(A)'; $('t2l').textContent = 'P(B | A)'; $('t3l').textContent = 'P(B | not A)'; ['t1', 't2', 't3'].forEach((id, k) => $(id).value = String(p.p[k])); }
+  $('tNames').innerHTML = `<span class="ka">A</span> = ${p.A} &nbsp; <span class="kb">B</span> = ${p.B}`;
+  tRead();
+}
+function tRead(){
+  const p = TP[TS.i], bag = !!p.bag; let err = '';
+  if (bag){
+    const r = parseNum($('t1').value), w = parseNum($('t2').value);
+    if (!isFinite(r) || !isFinite(w)) err = 'Fill in every box with a number.';
+    else if (r !== Math.round(r) || w !== Math.round(w) || r < 1 || w < 0) err = 'Use whole numbers, with at least 1 ' + p.nm[0].replace(/s$/, '') + '.';
+    else if (r + w < 2) err = 'You need at least two items to draw twice.';
+    else if (r + w > 200) err = 'Keep the total to 200 or fewer.';
+    if (!err){
+      const n = r + w;
+      TS.pA = r / n; TS.pBA = TS.rep ? r / n : (r - 1) / (n - 1); TS.pBnA = TS.rep ? r / n : r / (n - 1);
+      // fraction strings for the tree labels
+      TS.txt = TS.rep ? [`${r}/${n}`, `${r}/${n}`, `${r}/${n}`] : [`${r}/${n}`, `${r - 1}/${n - 1}`, `${r}/${n - 1}`];
+      TS.tn = [r, w, n];
+    }
+  } else {
+    const v = ['t1', 't2', 't3'].map(id => parseP($(id).value));
+    if (['t1', 't2', 't3'].some(id => $(id).value.trim() === '') || v.some(x => !isFinite(x))) err = 'Fill in every box with a number.';
+    else if (v.some(x => x < 0 || x > 1)) err = 'Probabilities run from 0 to 1.';
+    else if (v[0] === 0 || v[0] === 1) err = 'Make P(A) strictly between 0 and 1, so both branches exist.';
+    if (!err){ [TS.pA, TS.pBA, TS.pBnA] = v; TS.txt = null; }
+  }
+  $('tErr').textContent = err; TS.ok = !err;
+  if (!err) tDraw();
+}
+['t1', 't2', 't3'].forEach(id => $(id).addEventListener('input', () => { tMark(-1); $('tDesc').textContent = 'Custom: your own numbers.'; tRead(); }));
+// the four path probabilities
+const tLeaves = () => ({ ab: TS.pA * TS.pBA, a: TS.pA * (1 - TS.pBA), b: (1 - TS.pA) * TS.pBnA, n: (1 - TS.pA) * (1 - TS.pBnA) });
+// show a probability as a fraction (bags) or a short number
+const tf = p => TS.txt ? frc(p) : sig4(p);
+const sig4 = p => { const r = Number(p.toPrecision(3)); return num(r, 6); };
+function tDraw(){
+  if (!TS.ok) return;
+  const L = tLeaves(), k = TOPS[TS.op].k;
+  tTree(L, k); tDots(L, k); tTable(L, k); tReadout(L, k);
+}
+// --- the tree ---
+function tTree(Lv, k){
+  const svg = $('tT'); svg.innerHTML = '';
+  const p = TP[TS.i], R = [26, 160], A1 = [150, 82], N1 = [150, 238];
+  const leaves = { ab: [270, 42], a: [270, 122], b: [270, 198], n: [270, 278] };
+  // which branches are thick (counted) and which are faded (ruled out)
+  const hot = { and: ['A', 'ab'], B: ['A', 'ab', 'nA', 'b'], BgA: ['ab'], AgB: ['A', 'ab', 'nA', 'b'] }[k];
+  const dim = { and: [], B: [], BgA: ['nA', 'b', 'n'], AgB: ['a', 'n'] }[k];
+  const tx = TS.txt, pr = [tx ? tx[0] : tf(TS.pA), tx ? frc(1 - TS.pA) : tf(1 - TS.pA), tx ? tx[1] : tf(TS.pBA), tx ? frc(1 - TS.pBA) : tf(1 - TS.pBA), tx ? tx[2] : tf(TS.pBnA), tx ? frc(1 - TS.pBnA) : tf(1 - TS.pBnA)];
+  const edge = (P, Q, id, lab, col, above) => {
+    const on = hot.includes(id), off = dim.includes(id) || (id === 'a' && dim.includes('a')) ;
+    mk('line', { x1: P[0], y1: P[1], x2: Q[0] - 6, y2: Q[1], style: `stroke:${col};stroke-width:${on ? 4.5 : 1.8};opacity:${off ? 0.2 : 1}` }, svg);
+    const mx = (P[0] + Q[0]) / 2, my = (P[1] + Q[1]) / 2;
+    txt(svg, mx, my + (above ? -7 : 15), lab, 'labS', { 'text-anchor': 'middle', style: `opacity:${off ? 0.3 : 1}` });
+  };
+  edge(R, A1, 'A', pr[0], 'var(--a)', true); edge(R, N1, 'nA', pr[1], 'var(--nn)', false);
+  edge(A1, leaves.ab, 'ab', pr[2], 'var(--ab)', true); edge(A1, leaves.a, 'a', pr[3], 'var(--a)', false);
+  edge(N1, leaves.b, 'b', pr[4], 'var(--b)', true); edge(N1, leaves.n, 'n', pr[5], 'var(--nn)', false);
+  // nodes
+  mk('circle', { cx: R[0], cy: R[1], r: 5, style: 'fill:var(--ink)' }, svg);
+  [[A1, 'A', 'var(--a)', 'nA'], [N1, 'not A', 'var(--muted)', 'A']].forEach(([P, l, c, killer]) => {
+    const off = (k === 'BgA' && l === 'not A');
+    txt(svg, P[0] - 4, P[1] + (l === 'A' ? -12 : 22), l, 'labS', { 'text-anchor': 'middle', style: `fill:${c};opacity:${off ? 0.3 : 1}` });
+    mk('circle', { cx: P[0], cy: P[1], r: 4, style: `fill:${c};opacity:${off ? 0.3 : 1}` }, svg);
+  });
+  // leaves: the story, and its probability (multiply along the path)
+  const name = { ab: 'A and B', a: 'A, not B', b: 'not A, B', n: 'neither' }, mult = { ab: [pr[0], pr[2]], a: [pr[0], pr[3]], b: [pr[1], pr[4]], n: [pr[1], pr[5]] };
+  Object.keys(leaves).forEach(rg => {
+    const [x, y] = leaves[rg], off = dim.includes(rg), on = hot.includes(rg);
+    mk('rect', { x: x - 6, y: y - 15, width: 196, height: 30, rx: 6, style: `fill:${RBG[rg === 'n' ? 'n' : rg]};stroke:${on ? 'var(--ink)' : RCOL[rg]};stroke-width:${on ? 2.2 : 1.2};opacity:${off ? 0.25 : 1}` }, svg);
+    txt(svg, x, y - 2, name[rg], '', { style: `font:700 11.5px var(--sans);fill:${RCOL[rg]};opacity:${off ? 0.35 : 1}` });
+    txt(svg, x, y + 11, `${mult[rg][0]} × ${mult[rg][1]} = ${tf(Lv[rg])}`, '', { style: `font:500 11.5px var(--mono);fill:var(--ink);opacity:${off ? 0.35 : 1}` });
+  });
+  txt(svg, 8, 14, `A = ${p.A}, B = ${p.B}`, 'cap', {});
+}
+// --- 1,000 tries as dots ---
+function tDots(Lv, k){
+  const svg = $('tD'); svg.innerHTML = '';
+  // whole-number counts that add to 1,000
+  const order = ['ab', 'a', 'b', 'n'], raw = order.map(r => Lv[r] * 1000), cnt = raw.map(Math.floor);
+  let left = 1000 - cnt.reduce((s, v) => s + v, 0);
+  raw.map((v, i) => [v - Math.floor(v), i]).sort((x, y) => y[0] - x[0]).forEach(([, i]) => { if (left > 0){ cnt[i]++; left--; } });
+  TS.cnt = { ab: cnt[0], a: cnt[1], b: cnt[2], n: cnt[3] };
+  const ruled = { and: [], B: [], BgA: ['b', 'n'], AgB: ['a', 'n'] }[k], top = { and: ['ab'], B: ['ab', 'b'], BgA: ['ab'], AgB: ['ab'] }[k];
+  const x0 = 20, y0 = 30, sp = 10.8;
+  let idx = 0;
+  order.forEach((rg, i) => { for (let j = 0; j < cnt[i]; j++, idx++){
+    const c = Math.floor(idx / 25), r = idx % 25, off = ruled.includes(rg), on = top.includes(rg);
+    mk('circle', { cx: x0 + c * sp, cy: y0 + r * sp, r: on ? 4.3 : 3.6, style: `fill:${RCOL[rg]};opacity:${off ? 0.12 : on ? 1 : 0.5}` }, svg);
+  } });
+  txt(svg, 8, 16, '1,000 tries: each dot is one', 'cap', {});
+  const C = TS.cnt, d = { and: [C.ab, 1000], B: [C.ab + C.b, 1000], BgA: [C.ab, C.ab + C.a], AgB: [C.ab, C.ab + C.b] }[k];
+  const word = { and: 'are A and B', B: 'are B', BgA: `of the ${C.ab + C.a} in A are B`, AgB: `of the ${C.ab + C.b} in B are A` }[k];
+  txt(svg, 235, 310, `${k === 'BgA' || k === 'AgB' ? `${d[0]} ${word}` : `${d[0]} of 1,000 ${word}`}${d[1] ? ': ≈ ' + pct(d[0] / d[1]) : ''}`, 'labS', { 'text-anchor': 'middle' });
+}
+function tTable(Lv, k){
+  const C = TS.cnt;
+  $('tTab').innerHTML = `<div class="cap" style="font:600 12px var(--sans);color:var(--muted);letter-spacing:.06em;text-transform:uppercase">Out of 1,000 tries</div>` +
+    tw2(C, TP[TS.i].A, TP[TS.i].B, ZNUM[k], ZDEN[k], v => String(v), k === 'BgA' ? ['b', 'n', 'nA'] : k === 'AgB' ? ['a', 'n', 'nB'] : []);
+}
+function tReadout(Lv, k){
+  const pB = Lv.ab + Lv.b, C = TS.cnt;
+  const s = {
+    and: `P(A and B) = P(A) × P(B | A) = ${tf(TS.pA)} × ${tf(TS.pBA)} = ${tf(Lv.ab)}. Multiply along the path.`,
+    B: `P(B) = add the two paths that end in B = ${tf(Lv.ab)} + ${tf(Lv.b)} = ${tf(pB)}.`,
+    BgA: `P(B | A) = ${tf(TS.pBA)}: it’s written on the branch, because the second stage is labelled with chances given the first. Check with dots: ${C.ab} of the ${C.ab + C.a} A-dots.`,
+    AgB: `P(A | B) = P(A and B) ÷ P(B) = ${tf(Lv.ab)} ÷ ${tf(pB)} = ${pB ? tf(Lv.ab / pB) : 'undefined'} ≈ ${pB ? pct(Lv.ab / pB) : ''}. ` + (Math.abs(Lv.ab / pB - TS.pBA) < 1e-9 ? `Here it equals P(B | A), but only because P(A) = P(B) = ${tf(TS.pA)}: the two draws play the same role.` : `Flipped, it is not P(B | A) = ${tf(TS.pBA)}.`)
+  }[k];
+  let ind = '';
+  if (Math.abs(TS.pBA - TS.pBnA) < 1e-12) ind = ' Here P(B | A) = P(B | not A), so A doesn’t matter: A and B are <b>independent</b>.';
+  else if (k === 'AgB' && TS.pA < 0.05 && Lv.ab / pB < 0.5) ind = ` A is rare (base rate ${pct(TS.pA)}), so most of the B-dots come from the much bigger not-A group.`;
+  $('tOut').innerHTML = s + ind;
+}
+
+/* =====================================================================
+   4. TRAPS
+   ===================================================================== */
+function drawTraps(){
+  // 1: medical test, 1,000 people as a small dot grid; the two denominators
+  let g = $('tr1'); g.innerHTML = '';
+  const cnt = { ab: 9, a: 1, b: 89, n: 901 }, order = ['ab', 'a', 'b', 'n'];
+  let idx = 0;
+  order.forEach(rg => { for (let j = 0; j < cnt[rg]; j++, idx++){ const c = Math.floor(idx / 20), r = idx % 20; mk('circle', { cx: 12 + c * 5.6, cy: 14 + r * 5.6, r: 2, style: `fill:${RCOL[rg]};opacity:${rg === 'n' ? 0.35 : 1}` }, g); } });
+  txt(g, 150, 140, 'P(positive | has it) = 9/10 = 90%', 'labS', { 'text-anchor': 'middle', style: 'fill:var(--a)' });
+  txt(g, 150, 160, 'P(has it | positive) = 9/98 ≈ 9%', 'labS', { 'text-anchor': 'middle', style: 'fill:var(--b)' });
+  txt(g, 150, 182, 'green: has it, tests positive', 'cap', { 'text-anchor': 'middle' });
+  txt(g, 150, 197, 'yellow: false positive', 'cap', { 'text-anchor': 'middle' });
+  txt(g, 150, 212, 'blue: false negative', 'cap', { 'text-anchor': 'middle' });
+  // 2: the survey table, right row versus whole class
+  g = $('tr2'); g.innerHTML = '';
+  const rows = [['', 'sport', 'no sport', 'total'], ['music', '7', '5', '12'], ['no music', '11', '7', '18'], ['total', '18', '12', '30']];
+  rows.forEach((row, i) => row.forEach((v, j) => {
+    const x = 20 + j * 66, y = 18 + i * 28, isRow = i === 1 && j > 0;
+    mk('rect', { x, y, width: 64, height: 26, style: `fill:${i === 1 && j === 1 ? 'var(--ab-bg)' : isRow ? 'var(--a-bg)' : i === 3 && j === 3 ? 'var(--bad-bg)' : 'var(--paper)'};stroke:var(--line)` }, g);
+    txt(g, x + 32, y + 17, v, '', { 'text-anchor': 'middle', style: `font:${i === 0 || j === 0 ? '600 11px var(--sans)' : '600 13px var(--mono)'};fill:var(--ink)` });
+  }));
+  txt(g, 150, 158, '7/12 ≈ 0.58  ✓ given music', 'lab', { 'text-anchor': 'middle', style: 'fill:var(--ok)' });
+  txt(g, 150, 184, '7/30 ≈ 0.23  ✕ that’s P(both)', 'lab', { 'text-anchor': 'middle', style: 'fill:var(--bad)' });
+  txt(g, 150, 208, 'given music: use only the music row', 'cap', { 'text-anchor': 'middle' });
+  // 3: two cards: the deck after the first ace
+  g = $('tr3'); g.innerHTML = '';
+  const cardAt = (x, y, lab, fade) => { mk('rect', { x, y, width: 30, height: 42, rx: 4, style: `fill:var(--paper);stroke:var(--muted);opacity:${fade ? 0.3 : 1}` }, g); txt(g, x + 15, y + 26, lab, '', { 'text-anchor': 'middle', style: `font:700 13px var(--sans);fill:${/[♥♦]/.test(lab) ? 'var(--red)' : 'var(--ink)'};opacity:${fade ? 0.3 : 1}` }); };
+  txt(g, 20, 20, 'first draw: 4 aces in 52', 'cap', {});
+  ['A♠', 'A♥', 'A♦', 'A♣'].forEach((l, i) => cardAt(20 + i * 36, 28, l, false));
+  txt(g, 20, 94, 'second draw: 3 aces in 51', 'cap', {});
+  ['A♠', 'A♥', 'A♦', 'A♣'].forEach((l, i) => { cardAt(20 + i * 36, 102, l, i === 0); if (i === 0) txt(g, 35, 130, '✕', '', { 'text-anchor': 'middle', style: 'font:700 20px var(--sans);fill:var(--bad)' }); });
+  txt(g, 170, 128, '← already dealt', 'cap', {});
+  txt(g, 150, 178, '4/52 × 3/51 = 1/221  ✓', 'lab', { 'text-anchor': 'middle', style: 'fill:var(--ok)' });
+  txt(g, 150, 204, '4/52 × 4/52 = 1/169  ✕', 'lab', { 'text-anchor': 'middle', style: 'fill:var(--bad)' });
+}
+
+/* =====================================================================
+   5. QUIZ
+   ===================================================================== */
+const Q = { right: 0, total: 0 };
+let qq = null;
+const qTitles = { table: 'Read the two-way table', draw: 'Without replacement', tree: 'Follow the tree', trap: 'Spot the trap' };
+function shuffle(a){ for (let i = a.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+function qReset(){ ['qChoice', 'qPic'].forEach(id => $(id).innerHTML = ''); $('qFb').className = 'feedback'; $('qFb').innerHTML = ''; $('qErr').textContent = ''; $('qIn').style.display = ''; $('q1').value = ''; }
+function qScore(ok){ if (qq.counted) return; qq.counted = true; Q.total++; if (ok) Q.right++; $('score').textContent = `Score: ${Q.right} / ${Q.total}`; }
+function qFeedback(ok, html){ $('qFb').className = 'feedback ' + (ok ? 'ok' : 'bad'); $('qFb').innerHTML = (ok ? '<b>Right.</b> ' : '<b>Not quite.</b> ') + html; }
+function qChoices(list, correctIdx, explain){
+  $('qIn').style.display = 'none'; qq.correctIdx = correctIdx; qq.explainFn = explain;
+  list.forEach((c, k) => { const b = document.createElement('button'); b.innerHTML = c; b.onclick = () => { const ok = k === correctIdx; qScore(ok); [...$('qChoice').children].forEach((x, j) => { x.classList.remove('right', 'wrong'); if (j === k) x.classList.add(ok ? 'right' : 'wrong'); }); qFeedback(ok, explain(k)); }; $('qChoice').appendChild(b); });
+}
+// --- two-way table ---
+function qTable(){
+  const E = pick([['walks to school', 'walk to school', 'has a pet', 'have a pet'], ['plays a sport', 'play a sport', 'plays music', 'play music'], ['had breakfast', 'had breakfast', 'felt tired by noon', 'felt tired by noon'], ['took the bus', 'took the bus', 'was late', 'were late']]);
+  const ev = [E[0], E[2]], bs = [E[1], E[3]];
+  const v = { ab: ri(3, 15), a: ri(3, 15), b: ri(3, 15), n: ri(3, 15) }, N = v.ab + v.a + v.b + v.n, nA = v.ab + v.a, nB = v.ab + v.b;
+  const t = pick(['BgA', 'BgA', 'AgB', 'BgnA']);
+  let s, a, traps, why;
+  if (t === 'BgA'){ s = `A person is picked at random from those who <b>${bs[0]}</b>. What is the probability they ${bs[1]}?`; a = v.ab / nA; why = `Use only the “${ev[0]}” row: ${v.ab} of its ${nA}, so P = ${fracK(v.ab, nA)}.`; traps = [[v.ab / N, 'You divided by everyone. “Given” means divide by the row total only.'], [v.ab / nB, 'You flipped the condition: that divides by the column total.'], [nB / N, 'That’s the chance for the whole group, ignoring what you were told.']]; }
+  else if (t === 'AgB'){ s = `A person is picked at random from those who <b>${bs[1]}</b>. What is the probability they ${bs[0]}?`; a = v.ab / nB; why = `Use only the “${ev[1]}” column: ${v.ab} of its ${nB}, so P = ${fracK(v.ab, nB)}.`; traps = [[v.ab / N, 'You divided by everyone. “Given” means divide by the column total only.'], [v.ab / nA, 'You flipped the condition: that divides by the row total.'], [nA / N, 'That’s the chance for the whole group, ignoring what you were told.']]; }
+  else { s = `A person is picked at random from the <b>“not A”</b> row of the table (not “${ev[0]}”). What is the probability they ${bs[1]}?`; a = v.b / (v.b + v.n); why = `Use only the “not” row: ${v.b} of its ${v.b + v.n}, so P = ${fracK(v.b, v.b + v.n)}.`; traps = [[v.b / N, 'You divided by everyone. Divide by the row total.'], [v.ab / nA, 'That’s the other row.']]; }
+  $('qText').innerHTML = s; $('qL1').textContent = 'P =';
+  $('qPic').innerHTML = tw2(v, ev[0], ev[1], [], [], String);
+  Object.assign(qq, { ans: a, why, traps });
+}
+// --- without replacement ---
+function qDraw(){
+  const c = pick([
+    () => { const r = ri(3, 7), w = ri(2, 5), n = r + w; return { s: `A bag holds ${r} red and ${w} white marbles. Two are drawn without putting the first back. What is P(both red)?`, a: r * (r - 1) / (n * (n - 1)),
+      why: `${r}/${n} for the first, then ${r - 1}/${n - 1} because one red is gone: ${r}/${n} × ${r - 1}/${n - 1} = ${frc(r * (r - 1) / (n * (n - 1)))}.`, traps: [[r * r / (n * n), 'That’s with replacement. After the first red, there are fewer reds and fewer marbles.'], [r / n * (r - 1) / n, 'One marble is gone, so the second denominator is ' + (n - 1) + '.']] }; },
+    () => { const r = ri(3, 7), w = ri(2, 5), n = r + w; return { s: `A bag holds ${r} red and ${w} white marbles. The first marble drawn (and kept) is red. What is the probability the second is red too?`, a: (r - 1) / (n - 1),
+      why: `After a red is taken out, ${r - 1} red remain among ${n - 1}: P = ${fracK(r - 1, n - 1)}.`, traps: [[r / n, 'That’s the first draw. One red marble is already gone.'], [r * (r - 1) / (n * (n - 1)), 'That’s P(both red). We already know the first was red, so only the second draw is uncertain.']] }; },
+    () => { const r = ri(3, 6), w = ri(2, 5), n = r + w; return { s: `A bag holds ${r} red and ${w} white marbles. Two are drawn without replacement. What is the probability the first is white and the second is red?`, a: w * r / (n * (n - 1)),
+      why: `${w}/${n} × ${r}/${n - 1} = ${frc(w * r / (n * (n - 1)))}: all ${r} reds are still there for the second draw, but only ${n - 1} marbles.`, traps: [[w * r / (n * n), 'That’s with replacement: the second draw has only ' + (n - 1) + ' marbles.'], [w / n * (r - 1) / (n - 1), 'The first marble was white, so all ' + r + ' reds are still in the bag.']] }; },
+    () => { const e = pick([['aces', 4], ['hearts', 13], ['kings', 4], ['red cards', 26]]); return { s: `Two cards are dealt from a shuffled 52-card deck. What is the probability both are ${e[0]}?`, a: e[1] * (e[1] - 1) / (52 * 51),
+      why: `${e[1]}/52 × ${e[1] - 1}/51 = ${frc(e[1] * (e[1] - 1) / (52 * 51))}.`, traps: [[e[1] * e[1] / (52 * 52), 'That puts the first card back. Once dealt, it’s gone: ' + (e[1] - 1) + ' left among 51.']] }; }
+  ])();
+  $('qText').innerHTML = c.s; $('qL1').textContent = 'P ='; Object.assign(qq, { ans: c.a, why: c.why, traps: c.traps });
+}
+// a small tree picture for the quiz
+function miniTree(pA, pBA, pBnA, nA, nB){
+  $('qPic').innerHTML = '<svg viewBox="0 0 470 200"></svg>'; const svg = $('qPic').firstChild;
+  const R = [20, 100], A1 = [170, 50], N1 = [170, 150], Lf = { ab: [330, 22], a: [330, 78], b: [330, 122], n: [330, 178] };
+  const e = (P, Q, l, col, up) => { mk('line', { x1: P[0], y1: P[1], x2: Q[0], y2: Q[1], style: `stroke:${col};stroke-width:2` }, svg); txt(svg, (P[0] + Q[0]) / 2, (P[1] + Q[1]) / 2 + (up ? -6 : 14), l, 'labS', { 'text-anchor': 'middle' }); };
+  e(R, A1, num(pA, 3), 'var(--a)', true); e(R, N1, '?', 'var(--nn)', false);
+  e(A1, Lf.ab, num(pBA, 3), 'var(--ab)', true); e(A1, Lf.a, '?', 'var(--a)', false);
+  e(N1, Lf.b, num(pBnA, 3), 'var(--b)', true); e(N1, Lf.n, '?', 'var(--nn)', false);
+  txt(svg, A1[0] - 6, A1[1] - 10, nA, 'labS', { 'text-anchor': 'middle', style: 'fill:var(--a)' }); txt(svg, N1[0] - 6, N1[1] + 20, 'not ' + nA, 'labS', { 'text-anchor': 'middle', style: 'fill:var(--muted)' });
+  [['ab', `${nA}, ${nB}`], ['a', `${nA}, not ${nB}`], ['b', `not ${nA}, ${nB}`], ['n', 'neither']].forEach(([k, l]) => txt(svg, Lf[k][0] + 8, Lf[k][1] + 4, l, '', { style: `font:600 12px var(--sans);fill:${RCOL[k]}` }));
+}
+// --- tree paths ---
+function qTree(){
+  const sc = pick([['cloudy', 'rain', 'A morning is cloudy', 'it rains'], ['a jam', 'late', 'There is a traffic jam', 'the bus is late'], ['practises', 'wins', 'A player practises the day before', 'she wins the match'], ['spam', 'flagged', 'An email is spam', 'the filter flags it']]);
+  const pA = pick([0.2, 0.3, 0.4, 0.5, 0.6]), pBA = pick([0.5, 0.6, 0.7, 0.8, 0.9]), pBnA = pick([0.1, 0.2, 0.3]);
+  const t = pick(['B', 'B', 'and', 'nAB']);
+  const ab = pA * pBA, b = (1 - pA) * pBnA;
+  let s, a, why, traps;
+  const lead = `${sc[2]} with probability ${pA}. If so, ${sc[3]} with probability ${pBA}; if not, with probability ${pBnA}.`;
+  if (t === 'B'){ s = `${lead} What is the overall probability that ${sc[3]}?`; a = ab + b; why = `Add the two paths ending in “${sc[1]}”: ${pA} × ${pBA} + ${num(1 - pA, 2)} × ${pBnA} = ${num(ab, 4)} + ${num(b, 4)} = ${num(a, 4)}.`;
+    traps = [[ab, 'That’s only one path. The other branch can also end in “' + sc[1] + '”: add it.'], [(pBA + pBnA) / 2, 'Averaging the two branch chances ignores how likely each branch is. Multiply along each path, then add.'], [pBA + pBnA, 'Adding the branch numbers isn’t right: multiply along each path first.']]; }
+  else if (t === 'and'){ s = `${lead} What is the probability that ${sc[2].replace(/^\w/, c => c.toLowerCase())} <b>and</b> ${sc[3]}?`; a = ab; why = `Multiply along the path: ${pA} × ${pBA} = ${num(ab, 4)}.`; traps = [[pA + pBA, 'Along a path you multiply, not add.'], [pBA, 'That’s the chance given the first branch. Multiply by the chance of getting onto that branch.']]; }
+  else { s = `${lead} What is the probability of <b>not</b> ${sc[0]} but ${sc[1]}?`; a = b; why = `Multiply along the lower path: (1 − ${pA}) × ${pBnA} = ${num(1 - pA, 2)} × ${pBnA} = ${num(b, 4)}.`; traps = [[pA * pBnA, 'The first branch is “not”, so its chance is 1 − ' + pA + ' = ' + num(1 - pA, 2) + '.'], [pBnA, 'Multiply by the chance of getting onto the “not” branch.']]; }
+  $('qText').innerHTML = s; $('qL1').textContent = 'P ='; miniTree(pA, pBA, pBnA, sc[0], sc[1]);
+  Object.assign(qq, { ans: a, why, traps });
+}
+// --- traps ---
+function qTrap(){
+  const c = pick([
+    () => ({ s: 'A test is positive for 95% of people with a rare condition, and for 5% of people without it. Only 1 in 1,000 people has the condition. You test positive. Roughly what is the chance you have it?', ok: 'About 2%', bad: ['95%', '5%', '50%'], why: 'Picture 100,000 people: 100 have it and 95 test positive; 99,900 don’t and about 4,995 test positive anyway. Only 95 of about 5,090 positives have it: under 2%. 95% is P(positive | has it), the flipped condition.' }),
+    () => ({ s: 'Which is bigger: P(tall | professional basketball player) or P(professional basketball player | tall)?', ok: 'P(tall | professional basketball player)', bad: ['P(professional basketball player | tall)', 'They’re equal', 'You can’t compare them'], why: 'Almost all pro players are tall, so the first is high. Very few tall people are pro players, so the second is tiny. Swapping what’s given swaps the denominator.' }),
+    () => ({ s: 'Two cards are dealt. Ana says P(second card is a king) = 4/52, because she doesn’t know what the first card was. Is she right?', ok: 'Yes: without knowing the first card, it’s still 4/52', bad: ['No: it’s 3/51', 'No: it’s 4/51', 'No: it’s 3/52'], why: 'Without information about the first card, every card is equally likely to be second. Add the paths: 4/52 × 3/51 + 48/52 × 4/51 = 4/52. Only if you’re told the first was a king does it become 3/51.' }),
+    () => ({ s: 'P(rain | cloudy) = 0.5 and P(cloudy) = 0.4. What is P(rain and cloudy)?', ok: '0.2', bad: ['0.9', '0.5', '1.25'], why: 'Multiply along the path: P(cloudy) × P(rain | cloudy) = 0.4 × 0.5 = 0.2.' }),
+    () => ({ s: 'For two events, P(B | A) = P(B). What does that tell you?', ok: 'A and B are independent', bad: ['A and B are mutually exclusive', 'P(A) = P(B)', 'A always causes B'], why: 'Knowing A doesn’t change the chance of B: that is exactly what independent means.' }),
+    () => ({ s: 'In a class, 12 of 30 students play music, and 7 of those 12 also play a sport. What is P(sport | music)?', ok: '7/12', bad: ['7/30', '12/30', '7/18'], why: '“Given music” means only the 12 music students count. 7/30 is P(sport and music); 7/18 would be P(music | sport).' })
+  ])();
+  const opts = shuffle([c.ok, ...c.bad]), idx = opts.indexOf(c.ok);
+  $('qText').innerHTML = c.s; qChoices(opts, idx, () => c.why);
+}
+let lastType = null;
+function qNew(){
+  qReset();
+  let t; do { t = pick(['table', 'draw', 'tree', 'trap']); } while (t === lastType);
+  lastType = t; qq = { type: t, counted: false }; $('qTitle').textContent = qTitles[t];
+  ({ table: qTable, draw: qDraw, tree: qTree, trap: qTrap })[t]();
+}
+$('qCheck').onclick = () => {
+  $('qErr').textContent = '';
+  const raw = $('q1').value, v = parseP(raw);
+  if (raw.trim() === '' || !isFinite(v)){ $('qErr').textContent = 'Type a probability: a fraction (3/8), a decimal (0.375) or a percent (37.5%).'; return; }
+  const ok = Math.abs(v - qq.ans) < 0.0015 || (Math.abs(v - qq.ans) < 0.006 && !/\//.test(raw) && qq.ans > 0.05); let why = qq.why;
+  if (!ok){
+    const t = (qq.traps || []).find(([x]) => isFinite(x) && Math.abs(x - qq.ans) > 1e-9 && Math.abs(v - x) < 0.0015);
+    if (t) why = t[1] + ' ' + why;
+    else if (v > 1) why = 'A probability can’t be more than 1. ' + (/%/.test(raw) ? '' : 'If you meant a percent, add the % sign. ') + why;
+  }
+  qScore(ok); qFeedback(ok, why);
+};
+$('q1').addEventListener('keydown', e => { if (e.key === 'Enter') $('qCheck').click(); });
+$('q1').addEventListener('input', () => $('qErr').textContent = '');
+$('qShow').onclick = () => {
+  qScore(false);
+  if (qq.correctIdx !== undefined){ [...$('qChoice').children].forEach((b, j) => { if (j === qq.correctIdx) b.classList.add('right'); }); qFeedback(false, qq.explainFn(qq.correctIdx)); }
+  else { $('q1').value = frc(qq.ans).length > 9 ? num(qq.ans, 4) : frc(qq.ans); $('qFb').className = 'feedback bad'; $('qFb').innerHTML = '<b>Answer filled in.</b> ' + qq.why; }
+};
+$('qNew').onclick = qNew;
+
+/* =====================================================================
+   6. START
+   ===================================================================== */
+selectOnFocus(['q1', 't1', 't2', 't3']);
+$('zPresets').children[0].click(); zOpMark(ZS.op);
+tOpMark(TS.op); tPreset(0);
+drawTraps();
+qNew();
+</script>
+</body></html>
