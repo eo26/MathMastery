@@ -154,7 +154,7 @@ window.MM_TOC = [
     { id: '8.M.4', title: 'Stochastic Calculus' },
   ]},
   { ch: 9, title: 'Probability', pages: [
-    { id: '9.B.1', title: 'Chance and Probability' },
+    { id: '9.B.1', title: 'Chance and Probability', built: true, url: 'https://claude.ai/artifact/HpfKh3uTgcAAvQkUnPmU6T' },
     { id: '9.B.2', title: 'Counting Outcomes' },
     { id: '9.B.3', title: 'And, Or, Not: Combining Events' },
     { id: '9.B.4', title: 'Conditional Probability' },

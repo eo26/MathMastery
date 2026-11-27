@@ -39,30 +39,6 @@
   "3.B.1 Variables and Expressions · MathMastery",
   "2dd48e1c-c756-4222-99ed-01497ec5a430"
  ],
- "3-B-10": [
-  "3.B.10 Radicals and Rational Exponents · MathMastery",
-  "a0862170-d8f0-43de-88d4-3e3e0d5e3338"
- ],
- "3-B-11": [
-  "3.B.11 Rational Expressions and Functions · MathMastery",
-  "7e3152a1-7f97-4f97-a0fc-51c6a862c4f3"
- ],
- "3-B-12": [
-  "3.B.12 Transforming Graphs · MathMastery",
-  "9856347a-827e-4320-b5c8-e981fdc52b94"
- ],
- "3-B-13": [
-  "3.B.13 Inverse Functions · MathMastery",
-  "2ac93ff5-295b-44d8-b07e-765fa0eab58a"
- ],
- "3-B-14": [
-  "3.B.14 Logarithms · MathMastery",
-  "1013baf7-955f-4a57-b11d-38639b886c84"
- ],
- "3-B-15": [
-  "3.B.15 Complex Numbers and Polynomial Roots · MathMastery",
-  "6b40607a-faec-4397-b7e5-b2fe3fb5b6da"
- ],
  "3-B-2": [
   "3.B.2 Solving Linear Equations · MathMastery",
   "b4550920-83b4-454c-b5b8-073e6a5190b6"
@@ -95,6 +71,30 @@
   "3.B.9 Quadratics and Parabolas · MathMastery",
   "0119048d-c3df-4e2f-abb2-a9fa351a93a6"
  ],
+ "3-B-10": [
+  "3.B.10 Radicals and Rational Exponents · MathMastery",
+  "a0862170-d8f0-43de-88d4-3e3e0d5e3338"
+ ],
+ "3-B-11": [
+  "3.B.11 Rational Expressions and Functions · MathMastery",
+  "7e3152a1-7f97-4f97-a0fc-51c6a862c4f3"
+ ],
+ "3-B-12": [
+  "3.B.12 Transforming Graphs · MathMastery",
+  "9856347a-827e-4320-b5c8-e981fdc52b94"
+ ],
+ "3-B-13": [
+  "3.B.13 Inverse Functions · MathMastery",
+  "2ac93ff5-295b-44d8-b07e-765fa0eab58a"
+ ],
+ "3-B-14": [
+  "3.B.14 Logarithms · MathMastery",
+  "1013baf7-955f-4a57-b11d-38639b886c84"
+ ],
+ "3-B-15": [
+  "3.B.15 Complex Numbers and Polynomial Roots · MathMastery",
+  "6b40607a-faec-4397-b7e5-b2fe3fb5b6da"
+ ],
  "5-B-1": [
   "5.B.1 Angles and Radians · MathMastery",
   "72e2a679-bd36-4f0a-b2bc-8fbab1baefa2"
@@ -114,18 +114,6 @@
  "7-B-1": [
   "7.B.1 Vectors: Arrows and Lists · MathMastery",
   "e679a503-ec0d-4806-aafe-4f3ba719c367"
- ],
- "7-B-10": [
-  "7.B.10 Into 3D: Vectors and 3×3 Matrices · MathMastery",
-  "dbb46f60-fccf-4725-848d-cbc9cd395d78"
- ],
- "7-B-11": [
-  "7.B.11 Matrices of Any Size: Adding, Scaling and the Transpose · MathMastery",
-  "77b9e765-e148-49c5-8bed-4851692b5dc8"
- ],
- "7-B-12": [
-  "7.B.12 Independence, Basis and Dimension: A First Look · MathMastery",
-  "3c857609-05ef-475f-9425-d2c2ed59faec"
  ],
  "7-B-2": [
   "7.B.2 Linear Combinations and Span · MathMastery",
@@ -159,6 +147,18 @@
   "7.B.9 Solving Systems by Row Reduction · MathMastery",
   "409a5f10-6cbe-42a2-9865-728db8dc5afa"
  ],
+ "7-B-10": [
+  "7.B.10 Into 3D: Vectors and 3×3 Matrices · MathMastery",
+  "dbb46f60-fccf-4725-848d-cbc9cd395d78"
+ ],
+ "7-B-11": [
+  "7.B.11 Matrices of Any Size: Adding, Scaling and the Transpose · MathMastery",
+  "77b9e765-e148-49c5-8bed-4851692b5dc8"
+ ],
+ "7-B-12": [
+  "7.B.12 Independence, Basis and Dimension: A First Look · MathMastery",
+  "3c857609-05ef-475f-9425-d2c2ed59faec"
+ ],
  "8-B-1": [
   "8.B.1 Limits · MathMastery",
   "29605135-4943-4869-b1a4-4241da181989"
@@ -182,5 +182,9 @@
  "8-U-3": [
   "8.U.3 Taylor Approximations · MathMastery",
   "133fab7d-7b5e-4f96-a0ef-33c22dcd4abe"
+ ],
+ "9-B-1": [
+  "9.B.1 Chance and Probability · MathMastery",
+  "8839caec-cb7f-42a1-8338-0312d94e50a8"
  ]
 }

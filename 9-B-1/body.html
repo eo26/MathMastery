@@ -1,0 +1,837 @@
+<style>
+/* ===================== Page-specific styles (9.B.1) ===================== */
+/* favourable outcomes = orange, theory = purple, experiment = teal, marble and card colours from the scene */
+:root{ --hit:#D85A30; --hit-bg:#FBE3D9; --th:#7F77DD; --ex:#1D9E75; --red:#D8443A; --blue:#3A7BD5; --green:#2E9E5B; --yel:#E0A800; --gold:#C99700; --rain:#3A7BD5; --sun:#E0A800; }
+@media (prefers-color-scheme:dark){ :root{ --hit:#FF9A6B; --hit-bg:#4A2A1C; --th:#AFA9EC; --ex:#5DCAA5; --red:#F07B72; --blue:#7FB0F0; --green:#6FD08F; --yel:#FFD24D; --gold:#FFD24D; --rain:#7FB0F0; --sun:#FFD24D; } }
+.kh{color:var(--hit);font-weight:700}.kt{color:var(--th);font-weight:700}.ke{color:var(--ex);font-weight:700}
+svg{user-select:none;-webkit-user-select:none}
+svg text.lab,svg text.labS{fill:var(--ink)}
+.cellg{cursor:pointer}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:10px;align-items:start}
+.split svg,.full svg{width:100%;height:auto;display:block;background:var(--bg);border:1px solid var(--line);border-radius:10px}
+.full{margin-top:12px}
+.mainsplit{display:grid;grid-template-columns:600px 1fr;gap:16px;margin-top:10px;align-items:start}
+.mainsplit svg{width:100%;height:auto;display:block;background:var(--bg);border:1px solid var(--line);border-radius:10px}
+.panel{border:1px solid var(--line);border-radius:10px;background:var(--bg);padding:12px 14px;font-size:15px;line-height:1.7}
+.panel .big{font:700 22px var(--mono);margin:4px 0}
+.panel svg{border:none;background:none;margin-top:6px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:8px 0 0}
+.chips .lbl{font:600 12px var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-right:4px}
+.toggle button.on{background:var(--accent-bg);border-color:var(--accent);color:var(--accent)}
+pre.code{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:12px 16px;overflow-x:auto;font:13.5px/1.6 var(--mono);margin:10px 0 16px}
+.traps{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:8px}
+.traps .t{border:1px solid var(--line);border-radius:10px;background:var(--bg);padding:10px}
+.traps .t h4{margin:0 0 4px;font:600 15px var(--sans)}
+.traps .t p{margin:6px 0 0;font-size:14.5px;line-height:1.5;color:var(--muted)}
+.traps svg{width:100%;height:auto;display:block}
+.qtext{font:17px/1.55 var(--serif);margin:4px 0 10px}
+.choice{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 0}.choice button{min-width:110px}
+.choice button.right{border-color:var(--ok);background:var(--ok-bg);color:var(--ok)}.choice button.wrong{border-color:var(--bad);background:var(--bad-bg);color:var(--bad)}
+#qPic svg{max-width:520px;width:100%;height:auto;display:block;margin:4px 0 8px}
+</style>
+
+<!-- ===================== Top bar ===================== -->
+<div class="topbar"><div class="topbar-in">
+  <span class="brand">Math<b>Mastery</b></span>
+  <span class="crumbs">Chapter 9 · Probability › Basics</span>
+  <span class="pid">9.B.1</span>
+</div></div>
+
+<!-- ===================== Hero ===================== -->
+<header class="prose hero">
+  <div class="kicker">Chapter 9 · Probability</div>
+  <h1>Chance and Probability</h1>
+  <p class="dek">A probability is a number from 0 to 1 that says how likely something is. You can work it out by counting outcomes, or measure it by repeating an experiment many times, and the two answers meet.</p>
+  <div class="tiers" aria-label="Tier">
+    <span class="tier on">Basics <small>you are here</small></span>
+    <span class="tier">Undergraduate</span>
+    <span class="tier">Masters</span>
+  </div>
+  <div class="goals">
+    <h3>On this page</h3>
+    <ul>
+      <li>Place chances on the <b>probability scale</b> from 0 (<b>impossible</b>) to 1 (<b>certain</b>), as a fraction, a decimal and a percent.</li>
+      <li>List a <b>sample space</b> and find the probability of an <b>event</b> when outcomes are <b>equally likely</b>: favourable ÷ total.</li>
+      <li>Use the <b>complement</b>: P(not A) = 1 − P(A).</li>
+      <li>Compare <b>theoretical</b> and <b>experimental probability</b>, and watch the <b>relative frequency</b> settle down as the number of <b>trials</b> grows.</li>
+      <li>Handle outcomes that are <b>not</b> equally likely: unequal spinners, loaded dice, free throws and weather forecasts.</li>
+    </ul>
+  </div>
+</header>
+
+<main>
+<!-- ===================== §1 ===================== -->
+<section class="prose">
+  <h2><span class="n">1</span>How likely is it?</h2>
+  <p>Some things can’t happen: rolling a 7 on an ordinary die. Some things must happen: rolling a number from 1 to 6. Most things sit in between. <b>Probability</b> puts a number on “how likely”: <b>0</b> means <b>impossible</b>, <b>1</b> means <b>certain</b>, and <b>½</b> means an <b>even chance</b>, as likely to happen as not. Below ½ is <b>unlikely</b>, above ½ is <b>likely</b>.</p>
+  <p>The same probability can be written three ways, just as in 1.B.3: as a fraction (¼), a decimal (0.25) or a percent (25%). A weather forecast of “70% chance of rain” is the probability 0.7.</p>
+
+  <h2><span class="n">2</span>Counting equally likely outcomes</h2>
+  <p>Anything with an uncertain result, like rolling a die, is an <b>experiment</b>, and one go at it is a <b>trial</b>. Each possible result is an <b>outcome</b>, and the list of all outcomes is the <b>sample space</b>. For one die the sample space is {1, 2, 3, 4, 5, 6}. An <b>event</b> is a group of outcomes we care about, such as “an even number” = {2, 4, 6}; those are its <b>favourable outcomes</b>.</p>
+  <p>When every outcome is <b>equally likely</b> (a <b>fair</b> die, a well-shuffled deck, a bag you can’t see into), the <b>theoretical probability</b> is a count:</p>
+  <div class="math">\[ P(\text{event}) = \frac{\text{number of favourable outcomes}}{\text{total number of outcomes}}, \qquad P(\text{even}) = \frac{3}{6} = \frac12. \]</div>
+  <p>The outcomes that are <em>not</em> in the event make up its <b>complement</b>. Every outcome is either in the event or not, so the two probabilities add to 1: P(not even) = 1 − ½ = ½. If the chance of rain is 70%, the chance of no rain is 30%.</p>
+</section>
+<section class="wide">
+  <div class="card" id="space">
+    <div class="card-h"><span class="tag">Explore</span><h3>Count the outcomes</h3>
+      <span class="sub">Every square is one equally likely outcome. Pick an event: its favourable outcomes light up in orange. Or click outcomes yourself to build your own event.</span></div>
+    <div class="row" id="sPresets"></div>
+    <div class="desc" id="sDesc"></div>
+    <div class="chips" id="sEvents"></div>
+    <div class="mainsplit"><svg id="sG" viewBox="0 0 600 400" role="img" aria-label="Sample space"></svg><div class="panel" id="sPanel"></div></div>
+    <div class="full"><svg id="sScale" viewBox="0 0 960 86" role="img" aria-label="The probability scale"></svg></div>
+    <div class="readout" id="sOut"></div>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--hit)"></i><span>favourable outcome (in the event)</span></span>
+      <span><i class="sw" style="background:var(--line)"></i><span>the rest: the complement</span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §3 ===================== -->
+<section class="prose">
+  <h2><span class="n">3</span>Counting versus doing it</h2>
+  <p>Counting tells you a fair coin lands heads with probability ½. But flip it 10 times and you might get 7 heads. Flipping and recording is finding the <b>experimental probability</b>, also called the <b>relative frequency</b>:</p>
+  <div class="math">\[ \text{relative frequency} = \frac{\text{number of times the event happened}}{\text{number of trials}}. \]</div>
+  <p>With a few trials the relative frequency jumps around. With many trials it settles down close to the theoretical probability. That pattern has a name, the <b>law of large numbers</b>, and it’s why casinos always win in the long run even though any one bet is a gamble. The result of each trial is <b>random</b>: you can’t predict it, but you can predict the long-run pattern.</p>
+  <p>Experiments are also how we find probabilities we <em>can’t</em> count: the chance a basketball player makes a free throw, or that a drawing pin lands point-up. A computer can run a million trials in a blink:</p>
+  <pre class="code"><code>import random                                             # Python's random-number tools
+rolls = [random.randint(1, 6) for _ in range(1_000_000)]   # roll a fair die a million times
+sixes = rolls.count(6)                                    # how many of those rolls came up 6
+print(sixes / len(rolls))                                 # relative frequency: very close to 1/6 ≈ 0.1667</code></pre>
+
+  <h2><span class="n">4</span>When outcomes aren’t equally likely</h2>
+  <p>“Favourable ÷ total” only works when every outcome has the same chance. A spinner with a big red half and three small sectors has four outcomes, but red isn’t ¼: it’s ½, because probability follows the <em>size</em> of the sector. A <b>biased</b> (loaded) die is weighted to land on 6 more often. A free throw has two outcomes, make or miss, but a good player makes 70% or more. Two outcomes does <em>not</em> mean 50–50. For these, the probability comes from the shape of the object or from data, and an experiment is how you check.</p>
+</section>
+<section class="wide">
+  <div class="card" id="exp">
+    <div class="card-h"><span class="tag">Explore</span><h3>Run the experiment</h3>
+      <span class="sub">Pick a situation and run trials one at a time, ten at a time, or press Play to run thousands. The bars show how often each outcome happened (dashed lines: the theory). The graph tracks the relative frequency of the chosen event as trials pile up.</span></div>
+    <div class="row" id="ePresets"></div>
+    <div class="desc" id="eDesc"></div>
+    <div class="chips" id="eEvents"></div>
+    <div class="row" style="margin-top:8px"><button id="e1">1 trial</button><button id="e10">10 trials</button><button id="e100">100 trials</button><button class="primary" id="ePlay">Play</button><button id="eReset">Reset</button></div>
+    <div class="split"><svg id="ePic" viewBox="0 0 470 300" role="img" aria-label="The latest trial"></svg><svg id="eBars" viewBox="0 0 470 300" role="img" aria-label="How often each outcome happened"></svg></div>
+    <div class="full"><svg id="eLine" viewBox="0 0 960 270" role="img" aria-label="Relative frequency as the trials grow"></svg></div>
+    <div class="readout" id="eOut"></div>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--ex)"></i><span>experiment: relative frequency</span></span>
+      <span><i class="sw" style="background:var(--th)"></i><span>theory: the probability</span></span>
+      <span><i class="sw" style="background:var(--hit)"></i><span>the chosen event</span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §5 ===================== -->
+<section class="prose">
+  <h2><span class="n">5</span>What a forecast means</h2>
+  <p>“70% chance of rain” doesn’t mean it will rain for 70% of the day, or that the forecaster is 70% sure. It means: of all the days with a forecast like this one, it rains on about 7 out of 10. A single dry day doesn’t prove the forecast wrong, and neither does a single wet one. Try the “70% rain forecast” preset above: each trial is one such day.</p>
+
+  <h2><span class="n">6</span>Traps</h2>
+</section>
+<section class="wide">
+  <div class="card" id="traps">
+    <div class="card-h"><span class="tag">Compare</span><h3>Easy to get wrong</h3></div>
+    <div class="traps">
+      <div class="t"><h4 style="color:var(--bad)">✕ “Tails is due”</h4><svg id="tr1" viewBox="0 0 300 220"></svg><p id="tr1p">After five heads in a row, the next flip is still 50–50. A coin has no memory. (This mistake is called the gambler’s fallacy.)</p></div>
+      <div class="t"><h4 style="color:var(--bad)">✕ “Two outcomes, so 50–50”</h4><svg id="tr2" viewBox="0 0 300 220"></svg><p>A raffle with 50 tickets: you either win or you don’t. That’s two outcomes, but your chance is 1/50 = 2%, not 50%. The outcomes aren’t equally likely.</p></div>
+      <div class="t"><h4 style="color:var(--bad)">✕ “10 flips gives 5 heads”</h4><svg id="tr3" viewBox="0 0 300 220"></svg><p>Probability ½ means about half <em>in the long run</em>. In 10 flips, exactly 5 heads happens only about 25% of the time; 4 or 6 are almost as common.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §7 ===================== -->
+<section class="prose">
+  <h2><span class="n">7</span>Now, in symbols</h2>
+  <p>Write <i>S</i> for the sample space, <i>A</i> for an event, and |<i>A</i>| for the number of outcomes in it.</p>
+  <div class="math">\[ 0 \le P(A) \le 1, \qquad P(\text{impossible}) = 0, \qquad P(S) = 1 \]</div>
+  <div class="math">\[ \text{equally likely outcomes: } P(A) = \frac{|A|}{|S|}, \qquad P(\text{not } A) = 1 - P(A) \]</div>
+  <div class="math">\[ \text{after } n \text{ trials with } A \text{ happening } k \text{ times: } \quad \frac{k}{n} \;\longrightarrow\; P(A) \ \text{ as } n \text{ grows.} \]</div>
+</section>
+
+<!-- ===================== §8 ===================== -->
+<section class="prose">
+  <h2><span class="n">8</span>Where this goes</h2>
+  <ul class="goes">
+    <li><b>Next:</b> 9.B.2 counts outcomes when there are too many to list (two dice, cards, passwords), and 9.B.3–9.B.4 combine events with “and”, “or” and “given that”. 9.B.5 turns probabilities into expected value, the long-run average.</li>
+    <li><b>Later in this book:</b> random variables and the normal curve (9.U), the precise law of large numbers and central limit theorem (9.U.6), Monte Carlo simulation (9.M.3), and statistics (chapter 10), which runs the experiment backwards: from data to probabilities.</li>
+    <li><b>In the world:</b> weather forecasts, medical test results, insurance, quality control in factories, the odds in games and sports, and every scientific experiment that asks “could this be chance?”.</li>
+  </ul>
+</section>
+
+<!-- ===================== §9 ===================== -->
+<section class="prose">
+  <h2><span class="n">9</span>Words to know</h2>
+  <div class="vocab">
+    <div class="term"><b>Probability</b>A number from 0 to 1 saying how likely an event is.</div>
+    <div class="term"><b>Probability scale</b>The line from 0 to 1: impossible, unlikely, even chance, likely, certain.</div>
+    <div class="term"><b>Impossible / certain</b>Probability 0 / probability 1.</div>
+    <div class="term"><b>Even chance</b>Probability ½: as likely to happen as not.</div>
+    <div class="term"><b>Experiment / trial</b>A process with an uncertain result / one go at it.</div>
+    <div class="term"><b>Outcome</b>One possible result of a trial.</div>
+    <div class="term"><b>Sample space</b>The list of all possible outcomes.</div>
+    <div class="term"><b>Event</b>A group of outcomes, such as “an even number”.</div>
+    <div class="term"><b>Favourable outcome</b>An outcome that is in the event.</div>
+    <div class="term"><b>Equally likely</b>Every outcome has the same chance.</div>
+    <div class="term"><b>Fair / biased</b>Equally likely outcomes / some outcomes favoured (a loaded die).</div>
+    <div class="term"><b>Complement</b>“Not A”: every outcome not in A. P(not A) = 1 − P(A).</div>
+    <div class="term"><b>Theoretical probability</b>Found by reasoning or counting: favourable ÷ total.</div>
+    <div class="term"><b>Experimental probability</b>Found by doing trials: the relative frequency.</div>
+    <div class="term"><b>Relative frequency</b>How many times the event happened ÷ number of trials.</div>
+    <div class="term"><b>Random</b>Unpredictable one at a time, but with a predictable long-run pattern.</div>
+    <div class="term"><b>Law of large numbers</b>With more trials, the relative frequency settles near the probability.</div>
+  </div>
+</section>
+
+<!-- ===================== Quiz ===================== -->
+<section class="prose"><h2><span class="n">10</span>Check yourself</h2>
+  <p>Four kinds of questions: compute a probability, place it on the scale, use the complement, and spot the trap. Type answers as a fraction, a decimal or a percent (1/4, 0.25 and 25% all work).</p>
+</section>
+<section class="wide">
+  <div class="card" id="quiz">
+    <div class="card-h"><span class="tag">Quiz</span><h3 id="qTitle"></h3><span class="score" id="score">Score: 0 / 0</span></div>
+    <div class="qtext" id="qText"></div>
+    <div id="qPic"></div>
+    <div class="choice" id="qChoice"></div>
+    <div class="inputs" id="qIn">
+      <label class="field"><span id="qL1">P =</span><input id="q1" type="text" autocomplete="off" style="width:160px;border-color:var(--hit)"></label>
+      <div class="row" style="margin:0"><button class="primary" id="qCheck">Check</button></div>
+    </div>
+    <div class="row" style="margin:10px 0 0"><button id="qShow">Show answer</button><button id="qNew">New question</button></div>
+    <div class="err" id="qErr"></div>
+    <div class="feedback" id="qFb" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ===================== Pager (filled in by the shared navigation) ===================== -->
+<nav class="wide">
+  <div class="pager"></div>
+  <div class="meta">9.B.1 · Prerequisites: 1.B.3 (fractions, decimals), 1.B.4 (ratios) · Leads to: 9.B.2 (counting outcomes), 9.B.4 (conditional probability), 10.B (statistics)</div>
+</nav>
+</main>
+
+<script>
+/* =====================================================================
+   1. HELPERS (shared with the other pages)
+   ===================================================================== */
+const NS = 'http://www.w3.org/2000/svg';
+const $ = id => document.getElementById(id);
+function mk(tag, attrs, parent){                           // create an SVG element with attributes
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function txt(parent, x, y, s, cls, extra){                 // create an SVG text element
+  extra = Object.assign({}, extra || {});
+  if (extra['text-anchor']){ extra.style = (extra.style ? extra.style + ';' : '') + 'text-anchor:' + extra['text-anchor']; delete extra['text-anchor']; }
+  const t = mk('text', Object.assign({ x, y, class: cls || '' }, extra), parent);
+  t.textContent = s;
+  return t;
+}
+// round for display, use a true minus sign, never show −0
+function num(x, d){ if (d === undefined) d = 2; const r = Math.round(x * Math.pow(10, d)) / Math.pow(10, d); return r === 0 ? '0' : (r < 0 ? '−' : '') + String(Math.abs(r)); }
+const pn = x => x < 0 ? `(${num(x)})` : num(x);              // wrap negatives in brackets when substituting
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const ri = (a, b) => a + Math.floor(Math.random() * (b - a + 1));   // random whole number from a to b
+const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+function parseNum(s){                                     // integers, decimals, minus, simple fractions
+  s = String(s).trim().replace(/[−–]/g, '-').replace(/\s+/g, '');
+  if (/^-?\d+(\.\d+)?$|^-?\.\d+$/.test(s)) return parseFloat(s);
+  const m = s.match(/^(-?\d+)\/(\d+)$/);
+  if (m && +m[2] !== 0) return +m[1] / +m[2];
+  return NaN;
+}
+function selectOnFocus(ids){ ids.forEach(id => $(id).addEventListener('focus', e => e.target.select())); }
+function buttons(boxId, list, onPick){                    // a row of preset buttons; returns a function that marks one as on
+  list.forEach((p, i) => { const b = document.createElement('button'); b.className = 'preset'; b.textContent = p.n; b.onclick = () => onPick(i); $(boxId).appendChild(b); });
+  return i => [...$(boxId).children].forEach((b, j) => b.classList.toggle('on', j === i));
+}
+function svgPt(svg, ev){                                  // mouse position in the SVG's own coordinates
+  const p = svg.createSVGPoint(); p.x = ev.clientX; p.y = ev.clientY;
+  return p.matrixTransform(svg.getScreenCTM().inverse());
+}
+const svgCss = document.createElement('style');
+svgCss.textContent = `
+  .grid{stroke:var(--line);stroke-width:1}
+  .axis{stroke:var(--ink);stroke-width:1.4;opacity:.7}
+  .tl{fill:var(--muted);font:500 11.5px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:3px}
+  .lab{font:700 14px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:5px}
+  .labS{font:600 12.5px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+  .cap{fill:var(--muted);font:600 12px var(--sans);letter-spacing:.06em;paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+  .oval{fill:var(--paper);stroke:var(--line);stroke-width:1.5}
+`;
+document.head.appendChild(svgCss);
+let clipN = 0;                                            // unique clip-path ids
+
+/* ---------- axes: a coordinate grid inside an SVG, with separate x and y scales ---------- */
+function axes(svg, W, H, b, o){
+  o = o || {};
+  svg.innerHTML = '';
+  const L = o.padL ?? 44, R = o.padR ?? 16, T = o.padT ?? 16, B = o.padB ?? 30;
+  const sx = (W - L - R) / (b.x1 - b.x0), sy = (H - T - B) / (b.y1 - b.y0);   // pixels per unit
+  const X = x => L + (x - b.x0) * sx, Y = y => T + (b.y1 - y) * sy;
+  const step = (s, px) => (o.half ? [0.5, 1, 2, 5, 10, 20, 50, 100] : [1, 2, 5, 10, 20, 50, 100]).find(k => k * s >= px) || 200;   // a round step at least px pixels wide
+  const xg = o.xg || step(sx, 9), yg = o.yg || step(sy, 9);        // grid-line spacing
+  const xt = o.xt || step(sx, 34), yt = o.yt || step(sy, 26);      // tick-label spacing
+  const gGrid = mk('g', {}, svg), id = 'clp' + (++clipN);
+  const cp = mk('clipPath', { id }, svg); mk('rect', { x: L, y: T, width: W - L - R, height: H - T - B }, cp);
+  const cg = mk('g', { 'clip-path': `url(#${id})` }, svg);         // clipped layer for curves
+  const m = mk('g', {}, svg), top = mk('g', {}, svg);              // free layer, then labels on top
+  const near = (v, s) => Math.abs(v / s - Math.round(v / s)) < 1e-6;
+  for (let x = Math.ceil(b.x0 / xg) * xg; x <= b.x1 + 1e-9; x += xg) mk('line', { x1: X(x), y1: T, x2: X(x), y2: H - B, class: 'grid' }, gGrid);
+  for (let y = Math.ceil(b.y0 / yg) * yg; y <= b.y1 + 1e-9; y += yg) mk('line', { x1: L, y1: Y(y), x2: W - R, y2: Y(y), class: 'grid' }, gGrid);
+  const ay = (b.y0 <= 0 && b.y1 >= 0) ? Y(0) : H - B;              // where the x-axis is drawn
+  const ax = (b.x0 <= 0 && b.x1 >= 0) ? X(0) : L;                  // where the y-axis is drawn
+  mk('line', { x1: L, y1: ay, x2: W - R, y2: ay, class: 'axis' }, gGrid);
+  mk('line', { x1: ax, y1: T, x2: ax, y2: H - B, class: 'axis' }, gGrid);
+  const fx = o.fx || (v => num(v)), fy = o.fy || (v => num(v));
+  for (let x = Math.ceil(b.x0 / xt) * xt; x <= b.x1 + 1e-9; x += xt){
+    if (Math.abs(x) < 1e-9 && ax === X(0) && !o.zeroX) continue;
+    txt(top, X(x), ay + 16, fx(x), 'tl', { 'text-anchor': 'middle' });
+  }
+  for (let y = Math.ceil(b.y0 / yt) * yt; y <= b.y1 + 1e-9; y += yt){
+    if (Math.abs(y) < 1e-9 && ay === Y(0)) continue;
+    txt(top, ax - 6, Y(y) + 4, fy(y), 'tl', { 'text-anchor': 'end' });
+  }
+  if (o.xT) txt(top, W - R - 2, ay - 8, o.xT, 'cap', { 'text-anchor': 'end' });
+  if (o.yT) txt(top, ax + 8, T + 12, o.yT, 'cap');
+  return { svg, X, Y, sx, sy, cg, m, top, b, L, R, T, B, W, H, ay, ax,
+           inv: (px, py) => [b.x0 + (px - L) / sx, b.y1 - (py - T) / sy] };
+}
+function dPath(P, pts){ return pts.map((p, i) => (i ? 'L' : 'M') + P.X(p[0]).toFixed(1) + ' ' + P.Y(p[1]).toFixed(1)).join(''); }
+// sample y = f(x) from a to b, breaking the curve where f is undefined or jumps
+function sample(f, a, b, n, ok){
+  const out = []; let cur = [];
+  for (let i = 0; i <= n; i++){
+    const x = a + (b - a) * i / n, y = (ok && !ok(x)) ? NaN : f(x);
+    if (!isFinite(y)){ if (cur.length > 1) out.push(cur); cur = []; continue; }
+    if (cur.length && Math.abs(y - cur[cur.length - 1][1]) > 40){ if (cur.length > 1) out.push(cur); cur = []; }
+    cur.push([x, y]);
+  }
+  if (cur.length > 1) out.push(cur);
+  return out;
+}
+function dot(P, x, y, col, o){                              // a filled (or open) point
+  o = o || {};
+  return mk('circle', { cx: P.X(x), cy: P.Y(y), r: o.r || 6, style: o.open ? `fill:var(--bg);stroke:${col};stroke-width:2.6` : `fill:${col};stroke:var(--bg);stroke-width:1.5` }, o.layer || P.m);
+}
+function vline(P, x, col, o){ o = o || {}; return mk('line', { x1: P.X(x), y1: o.y0 !== undefined ? P.Y(o.y0) : P.T, x2: P.X(x), y2: o.y1 !== undefined ? P.Y(o.y1) : P.H - P.B, style: `stroke:${col};stroke-width:${o.w || 2.5};${o.dash ? 'stroke-dasharray:' + o.dash : ''}` }, o.layer || P.m); }
+function hline(P, y, col, o){ o = o || {}; return mk('line', { x1: o.x0 !== undefined ? P.X(o.x0) : P.L, y1: P.Y(y), x2: o.x1 !== undefined ? P.X(o.x1) : P.W - P.R, y2: P.Y(y), style: `stroke:${col};stroke-width:${o.w || 2.5};${o.dash ? 'stroke-dasharray:' + o.dash : ''}` }, o.layer || P.m); }
+function arrowHead(g, x1, y1, x2, y2, col, size){            // a small triangle at (x2, y2) pointing away from (x1, y1)
+  const a = Math.atan2(y2 - y1, x2 - x1), s = size || 9;
+  const p = [[x2, y2], [x2 - s * Math.cos(a - 0.4), y2 - s * Math.sin(a - 0.4)], [x2 - s * Math.cos(a + 0.4), y2 - s * Math.sin(a + 0.4)]];
+  mk('polygon', { points: p.map(q => q.join(',')).join(' '), style: `fill:${col}` }, g);
+}
+
+/* ---------- arrow diagram: inputs in a left oval, outputs in a right oval, one arrow per pair ---------- */
+// pairs: [[in, out], ...]; o.ins / o.outs give the order (defaults: sorted values); o.fmt formats a value;
+// o.hl = input to highlight (others fade); o.lit = [in, out] arrow drawn thick; o.dead = inputs shown crossed out
+function arrowDiagram(svg, W, H, pairs, o){
+  o = o || {};
+  svg.innerHTML = '';
+  const fmt = o.fmt || (v => typeof v === 'number' ? num(v) : v);
+  const key = v => String(v);
+  const uniq = arr => { const s = new Set(), r = []; arr.forEach(v => { if (!s.has(key(v))){ s.add(key(v)); r.push(v); } }); return r; };
+  const srt = arr => arr.every(v => typeof v === 'number') ? arr.slice().sort((a, b) => a - b) : arr;
+  const ins = o.ins || srt(uniq(pairs.map(p => p[0]))), outs = o.outs || srt(uniq(pairs.map(p => p[1])));
+  const top = o.top ?? 34, bot = H - (o.bottom ?? 14);
+  const lx = W * 0.25, rx = W * 0.75, ow = Math.min(W * 0.17, 90);
+  mk('ellipse', { cx: lx, cy: (top + bot) / 2, rx: ow, ry: (bot - top) / 2, class: 'oval' }, svg);
+  mk('ellipse', { cx: rx, cy: (top + bot) / 2, rx: ow, ry: (bot - top) / 2, class: 'oval' }, svg);
+  txt(svg, lx, 18, o.inLab || 'INPUTS x', 'cap', { 'text-anchor': 'middle', style: 'fill:var(--in)' });
+  txt(svg, rx, 18, o.outLab || 'OUTPUTS y', 'cap', { 'text-anchor': 'middle', style: 'fill:var(--out)' });
+  const ypos = (i, n) => n === 1 ? (top + bot) / 2 : top + 26 + (bot - top - 52) * i / (n - 1);
+  const iy = {}, oy = {};
+  ins.forEach((v, i) => iy[key(v)] = ypos(i, ins.length));
+  outs.forEach((v, i) => oy[key(v)] = ypos(i, outs.length));
+  const cnt = {}; pairs.forEach(p => cnt[key(p[0])] = (cnt[key(p[0])] || 0) + 1);   // how many outputs each input has
+  const dx = Math.min(ow * 0.45, 34), fs = ins.length > 9 || outs.length > 9 ? 'labS' : 'lab';
+  const ga = mk('g', {}, svg), gd = mk('g', {}, svg);
+  pairs.forEach(p => {                                     // arrows
+    const k = key(p[0]), bad = cnt[k] > 1, faded = o.hl !== undefined && o.hl !== null && key(o.hl) !== k;
+    const lit = o.lit && key(o.lit[0]) === k && key(o.lit[1]) === key(p[1]);
+    const col = bad ? 'var(--no)' : 'var(--pt)';
+    const x1 = lx + dx + 8, y1 = iy[k], x2 = rx - dx - 9, y2 = oy[key(p[1])];
+    mk('line', { x1, y1, x2, y2, style: `stroke:${col};stroke-width:${lit ? 4.5 : 2.4};opacity:${faded ? .18 : 1}` }, ga);
+    if (!faded) arrowHead(ga, x1, y1, x2, y2, col, lit ? 12 : 10);
+  });
+  ins.forEach(v => {                                       // input dots and labels
+    const k = key(v), dead = o.dead && o.dead.map(key).includes(k), bad = cnt[k] > 1;
+    const faded = o.hl !== undefined && o.hl !== null && key(o.hl) !== k;
+    const col = dead ? 'var(--muted)' : bad ? 'var(--no)' : 'var(--in)';
+    mk('circle', { cx: lx + dx, cy: iy[k], r: o.hl !== undefined && key(o.hl) === k ? 8 : 6, style: `fill:${col};opacity:${faded ? .35 : 1}` }, gd);
+    const t = txt(gd, lx + dx - 12, iy[k] + 5, fmt(v), fs, { 'text-anchor': 'end', style: `fill:${col};opacity:${faded ? .45 : 1}${dead ? ';text-decoration:line-through' : ''}` });
+  });
+  outs.forEach(v => {                                      // output dots and labels
+    const k = key(v);
+    mk('circle', { cx: rx - dx, cy: oy[k], r: 6, style: 'fill:var(--out)' }, gd);
+    txt(gd, rx - dx + 12, oy[k] + 5, fmt(v), fs, { style: 'fill:var(--out)' });
+  });
+  return { ins, outs };
+}
+// group pairs by input: Map from input to its list of distinct outputs
+function byInput(pairs){
+  const m = new Map();
+  pairs.forEach(([x, y]) => { const k = String(x); if (!m.has(k)) m.set(k, { x, ys: [] }); const e = m.get(k); if (!e.ys.some(v => String(v) === String(y))) e.ys.push(y); });
+  return m;
+}
+const setStr = arr => '{' + arr.map(v => num(v)).join(', ') + '}';
+
+
+/* ---------- helpers for zoomable graphs (any scale) ---------- */
+const niceStep = raw => { const p = Math.pow(10, Math.floor(Math.log10(raw))), m = raw / p; return (m <= 1 ? 1 : m <= 2 ? 2 : m <= 5 ? 5 : 10) * p; };
+const decs = st => Math.max(0, -Math.floor(Math.log10(st) + 1e-9));
+function fmt(v, st){ const d = decs(st); const r = Number(v.toFixed(d)); return r === 0 ? '0' : (r < 0 ? '−' : '') + Math.abs(r).toFixed(d); }
+// a coordinate system with any box (tiny or huge), labelled ticks, a clipped layer for curves
+function ax2(svg, W, H, b, o){
+  o = o || {}; svg.innerHTML = '';
+  const L = o.padL ?? 52, R = o.padR ?? 14, T = o.padT ?? 14, B = o.padB ?? 28;
+  const sx = (W - L - R) / (b.x1 - b.x0), sy = (H - T - B) / (b.y1 - b.y0), X = x => L + (x - b.x0) * sx, Y = y => T + (b.y1 - y) * sy;
+  const gx = niceStep((b.x1 - b.x0) / 8), gy = niceStep((b.y1 - b.y0) / 7);
+  const g = mk('g', {}, svg), id = 'c' + Math.random().toString(36).slice(2);
+  const cp = mk('clipPath', { id }, svg); mk('rect', { x: L, y: T, width: W - L - R, height: H - T - B }, cp);
+  const cg = mk('g', { 'clip-path': `url(#${id})` }, svg), m = mk('g', {}, svg), top = mk('g', {}, svg);
+  for (let v = Math.ceil(b.x0 / gx) * gx; v <= b.x1 + gx * 1e-6; v += gx){ mk('line', { x1: X(v), y1: T, x2: X(v), y2: H - B, class: 'grid' }, g); txt(top, X(v), H - B + 16, o.fx ? o.fx(v) : fmt(v, gx), 'tl', { 'text-anchor': 'middle' }); }
+  for (let v = Math.ceil(b.y0 / gy) * gy; v <= b.y1 + gy * 1e-6; v += gy){ mk('line', { x1: L, y1: Y(v), x2: W - R, y2: Y(v), class: 'grid' }, g); txt(top, L - 6, Y(v) + 4, fmt(v, gy), 'tl', { 'text-anchor': 'end' }); }
+  if (b.y0 < 0 && b.y1 > 0) mk('line', { x1: L, y1: Y(0), x2: W - R, y2: Y(0), class: 'axis' }, g);
+  if (b.x0 < 0 && b.x1 > 0) mk('line', { x1: X(0), y1: T, x2: X(0), y2: H - B, class: 'axis' }, g);
+  mk('rect', { x: L, y: T, width: W - L - R, height: H - T - B, style: 'fill:none;stroke:var(--line2)' }, g);
+  if (o.xT) txt(top, W - R - 4, H - B - 6, o.xT, 'cap', { 'text-anchor': 'end' });
+  if (o.yT) txt(top, L + 6, T + 14, o.yT, 'cap');
+  return { X, Y, sx, sy, cg, m, top, b, L, R, T, B, W, H, inv: (px, py) => [b.x0 + (px - L) / sx, b.y1 - (py - T) / sy] };
+}
+// sample a curve across the box, breaking at undefined points, at listed jumps, and at big leaps
+function curve(P, f, o){
+  o = o || {}; const b = P.b, n = o.n || 900, brk = o.breaks || [], polys = []; let cur = [];
+  const lim = (b.y1 - b.y0) * 3;
+  for (let i = 0; i <= n; i++){
+    const x = b.x0 + (b.x1 - b.x0) * i / n, y = f(x);
+    const crossed = cur.length && brk.some(c => (cur[cur.length - 1][0] - c) * (x - c) <= 0);
+    if (!isFinite(y) || crossed || (cur.length && Math.abs(y - cur[cur.length - 1][1]) > lim)){ if (cur.length > 1) polys.push(cur); cur = []; if (!isFinite(y)) continue; }
+    cur.push([x, Math.max(b.y0 - lim, Math.min(b.y1 + lim, y))]);
+  }
+  if (cur.length > 1) polys.push(cur);
+  polys.forEach(p => mk('path', { d: dPath(P, p), style: `fill:none;stroke:${o.col || 'var(--cv)'};stroke-width:${o.w || 3};${o.dash ? 'stroke-dasharray:' + o.dash : ''}` }, P.cg));
+}
+const holeAt = (P, x, y, col) => mk('circle', { cx: P.X(x), cy: P.Y(y), r: 6, style: `fill:var(--bg);stroke:${col || 'var(--cv)'};stroke-width:2.5` }, P.m);
+const dotAt = (P, x, y, col, r) => mk('circle', { cx: P.X(x), cy: P.Y(y), r: r || 6, style: `fill:${col || 'var(--cv)'};stroke:var(--bg);stroke-width:1.5` }, P.m);
+const sig = v => !isFinite(v) ? (v > 0 ? '∞' : v < 0 ? '−∞' : 'undefined') : Math.abs(v) >= 1e5 ? v.toExponential(2).replace('-', '−') : num(v, 6);
+function parseLim(s){
+  const t = String(s).trim().toLowerCase().replace(/\s+/g, '').replace(/[−–]/g, '-');
+  if (/^(dne|none|doesnotexist|noLimit|nolimit|no)$/i.test(t)) return 'DNE';
+  if (/^\+?(inf|infinity|∞|oo)$/.test(t)) return Infinity;
+  if (/^-(inf|infinity|∞|oo)$/.test(t)) return -Infinity;
+  return parseNum(s);
+}
+
+const minus = s => String(s).replace(/(^|[\s(,=>→\/·+×])-(\d)/g, '$1−$2');
+const r4 = v => Number((Math.abs(v) < 1e-300 ? 0 : v).toPrecision(5));
+const SUP = k => String(k).replace(/-/g, '⁻').replace(/\d/g, d => '⁰¹²³⁴⁵⁶⁷⁸⁹'[d]);
+const sci = v => { if (v === 0) return '0'; const a = Math.abs(v); if (a >= 1e-3 && a < 1e7) return minus(String(r4(v))); let e = Math.floor(Math.log10(a)); if (Math.abs(v / Math.pow(10, e)) >= 9.995) e++; const m = v / Math.pow(10, e); return minus(`${m.toFixed(2)}×10${SUP(e)}`); };
+const gcd = (a, b) => b ? gcd(b, a % b) : Math.abs(a);
+function frc(x){ if (Math.abs(x - Math.round(x)) < 1e-9) return num(Math.round(x)); for (let d = 2; d <= 10000; d++){ const n = x * d; if (Math.abs(n - Math.round(n)) < 1e-9 * d && gcd(Math.round(n), d) === 1) return (x < 0 ? '−' : '') + Math.abs(Math.round(n)) + '/' + d; } return sci(x); }
+// a readable value: whole numbers with commas, otherwise 4–5 significant figures
+const big = v => Math.abs(v) >= 1e7 ? sci(v) : Math.abs(v - Math.round(v)) < 1e-9 ? Math.round(v).toLocaleString().replace('-', '−') : minus(String(r4(v)));
+
+const pct = p => num(p * 100, 1) + '%';                                    // 0.25 -> "25%"
+const dec = p => num(p, 3);                                                // 0.16666 -> "0.167"
+const fr = (k, n) => { const g = gcd(k, n) || 1; return n === 0 ? '0' : k === 0 ? '0' : k === n ? '1' : `${k / g}/${n / g}`; };   // reduced fraction
+function word(p){                                                          // the word on the probability scale
+  if (p <= 1e-12) return 'impossible'; if (p >= 1 - 1e-12) return 'certain';
+  if (Math.abs(p - 0.5) < 1e-12) return 'even chance'; return p < 0.5 ? 'unlikely' : 'likely';
+}
+// parse a probability typed as a fraction, a decimal or a percent
+function parseP(s){ s = String(s).trim().replace(/−/g, '-'); if (/%$/.test(s)){ const v = parseNum(s.slice(0, -1)); return v / 100; } return parseNum(s); }
+
+// the probability scale: a 0-to-1 bar with the five words and a marker at p
+function scaleBar(svg, W, p, o){
+  o = o || {}; svg.innerHTML = ''; const L = 18, R = W - 18, y = 34, X = v => L + v * (R - L);
+  mk('rect', { x: L, y: y - 7, width: R - L, height: 14, rx: 7, style: 'fill:var(--paper);stroke:var(--line)' }, svg);
+  mk('rect', { x: L, y: y - 7, width: (R - L) / 2, height: 14, rx: 7, style: 'fill:var(--line);opacity:.5' }, svg);
+  [[0, '0'], [0.25, '¼'], [0.5, '½'], [0.75, '¾'], [1, '1']].forEach(([v, l]) => { mk('line', { x1: X(v), y1: y - 10, x2: X(v), y2: y + 10, style: 'stroke:var(--muted);stroke-width:1.3' }, svg); txt(svg, X(v), y + 24, l, 'tl', { 'text-anchor': 'middle' }); });
+  [[0, 'impossible', 'start'], [0.25, 'unlikely', 'middle'], [0.5, 'even', 'middle'], [0.75, 'likely', 'middle'], [1, 'certain', 'end']].forEach(([v, l, a]) => txt(svg, X(v) + (a === 'start' ? -4 : a === 'end' ? 4 : 0), y + 44, l, 'cap', { 'text-anchor': a }));
+  if (p !== null && isFinite(p)){
+    const x = X(clamp(p, 0, 1));
+    mk('path', { d: `M${x} ${y - 8} l-8 -14 h16 z`, style: `fill:${o.col || 'var(--hit)'}` }, svg);
+    txt(svg, clamp(x, L + 14, R - 14), y - 25, o.lab || '', 'labS', { 'text-anchor': 'middle', style: `fill:${o.col || 'var(--hit)'}` });
+  }
+}
+
+/* ---------- small pictures: die faces, coins, cards, marbles ---------- */
+const PIPS = { 1: [[0, 0]], 2: [[-1, -1], [1, 1]], 3: [[-1, -1], [0, 0], [1, 1]], 4: [[-1, -1], [1, -1], [-1, 1], [1, 1]], 5: [[-1, -1], [1, -1], [0, 0], [-1, 1], [1, 1]], 6: [[-1, -1], [1, -1], [-1, 0], [1, 0], [-1, 1], [1, 1]] };
+function dieFace(g, cx, cy, s, n, o){                  // a die face of side s centred at (cx, cy)
+  o = o || {};
+  mk('rect', { x: cx - s / 2, y: cy - s / 2, width: s, height: s, rx: s * 0.18, style: `fill:${o.fill || 'var(--paper)'};stroke:${o.stroke || 'var(--ink)'};stroke-width:${o.sw || 1.6}` }, g);
+  (PIPS[n] || []).forEach(([a, b]) => mk('circle', { cx: cx + a * s * 0.26, cy: cy + b * s * 0.26, r: s * 0.085, style: `fill:${o.pip || 'var(--ink)'}` }, g));
+}
+function coin(g, cx, cy, r, face, o){                  // a coin showing H or T
+  o = o || {};
+  mk('circle', { cx, cy, r, style: `fill:${face === 'H' ? 'var(--yel)' : 'var(--paper)'};stroke:${o.stroke || 'var(--gold)'};stroke-width:${o.sw || 2}` }, g);
+  txt(g, cx, cy + r * 0.36, face, '', { 'text-anchor': 'middle', style: `font:700 ${r}px var(--sans);fill:var(--ink)` });
+}
+function marble(g, cx, cy, r, col){ mk('circle', { cx, cy, r, style: `fill:${col};stroke:var(--ink);stroke-width:1;opacity:.95` }, g); mk('circle', { cx: cx - r * 0.35, cy: cy - r * 0.35, r: r * 0.25, style: 'fill:#fff;opacity:.55' }, g); }
+const SUITS = ['♠', '♥', '♦', '♣'], RANKS = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+function card(g, x, y, w, h, r, s){                    // a playing card: rank r (0-12) of suit s (0-3)
+  const col = s === 1 || s === 2 ? 'var(--red)' : 'var(--ink)';
+  mk('rect', { x, y, width: w, height: h, rx: 4, style: 'fill:var(--paper);stroke:var(--muted);stroke-width:1' }, g);
+  txt(g, x + w / 2, y + h * 0.42, RANKS[r], '', { 'text-anchor': 'middle', style: `font:700 ${w * 0.34}px var(--sans);fill:${col}` });
+  txt(g, x + w / 2, y + h * 0.82, SUITS[s], '', { 'text-anchor': 'middle', style: `font:${w * 0.38}px var(--sans);fill:${col}` });
+}
+// a spinner: sectors [{p, col, l}], highlighted indices hi, optional pointer angle (radians, 0 = up, clockwise)
+function spinner(g, cx, cy, r, secs, o){
+  o = o || {}; let a = 0;
+  secs.forEach((s, i) => {
+    const a2 = a + s.p * 2 * Math.PI, P = t => [cx + r * Math.sin(t), cy - r * Math.cos(t)], [x1, y1] = P(a), [x2, y2] = P(a2);
+    const big = a2 - a > Math.PI ? 1 : 0, on = o.hi ? o.hi.has(i) : false;
+    const path = mk('path', { d: s.p >= 0.9999 ? `M${cx - r} ${cy}a${r} ${r} 0 1 0 ${2 * r} 0a${r} ${r} 0 1 0 ${-2 * r} 0` : `M${cx} ${cy}L${x1} ${y1}A${r} ${r} 0 ${big} 1 ${x2} ${y2}Z`, style: `fill:${s.col};stroke:${on ? 'var(--hit)' : 'var(--bg)'};stroke-width:${on ? 4 : 2};opacity:${o.hi && !on ? 0.3 : 0.9}` }, g);
+    if (o.click) { path.classList.add('cellg'); path.addEventListener('click', () => o.click(i)); }
+    const m = (a + a2) / 2, lr = r * (s.p < 0.2 ? 0.72 : 0.6);
+    if (s.l) txt(g, cx + lr * Math.sin(m), cy - lr * Math.cos(m) + 6, s.l, 'lab', { 'text-anchor': 'middle', style: 'pointer-events:none' });
+    a = a2;
+  });
+  if (o.ptr !== undefined && o.ptr !== null){
+    const t = o.ptr, px = cx + r * 0.92 * Math.sin(t), py = cy - r * 0.92 * Math.cos(t);
+    mk('line', { x1: cx, y1: cy, x2: px, y2: py, style: 'stroke:var(--ink);stroke-width:5;stroke-linecap:round' }, g);
+    arrowHead(g, cx, cy, px + 6 * Math.sin(t), py - 6 * Math.cos(t), 'var(--ink)', 12);
+    mk('circle', { cx, cy, r: 8, style: 'fill:var(--ink)' }, g);
+  }
+}
+
+/* =====================================================================
+   2. COUNT THE OUTCOMES (sample space explorer)
+   ===================================================================== */
+const MCOL = { red: 'var(--red)', blue: 'var(--blue)', green: 'var(--green)', yellow: 'var(--yel)' };
+const range = n => [...Array(n).keys()];
+const SP = [
+  { n: 'One die', kind: 'die', cols: 6, outs: range(6).map(i => ({ v: i + 1 })), d: 'A fair die: 6 equally likely outcomes. Its sample space is {1, 2, 3, 4, 5, 6}.',
+    ev: [['a 6', o => o.v === 6], ['an even number', o => o.v % 2 === 0], ['more than 4', o => o.v > 4], ['less than 7', o => o.v < 7], ['a 7', o => o.v === 7]] },
+  { n: 'Two coins', kind: 'coins', cols: 4, outs: ['HH', 'HT', 'TH', 'TT'].map(v => ({ v })), d: 'Flip two coins (say a penny and a dime). HT and TH are different outcomes: the penny is heads in one and tails in the other. So “one of each” has two ways to happen.',
+    ev: [['two heads', o => o.v === 'HH'], ['one head, one tail', o => o.v === 'HT' || o.v === 'TH'], ['at least one head', o => o.v.includes('H')], ['no heads', o => o.v === 'TT']] },
+  { n: 'Two dice', kind: 'pair', cols: 6, outs: range(36).map(i => ({ a: Math.floor(i / 6) + 1, b: i % 6 + 1 })), d: 'Roll a red die and a blue die: 6 × 6 = 36 equally likely pairs. Each square shows the total. Some totals can be made in more ways than others.',
+    ev: [['total 7', o => o.a + o.b === 7], ['total 2', o => o.a + o.b === 2], ['doubles', o => o.a === o.b], ['total 10 or more', o => o.a + o.b >= 10], ['total 13', o => o.a + o.b === 13]] },
+  { n: 'Bag of marbles', kind: 'marble', cols: 5, outs: [...Array(5).fill('red'), ...Array(3).fill('blue'), ...Array(2).fill('green')].map(v => ({ v })), d: 'A bag holds 5 red, 3 blue and 2 green marbles. Reach in without looking: each of the 10 marbles is equally likely, so colours with more marbles are more likely.',
+    ev: [['red', o => o.v === 'red'], ['blue', o => o.v === 'blue'], ['green', o => o.v === 'green'], ['not red', o => o.v !== 'red'], ['yellow', o => o.v === 'yellow']] },
+  { n: 'Deck of cards', kind: 'card', cols: 13, outs: range(52).map(i => ({ s: Math.floor(i / 13), r: i % 13 })), d: 'A shuffled deck: 52 cards, 4 suits (♠ ♥ ♦ ♣) of 13 ranks each. Hearts and diamonds are red.',
+    ev: [['a heart', o => o.s === 1], ['an ace', o => o.r === 0], ['a face card (J, Q, K)', o => o.r >= 10], ['a red card', o => o.s === 1 || o.s === 2], ['the ace of spades', o => o.s === 0 && o.r === 0]] },
+  { n: 'Spinner (8 equal parts)', kind: 'spin', outs: range(8).map(i => ({ v: i + 1 })), d: 'A spinner split into 8 equal sectors. Equal sectors mean equally likely outcomes, so counting works. (Unequal spinners are in the experiment below.)',
+    ev: [['a 3', o => o.v === 3], ['an odd number', o => o.v % 2 === 1], ['more than 5', o => o.v > 5], ['1 to 8', o => o.v <= 8]] }
+];
+const SS = { i: 0, sel: new Set(), ev: 0 };
+const sMark = buttons('sPresets', SP, i => { SS.i = i; sMark(i); $('sDesc').textContent = SP[i].d; sEvents(); sPick(0); });
+function sEvents(){
+  const p = SP[SS.i]; $('sEvents').innerHTML = '<span class="lbl">Event</span>';
+  p.ev.forEach(([n], k) => { const b = document.createElement('button'); b.className = 'preset'; b.textContent = n; b.onclick = () => sPick(k); $('sEvents').appendChild(b); });
+  const own = document.createElement('span'); own.id = 'sOwn'; own.style.cssText = 'color:var(--muted);font-size:14px;margin-left:6px'; $('sEvents').appendChild(own);
+}
+function sPick(k){
+  const p = SP[SS.i]; SS.ev = k; SS.sel = new Set(p.outs.map((o, j) => p.ev[k][1](o) ? j : -1).filter(j => j >= 0));
+  [...$('sEvents').querySelectorAll('button')].forEach((b, j) => b.classList.toggle('on', j === k)); $('sOwn').textContent = ''; sDraw();
+}
+function sToggle(j){
+  if (SS.sel.has(j)) SS.sel.delete(j); else SS.sel.add(j);
+  SS.ev = -1; [...$('sEvents').querySelectorAll('button')].forEach(b => b.classList.remove('on')); $('sOwn').textContent = '(your own event)'; sDraw();
+}
+function sDraw(){
+  const p = SP[SS.i], svg = $('sG'), n = p.outs.length, k = SS.sel.size; svg.innerHTML = '';
+  if (p.kind === 'spin'){
+    const secs = p.outs.map((o, j) => ({ p: 1 / 8, col: j % 2 ? 'var(--paper)' : 'var(--line)', l: String(o.v) }));
+    spinner(svg, 300, 200, 170, secs, { hi: SS.sel, click: sToggle });
+  } else {
+    const head = p.kind === 'pair' ? 34 : 0, rows = Math.ceil(n / p.cols);
+    const asp = p.kind === 'card' ? 1.4 : 1, cw = Math.min((560 - head) / p.cols, (380 - head) / rows / asp, p.kind === 'card' ? 42 : 86), ch = cw * asp;
+    const x0 = (600 - head - p.cols * cw) / 2 + head, y0 = (400 - head - rows * ch) / 2 + head;
+    if (p.kind === 'pair'){
+      txt(svg, x0 + p.cols * cw + 6, y0 - 6, 'blue', 'cap', { style: 'fill:var(--blue)' });
+      txt(svg, x0 - 26, y0 - 8, 'red', 'cap', { 'text-anchor': 'middle', style: 'fill:var(--red)' });
+      for (let j = 0; j < 6; j++){ dieFace(svg, x0 + (j + 0.5) * cw, y0 - 10, 16, j + 1, { stroke: 'var(--blue)', sw: 1.2 }); dieFace(svg, x0 - 14, y0 + (j + 0.5) * ch, 16, j + 1, { stroke: 'var(--red)', sw: 1.2 }); }
+    }
+    p.outs.forEach((o, j) => {
+      const x = x0 + (j % p.cols) * cw, y = y0 + Math.floor(j / p.cols) * ch, on = SS.sel.has(j);
+      const g = mk('g', { class: 'cellg', style: `opacity:${on ? 1 : 0.38}` }, svg); g.addEventListener('click', () => sToggle(j));
+      mk('rect', { x: x + 2, y: y + 2, width: cw - 4, height: ch - 4, rx: 8, style: `fill:${on ? 'var(--hit-bg)' : 'var(--bg)'};stroke:${on ? 'var(--hit)' : 'var(--line)'};stroke-width:${on ? 3 : 1}` }, g);
+      const cx = x + cw / 2, cy = y + ch / 2;
+      if (p.kind === 'die') dieFace(g, cx, cy, cw * 0.6, o.v);
+      else if (p.kind === 'coins'){ coin(g, cx - cw * 0.18, cy, cw * 0.16, o.v[0]); coin(g, cx + cw * 0.18, cy, cw * 0.16, o.v[1]); txt(g, cx, y + ch - 8, 'penny · dime', 'tl', { 'text-anchor': 'middle', style: 'font-size:9.5px' }); }
+      else if (p.kind === 'pair') txt(g, cx, cy + 6, o.a + o.b, 'lab', { 'text-anchor': 'middle' });
+      else if (p.kind === 'marble') marble(g, cx, cy, cw * 0.3, MCOL[o.v]);
+      else if (p.kind === 'card') card(g, x + 4, y + 4, cw - 8, ch - 8, o.r, o.s);
+    });
+  }
+  const P = k / n, name = SS.ev >= 0 ? p.ev[SS.ev][0] : 'your event', notName = /^not /.test(name) ? name.slice(4) : 'not ' + name;
+  let h = `<div>Event: <b class="kh">${name}</b></div><div>favourable outcomes: <b class="kh">${k}</b> &nbsp; all outcomes: <b>${n}</b></div>`;
+  h += `<div class="big">P = ${k}/${n}${fr(k, n) !== `${k}/${n}` ? ' = ' + fr(k, n) : ''}</div><div>= ${dec(P)} = ${pct(P)} &nbsp; <b>${word(P)}</b></div>`;
+  h += `<div style="color:var(--muted)">complement: P(${notName}) = ${n - k}/${n} = ${dec(1 - P)}</div>`;
+  $('sPanel').innerHTML = h; scaleBar($('sScale'), 960, P, { lab: fr(k, n) });
+  let s = k === 0 ? `No outcome is favourable, so the event is <b>impossible</b>: P = 0/${n} = 0.`
+    : k === n ? `Every outcome is favourable, so the event is <b>certain</b>: P = ${n}/${n} = 1.`
+    : `${k} of the ${n} equally likely outcomes are in the event, so P = ${k}/${n}${fr(k, n) !== `${k}/${n}` ? ' = ' + fr(k, n) : ''}. The other ${n - k} make up the complement, with probability ${n - k}/${n}: together they make ${n}/${n} = 1.`;
+  s = s.replace(/^1 of the (\d+) equally likely outcomes are/, '1 of the $1 equally likely outcomes is').replace('The other 1 make up', 'The other 1 makes up');
+  if (p.kind === 'pair' && SS.ev === 0) s += ' Total 7 is the most likely total: it can be made 6 ways, from 1 + 6 to 6 + 1.';
+  if (p.kind === 'coins' && SS.ev === 1) s += ' Many people guess ⅓ (“two heads, two tails or one of each”), but those three results are not equally likely.';
+  $('sOut').innerHTML = s;
+}
+
+/* =====================================================================
+   3. RUN THE EXPERIMENT
+   ===================================================================== */
+const EP = [
+  { n: 'Fair coin', kind: 'coin', ev: 0, outs: [{ l: 'heads', s: 'H', p: 1 / 2, col: 'var(--yel)' }, { l: 'tails', s: 'T', p: 1 / 2, col: 'var(--muted)' }], d: 'Heads and tails are equally likely: P(heads) = ½.' },
+  { n: 'Fair die', kind: 'die', ev: 5, outs: range(6).map(i => ({ l: String(i + 1), s: String(i + 1), p: 1 / 6, col: 'var(--th)' })), d: 'Six equally likely faces: P(6) = 1/6 ≈ 0.167. Watch all six bars even out.' },
+  { n: 'Unequal spinner', kind: 'spin', ev: 3, outs: [{ l: 'red', s: 'R', p: 1 / 2, col: 'var(--red)' }, { l: 'blue', s: 'B', p: 1 / 4, col: 'var(--blue)' }, { l: 'yellow', s: 'Y', p: 1 / 8, col: 'var(--yel)' }, { l: 'green', s: 'G', p: 1 / 8, col: 'var(--green)' }], d: 'Four outcomes, but not equally likely: red covers half the circle (½), blue a quarter (¼), yellow and green an eighth each (⅛).' },
+  { n: 'Loaded die', kind: 'die', ev: 5, loaded: true, outs: range(6).map(i => ({ l: String(i + 1), s: String(i + 1), p: i === 5 ? 1 / 2 : 1 / 10, col: 'var(--th)' })), d: 'A biased die, weighted so 6 comes up half the time and each other face 1/10 of the time. Counting faces would say 1/6: wrong for this die. Experiments catch it.' },
+  { n: 'Bag of marbles', kind: 'marble', ev: 0, outs: [{ l: 'red', s: 'R', p: 5 / 10, col: 'var(--red)' }, { l: 'blue', s: 'B', p: 3 / 10, col: 'var(--blue)' }, { l: 'green', s: 'G', p: 2 / 10, col: 'var(--green)' }], d: '5 red, 3 blue, 2 green. Draw one, note its colour, put it back and shake the bag: P(red) = 5/10.' },
+  { n: '70% free-throw shooter', kind: 'hoop', ev: 0, outs: [{ l: 'make', s: '✓', p: 0.7, col: 'var(--ex)' }, { l: 'miss', s: '✕', p: 0.3, col: 'var(--muted)' }], d: 'A player who makes 70% of free throws. Two outcomes, make or miss, but not 50–50: P(make) = 0.7, from years of data.' },
+  { n: '70% rain forecast', kind: 'rain', ev: 0, outs: [{ l: 'rain', s: 'R', p: 0.7, col: 'var(--rain)' }, { l: 'dry', s: 'D', p: 0.3, col: 'var(--sun)' }], d: 'Each trial is one day with the forecast “70% chance of rain”. The squares are the last 100 such days.' },
+  { n: 'Raffle: 1 ticket of 50', kind: 'raffle', ev: 0, outs: [{ l: 'win', s: '★', p: 1 / 50, col: 'var(--gold)' }, { l: 'lose', s: '–', p: 49 / 50, col: 'var(--muted)' }], d: 'You hold 1 of 50 tickets. Win or lose: two outcomes, but P(win) = 1/50 = 2%.' }
+];
+const MAXN = 20000;
+const ES = { i: 0, ev: 0, n: 0, counts: [], hist: [0], last: -1, ptr: null, recent: [], timer: 0 };
+const eMark = buttons('ePresets', EP, i => { eStop(); ES.i = i; eMark(i); $('eDesc').textContent = EP[i].d; eEvents(); eReset(); });
+function eEvents(){
+  const p = EP[ES.i]; $('eEvents').innerHTML = '<span class="lbl">Event</span>';
+  p.outs.forEach((o, k) => { const b = document.createElement('button'); b.className = 'preset'; b.textContent = o.l; b.onclick = () => { ES.ev = k; eEvMark(); eRebuildHist(); eDraw(); }; $('eEvents').appendChild(b); });
+  ES.ev = p.ev; eEvMark();
+}
+const eEvMark = () => [...$('eEvents').querySelectorAll('button')].forEach((b, j) => b.classList.toggle('on', j === ES.ev));
+function eReset(){ const p = EP[ES.i]; Object.assign(ES, { n: 0, counts: p.outs.map(() => 0), hist: [0], last: -1, ptr: null, recent: [], seq: [] }); eDraw(); }
+function eRebuildHist(){ let k = 0; ES.hist = [0]; ES.seq.forEach(o => { if (o === ES.ev) k++; ES.hist.push(k); }); }
+function trial(){
+  const p = EP[ES.i]; let r = Math.random(), j = 0;
+  while (j < p.outs.length - 1 && r >= p.outs[j].p){ r -= p.outs[j].p; j++; }
+  ES.n++; ES.counts[j]++; ES.last = j; ES.seq.push(j);
+  ES.hist.push(ES.hist[ES.hist.length - 1] + (j === ES.ev ? 1 : 0));
+  ES.recent.push(j); if (ES.recent.length > 100) ES.recent.shift();
+  if (p.kind === 'spin'){ let a = 0; for (let q = 0; q < j; q++) a += p.outs[q].p; ES.ptr = (a + p.outs[j].p * (0.12 + 0.76 * Math.random())) * 2 * Math.PI; }
+  if (p.kind === 'raffle') ES.tk = j === 0 ? 0 : ri(1, 49);
+}
+function run(m){ for (let q = 0; q < m && ES.n < MAXN; q++) trial(); eDraw(); }
+function eStop(){ clearTimeout(ES.timer); ES.timer = 0; $('ePlay').textContent = 'Play'; }
+$('e1').onclick = () => { eStop(); run(1); };
+$('e10').onclick = () => { eStop(); run(10); };
+$('e100').onclick = () => { eStop(); run(100); };
+$('eReset').onclick = () => { eStop(); eReset(); };
+$('ePlay').onclick = () => {
+  if (ES.timer){ eStop(); return; }
+  if (ES.n >= MAXN) eReset();
+  $('ePlay').textContent = 'Pause';
+  const tick = () => { run(Math.max(1, Math.floor(ES.n / 15))); if (ES.n < MAXN) ES.timer = setTimeout(tick, 70); else eStop(); };
+  tick();
+};
+function eDraw(){
+  const p = EP[ES.i], pic = $('ePic'), n = ES.n, j = ES.last; pic.innerHTML = '';
+  // ----- picture of the latest trial -----
+  const cx = 235, cy = 130;
+  if (p.kind === 'coin'){ if (j >= 0) coin(pic, cx, cy, 70, p.outs[j].s, { sw: 4 }); else coin(pic, cx, cy, 70, '?', { sw: 4 }); }
+  else if (p.kind === 'die'){ dieFace(pic, cx, cy, 120, j >= 0 ? j + 1 : 0, { sw: 3 }); if (j < 0) txt(pic, cx, cy + 14, '?', 'lab', { 'text-anchor': 'middle', style: 'font-size:40px' }); if (p.loaded) txt(pic, cx, cy + 86, 'loaded die', 'cap', { 'text-anchor': 'middle' }); }
+  else if (p.kind === 'spin') spinner(pic, cx, cy, 105, p.outs.map(o => ({ p: o.p, col: o.col, l: o.s })), { ptr: ES.ptr });
+  else if (p.kind === 'marble'){
+    mk('path', { d: 'M90 70 Q70 70 70 100 L70 200 Q70 225 100 225 L250 225 Q280 225 280 200 L280 100 Q280 70 260 70 Z', style: 'fill:var(--paper);stroke:var(--muted);stroke-width:2' }, pic);
+    let q = 0; p.outs.forEach((o, k) => { for (let t = 0; t < Math.round(o.p * 10); t++, q++) marble(pic, 105 + (q % 5) * 35, 110 + Math.floor(q / 5) * 40 + (q % 2) * 8, 14, o.col); });
+    txt(pic, 175, 255, 'the bag', 'cap', { 'text-anchor': 'middle' });
+    if (j >= 0){ marble(pic, 370, 140, 30, p.outs[j].col); txt(pic, 370, 200, `drew ${p.outs[j].l}`, 'labS', { 'text-anchor': 'middle' }); txt(pic, 370, 218, '(then put back)', 'tl', { 'text-anchor': 'middle' }); }
+  } else if (p.kind === 'hoop'){
+    mk('rect', { x: 300, y: 40, width: 10, height: 190, style: 'fill:var(--muted)' }, pic); mk('rect', { x: 270, y: 40, width: 40, height: 70, style: 'fill:none;stroke:var(--ink);stroke-width:2' }, pic);
+    mk('ellipse', { cx: 245, cy: 100, rx: 28, ry: 6, style: 'fill:none;stroke:var(--hit);stroke-width:3' }, pic);
+    if (j >= 0){ const mk1 = j === 0; mk('circle', { cx: mk1 ? 245 : 200, cy: mk1 ? 125 : 80, r: 16, style: 'fill:#E07B2A;stroke:var(--ink);stroke-width:1.5' }, pic);
+      txt(pic, 120, 190, mk1 ? 'Swish! Make.' : 'Miss.', 'lab', { 'text-anchor': 'middle', style: `fill:${mk1 ? 'var(--ex)' : 'var(--muted)'};font-size:22px` }); }
+  } else if (p.kind === 'rain'){
+    const last = ES.recent.slice(-100); txt(pic, 235, 22, 'the last 100 days with a 70% forecast', 'cap', { 'text-anchor': 'middle' });
+    for (let q = 0; q < 100; q++){ const o = last[q], x = 85 + (q % 10) * 30, y = 34 + Math.floor(q / 10) * 25;
+      mk('rect', { x, y, width: 26, height: 21, rx: 4, style: `fill:${o === undefined ? 'var(--paper)' : p.outs[o].col};opacity:${o === undefined ? 1 : 0.85};stroke:var(--line)` }, pic); }
+    if (last.length){ const r = last.filter(o => o === 0).length; txt(pic, 235, 296, `rain on ${r} of these ${last.length} days`, 'labS', { 'text-anchor': 'middle' }); }
+  } else if (p.kind === 'raffle'){
+    for (let q = 0; q < 50; q++){ const x = 40 + (q % 10) * 40, y = 30 + Math.floor(q / 10) * 42, mine = q === 0, drawn = ES.tk === q && j >= 0;
+      mk('rect', { x, y, width: 34, height: 34, rx: 5, style: `fill:${mine ? 'var(--gold)' : 'var(--paper)'};stroke:${drawn ? 'var(--hit)' : 'var(--line)'};stroke-width:${drawn ? 4 : 1}` }, pic);
+      txt(pic, x + 17, y + 22, q + 1, 'tl', { 'text-anchor': 'middle' }); }
+    txt(pic, 235, 262, j < 0 ? 'your ticket is gold (No. 1)' : j === 0 ? 'Your ticket was drawn: you win!' : `Ticket ${ES.tk + 1} was drawn: no win.`, 'labS', { 'text-anchor': 'middle' });
+  }
+  // strip of recent results (not for the rain grid)
+  if (p.kind !== 'rain' && p.kind !== 'raffle'){
+    const rec = ES.recent.slice(-16);
+    rec.forEach((o, q) => { const x = 235 - (rec.length - 1) * 13 + q * 26, on = o === ES.ev;
+      mk('circle', { cx: x, cy: 278, r: 11, style: `fill:${on ? 'var(--hit)' : 'var(--paper)'};stroke:${on ? 'var(--hit)' : 'var(--line)'}` }, pic);
+      txt(pic, x, 282, p.outs[o].s, 'tl', { 'text-anchor': 'middle', style: `fill:${on ? '#fff' : 'var(--ink)'};stroke:none;font-size:11px` }); });
+  }
+  // ----- bars: relative frequency of each outcome, theory dashed -----
+  const B = $('eBars'); B.innerHTML = '';
+  const m = p.outs.length, top = Math.min(1, Math.max(...p.outs.map(o => o.p), ...ES.counts.map(c => n ? c / n : 0)) * 1.25 + 0.05);
+  const P = ax2(B, 470, 300, { x0: 0, x1: m, y0: 0, y1: top }, { padL: 44, padB: 30, fx: () => '' });
+  p.outs.forEach((o, k) => {
+    const f = n ? ES.counts[k] / n : 0, x = P.X(k + 0.18), w = P.X(k + 0.82) - x, on = k === ES.ev;
+    mk('rect', { x, y: P.Y(f), width: w, height: P.Y(0) - P.Y(f), style: `fill:${on ? 'var(--hit)' : 'var(--ex)'};opacity:${on ? 0.9 : 0.55}` }, P.m);
+    mk('line', { x1: x - 5, y1: P.Y(o.p), x2: x + w + 5, y2: P.Y(o.p), style: 'stroke:var(--th);stroke-width:2.5;stroke-dasharray:6 4' }, P.m);
+    txt(P.top, x + w / 2, P.H - P.B + 18, o.l, 'labS', { 'text-anchor': 'middle', style: on ? 'fill:var(--hit)' : '' });
+    if (n) txt(P.top, x + w / 2, Math.min(P.Y(f), P.Y(o.p)) - 6, pct(f), 'tl', { 'text-anchor': 'middle', style: 'fill:var(--ex)' });
+  });
+  txt(P.top, P.L + 6, P.T + 14, `relative frequency after ${n.toLocaleString()} trial${n === 1 ? '' : 's'}`, 'cap');
+  // ----- running relative frequency of the event, log scale in n -----
+  const L = $('eLine'), pe = p.outs[ES.ev].p, dmax = Math.max(2, Math.ceil(Math.log10(Math.max(n, 1)) + 1e-9));
+  const Q = ax2(L, 960, 270, { x0: 0, x1: dmax, y0: 0, y1: 1 }, { padL: 44, padB: 30, fx: v => Math.abs(v - Math.round(v)) < 1e-9 ? Math.pow(10, Math.round(v)).toLocaleString() : '', xT: 'number of trials (each step is ×10)', yT: `relative frequency of “${p.outs[ES.ev].l}”` });
+  mk('line', { x1: Q.L, y1: Q.Y(pe), x2: Q.W - Q.R, y2: Q.Y(pe), style: 'stroke:var(--th);stroke-width:2.5;stroke-dasharray:8 5' }, Q.m);
+  txt(Q.top, pe < 0.12 ? Q.L + 8 : Q.W - Q.R - 6, Q.Y(pe) + (pe > 0.85 ? 18 : -8), `theory: P = ${frc(pe)}${frc(pe).includes('/') ? ' ≈ ' + dec(pe) : ''}`, 'labS', { 'text-anchor': pe < 0.12 ? 'start' : 'end', style: 'fill:var(--th)' });
+  if (n){
+    const pts = []; let t = 1; while (t <= n){ pts.push([Math.log10(t), ES.hist[t] / t]); t = t < 100 ? t + 1 : Math.ceil(t * 1.01); }
+    pts.push([Math.log10(n), ES.hist[n] / n]);
+    mk('path', { d: dPath(Q, pts), style: 'fill:none;stroke:var(--ex);stroke-width:2.6' }, Q.cg);
+    dotAt(Q, Math.log10(n), ES.hist[n] / n, 'var(--hit)', 6);
+  }
+  // ----- readout -----
+  const k = ES.hist[n], f = n ? k / n : 0, ev = p.outs[ES.ev].l;
+  let s;
+  if (!n) s = `Press a button to start. The theoretical probability of <b class="kh">${ev}</b> is <b class="kt">${frc(pe)}</b> = ${pct(pe)}.`;
+  else {
+    s = `After <b>${n.toLocaleString()}</b> trial${n === 1 ? '' : 's'}, <b class="kh">${ev}</b> happened ${k.toLocaleString()} time${k === 1 ? '' : 's'}: relative frequency ${k.toLocaleString()}/${n.toLocaleString()} = <b class="ke">${dec(f)}</b> (${pct(f)}). Theory: <b class="kt">${frc(pe)}</b> = ${pct(pe)}. `;
+    s += n < 30 ? 'With so few trials the fraction jumps around a lot: one result moves it a long way.'
+      : n < 1000 ? `It’s ${Math.abs(f - pe) < 0.02 ? 'already close' : 'getting closer'}: off by ${num(Math.abs(f - pe) * 100, 1)} percentage points.`
+      : `Off by only ${num(Math.abs(f - pe) * 100, 2)} percentage points: the law of large numbers at work. Each trial is still random; the long-run fraction is what’s predictable.`;
+    if (p.kind === 'rain') s += ' A 70% forecast is a good one if it rains on about 70% of such days, which is exactly this.';
+    if (p.kind === 'raffle' || p.kind === 'hoop') s += ' Two outcomes, but nowhere near 50–50.';
+    if (p.loaded && n >= 100) s += ' A fair die would give 6 about 17% of the time; this one is clearly biased.';
+  }
+  $('eOut').innerHTML = s;
+}
+
+/* =====================================================================
+   4. TRAPS
+   ===================================================================== */
+(function(){
+  // trap 1: simulate many flips and look at the flip after five heads in a row
+  let run = 0, after = 0, heads = 0;
+  for (let q = 0; q < 400000; q++){ const h = Math.random() < 0.5; if (run >= 5){ after++; if (h) heads++; } run = h ? run + 1 : 0; }
+  const g = $('tr1');
+  const f = heads / after, P = ax2(g, 300, 220, { x0: 0, x1: 2, y0: 0, y1: 1 }, { padL: 30, padT: 80, padB: 22, fx: () => '' });
+  [[f, 'heads'], [1 - f, 'tails']].forEach(([v, l], k) => { mk('rect', { x: P.X(k + 0.25), y: P.Y(v), width: P.X(0.5) - P.X(0), height: P.Y(0) - P.Y(v), style: 'fill:var(--ex);opacity:.7' }, P.m); txt(P.top, P.X(k + 0.5), P.H - P.B + 16, `${l} ${pct(v)}`, 'labS', { 'text-anchor': 'middle' }); });
+  mk('line', { x1: P.L, y1: P.Y(0.5), x2: P.W - P.R, y2: P.Y(0.5), style: 'stroke:var(--th);stroke-width:2;stroke-dasharray:5 4' }, P.m);
+  // the five heads and the unknown next flip (drawn after ax2, which clears the picture)
+  for (let q = 0; q < 5; q++) coin(g, 34 + q * 46, 38, 19, 'H');
+  mk('circle', { cx: 264, cy: 38, r: 19, style: 'fill:none;stroke:var(--hit);stroke-width:2.5;stroke-dasharray:4 3' }, g); txt(g, 264, 45, '?', 'lab', { 'text-anchor': 'middle' });
+  $('tr1p').innerHTML = `After five heads in a row, the next flip is still 50–50: a coin has no memory. In ${(400000).toLocaleString()} simulated flips, ${after.toLocaleString()} came right after five heads, and ${pct(f)} of those were heads. (This mistake is called the gambler’s fallacy.)`;
+  // trap 2: raffle win vs lose
+  const P2 = ax2($('tr2'), 300, 220, { x0: 0, x1: 2, y0: 0, y1: 1 }, { padL: 30, padB: 22, fx: () => '' });
+  [[1 / 50, 'win 2%', 'var(--gold)'], [49 / 50, 'lose 98%', 'var(--muted)']].forEach(([v, l, c], k) => { mk('rect', { x: P2.X(k + 0.25), y: P2.Y(v), width: P2.X(0.5) - P2.X(0), height: P2.Y(0) - P2.Y(v), style: `fill:${c}` }, P2.m); txt(P2.top, P2.X(k + 0.5), P2.H - P2.B + 16, l, 'labS', { 'text-anchor': 'middle' }); });
+  mk('line', { x1: P2.L, y1: P2.Y(0.5), x2: P2.W - P2.R, y2: P2.Y(0.5), style: 'stroke:var(--bad);stroke-width:2;stroke-dasharray:5 4' }, P2.m); txt(P2.top, P2.X(1), P2.Y(0.5) - 6, '50% (wrong)', 'labS', { 'text-anchor': 'middle', style: 'fill:var(--bad)' });
+  // trap 3: number of heads in 10 flips
+  const C = (n, k) => { let c = 1; for (let q = 0; q < k; q++) c = c * (n - q) / (q + 1); return c; };
+  const P3 = ax2($('tr3'), 300, 220, { x0: -0.5, x1: 10.5, y0: 0, y1: 0.3 }, { padL: 34, padB: 22, fx: v => Number.isInteger(v) && v % 2 === 0 ? String(v) : '' });
+  for (let k = 0; k <= 10; k++){ const v = C(10, k) / 1024; mk('rect', { x: P3.X(k - 0.38), y: P3.Y(v), width: P3.X(0.76) - P3.X(0), height: P3.Y(0) - P3.Y(v), style: `fill:${k === 5 ? 'var(--hit)' : 'var(--ex)'};opacity:${k === 5 ? 0.95 : 0.6}` }, P3.m); }
+  txt(P3.top, P3.X(5), P3.Y(C(10, 5) / 1024) - 6, '24.6%', 'labS', { 'text-anchor': 'middle', style: 'fill:var(--hit)' });
+  txt(P3.top, P3.W - P3.R - 4, P3.H - P3.B - 6, 'heads in 10 flips', 'cap', { 'text-anchor': 'end' });
+})();
+
+/* =====================================================================
+   5. QUIZ
+   ===================================================================== */
+const Q = { right: 0, total: 0 };
+let qq = null;
+const qTitles = { comp: 'Compute a probability', scale: 'Place it on the scale', compl: 'Use the complement', trap: 'Spot the trap' };
+function shuffle(a){ for (let i = a.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+function qReset(){ ['qChoice', 'qPic'].forEach(id => $(id).innerHTML = ''); $('qFb').className = 'feedback'; $('qFb').innerHTML = ''; $('qErr').textContent = ''; $('qIn').style.display = ''; $('q1').value = ''; }
+function qScore(ok){ if (qq.counted) return; qq.counted = true; Q.total++; if (ok) Q.right++; $('score').textContent = `Score: ${Q.right} / ${Q.total}`; }
+function qFeedback(ok, html){ $('qFb').className = 'feedback ' + (ok ? 'ok' : 'bad'); $('qFb').innerHTML = (ok ? '<b>Right.</b> ' : '<b>Not quite.</b> ') + html; }
+function qChoices(list, correctIdx, explain){
+  $('qIn').style.display = 'none'; qq.correctIdx = correctIdx; qq.explainFn = explain;
+  list.forEach((c, k) => { const b = document.createElement('button'); b.innerHTML = c; b.onclick = () => { const ok = k === correctIdx; qScore(ok); [...$('qChoice').children].forEach((x, j) => { x.classList.remove('right', 'wrong'); if (j === k) x.classList.add(ok ? 'right' : 'wrong'); }); qFeedback(ok, explain(k)); }; $('qChoice').appendChild(b); });
+}
+// a random counting scenario: returns { text, k (favourable), n (total), name, pic(svg) }
+function scenario(){
+  const t = pick(['bag', 'bag', 'die', 'card', 'spin', 'dice']);
+  if (t === 'bag'){
+    const c = [ri(1, 6), ri(1, 6), ri(0, 4)], names = ['red', 'blue', 'green'], n = c[0] + c[1] + c[2], w = ri(0, c[2] ? 2 : 1), not = Math.random() < 0.25;
+    const k = not ? n - c[w] : c[w], name = (not ? 'not ' : '') + names[w];
+    return { text: `A bag holds ${c[0]} red, ${c[1]} blue${c[2] ? ` and ${c[2]} green` : ''} marbles. One is drawn without looking. What is P(${name})?`, k, n, name, why: `${not ? `Not ${names[w]}: ${n} − ${c[w]} = ${k}` : `${c[w]} ${names[w]}`} out of ${n} marbles, all equally likely.`,
+      pic: svg => { let q = 0; c.forEach((m, i) => { for (let r = 0; r < m; r++, q++) marble(svg, 24 + q * 31, 26, 12, MCOL[names[i]]); }); } };
+  }
+  if (t === 'die'){ const e = pick([['a 3', 1], ['an even number', 3], ['a number greater than 4', 2], ['a number less than 3', 2], ['a 1 or a 6', 2], ['a number less than 6', 5]]);
+    return { text: `A fair die is rolled. What is P(${e[0]})?`, k: e[1], n: 6, name: e[0], why: `${e[1]} of the 6 faces ${e[1] === 1 ? 'is' : 'are'} ${e[0]}.`, pic: svg => { for (let q = 1; q <= 6; q++) dieFace(svg, 26 + (q - 1) * 46, 26, 34, q); } }; }
+  if (t === 'card'){ const e = pick([['a heart', 13], ['a king', 4], ['a red card', 26], ['a face card (J, Q or K)', 12], ['the queen of hearts', 1], ['a black ace', 2]]);
+    return { text: `A card is drawn from a shuffled 52-card deck. What is P(${e[0]})?`, k: e[1], n: 52, name: e[0], why: `There ${e[1] === 1 ? 'is' : 'are'} ${e[1]} card${e[1] === 1 ? '' : 's'} that ${e[1] === 1 ? 'is' : 'are'} ${e[0]} among 52.` }; }
+  if (t === 'spin'){ const m = pick([4, 5, 8, 10]), w = ri(1, m - 1);
+    return { text: `A spinner has ${m} equal sectors, and ${w} of them ${w === 1 ? 'is' : 'are'} blue. What is P(blue)?`, k: w, n: m, name: 'blue', why: `${w} of the ${m} equal sectors ${w === 1 ? 'is' : 'are'} blue.`,
+      pic: svg => spinner(svg, 40, 30, 26, range(m).map(i => ({ p: 1 / m, col: i < w ? 'var(--blue)' : 'var(--paper)' }))) }; }
+  const e = pick([['a total of 7', 6], ['a total of 12', 1], ['doubles', 6], ['a total of 11', 2], ['a total of 4', 3]]);
+  return { text: `Two fair dice are rolled. What is P(${e[0]})?`, k: e[1], n: 36, name: e[0], why: `Of the 36 equally likely pairs, ${e[1]} give${e[1] === 1 ? 's' : ''} ${e[0]}.` };
+}
+function picInto(f){ if (!f) return; $('qPic').innerHTML = '<svg viewBox="0 0 520 56"></svg>'; f($('qPic').firstChild); }
+function qComp(){
+  const s = scenario(); Object.assign(qq, { ans: s.k / s.n, k: s.k, n: s.n,
+    why: `${s.why} P = ${s.k}/${s.n}${fr(s.k, s.n) !== `${s.k}/${s.n}` ? ' = ' + fr(s.k, s.n) : ''} ≈ ${dec(s.k / s.n)} = ${pct(s.k / s.n)}.`,
+    traps: [[s.k / Math.max(1, s.n - s.k), 'That’s favourable ÷ unfavourable. Divide by the <b>total</b> number of outcomes.'], [1 - s.k / s.n, 'That’s the complement, the chance it does <b>not</b> happen.']] });
+  $('qText').innerHTML = s.text; picInto(s.pic); $('qL1').textContent = `P(${s.name}) =`;
+}
+function qScale(){
+  const c = pick([
+    ['rolling a 7 on an ordinary die', 0], ['rolling a number from 1 to 6 on a die', 1], ['a fair coin landing heads', 0.5],
+    ['drawing a red marble from a bag of 9 red and 1 blue', 0.9], ['drawing a blue marble from a bag of 9 red and 1 blue', 0.1],
+    ['rolling an even number on a die', 0.5], ['rolling a 6 on a die', 1 / 6], ['spinning red when 3 of 4 equal sectors are red', 0.75],
+    ['picking a heart from a deck of cards', 0.25], ['a 70% free-throw shooter making the next shot', 0.7], ['drawing a green marble from a bag of only red and blue marbles', 0],
+    ['the month after March being April', 1], ['a “30% chance of rain” day staying dry', 0.7], ['drawing a red card from a deck of cards', 0.5]
+  ]);
+  const W = ['impossible', 'unlikely', 'even chance', 'likely', 'certain'], idx = W.indexOf(word(c[1]));
+  $('qText').innerHTML = `Where does this go on the probability scale?<br><b>${c[0]}</b>`;
+  qChoices(W, idx, j => `The probability is ${frc(c[1])}${c[1] > 0 && c[1] < 1 && c[1] !== 0.5 ? ' = ' + pct(c[1]) : ''}, so it’s <b>${W[idx]}</b>. ` + (j === idx ? '' : idx === 2 ? 'Exactly ½ is an even chance.' : idx === 0 || idx === 4 ? 'Impossible and certain are only for probabilities exactly 0 and 1.' : 'Unlikely means below ½, likely means above ½.'));
+  $('qPic').innerHTML = '<svg viewBox="0 0 520 86"></svg>'; qq.scaleP = c[1];
+}
+function qCompl(){
+  const c = pick([
+    () => { const v = pick([10, 20, 30, 35, 40, 65, 80, 85, 95]); return [`The forecast gives a ${v}% chance of rain tomorrow. What is the probability it does <b>not</b> rain?`, 1 - v / 100, `P(no rain) = 1 − ${v}% = ${100 - v}%.`, 'P(no rain) ='] ; },
+    () => { const d = pick([5, 6, 8, 9, 10, 12]); let n; do { n = ri(1, d - 1); } while (gcd(n, d) !== 1); return [`The probability a bus is late is ${n}/${d}. What is the probability it is <b>not</b> late?`, 1 - n / d, `P(not late) = 1 − ${n}/${d} = ${d - n}/${d}.`, 'P(not late) ='] ; },
+    () => { const v = pick([0.15, 0.25, 0.35, 0.6, 0.72, 0.85]); return [`A player makes a free throw with probability ${v}. What is the probability of a <b>miss</b>?`, 1 - v, `P(miss) = 1 − ${v} = ${num(1 - v, 2)}.`, 'P(miss) ='] ; },
+    () => [`A fair die is rolled. What is the probability of <b>not</b> rolling a 6?`, 5 / 6, `P(not 6) = 1 − 1/6 = 5/6: the five other faces.`, 'P(not 6) =']
+  ])();
+  Object.assign(qq, { ans: c[1], why: c[2], traps: [[1 - c[1], 'That’s the probability of the event itself. The complement is 1 minus it.']] });
+  $('qText').innerHTML = c[0]; $('qL1').textContent = c[3];
+}
+function qTrap(){
+  const c = pick([
+    () => ({ s: 'A fair coin has landed heads 5 times in a row. What is the probability the next flip is heads?', ok: '½', bad: ['Less than ½: tails is due', 'More than ½: heads is on a streak', '1/32'], why: 'Each flip is independent: the coin has no memory, so it’s still ½. (1/32 is the chance of 5 heads in a row <i>before</i> you start flipping.)' }),
+    () => ({ s: 'Tomorrow you will either win the raffle or not. What is your chance of winning, holding 1 of 200 tickets?', ok: '1/200', bad: ['½, because there are two outcomes', '1/2 × 1/200', '199/200'], why: 'Two outcomes doesn’t mean equally likely. Each of the 200 tickets is equally likely to be drawn, and 1 is yours: 1/200 = 0.5%.' }),
+    () => ({ s: 'Maya flips a fair coin 10 times. Which is true?', ok: 'She will probably get between 3 and 7 heads, not necessarily 5', bad: ['She will get exactly 5 heads', 'If she gets 7 heads the coin must be unfair', 'She can’t get 10 heads'], why: 'Exactly 5 heads happens only about 25% of the time. ½ describes the long run; short runs wander, and 7 heads in 10 isn’t surprising for a fair coin.' }),
+    () => ({ s: 'Which of these cannot be a probability?', ok: '1.2', bad: ['0', '0.99', '1/3'], why: 'Probabilities run from 0 (impossible) to 1 (certain). 1.2 is more than certain, which makes no sense.' }),
+    () => ({ s: 'The forecast said 70% chance of rain, and it stayed dry all day. Was the forecast wrong?', ok: 'Not necessarily: on about 3 in 10 such days it stays dry', bad: ['Yes, it should have rained', 'Yes, it should have rained for 70% of the day', 'It means the forecaster was 70% sure'], why: '70% means it rains on about 7 of every 10 days with that forecast. A dry day is one of the other 3. You judge a forecaster over many days.' }),
+    () => ({ s: 'Two coins are flipped. What is P(one head and one tail)?', ok: '½', bad: ['⅓', '¼', '1'], why: 'The equally likely outcomes are HH, HT, TH, TT. Two of the four (HT and TH) are one of each: 2/4 = ½. “Two heads, two tails, one of each” are not equally likely, so ⅓ is wrong.' })
+  ])();
+  const opts = shuffle([c.ok, ...c.bad]), idx = opts.indexOf(c.ok);
+  $('qText').innerHTML = c.s; qChoices(opts, idx, () => c.why);
+}
+let lastType = null;
+function qNew(){
+  qReset();
+  let t; do { t = pick(['comp', 'scale', 'compl', 'trap']); } while (t === lastType);
+  lastType = t; qq = { type: t, counted: false }; $('qTitle').textContent = qTitles[t];
+  ({ comp: qComp, scale: qScale, compl: qCompl, trap: qTrap })[t]();
+}
+$('qCheck').onclick = () => {
+  $('qErr').textContent = '';
+  const raw = $('q1').value, v = parseP(raw);
+  if (raw.trim() === '' || !isFinite(v)){ $('qErr').textContent = 'Type a probability: a fraction (3/8), a decimal (0.375) or a percent (37.5%).'; return; }
+  const ok = Math.abs(v - qq.ans) < 0.0015 || (Math.abs(v - qq.ans) < 0.006 && !/\//.test(raw)); let why = qq.why;
+  if (!ok){
+    const t = (qq.traps || []).find(([x]) => isFinite(x) && Math.abs(v - x) < 0.0015);
+    if (t) why = t[0] === qq.ans ? why : t[1] + ' ' + why;
+    else if (v > 1) why = 'A probability can’t be more than 1. ' + (/%/.test(raw) ? '' : 'If you meant a percent, add the % sign. ') + why;
+  }
+  qScore(ok); qFeedback(ok, why);
+};
+$('q1').addEventListener('keydown', e => { if (e.key === 'Enter') $('qCheck').click(); });
+$('q1').addEventListener('input', () => $('qErr').textContent = '');
+$('qShow').onclick = () => {
+  qScore(false);
+  if (qq.correctIdx !== undefined){ [...$('qChoice').children].forEach((b, j) => { if (j === qq.correctIdx) b.classList.add('right'); }); qFeedback(false, qq.explainFn(qq.correctIdx)); }
+  else { $('q1').value = frc(qq.ans); $('qFb').className = 'feedback bad'; $('qFb').innerHTML = '<b>Answer filled in.</b> ' + qq.why; }
+  if (qq.scaleP !== undefined) scaleBar($('qPic').firstChild, 520, qq.scaleP, { lab: frc(qq.scaleP) });
+};
+// for scale questions, reveal the scale picture once answered
+$('qChoice').addEventListener('click', () => { if (qq.scaleP !== undefined && qq.counted) scaleBar($('qPic').firstChild, 520, qq.scaleP, { lab: frc(qq.scaleP) }); });
+$('qNew').onclick = qNew;
+
+/* =====================================================================
+   6. START
+   ===================================================================== */
+selectOnFocus(['q1']);
+$('sPresets').children[0].click();
+$('ePresets').children[0].click();
+qNew();
+</script>
+</body></html>
