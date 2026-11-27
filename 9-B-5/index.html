@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>9.B.5 Expected Value · MathMastery</title>
+<!-- Fonts: a book serif for prose, a clean sans for UI, a mono for numbers -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<!-- MathJax renders the few formulas on the page (SVG output needs no external stylesheet) -->
+<script>
+  window.MathJax = { tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] }, svg: { fontCache: 'global' } };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<style>
+/* ===================== Theme ===================== */
+:root{
+  --bg:#f7f5ef; --paper:#ffffff; --ink:#1f1e1d; --muted:#6b6a66; --line:#e4e0d5; --line2:#c9c5b8;
+  --accent:#534AB7; --accent-bg:#EEEDFE;
+  --pos:#1D9E75; --neg:#D85A30; --pt:#7F77DD; --pt-soft:#AFA9EC; --pt-dark:#534AB7;
+  --pos-new:#9FE1CB; --neg-new:#F0997B; --ok:#3B6D11; --ok-bg:#EAF3DE; --bad:#A32D2D; --bad-bg:#FCEBEB; --note-bg:#FAF3E3; --note-line:#E7C98A;
+  --serif:"Source Serif 4", Georgia, "Times New Roman", serif;
+  --sans:"IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#191817; --paper:#232220; --ink:#ecebe6; --muted:#a3a29c; --line:#383733; --line2:#55534e;
+    --accent:#AFA9EC; --accent-bg:#2c2852; --pt-dark:#CECBF6; --pt-soft:#6f68b8; --pos-new:#5DCAA5; --neg-new:#F5C4B3;
+    --ok:#C0DD97; --ok-bg:#24400d; --bad:#F7C1C1; --bad-bg:#5a1c1c; --note-bg:#2b261b; --note-line:#6b5626;
+  }
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.7 var(--serif);-webkit-font-smoothing:antialiased}
+
+/* ===================== Layout ===================== */
+.topbar{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1000px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:14px;font:500 13px/1 var(--sans);color:var(--muted)}
+.brand{color:var(--ink);font-weight:600;letter-spacing:.02em}
+.brand b{color:var(--accent)}
+.crumbs{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pid{font-family:var(--mono);color:var(--accent);background:var(--accent-bg);padding:4px 8px;border-radius:6px}
+.prose{max-width:720px;margin:0 auto;padding:0 20px}
+.wide{max-width:1000px;margin:0 auto;padding:0 20px}
+
+/* ===================== Hero ===================== */
+.hero{padding:48px 0 12px}
+.kicker{font:600 13px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1{font:700 46px/1.1 var(--serif);margin:12px 0 14px;letter-spacing:-.01em}
+.dek{font-size:21px;color:var(--muted);margin:0 0 22px;font-style:italic}
+.tiers{display:flex;gap:6px;flex-wrap:wrap;font:500 13px/1 var(--sans);margin-bottom:8px}
+.tier{padding:7px 12px;border-radius:999px;border:1px solid var(--line2);color:var(--muted)}
+.tier.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.tier small{opacity:.7;margin-left:4px}
+
+/* ===================== Text elements ===================== */
+h2{font:700 28px/1.25 var(--serif);margin:56px 0 10px;display:flex;gap:12px;align-items:baseline}
+h2 .n{font:600 14px/1 var(--mono);color:var(--accent);min-width:28px}
+p{margin:0 0 16px}
+em.key{font-style:normal;background:linear-gradient(transparent 62%,var(--accent-bg) 62%);padding:0 2px}
+.goals{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:18px 22px;margin:22px 0 0;font:15.5px/1.6 var(--sans)}
+.goals h3{font:600 12px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
+.goals ul{margin:0;padding-left:20px}
+.note{background:var(--note-bg);border-left:4px solid var(--note-line);border-radius:0 10px 10px 0;padding:14px 18px;margin:20px 0;font:15.5px/1.6 var(--sans)}
+.note b{font-weight:600}
+.notice{list-style:none;padding:0;margin:8px 0 18px;counter-reset:n}
+.notice li{position:relative;padding:12px 0 12px 46px;border-top:1px solid var(--line)}
+.notice li:last-child{border-bottom:1px solid var(--line)}
+.notice li::before{counter-increment:n;content:counter(n);position:absolute;left:4px;top:13px;width:26px;height:26px;border-radius:50%;background:var(--accent-bg);color:var(--accent);font:600 13px/26px var(--mono);text-align:center}
+.goes{list-style:none;padding:0;margin:8px 0 18px}
+.goes li{padding:12px 0;border-top:1px solid var(--line)}
+.goes li:last-child{border-bottom:1px solid var(--line)}
+.math{overflow-x:auto;margin:12px 0 18px;padding:14px 18px;background:var(--paper);border:1px solid var(--line);border-radius:12px}
+.math .cap{font:14px/1.5 var(--sans);color:var(--muted);margin-top:4px}
+.mono{font-family:var(--mono);font-size:.92em;white-space:nowrap}
+.pos{color:var(--pos);font-weight:600}.neg{color:var(--neg);font-weight:600}.pt{color:var(--pt-dark);font-weight:600}
+
+/* ===================== Vocabulary ===================== */
+.vocab{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin:14px 0 8px}
+.term{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font:14.5px/1.5 var(--sans)}
+.term b{display:block;font:600 15px/1.3 var(--serif);margin-bottom:4px}
+
+/* ===================== Interactive cards ===================== */
+.card{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:18px 20px 20px;margin:26px 0;box-shadow:0 1px 0 var(--line),0 12px 32px -22px rgba(0,0,0,.25);font-family:var(--sans)}
+.card-h{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.card-h .tag{font:600 11px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--accent);background:var(--accent-bg);padding:5px 8px;border-radius:6px}
+.card-h h3{font:600 18px/1.3 var(--sans);margin:0}
+.card-h .sub{color:var(--muted);font-size:14.5px;flex-basis:100%}
+.panel-label{font:600 11px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:12px 0 4px;display:flex;justify-content:space-between}
+.panel-label span:last-child{letter-spacing:0;text-transform:none;font-weight:500}
+svg.nl{display:block;width:100%;height:auto;border:1px solid var(--line);border-radius:12px;background:var(--bg);touch-action:manipulation}
+svg.clickable{cursor:pointer}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:12px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0}
+button{font:500 14px/1 var(--sans);padding:9px 14px;border-radius:9px;border:1px solid var(--line2);background:var(--paper);color:var(--ink);cursor:pointer;transition:background .15s,border-color .15s}
+button:hover{border-color:var(--ink)}
+button.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+button.preset.on{background:var(--accent-bg);border-color:var(--accent);color:var(--accent)}
+button:disabled{opacity:.45;cursor:default}
+.desc{min-height:24px;color:var(--muted);font-size:14.5px;margin:2px 0 6px}
+.inputs{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;margin:12px 0 4px}
+.field{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.field input{width:92px;font:500 18px/1 var(--mono);padding:9px 10px;border-radius:9px;border:2px solid var(--line2);background:var(--bg);color:var(--ink);text-align:center}
+.field input:focus{outline:none;border-color:var(--accent)}
+.field i,.eq i,.sym{font:italic 600 1.15em var(--serif);text-transform:none;letter-spacing:0;color:var(--pt-dark)}
+.field.start input{border-color:var(--pt-soft)}
+.field.slide input{border-color:var(--pt)}
+.eq{font:500 20px/1 var(--mono);padding:10px 14px;background:var(--bg);border-radius:10px;border:1px solid var(--line)}
+.err{color:var(--bad);font-size:14px;min-height:20px;margin:2px 0}
+.readout{margin-top:12px;padding:12px 14px;background:var(--bg);border-radius:10px;border:1px solid var(--line);font-size:15px;line-height:1.55;min-height:48px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:12px;font-size:13px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{display:inline-block;width:14px;height:14px;border-radius:50%}
+.sw.pos{background:var(--pos)}.sw.neg{border:2.4px solid var(--neg)}
+.sw.x{position:relative;background:var(--pos);opacity:.45}.sw.x::after{content:'✕';position:absolute;inset:-1px 0 0 0;color:var(--neg);font:700 13px/1 var(--sans);text-align:center}
+.sw.posnew{background:var(--pos-new);border:1.5px solid var(--pos)}.sw.negnew{border:2.4px solid var(--neg-new)}.sw.pt{background:var(--pt)}
+.sw.mv{width:22px;height:4px;border-radius:2px;background:var(--pt-soft)}
+.sw.rl{width:22px;height:0;border-top:2px dashed var(--ink);border-radius:0;opacity:.7}
+.feedback{margin-top:10px;padding:12px 14px;border-radius:10px;font-size:15px;line-height:1.55;display:none}
+.feedback.ok{display:block;background:var(--ok-bg);color:var(--ok)}
+.feedback.bad{display:block;background:var(--bad-bg);color:var(--bad)}
+.feedback.info{display:block;background:var(--accent-bg);color:var(--accent)}
+.score{margin-left:auto;font:600 14px/1 var(--mono);color:var(--muted)}
+
+/* ===================== Footer nav ===================== */
+.pager{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:56px 0 18px;font-family:var(--sans)}
+.pager a,.pager div{display:block;padding:16px 18px;border:1px solid var(--line);border-radius:14px;background:var(--paper);color:var(--ink);text-decoration:none}
+.pager small{display:block;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.pager .next{text-align:right}
+.pager .soon{opacity:.6}
+.meta{font:13px/1.6 var(--sans);color:var(--muted);text-align:center;padding:10px 0 50px}
+
+@media (max-width:720px){
+  body{font-size:17px}
+  h1{font-size:34px}
+  .dek{font-size:18px}
+  h2{font-size:24px}
+  .card{padding:14px 12px 16px;border-radius:14px}
+  .crumbs{display:none}
+  svg.nl{min-width:640px}
+}
+</style>
+<meta name="mm-site" content="1">
+<link rel="stylesheet" href="../shared/nav.css">
+</head>
+<body>
+<style>
+/* ===================== Page-specific styles (9.B.5) ===================== */
+/* probability weights = purple, expected value / balance point = orange, choice A = teal, choice B = orange-red */
+:root{ --w:#7F77DD; --w-bg:#E6E3FA; --e:#D85A30; --ca:#1D9E75; --cb:#C0453A; --red:#D8443A; --yel:#E0A800; --gold:#C99700; }
+@media (prefers-color-scheme:dark){ :root{ --w:#AFA9EC; --w-bg:#2E2B52; --e:#FF9A6B; --ca:#5DCAA5; --cb:#F07B72; --red:#F07B72; --yel:#FFD24D; --gold:#FFD24D; } }
+.kw{color:var(--w);font-weight:700}.ke{color:var(--e);font-weight:700}.kA{color:var(--ca);font-weight:700}.kB{color:var(--cb);font-weight:700}
+svg{user-select:none;-webkit-user-select:none}
+svg text.lab,svg text.labS{fill:var(--ink)}
+.full{margin-top:12px}
+.full svg{width:100%;height:auto;display:block;background:var(--bg);border:1px solid var(--line);border-radius:10px}
+.bsplit{display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:start;margin-top:10px}
+.rows{display:grid;grid-template-columns:auto auto;gap:6px 10px;align-items:center}
+.rows .h{font:600 12px var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.rows input{width:86px;font:500 16px/1 var(--mono);padding:7px 8px;border-radius:8px;border:2px solid var(--line2);background:var(--bg);color:var(--ink);text-align:center}
+.rows input.p{border-color:var(--w)}
+.rows input:focus{outline:none;border-color:var(--accent)}
+table.ev{border-collapse:collapse;font:14px var(--mono)}
+table.ev th,table.ev td{border:1px solid var(--line);padding:5px 12px;text-align:right}
+table.ev th{font:600 13px var(--sans);background:var(--paper);text-align:center}
+table.ev tr.sum td{font-weight:700;color:var(--e);background:var(--paper)}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:10px}
+.opt{border:1px solid var(--line);border-radius:10px;background:var(--bg);padding:10px 14px;font-size:15px;line-height:1.6}
+.opt h4{margin:0 0 4px;font:700 15px var(--sans)}
+.strip{display:flex;gap:4px;flex-wrap:wrap;margin-top:6px;min-height:28px}
+.strip span{font:600 13px var(--mono);padding:3px 7px;border-radius:6px;background:var(--paper);border:1px solid var(--line)}
+pre.code{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:12px 16px;overflow-x:auto;font:13.5px/1.6 var(--mono);margin:10px 0 16px}
+.traps{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:8px}
+.traps .t{border:1px solid var(--line);border-radius:10px;background:var(--bg);padding:10px}
+.traps .t h4{margin:0 0 4px;font:600 15px var(--sans)}
+.traps .t p{margin:6px 0 0;font-size:14.5px;line-height:1.5;color:var(--muted)}
+.traps svg{width:100%;height:auto;display:block}
+.qtext{font:17px/1.55 var(--serif);margin:4px 0 10px}
+.choice{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 0}.choice button{min-width:110px;text-align:left}
+.choice button.right{border-color:var(--ok);background:var(--ok-bg);color:var(--ok)}.choice button.wrong{border-color:var(--bad);background:var(--bad-bg);color:var(--bad)}
+</style>
+
+<!-- ===================== Top bar ===================== -->
+<div class="topbar"><div class="topbar-in">
+  <span class="brand">Math<b>Mastery</b></span>
+  <span class="crumbs">Chapter 9 · Probability › Basics</span>
+  <span class="pid">9.B.5</span>
+</div></div>
+
+<!-- ===================== Hero ===================== -->
+<header class="prose hero">
+  <div class="kicker">Chapter 9 · Probability</div>
+  <h1>Expected Value</h1>
+  <p class="dek">Weigh every outcome by its chance and add: the result is the average you’d get per try in the long run, and the point where the probabilities balance.</p>
+  <div class="tiers" aria-label="Tier">
+    <span class="tier on">Basics <small>you are here</small></span>
+    <span class="tier">Undergraduate</span>
+    <span class="tier">Masters</span>
+  </div>
+  <div class="goals">
+    <h3>On this page</h3>
+    <ul>
+      <li>Compute an <b>expected value</b> as a <b>weighted average</b>: each value times its probability, all added up.</li>
+      <li>See it as the <b>long-run average</b> over many tries, and as the <b>balance point</b> of the probabilities.</li>
+      <li>Decide whether a game is a <b>fair game</b> by finding the expected <b>net gain</b>, and set a price or prize that makes it fair.</li>
+      <li>Compare choices by expected value, and see when <b>risk</b>, how much results spread out, matters too.</li>
+    </ul>
+  </div>
+</header>
+
+<main>
+<!-- ===================== §1 ===================== -->
+<section class="prose">
+  <h2><span class="n">1</span>The average in the long run</h2>
+  <p>Roll a die many times and average the results. The rolls 1, 2, 3, 4, 5, 6 come up about equally often, so the average settles near (1 + 2 + 3 + 4 + 5 + 6) ÷ 6 = 3.5. That long-run average is the <b>expected value</b> of the roll. Notice that 3.5 can never actually be rolled. The expected value isn’t a prediction for the next try; it’s what the tries average out to.</p>
+  <p>A number decided by chance, like the result of a roll or the points from a shot, is called a <b>random variable</b>, often written <i>X</i>. Its expected value is written E(<i>X</i>), also called its <b>mean</b>.</p>
+
+  <h2><span class="n">2</span>Weigh each value by its chance</h2>
+  <p>A spinner pays 0 points half the time, 10 points a third of the time and 50 points a sixth of the time. Spin it 600 times: about 300 spins pay 0, about 200 pay 10 and about 100 pay 50. The total is about 0 + 2,000 + 5,000 = 7,000 points, or 7,000 ÷ 600 ≈ 11.67 per spin. Dividing by 600 early gives the rule. Each value is multiplied by its probability, and the products are added:</p>
+  <div class="math">\[ E(X) = 0 \cdot \tfrac12 + 10 \cdot \tfrac13 + 50 \cdot \tfrac16 = 11.67. \]</div>
+  <p>This is a <b>weighted average</b>: values that are more likely count for more. Picture each probability as a weight hung on a beam at its value. The expected value is exactly where the beam balances.</p>
+</section>
+<section class="wide">
+  <div class="card" id="bal">
+    <div class="card-h"><span class="tag">Explore</span><h3>Find the balance point</h3>
+      <span class="sub">Each bar is a weight: its position is a value, its height its probability. Press Play and the pivot slides from the plain average of the values to the true balance point, E. Click the ruler to put the pivot anywhere and watch the beam tip.</span></div>
+    <div class="row" id="bPresets"></div>
+    <div class="desc" id="bDesc"></div>
+    <div class="row" style="margin-top:8px"><button class="primary" id="bPlay">Play</button><button id="bReset">Reset</button><button id="bAdd">+ outcome</button><button id="bDel">− outcome</button></div>
+    <div class="full"><svg id="bB" viewBox="0 0 960 300" role="img" aria-label="A beam balancing at the expected value"></svg></div>
+    <div class="bsplit">
+      <div><div class="rows" id="bRows"></div><div class="err" id="bErr"></div></div>
+      <div><div id="bTab"></div><div class="readout" id="bOut" style="margin-top:8px"></div></div>
+    </div>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--w)"></i><span>probability weights (height = probability)</span></span>
+      <span><i class="sw" style="background:var(--e)"></i><span>E, the balance point</span></span>
+      <span><i class="sw" style="background:var(--muted)"></i><span>dashed: plain average of the values (ignores the probabilities)</span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §3 ===================== -->
+<section class="prose">
+  <h2><span class="n">3</span>Fair games</h2>
+  <p>A carnival game costs $2. Roll a die: a 6 wins $10, anything else wins nothing. What happens on average? Look at the <b>net gain</b>, what you win minus what you paid: +$8 with probability ⅙, −$2 with probability ⅚.</p>
+  <div class="math">\[ E(\text{net gain}) = 8 \cdot \tfrac16 + (-2) \cdot \tfrac56 = \tfrac{8 - 10}{6} \approx -0.33. \]</div>
+  <p>On average you lose about 33 cents a game, and the stall keeps it. A game is a <b>fair game</b> when the expected net gain is exactly 0: neither side gains in the long run. This one would be fair if a 6 paid $12, or if a game cost $10 ÷ 6 ≈ $1.67. Some multiple-choice tests are designed this way: +1 for a right answer and −⅓ for a wrong one. With four options, a blind guess has expected score ¼ · 1 + ¾ · (−⅓) = 0, so guessing gains nothing on average. Rule out one option first, and a guess has a positive expected value.</p>
+
+  <h2><span class="n">4</span>Choosing, and when risk matters</h2>
+  <p>Expected value is a natural way to compare choices you’ll face many times. A basketball team choosing between a two-pointer made 50% of the time (expected 1 point per shot) and a three-pointer made 36% of the time (expected 1.08 points) gains by taking more threes, over a season. But two choices with the same expected value can feel very different. Ten points for sure and a coin flip for 0 or 20 both have E = 10, but the coin flip has much more <b>risk</b>: its results spread far from the average. When you only get one try, and losing would hurt, the safer choice can be the sensible one even if its expected value is a little lower. In the explorer below, both choices are played side by side: watch the averages settle on their expected values, and watch how much more one of them jumps around on the way.</p>
+</section>
+<section class="wide">
+  <div class="card" id="run">
+    <div class="card-h"><span class="tag">Explore</span><h3>Play it many times</h3>
+      <span class="sub">Two choices, played over and over. The lines track the average result per play so far (on a stretched scale, so early plays are spread out); the dashed lines are the expected values.</span></div>
+    <div class="row" id="rPresets"></div>
+    <div class="desc" id="rDesc"></div>
+    <div class="row" style="margin-top:8px"><button id="r1">1 play</button><button id="r10">10 plays</button><button id="r100">100 plays</button><button class="primary" id="rPlay">Play</button><button id="rReset">Reset</button></div>
+    <div class="full"><svg id="rC" viewBox="0 0 960 300" role="img" aria-label="Running averages of the two choices"></svg></div>
+    <div class="opts"><div class="opt" id="rA"></div><div class="opt" id="rB"></div></div>
+    <div class="readout" id="rOut"></div>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--ca)"></i><span>choice A: average per play so far</span></span>
+      <span><i class="sw" style="background:var(--cb)"></i><span>choice B: average per play so far</span></span>
+      <span><span>dashed: expected values</span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §5 ===================== -->
+<section class="prose">
+  <h2><span class="n">5</span>When the formula is hard: simulate</h2>
+  <p>How many times, on average, do you roll a die until the first 6? There’s no short list of outcomes: it could take 1 roll, or 2, or 30. Later you’ll prove the answer is exactly 6, but a simulation finds it in seconds:</p>
+  <pre class="code"><code>import random                                   # Python's random-number tools
+trials = 100_000                                # how many times to repeat the experiment
+total_rolls = 0                                 # rolls used across all experiments
+for _ in range(trials):                         # repeat the experiment many times
+    rolls = 0                                   # rolls in this experiment so far
+    while True:                                 # keep rolling...
+        rolls += 1                              # ...count this roll
+        if random.randint(1, 6) == 6:           # stop at the first 6
+            break
+    total_rolls += rolls                        # add this experiment's count
+print(total_rolls / trials)                     # long-run average: about 6.0</code></pre>
+
+  <h2><span class="n">6</span>Traps</h2>
+</section>
+<section class="wide">
+  <div class="card" id="traps">
+    <div class="card-h"><span class="tag">Compare</span><h3>Easy to get wrong</h3></div>
+    <div class="traps">
+      <div class="t"><h4 style="color:var(--bad)">✕ Averaging the values</h4><svg id="tr1" viewBox="0 0 300 220"></svg><p>The spinner pays 0, 10 or 50. The plain average (0 + 10 + 50) ÷ 3 = 20 ignores that 0 comes up half the time. Weighted by the chances, E = 11.67.</p></div>
+      <div class="t"><h4 style="color:var(--bad)">✕ Forgetting the cost</h4><svg id="tr2" viewBox="0 0 300 220"></svg><p>The carnival game pays $10 ÷ 6 ≈ $1.67 per game on average. That looks good until you subtract the $2 you paid to play: the net gain is about −$0.33 a game.</p></div>
+      <div class="t"><h4 style="color:var(--bad)">✕ Expecting the expected value</h4><svg id="tr3" viewBox="0 0 300 220"></svg><p>The expected number of children in a family here is 1.7, but no family has 1.7 children. E is the long-run average, not a likely or even possible single result.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §7 ===================== -->
+<section class="prose">
+  <h2><span class="n">7</span>Now, in symbols</h2>
+  <p>If a random variable <i>X</i> takes values <i>x</i>₁, <i>x</i>₂, …, <i>x</i>ₙ with probabilities <i>p</i>₁, <i>p</i>₂, …, <i>p</i>ₙ (which add to 1):</p>
+  <div class="math">\[ E(X) = x_1 p_1 + x_2 p_2 + \dots + x_n p_n = \sum_{i=1}^{n} x_i\, p_i \]</div>
+  <div class="math">\[ \text{balance: } \sum_{i} (x_i - E(X))\, p_i = 0, \qquad \text{fair game: } E(\text{net gain}) = 0 \]</div>
+  <div class="math">\[ E(aX + b) = a\,E(X) + b, \qquad E(X + Y) = E(X) + E(Y) \]</div>
+  <p>The first line in the middle row is the balance: the weights on either side of E pull equally. The last line says expected values add. Paying $2 to play shifts every net gain by −2, so it shifts the expected value by −2 too, and the expected total of two dice is 3.5 + 3.5 = 7.</p>
+</section>
+
+<!-- ===================== §8 ===================== -->
+<section class="prose">
+  <h2><span class="n">8</span>Where this goes</h2>
+  <ul class="goes">
+    <li><b>Next:</b> 9.B.6 Simulating chance uses computers to estimate probabilities and expected values when counting gets hard.</li>
+    <li><b>Later in this book:</b> variance and standard deviation, which measure risk precisely (9.U), expected values of continuous random variables with integrals (9.U, chapter 8), the law of large numbers (9.U.6), decision theory and loss functions (chapter 11), and the training loss minimised in machine learning, itself an expected value (chapter 15).</li>
+    <li><b>In the world:</b> sports strategy (shot choice, when to go for it), game design, insurance and warranties, planning how many supplies to order, and scoring rules for tests.</li>
+  </ul>
+</section>
+
+<!-- ===================== §9 ===================== -->
+<section class="prose">
+  <h2><span class="n">9</span>Words to know</h2>
+  <div class="vocab">
+    <div class="term"><b>Random variable</b>A number decided by chance, such as a roll or the points from a shot. Written <i>X</i>.</div>
+    <div class="term"><b>Expected value</b>E(<i>X</i>): each value times its probability, all added up.</div>
+    <div class="term"><b>Mean</b>Another name for the expected value of a random variable.</div>
+    <div class="term"><b>Weighted average</b>An average where each value counts in proportion to its weight (here, its probability).</div>
+    <div class="term"><b>Long-run average</b>The average result per try over very many tries. It settles on E.</div>
+    <div class="term"><b>Balance point</b>Where a beam with the probabilities as weights would balance: E.</div>
+    <div class="term"><b>Net gain</b>What you win minus what it cost to play.</div>
+    <div class="term"><b>Fair game</b>A game whose expected net gain is 0.</div>
+    <div class="term"><b>Risk</b>How far results tend to spread from the average. Measured precisely later by the standard deviation.</div>
+  </div>
+</section>
+
+<!-- ===================== Quiz ===================== -->
+<section class="prose"><h2><span class="n">10</span>Check yourself</h2>
+  <p>Four kinds of questions: compute an expected value, make a game fair, compare two choices, and spot the trap. Type numbers as decimals or fractions (11.67 or 35/3).</p>
+</section>
+<section class="wide">
+  <div class="card" id="quiz">
+    <div class="card-h"><span class="tag">Quiz</span><h3 id="qTitle"></h3><span class="score" id="score">Score: 0 / 0</span></div>
+    <div class="qtext" id="qText"></div>
+    <div id="qPic"></div>
+    <div class="choice" id="qChoice"></div>
+    <div class="inputs" id="qIn">
+      <label class="field"><span id="qL1">E =</span><input id="q1" type="text" autocomplete="off" style="width:160px;border-color:var(--e)"></label>
+      <div class="row" style="margin:0"><button class="primary" id="qCheck">Check</button></div>
+    </div>
+    <div class="row" style="margin:10px 0 0"><button id="qShow">Show answer</button><button id="qNew">New question</button></div>
+    <div class="err" id="qErr"></div>
+    <div class="feedback" id="qFb" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ===================== Pager (filled in by the shared navigation) ===================== -->
+<nav class="wide">
+  <div class="pager"></div>
+  <div class="meta">9.B.5 · Prerequisites: 9.B.1 (probability), 9.B.4 (tree diagrams) · Leads to: 9.B.6 (simulating chance), 9.U (variance, random variables)</div>
+</nav>
+</main>
+
+<script>
+/* =====================================================================
+   1. HELPERS (shared with the other pages)
+   ===================================================================== */
+const NS = 'http://www.w3.org/2000/svg';
+const $ = id => document.getElementById(id);
+function mk(tag, attrs, parent){                           // create an SVG element with attributes
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function txt(parent, x, y, s, cls, extra){                 // create an SVG text element
+  extra = Object.assign({}, extra || {});
+  if (extra['text-anchor']){ extra.style = (extra.style ? extra.style + ';' : '') + 'text-anchor:' + extra['text-anchor']; delete extra['text-anchor']; }
+  const t = mk('text', Object.assign({ x, y, class: cls || '' }, extra), parent);
+  t.textContent = s;
+  return t;
+}
+// round for display, use a true minus sign, never show −0
+function num(x, d){ if (d === undefined) d = 2; const r = Math.round(x * Math.pow(10, d)) / Math.pow(10, d); return r === 0 ? '0' : (r < 0 ? '−' : '') + String(Math.abs(r)); }
+const pn = x => x < 0 ? `(${num(x)})` : num(x);              // wrap negatives in brackets when substituting
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const ri = (a, b) => a + Math.floor(Math.random() * (b - a + 1));   // random whole number from a to b
+const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+function parseNum(s){                                     // integers, decimals, minus, simple fractions
+  s = String(s).trim().replace(/[−–]/g, '-').replace(/\s+/g, '');
+  if (/^-?\d+(\.\d+)?$|^-?\.\d+$/.test(s)) return parseFloat(s);
+  const m = s.match(/^(-?\d+)\/(\d+)$/);
+  if (m && +m[2] !== 0) return +m[1] / +m[2];
+  return NaN;
+}
+function selectOnFocus(ids){ ids.forEach(id => $(id).addEventListener('focus', e => e.target.select())); }
+function buttons(boxId, list, onPick){                    // a row of preset buttons; returns a function that marks one as on
+  list.forEach((p, i) => { const b = document.createElement('button'); b.className = 'preset'; b.textContent = p.n; b.onclick = () => onPick(i); $(boxId).appendChild(b); });
+  return i => [...$(boxId).children].forEach((b, j) => b.classList.toggle('on', j === i));
+}
+function svgPt(svg, ev){                                  // mouse position in the SVG's own coordinates
+  const p = svg.createSVGPoint(); p.x = ev.clientX; p.y = ev.clientY;
+  return p.matrixTransform(svg.getScreenCTM().inverse());
+}
+const svgCss = document.createElement('style');
+svgCss.textContent = `
+  .grid{stroke:var(--line);stroke-width:1}
+  .axis{stroke:var(--ink);stroke-width:1.4;opacity:.7}
+  .tl{fill:var(--muted);font:500 11.5px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:3px}
+  .lab{font:700 14px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:5px}
+  .labS{font:600 12.5px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+  .cap{fill:var(--muted);font:600 12px var(--sans);letter-spacing:.06em;paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+  .oval{fill:var(--paper);stroke:var(--line);stroke-width:1.5}
+`;
+document.head.appendChild(svgCss);
+let clipN = 0;                                            // unique clip-path ids
+
+/* ---------- axes: a coordinate grid inside an SVG, with separate x and y scales ---------- */
+function axes(svg, W, H, b, o){
+  o = o || {};
+  svg.innerHTML = '';
+  const L = o.padL ?? 44, R = o.padR ?? 16, T = o.padT ?? 16, B = o.padB ?? 30;
+  const sx = (W - L - R) / (b.x1 - b.x0), sy = (H - T - B) / (b.y1 - b.y0);   // pixels per unit
+  const X = x => L + (x - b.x0) * sx, Y = y => T + (b.y1 - y) * sy;
+  const step = (s, px) => (o.half ? [0.5, 1, 2, 5, 10, 20, 50, 100] : [1, 2, 5, 10, 20, 50, 100]).find(k => k * s >= px) || 200;   // a round step at least px pixels wide
+  const xg = o.xg || step(sx, 9), yg = o.yg || step(sy, 9);        // grid-line spacing
+  const xt = o.xt || step(sx, 34), yt = o.yt || step(sy, 26);      // tick-label spacing
+  const gGrid = mk('g', {}, svg), id = 'clp' + (++clipN);
+  const cp = mk('clipPath', { id }, svg); mk('rect', { x: L, y: T, width: W - L - R, height: H - T - B }, cp);
+  const cg = mk('g', { 'clip-path': `url(#${id})` }, svg);         // clipped layer for curves
+  const m = mk('g', {}, svg), top = mk('g', {}, svg);              // free layer, then labels on top
+  const near = (v, s) => Math.abs(v / s - Math.round(v / s)) < 1e-6;
+  for (let x = Math.ceil(b.x0 / xg) * xg; x <= b.x1 + 1e-9; x += xg) mk('line', { x1: X(x), y1: T, x2: X(x), y2: H - B, class: 'grid' }, gGrid);
+  for (let y = Math.ceil(b.y0 / yg) * yg; y <= b.y1 + 1e-9; y += yg) mk('line', { x1: L, y1: Y(y), x2: W - R, y2: Y(y), class: 'grid' }, gGrid);
+  const ay = (b.y0 <= 0 && b.y1 >= 0) ? Y(0) : H - B;              // where the x-axis is drawn
+  const ax = (b.x0 <= 0 && b.x1 >= 0) ? X(0) : L;                  // where the y-axis is drawn
+  mk('line', { x1: L, y1: ay, x2: W - R, y2: ay, class: 'axis' }, gGrid);
+  mk('line', { x1: ax, y1: T, x2: ax, y2: H - B, class: 'axis' }, gGrid);
+  const fx = o.fx || (v => num(v)), fy = o.fy || (v => num(v));
+  for (let x = Math.ceil(b.x0 / xt) * xt; x <= b.x1 + 1e-9; x += xt){
+    if (Math.abs(x) < 1e-9 && ax === X(0) && !o.zeroX) continue;
+    txt(top, X(x), ay + 16, fx(x), 'tl', { 'text-anchor': 'middle' });
+  }
+  for (let y = Math.ceil(b.y0 / yt) * yt; y <= b.y1 + 1e-9; y += yt){
+    if (Math.abs(y) < 1e-9 && ay === Y(0)) continue;
+    txt(top, ax - 6, Y(y) + 4, fy(y), 'tl', { 'text-anchor': 'end' });
+  }
+  if (o.xT) txt(top, W - R - 2, ay - 8, o.xT, 'cap', { 'text-anchor': 'end' });
+  if (o.yT) txt(top, ax + 8, T + 12, o.yT, 'cap');
+  return { svg, X, Y, sx, sy, cg, m, top, b, L, R, T, B, W, H, ay, ax,
+           inv: (px, py) => [b.x0 + (px - L) / sx, b.y1 - (py - T) / sy] };
+}
+function dPath(P, pts){ return pts.map((p, i) => (i ? 'L' : 'M') + P.X(p[0]).toFixed(1) + ' ' + P.Y(p[1]).toFixed(1)).join(''); }
+// sample y = f(x) from a to b, breaking the curve where f is undefined or jumps
+function sample(f, a, b, n, ok){
+  const out = []; let cur = [];
+  for (let i = 0; i <= n; i++){
+    const x = a + (b - a) * i / n, y = (ok && !ok(x)) ? NaN : f(x);
+    if (!isFinite(y)){ if (cur.length > 1) out.push(cur); cur = []; continue; }
+    if (cur.length && Math.abs(y - cur[cur.length - 1][1]) > 40){ if (cur.length > 1) out.push(cur); cur = []; }
+    cur.push([x, y]);
+  }
+  if (cur.length > 1) out.push(cur);
+  return out;
+}
+function dot(P, x, y, col, o){                              // a filled (or open) point
+  o = o || {};
+  return mk('circle', { cx: P.X(x), cy: P.Y(y), r: o.r || 6, style: o.open ? `fill:var(--bg);stroke:${col};stroke-width:2.6` : `fill:${col};stroke:var(--bg);stroke-width:1.5` }, o.layer || P.m);
+}
+function vline(P, x, col, o){ o = o || {}; return mk('line', { x1: P.X(x), y1: o.y0 !== undefined ? P.Y(o.y0) : P.T, x2: P.X(x), y2: o.y1 !== undefined ? P.Y(o.y1) : P.H - P.B, style: `stroke:${col};stroke-width:${o.w || 2.5};${o.dash ? 'stroke-dasharray:' + o.dash : ''}` }, o.layer || P.m); }
+function hline(P, y, col, o){ o = o || {}; return mk('line', { x1: o.x0 !== undefined ? P.X(o.x0) : P.L, y1: P.Y(y), x2: o.x1 !== undefined ? P.X(o.x1) : P.W - P.R, y2: P.Y(y), style: `stroke:${col};stroke-width:${o.w || 2.5};${o.dash ? 'stroke-dasharray:' + o.dash : ''}` }, o.layer || P.m); }
+function arrowHead(g, x1, y1, x2, y2, col, size){            // a small triangle at (x2, y2) pointing away from (x1, y1)
+  const a = Math.atan2(y2 - y1, x2 - x1), s = size || 9;
+  const p = [[x2, y2], [x2 - s * Math.cos(a - 0.4), y2 - s * Math.sin(a - 0.4)], [x2 - s * Math.cos(a + 0.4), y2 - s * Math.sin(a + 0.4)]];
+  mk('polygon', { points: p.map(q => q.join(',')).join(' '), style: `fill:${col}` }, g);
+}
+
+/* ---------- arrow diagram: inputs in a left oval, outputs in a right oval, one arrow per pair ---------- */
+// pairs: [[in, out], ...]; o.ins / o.outs give the order (defaults: sorted values); o.fmt formats a value;
+// o.hl = input to highlight (others fade); o.lit = [in, out] arrow drawn thick; o.dead = inputs shown crossed out
+function arrowDiagram(svg, W, H, pairs, o){
+  o = o || {};
+  svg.innerHTML = '';
+  const fmt = o.fmt || (v => typeof v === 'number' ? num(v) : v);
+  const key = v => String(v);
+  const uniq = arr => { const s = new Set(), r = []; arr.forEach(v => { if (!s.has(key(v))){ s.add(key(v)); r.push(v); } }); return r; };
+  const srt = arr => arr.every(v => typeof v === 'number') ? arr.slice().sort((a, b) => a - b) : arr;
+  const ins = o.ins || srt(uniq(pairs.map(p => p[0]))), outs = o.outs || srt(uniq(pairs.map(p => p[1])));
+  const top = o.top ?? 34, bot = H - (o.bottom ?? 14);
+  const lx = W * 0.25, rx = W * 0.75, ow = Math.min(W * 0.17, 90);
+  mk('ellipse', { cx: lx, cy: (top + bot) / 2, rx: ow, ry: (bot - top) / 2, class: 'oval' }, svg);
+  mk('ellipse', { cx: rx, cy: (top + bot) / 2, rx: ow, ry: (bot - top) / 2, class: 'oval' }, svg);
+  txt(svg, lx, 18, o.inLab || 'INPUTS x', 'cap', { 'text-anchor': 'middle', style: 'fill:var(--in)' });
+  txt(svg, rx, 18, o.outLab || 'OUTPUTS y', 'cap', { 'text-anchor': 'middle', style: 'fill:var(--out)' });
+  const ypos = (i, n) => n === 1 ? (top + bot) / 2 : top + 26 + (bot - top - 52) * i / (n - 1);
+  const iy = {}, oy = {};
+  ins.forEach((v, i) => iy[key(v)] = ypos(i, ins.length));
+  outs.forEach((v, i) => oy[key(v)] = ypos(i, outs.length));
+  const cnt = {}; pairs.forEach(p => cnt[key(p[0])] = (cnt[key(p[0])] || 0) + 1);   // how many outputs each input has
+  const dx = Math.min(ow * 0.45, 34), fs = ins.length > 9 || outs.length > 9 ? 'labS' : 'lab';
+  const ga = mk('g', {}, svg), gd = mk('g', {}, svg);
+  pairs.forEach(p => {                                     // arrows
+    const k = key(p[0]), bad = cnt[k] > 1, faded = o.hl !== undefined && o.hl !== null && key(o.hl) !== k;
+    const lit = o.lit && key(o.lit[0]) === k && key(o.lit[1]) === key(p[1]);
+    const col = bad ? 'var(--no)' : 'var(--pt)';
+    const x1 = lx + dx + 8, y1 = iy[k], x2 = rx - dx - 9, y2 = oy[key(p[1])];
+    mk('line', { x1, y1, x2, y2, style: `stroke:${col};stroke-width:${lit ? 4.5 : 2.4};opacity:${faded ? .18 : 1}` }, ga);
+    if (!faded) arrowHead(ga, x1, y1, x2, y2, col, lit ? 12 : 10);
+  });
+  ins.forEach(v => {                                       // input dots and labels
+    const k = key(v), dead = o.dead && o.dead.map(key).includes(k), bad = cnt[k] > 1;
+    const faded = o.hl !== undefined && o.hl !== null && key(o.hl) !== k;
+    const col = dead ? 'var(--muted)' : bad ? 'var(--no)' : 'var(--in)';
+    mk('circle', { cx: lx + dx, cy: iy[k], r: o.hl !== undefined && key(o.hl) === k ? 8 : 6, style: `fill:${col};opacity:${faded ? .35 : 1}` }, gd);
+    const t = txt(gd, lx + dx - 12, iy[k] + 5, fmt(v), fs, { 'text-anchor': 'end', style: `fill:${col};opacity:${faded ? .45 : 1}${dead ? ';text-decoration:line-through' : ''}` });
+  });
+  outs.forEach(v => {                                      // output dots and labels
+    const k = key(v);
+    mk('circle', { cx: rx - dx, cy: oy[k], r: 6, style: 'fill:var(--out)' }, gd);
+    txt(gd, rx - dx + 12, oy[k] + 5, fmt(v), fs, { style: 'fill:var(--out)' });
+  });
+  return { ins, outs };
+}
+// group pairs by input: Map from input to its list of distinct outputs
+function byInput(pairs){
+  const m = new Map();
+  pairs.forEach(([x, y]) => { const k = String(x); if (!m.has(k)) m.set(k, { x, ys: [] }); const e = m.get(k); if (!e.ys.some(v => String(v) === String(y))) e.ys.push(y); });
+  return m;
+}
+const setStr = arr => '{' + arr.map(v => num(v)).join(', ') + '}';
+
+
+/* ---------- helpers for zoomable graphs (any scale) ---------- */
+const niceStep = raw => { const p = Math.pow(10, Math.floor(Math.log10(raw))), m = raw / p; return (m <= 1 ? 1 : m <= 2 ? 2 : m <= 5 ? 5 : 10) * p; };
+const decs = st => Math.max(0, -Math.floor(Math.log10(st) + 1e-9));
+function fmt(v, st){ const d = decs(st); const r = Number(v.toFixed(d)); return r === 0 ? '0' : (r < 0 ? '−' : '') + Math.abs(r).toFixed(d); }
+// a coordinate system with any box (tiny or huge), labelled ticks, a clipped layer for curves
+function ax2(svg, W, H, b, o){
+  o = o || {}; svg.innerHTML = '';
+  const L = o.padL ?? 52, R = o.padR ?? 14, T = o.padT ?? 14, B = o.padB ?? 28;
+  const sx = (W - L - R) / (b.x1 - b.x0), sy = (H - T - B) / (b.y1 - b.y0), X = x => L + (x - b.x0) * sx, Y = y => T + (b.y1 - y) * sy;
+  const gx = niceStep((b.x1 - b.x0) / 8), gy = niceStep((b.y1 - b.y0) / 7);
+  const g = mk('g', {}, svg), id = 'c' + Math.random().toString(36).slice(2);
+  const cp = mk('clipPath', { id }, svg); mk('rect', { x: L, y: T, width: W - L - R, height: H - T - B }, cp);
+  const cg = mk('g', { 'clip-path': `url(#${id})` }, svg), m = mk('g', {}, svg), top = mk('g', {}, svg);
+  for (let v = Math.ceil(b.x0 / gx) * gx; v <= b.x1 + gx * 1e-6; v += gx){ mk('line', { x1: X(v), y1: T, x2: X(v), y2: H - B, class: 'grid' }, g); txt(top, X(v), H - B + 16, o.fx ? o.fx(v) : fmt(v, gx), 'tl', { 'text-anchor': 'middle' }); }
+  for (let v = Math.ceil(b.y0 / gy) * gy; v <= b.y1 + gy * 1e-6; v += gy){ mk('line', { x1: L, y1: Y(v), x2: W - R, y2: Y(v), class: 'grid' }, g); txt(top, L - 6, Y(v) + 4, fmt(v, gy), 'tl', { 'text-anchor': 'end' }); }
+  if (b.y0 < 0 && b.y1 > 0) mk('line', { x1: L, y1: Y(0), x2: W - R, y2: Y(0), class: 'axis' }, g);
+  if (b.x0 < 0 && b.x1 > 0) mk('line', { x1: X(0), y1: T, x2: X(0), y2: H - B, class: 'axis' }, g);
+  mk('rect', { x: L, y: T, width: W - L - R, height: H - T - B, style: 'fill:none;stroke:var(--line2)' }, g);
+  if (o.xT) txt(top, W - R - 4, H - B - 6, o.xT, 'cap', { 'text-anchor': 'end' });
+  if (o.yT) txt(top, L + 6, T + 14, o.yT, 'cap');
+  return { X, Y, sx, sy, cg, m, top, b, L, R, T, B, W, H, inv: (px, py) => [b.x0 + (px - L) / sx, b.y1 - (py - T) / sy] };
+}
+// sample a curve across the box, breaking at undefined points, at listed jumps, and at big leaps
+function curve(P, f, o){
+  o = o || {}; const b = P.b, n = o.n || 900, brk = o.breaks || [], polys = []; let cur = [];
+  const lim = (b.y1 - b.y0) * 3;
+  for (let i = 0; i <= n; i++){
+    const x = b.x0 + (b.x1 - b.x0) * i / n, y = f(x);
+    const crossed = cur.length && brk.some(c => (cur[cur.length - 1][0] - c) * (x - c) <= 0);
+    if (!isFinite(y) || crossed || (cur.length && Math.abs(y - cur[cur.length - 1][1]) > lim)){ if (cur.length > 1) polys.push(cur); cur = []; if (!isFinite(y)) continue; }
+    cur.push([x, Math.max(b.y0 - lim, Math.min(b.y1 + lim, y))]);
+  }
+  if (cur.length > 1) polys.push(cur);
+  polys.forEach(p => mk('path', { d: dPath(P, p), style: `fill:none;stroke:${o.col || 'var(--cv)'};stroke-width:${o.w || 3};${o.dash ? 'stroke-dasharray:' + o.dash : ''}` }, P.cg));
+}
+const holeAt = (P, x, y, col) => mk('circle', { cx: P.X(x), cy: P.Y(y), r: 6, style: `fill:var(--bg);stroke:${col || 'var(--cv)'};stroke-width:2.5` }, P.m);
+const dotAt = (P, x, y, col, r) => mk('circle', { cx: P.X(x), cy: P.Y(y), r: r || 6, style: `fill:${col || 'var(--cv)'};stroke:var(--bg);stroke-width:1.5` }, P.m);
+const sig = v => !isFinite(v) ? (v > 0 ? '∞' : v < 0 ? '−∞' : 'undefined') : Math.abs(v) >= 1e5 ? v.toExponential(2).replace('-', '−') : num(v, 6);
+function parseLim(s){
+  const t = String(s).trim().toLowerCase().replace(/\s+/g, '').replace(/[−–]/g, '-');
+  if (/^(dne|none|doesnotexist|noLimit|nolimit|no)$/i.test(t)) return 'DNE';
+  if (/^\+?(inf|infinity|∞|oo)$/.test(t)) return Infinity;
+  if (/^-(inf|infinity|∞|oo)$/.test(t)) return -Infinity;
+  return parseNum(s);
+}
+
+const minus = s => String(s).replace(/(^|[\s(,=>→\/·+×])-(\d)/g, '$1−$2');
+const r4 = v => Number((Math.abs(v) < 1e-300 ? 0 : v).toPrecision(5));
+const SUP = k => String(k).replace(/-/g, '⁻').replace(/\d/g, d => '⁰¹²³⁴⁵⁶⁷⁸⁹'[d]);
+const sci = v => { if (v === 0) return '0'; const a = Math.abs(v); if (a >= 1e-3 && a < 1e7) return minus(String(r4(v))); let e = Math.floor(Math.log10(a)); if (Math.abs(v / Math.pow(10, e)) >= 9.995) e++; const m = v / Math.pow(10, e); return minus(`${m.toFixed(2)}×10${SUP(e)}`); };
+const gcd = (a, b) => b ? gcd(b, a % b) : Math.abs(a);
+function frc(x){ if (Math.abs(x - Math.round(x)) < 1e-9) return num(Math.round(x)); for (let d = 2; d <= 10000; d++){ const n = x * d; if (Math.abs(n - Math.round(n)) < 1e-9 * d && gcd(Math.round(n), d) === 1) return (x < 0 ? '−' : '') + Math.abs(Math.round(n)) + '/' + d; } return sci(x); }
+// a readable value: whole numbers with commas, otherwise 4–5 significant figures
+const big = v => Math.abs(v) >= 1e7 ? sci(v) : Math.abs(v - Math.round(v)) < 1e-9 ? Math.round(v).toLocaleString().replace('-', '−') : minus(String(r4(v)));
+
+const pct = p => num(p * 100, 1) + '%';                                    // 0.25 -> "25%"
+const dec = p => num(p, 3);                                                // 0.16666 -> "0.167"
+const fr = (k, n) => { const g = gcd(k, n) || 1; return n === 0 ? '0' : k === 0 ? '0' : k === n ? '1' : `${k / g}/${n / g}`; };   // reduced fraction
+function word(p){                                                          // the word on the probability scale
+  if (p <= 1e-12) return 'impossible'; if (p >= 1 - 1e-12) return 'certain';
+  if (Math.abs(p - 0.5) < 1e-12) return 'even chance'; return p < 0.5 ? 'unlikely' : 'likely';
+}
+// parse a probability typed as a fraction, a decimal or a percent
+function parseP(s){ s = String(s).trim().replace(/−/g, '-'); if (/%$/.test(s)){ const v = parseNum(s.slice(0, -1)); return v / 100; } return parseNum(s); }
+
+// the probability scale: a 0-to-1 bar with the five words and a marker at p
+function scaleBar(svg, W, p, o){
+  o = o || {}; svg.innerHTML = ''; const L = 18, R = W - 18, y = 34, X = v => L + v * (R - L);
+  mk('rect', { x: L, y: y - 7, width: R - L, height: 14, rx: 7, style: 'fill:var(--paper);stroke:var(--line)' }, svg);
+  mk('rect', { x: L, y: y - 7, width: (R - L) / 2, height: 14, rx: 7, style: 'fill:var(--line);opacity:.5' }, svg);
+  [[0, '0'], [0.25, '¼'], [0.5, '½'], [0.75, '¾'], [1, '1']].forEach(([v, l]) => { mk('line', { x1: X(v), y1: y - 10, x2: X(v), y2: y + 10, style: 'stroke:var(--muted);stroke-width:1.3' }, svg); txt(svg, X(v), y + 24, l, 'tl', { 'text-anchor': 'middle' }); });
+  [[0, 'impossible', 'start'], [0.25, 'unlikely', 'middle'], [0.5, 'even', 'middle'], [0.75, 'likely', 'middle'], [1, 'certain', 'end']].forEach(([v, l, a]) => txt(svg, X(v) + (a === 'start' ? -4 : a === 'end' ? 4 : 0), y + 44, l, 'cap', { 'text-anchor': a }));
+  if (p !== null && isFinite(p)){
+    const x = X(clamp(p, 0, 1));
+    mk('path', { d: `M${x} ${y - 8} l-8 -14 h16 z`, style: `fill:${o.col || 'var(--hit)'}` }, svg);
+    txt(svg, clamp(x, L + 14, R - 14), y - 25, o.lab || '', 'labS', { 'text-anchor': 'middle', style: `fill:${o.col || 'var(--hit)'}` });
+  }
+}
+
+/* ---------- small pictures: die faces, coins, cards, marbles ---------- */
+const PIPS = { 1: [[0, 0]], 2: [[-1, -1], [1, 1]], 3: [[-1, -1], [0, 0], [1, 1]], 4: [[-1, -1], [1, -1], [-1, 1], [1, 1]], 5: [[-1, -1], [1, -1], [0, 0], [-1, 1], [1, 1]], 6: [[-1, -1], [1, -1], [-1, 0], [1, 0], [-1, 1], [1, 1]] };
+function dieFace(g, cx, cy, s, n, o){                  // a die face of side s centred at (cx, cy)
+  o = o || {};
+  mk('rect', { x: cx - s / 2, y: cy - s / 2, width: s, height: s, rx: s * 0.18, style: `fill:${o.fill || 'var(--paper)'};stroke:${o.stroke || 'var(--ink)'};stroke-width:${o.sw || 1.6}` }, g);
+  (PIPS[n] || []).forEach(([a, b]) => mk('circle', { cx: cx + a * s * 0.26, cy: cy + b * s * 0.26, r: s * 0.085, style: `fill:${o.pip || 'var(--ink)'}` }, g));
+}
+function coin(g, cx, cy, r, face, o){                  // a coin showing H or T
+  o = o || {};
+  mk('circle', { cx, cy, r, style: `fill:${face === 'H' ? 'var(--yel)' : 'var(--paper)'};stroke:${o.stroke || 'var(--gold)'};stroke-width:${o.sw || 2}` }, g);
+  txt(g, cx, cy + r * 0.36, face, '', { 'text-anchor': 'middle', style: `font:700 ${r}px var(--sans);fill:var(--ink)` });
+}
+function marble(g, cx, cy, r, col){ mk('circle', { cx, cy, r, style: `fill:${col};stroke:var(--ink);stroke-width:1;opacity:.95` }, g); mk('circle', { cx: cx - r * 0.35, cy: cy - r * 0.35, r: r * 0.25, style: 'fill:#fff;opacity:.55' }, g); }
+const SUITS = ['♠', '♥', '♦', '♣'], RANKS = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+function card(g, x, y, w, h, r, s){                    // a playing card: rank r (0-12) of suit s (0-3)
+  const col = s === 1 || s === 2 ? 'var(--red)' : 'var(--ink)';
+  mk('rect', { x, y, width: w, height: h, rx: 4, style: 'fill:var(--paper);stroke:var(--muted);stroke-width:1' }, g);
+  txt(g, x + w / 2, y + h * 0.42, RANKS[r], '', { 'text-anchor': 'middle', style: `font:700 ${w * 0.34}px var(--sans);fill:${col}` });
+  txt(g, x + w / 2, y + h * 0.82, SUITS[s], '', { 'text-anchor': 'middle', style: `font:${w * 0.38}px var(--sans);fill:${col}` });
+}
+// a spinner: sectors [{p, col, l}], highlighted indices hi, optional pointer angle (radians, 0 = up, clockwise)
+function spinner(g, cx, cy, r, secs, o){
+  o = o || {}; let a = 0;
+  secs.forEach((s, i) => {
+    const a2 = a + s.p * 2 * Math.PI, P = t => [cx + r * Math.sin(t), cy - r * Math.cos(t)], [x1, y1] = P(a), [x2, y2] = P(a2);
+    const big = a2 - a > Math.PI ? 1 : 0, on = o.hi ? o.hi.has(i) : false;
+    const path = mk('path', { d: s.p >= 0.9999 ? `M${cx - r} ${cy}a${r} ${r} 0 1 0 ${2 * r} 0a${r} ${r} 0 1 0 ${-2 * r} 0` : `M${cx} ${cy}L${x1} ${y1}A${r} ${r} 0 ${big} 1 ${x2} ${y2}Z`, style: `fill:${s.col};stroke:${on ? 'var(--hit)' : 'var(--bg)'};stroke-width:${on ? 4 : 2};opacity:${o.hi && !on ? 0.3 : 0.9}` }, g);
+    if (o.click) { path.classList.add('cellg'); path.addEventListener('click', () => o.click(i)); }
+    const m = (a + a2) / 2, lr = r * (s.p < 0.2 ? 0.72 : 0.6);
+    if (s.l) txt(g, cx + lr * Math.sin(m), cy - lr * Math.cos(m) + 6, s.l, 'lab', { 'text-anchor': 'middle', style: 'pointer-events:none' });
+    a = a2;
+  });
+  if (o.ptr !== undefined && o.ptr !== null){
+    const t = o.ptr, px = cx + r * 0.92 * Math.sin(t), py = cy - r * 0.92 * Math.cos(t);
+    mk('line', { x1: cx, y1: cy, x2: px, y2: py, style: 'stroke:var(--ink);stroke-width:5;stroke-linecap:round' }, g);
+    arrowHead(g, cx, cy, px + 6 * Math.sin(t), py - 6 * Math.cos(t), 'var(--ink)', 12);
+    mk('circle', { cx, cy, r: 8, style: 'fill:var(--ink)' }, g);
+  }
+}
+
+const range = n => [...Array(n).keys()];                                    // [0, 1, ..., n-1]
+const fracK = (k, n) => fr(k, n) === `${k}/${n}` ? `${k}/${n}` : `${k}/${n} = ${fr(k, n)}`;   // "6/36 = 1/6"
+// a probability shown neatly: short decimals as decimals, others as a fraction (1/12)
+const fmtP = p => Math.abs(p * 1000 - Math.round(p * 1000)) < 1e-6 ? num(p, 3) : frc(p);
+// which of the four regions an outcome is in: both, A only, B only, neither
+const region = (inA, inB) => inA && inB ? 'ab' : inA ? 'a' : inB ? 'b' : 'n';
+// which regions each "show" option keeps bright
+const OPS = [
+  { k: 'A', n: 'A', on: ['ab', 'a'] }, { k: 'B', n: 'B', on: ['ab', 'b'] },
+  { k: 'and', n: 'A and B', on: ['ab'] }, { k: 'or', n: 'A or B', on: ['a', 'ab', 'b'] },
+  { k: 'notA', n: 'not A', on: ['b', 'n'] }, { k: 'neither', n: 'neither', on: ['n'] },
+  { k: 'one', n: 'exactly one', on: ['a', 'b'] }
+];
+const RCOL = { a: 'var(--a)', b: 'var(--b)', ab: 'var(--ab)', n: 'var(--nn)' };            // strong colours
+const RBG = { a: 'var(--a-bg)', b: 'var(--b-bg)', ab: 'var(--ab-bg)', n: 'var(--bg)' };    // light tints for grid cells
+// a row of chip buttons with a label; returns a function that marks one as on
+function chipRow(boxId, label, names, onPick){
+  const box = $(boxId); box.innerHTML = `<span class="lbl">${label}</span>`;
+  names.forEach((n, i) => { const b = document.createElement('button'); b.innerHTML = n; b.onclick = () => onPick(i); box.appendChild(b); });
+  return i => [...box.querySelectorAll('button')].forEach((b, j) => b.classList.toggle('on', j === i));
+}
+// the two-way table: v = {ab, a, b, n} region values, tot = {A, nA, B, nB, all}, on = regions to highlight, f = formatter
+function twTable(v, tot, nameA, nameB, on, f){
+  const td = r => `<td class="${on.includes(r) ? 'on-' + r : ''}">${f(v[r])}</td>`;
+  return `<table class="tw"><tr><th></th><th><span class="kb">B</span>${nameB ? ': ' + nameB : ''}</th><th>not B</th><th>Total</th></tr>
+    <tr><th><span class="ka">A</span>${nameA ? ': ' + nameA : ''}</th>${td('ab')}${td('a')}<td class="tot">${f(tot.A)}</td></tr>
+    <tr><th>not A</th>${td('b')}${td('n')}<td class="tot">${f(tot.nA)}</td></tr>
+    <tr><th>Total</th><td class="tot">${f(tot.B)}</td><td class="tot">${f(tot.nB)}</td><td class="tot">${f(tot.all)}</td></tr></table>`;
+}
+
+const E_of = (xs, ps) => xs.reduce((s, x, i) => s + x * ps[i], 0);              // expected value
+const show = v => Math.abs(v - Math.round(v)) < 1e-9 ? num(Math.round(v)) : num(v, 3);   // tidy number
+const money = (v, u) => u === '$' ? (v < 0 ? '−$' : '$') + num(Math.abs(v), 2) : show(v) + (u ? ' ' + u : '');
+// draw one outcome from probabilities ps
+function draw(ps){ let r = Math.random(), i = 0; for (; i < ps.length - 1; i++){ r -= ps[i]; if (r < 0) return i; } return i; }
+
+/* =====================================================================
+   2. FIND THE BALANCE POINT
+   ===================================================================== */
+const BP = [
+  { n: 'One die', d: 'A fair die: each face 1 to 6 has probability 1/6. The balance point is 3.5, a value you can never roll.', xs: [1, 2, 3, 4, 5, 6], ps: ['1/6', '1/6', '1/6', '1/6', '1/6', '1/6'], u: '' },
+  { n: 'Points spinner', d: 'A spinner: 0 points half the time, 10 points a third of the time, 50 points a sixth of the time.', xs: [0, 10, 50], ps: ['1/2', '1/3', '1/6'], u: 'points' },
+  { n: 'Three-point shot', d: 'A player who makes 36% of her three-pointers: 3 points or 0 points per shot.', xs: [0, 3], ps: ['0.64', '0.36'], u: 'points' },
+  { n: 'Children per family', d: 'In a made-up town: how many children a family picked at random has.', xs: [0, 1, 2, 3, 4], ps: ['0.2', '0.25', '0.3', '0.15', '0.1'], u: 'children' },
+  { n: 'Guess on a test', d: 'Four options, +1 for right and −1/3 for wrong. A blind guess.', xs: [-1 / 3, 1], ps: ['3/4', '1/4'], xt: ['-1/3', '1'], u: 'points' },
+  { n: 'Carnival game', d: 'Pay $2 and roll a die: a 6 wins $10. Values are net gain: +$8 or −$2.', xs: [-2, 8], ps: ['5/6', '1/6'], u: '$' },
+  { n: 'Raffle ticket', d: 'A $2 ticket, 200 tickets sold, one $150 prize. Net gain: +$148 or −$2.', xs: [-2, 148], ps: ['199/200', '1/200'], u: '$' },
+  { n: 'Bus wait', d: 'Minutes until the next bus, from a week of notes.', xs: [1, 4, 7, 10, 15], ps: ['0.3', '0.3', '0.2', '0.15', '0.05'], u: 'min' }
+];
+const BS = { i: 0, xs: [], ps: [], ok: true, f: 0, ang: 0, timer: 0, u: '' };
+const bMark = buttons('bPresets', BP, i => bPreset(i));
+function bPreset(i){
+  bStop(); const p = BP[i]; BS.i = i; bMark(i); $('bDesc').textContent = p.d; BS.u = p.u;
+  bRows(p.xt || p.xs.map(String), p.ps.slice()); bRead(true);
+}
+// build the table of typed values and probabilities
+function bRows(xs, ps){
+  const box = $('bRows'); box.innerHTML = '<span class="h">value x</span><span class="h">probability P</span>';
+  xs.forEach((x, k) => {
+    const a = document.createElement('input'); a.type = 'text'; a.inputMode = 'decimal'; a.value = x; a.className = 'x';
+    const b = document.createElement('input'); b.type = 'text'; b.inputMode = 'decimal'; b.value = ps[k]; b.className = 'p';
+    [a, b].forEach(el => { el.addEventListener('input', () => { bMark(-1); $('bDesc').textContent = 'Custom: your own values and probabilities.'; bStop(); bRead(true); }); el.addEventListener('focus', e => e.target.select()); box.appendChild(el); });
+  });
+}
+function bRead(resetPivot){
+  const xi = [...$('bRows').querySelectorAll('input.x')], pi = [...$('bRows').querySelectorAll('input.p')];
+  const xs = xi.map(e => parseNum(e.value)), ps = pi.map(e => parseP(e.value));
+  let err = '';
+  if ([...xi, ...pi].some(e => e.value.trim() === '') || xs.some(v => !isFinite(v)) || ps.some(v => !isFinite(v))) err = 'Fill in every box with a number.';
+  else if (ps.some(p => p < 0 || p > 1)) err = 'Each probability must be between 0 and 1.';
+  else { const s = ps.reduce((a, b) => a + b, 0); if (Math.abs(s - 1) > 1e-6) err = `The probabilities add to ${show(s)}, not 1. Every outcome has to be covered exactly once.`; }
+  $('bErr').textContent = err; BS.ok = !err;
+  if (err) return;
+  BS.xs = xs; BS.ps = ps; BS.praw = pi.map(e => e.value.trim().replace(/-/g, '−')); BS.xraw = xi.map(e => e.value.trim().replace(/-/g, '−'));
+  if (resetPivot){ BS.f = E_of(xs, ps); }
+  bDraw();
+}
+// the beam: bars rotate with it about the pivot; the ruler underneath stays fixed
+function bDraw(){
+  const svg = $('bB'); svg.innerHTML = '';
+  const xs = BS.xs, ps = BS.ps, E = E_of(xs, ps), avg = xs.reduce((a, b) => a + b, 0) / xs.length;
+  let lo = Math.min(...xs, E), hi = Math.max(...xs, E); if (hi - lo < 1e-9){ lo -= 1; hi += 1; }
+  const pad = (hi - lo) * 0.08, L = 60, R = 900, X = v => L + (v - lo + pad) / (hi - lo + 2 * pad) * (R - L), Xi = px => lo - pad + (px - L) / (R - L) * (hi - lo + 2 * pad);
+  BS.Xi = Xi; BS.lo = lo - pad; BS.hi = hi + pad;
+  const yB = 196, pmax = Math.max(...ps), H = 130 / Math.max(pmax, 0.25);
+  // tilt: positive when the right side is heavier (clockwise)
+  const torque = ps.reduce((s, p, i) => s + p * (xs[i] - BS.f), 0) / (hi - lo);
+  BS.ang = clamp(torque * 40, -11, 11);
+  const fx = X(BS.f);
+  const g = mk('g', { transform: `rotate(${BS.ang} ${fx} ${yB})` }, svg);
+  mk('rect', { x: X(lo - pad), y: yB - 3, width: X(hi + pad) - X(lo - pad), height: 6, rx: 3, style: 'fill:var(--ink);opacity:.8' }, g);
+  xs.forEach((x, k) => {
+    const h = ps[k] * H, bx = X(x);
+    mk('rect', { x: bx - 13, y: yB - 3 - h, width: 26, height: h, rx: 3, style: 'fill:var(--w);opacity:.9' }, g);
+    if (ps[k] > 0) txt(g, bx, yB - 10 - h, frc(ps[k]).length > 7 ? num(ps[k], 3) : frc(ps[k]), 'labS', { 'text-anchor': 'middle', style: 'fill:var(--w)' });
+  });
+  // the pivot (fixed) and the fixed ruler
+  mk('path', { d: `M${fx} ${yB + 3} l-16 30 h32 z`, style: 'fill:var(--e)' }, svg);
+  const yR = 250;
+  mk('line', { x1: L, y1: yR, x2: R, y2: yR, style: 'stroke:var(--ink);stroke-width:1.2;opacity:.7' }, svg);
+  const st = niceStep((hi - lo + 2 * pad) / 10);
+  for (let v = Math.ceil((lo - pad) / st) * st; v <= hi + pad + 1e-9; v += st){
+    mk('line', { x1: X(v), y1: yR - 4, x2: X(v), y2: yR + 4, style: 'stroke:var(--muted)' }, svg);
+    txt(svg, X(v), yR + 18, fmt(v, st), 'tl', { 'text-anchor': 'middle' });
+  }
+  xs.forEach(x => mk('circle', { cx: X(x), cy: yR, r: 3.5, style: 'fill:var(--w)' }, svg));
+  // the plain average of the values (dashed) and E
+  if (Math.abs(avg - E) > 1e-9){
+    mk('line', { x1: X(avg), y1: 40, x2: X(avg), y2: yR, style: 'stroke:var(--muted);stroke-width:1.5;stroke-dasharray:5 4' }, svg);
+    txt(svg, X(avg) + (X(avg) > X(E) ? 6 : -6), 50, `plain average ${show(avg)}`, 'cap', { 'text-anchor': X(avg) > X(E) ? 'start' : 'end' });
+  }
+  const level = Math.abs(BS.f - E) < 1e-6 * (hi - lo + 1);
+  mk('line', { x1: X(E), y1: yR - 8, x2: X(E), y2: yR + 26, style: 'stroke:var(--e);stroke-width:2.5' }, svg);
+  txt(svg, X(E), 290, `E = ${money(E, BS.u)}`, 'lab', { 'text-anchor': 'middle', style: 'fill:var(--e)' });
+  txt(svg, 12, 22, level ? 'Balanced: the pivot is at E.' : BS.ang > 0 ? 'Tips right: more weight on the right of the pivot.' : 'Tips left: more weight on the left of the pivot.', 'cap', {});
+  bTable(E, level);
+}
+function bTable(E, level){
+  const rows = BS.xs.map((x, k) => `<tr><td>${BS.xraw[k]}</td><td>${BS.praw[k]}</td><td>${show(x * BS.ps[k])}</td></tr>`).join('');
+  $('bTab').innerHTML = `<table class="ev"><tr><th>value x</th><th>probability P</th><th>x × P</th></tr>${rows}<tr class="sum"><td colspan="2">E = add the last column</td><td>${show(E)}</td></tr></table>`;
+  const avg = BS.xs.reduce((a, b) => a + b, 0) / BS.xs.length;
+  let s = `E = ${BS.xs.map((x, k) => `${/^−/.test(BS.xraw[k]) ? '(' + BS.xraw[k] + ')' : BS.xraw[k]} × ${BS.praw[k]}`).join(' + ')} = <b class="ke">${money(E, BS.u)}</b>.`;
+  if (BS.u === '$') s += Math.abs(E) < 1e-9 ? ' Expected net gain 0: a <b>fair game</b>.' : E < 0 ? ` On average you lose ${money(-E, '$')} per play: not fair to the player.` : ` On average you gain ${money(E, '$')} per play.`;
+  else if (BS.i === 4 && $('bDesc').textContent === BP[4].d) s += Math.abs(E) < 1e-9 ? ' A blind guess is worth 0 on average: the scoring makes guessing fair.' : '';
+  if (Math.abs(avg - E) > 1e-9) s += ` The plain average of the values, ${show(avg)}, ignores the probabilities.`;
+  if (!level) s += ` The pivot is at ${show(BS.f)}, so the beam tips.`;
+  $('bOut').innerHTML = s;
+}
+function bStop(){ cancelAnimationFrame(BS.timer); BS.timer = 0; $('bPlay').textContent = 'Play'; }
+// Play: slide the pivot from the plain average (or the left end) to E, the beam levelling as it goes
+$('bPlay').onclick = () => {
+  if (BS.timer){ bStop(); return; }
+  if (!BS.ok) return;
+  const E = E_of(BS.xs, BS.ps), avg = BS.xs.reduce((a, b) => a + b, 0) / BS.xs.length;
+  const f0 = Math.abs(avg - E) > 1e-9 ? avg : Math.min(...BS.xs), t0 = performance.now(), dur = 2600;
+  BS.f = f0; bDraw(); $('bPlay').textContent = 'Pause';
+  const step = now => {
+    const t = clamp((now - t0 - 500) / dur, 0, 1), e = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+    BS.f = f0 + (E - f0) * e; bDraw();
+    if (t < 1) BS.timer = requestAnimationFrame(step); else { BS.f = E; bDraw(); BS.timer = 0; $('bPlay').textContent = 'Play'; }
+  };
+  BS.timer = requestAnimationFrame(step);
+};
+$('bReset').onclick = () => { bStop(); if (BS.ok){ BS.f = E_of(BS.xs, BS.ps); bDraw(); } };
+// click or drag on the picture: put the pivot there
+(() => { let down = false; const svg = $('bB');
+  const go = ev => { if (!BS.ok || !BS.Xi) return; bStop(); BS.f = clamp(BS.Xi(svgPt(svg, ev).x), BS.lo, BS.hi); bDraw(); };
+  svg.addEventListener('mousedown', ev => { down = true; go(ev); }); svg.addEventListener('mousemove', ev => { if (down) go(ev); }); window.addEventListener('mouseup', () => down = false); })();
+$('bAdd').onclick = () => { const xi = [...$('bRows').querySelectorAll('input.x')].map(e => e.value), pi = [...$('bRows').querySelectorAll('input.p')].map(e => e.value); if (xi.length >= 10) return; bRows([...xi, ''], [...pi, '0']); $('bErr').textContent = 'Type a value for the new outcome, and share out the probability so it still adds to 1.'; BS.ok = false; bMark(-1); };
+$('bDel').onclick = () => { const xi = [...$('bRows').querySelectorAll('input.x')].map(e => e.value), pi = [...$('bRows').querySelectorAll('input.p')].map(e => e.value); if (xi.length <= 1) return; bRows(xi.slice(0, -1), pi.slice(0, -1)); bMark(-1); bRead(true); };
+
+/* =====================================================================
+   3. PLAY IT MANY TIMES (two choices side by side)
+   ===================================================================== */
+const RP = [
+  { n: 'Two or three?', d: 'A two-pointer made 50% of the time, or a three-pointer made 36% of the time. Points per shot.', u: 'points',
+    A: { n: 'Two-pointer', xs: [0, 2], ps: [0.5, 0.5] }, B: { n: 'Three-pointer', xs: [0, 3], ps: [0.64, 0.36] } },
+  { n: 'Sure thing or coin flip', d: 'Take 10 points for sure, or flip a coin for 0 or 20. Same expected value, very different risk.', u: 'points',
+    A: { n: 'Sure 10', xs: [10], ps: [1] }, B: { n: 'Flip for 0 or 20', xs: [0, 20], ps: [0.5, 0.5] } },
+  { n: 'Guess or skip', d: 'A test question with four options: +1 right, −1/3 wrong, 0 if skipped. You’ve ruled out one option, so a guess is 1 in 3.', u: 'points',
+    A: { n: 'Skip', xs: [0], ps: [1] }, B: { n: 'Guess from 3', xs: [-1 / 3, 1], ps: [2 / 3, 1 / 3] } },
+  { n: 'Umbrella', d: 'Forecast: 30% rain. Carrying an umbrella costs 1 “bother point” every day; getting soaked costs 5.', u: 'bother points',
+    A: { n: 'Carry it', xs: [-1], ps: [1] }, B: { n: 'Leave it home', xs: [0, -5], ps: [0.7, 0.3] } },
+  { n: 'Carnival or not', d: 'Play the $2 carnival game (a 6 wins $10), or keep your $2.', u: '$',
+    A: { n: 'Keep the $2', xs: [0], ps: [1] }, B: { n: 'Play', xs: [-2, 8], ps: [5 / 6, 1 / 6] } },
+  { n: 'Raffle', d: 'Buy a $2 raffle ticket (1 of 200, prize $150), or don’t.', u: '$',
+    A: { n: 'Don’t buy', xs: [0], ps: [1] }, B: { n: 'Buy a ticket', xs: [-2, 148], ps: [199 / 200, 1 / 200] } }
+];
+const RMAX = 10000;
+const RS = { i: 0, n: 0, sA: 0, sB: 0, hA: [], hB: [], lastA: [], lastB: [], timer: 0 };
+const rMark = buttons('rPresets', RP, i => { rStop(); RS.i = i; rMark(i); $('rDesc').textContent = RP[i].d; rReset(); });
+function rReset(){ Object.assign(RS, { n: 0, sA: 0, sB: 0, hA: [], hB: [], lastA: [], lastB: [] }); rDraw(); }
+function rPlay1(){
+  const p = RP[RS.i], a = p.A.xs[draw(p.A.ps)], b = p.B.xs[draw(p.B.ps)];
+  RS.n++; RS.sA += a; RS.sB += b; RS.hA.push(RS.sA / RS.n); RS.hB.push(RS.sB / RS.n);
+  RS.lastA.push(a); RS.lastB.push(b); if (RS.lastA.length > 12){ RS.lastA.shift(); RS.lastB.shift(); }
+}
+function rRun(m){ for (let q = 0; q < m && RS.n < RMAX; q++) rPlay1(); rDraw(); }
+function rStop(){ clearTimeout(RS.timer); RS.timer = 0; $('rPlay').textContent = 'Play'; }
+$('r1').onclick = () => { rStop(); rRun(1); }; $('r10').onclick = () => { rStop(); rRun(10); }; $('r100').onclick = () => { rStop(); rRun(100); };
+$('rReset').onclick = () => { rStop(); rReset(); };
+$('rPlay').onclick = () => {
+  if (RS.timer){ rStop(); return; }
+  if (RS.n >= RMAX) rReset();
+  $('rPlay').textContent = 'Pause';
+  const tick = () => { rRun(Math.max(1, Math.ceil(RS.n * 0.04))); if (RS.n < RMAX) RS.timer = setTimeout(tick, 30); else rStop(); };
+  tick();
+};
+function rDraw(){
+  const svg = $('rC'); svg.innerHTML = '';
+  const p = RP[RS.i], EA = E_of(p.A.xs, p.A.ps), EB = E_of(p.B.xs, p.B.ps);
+  // y range: every possible value, so the early wild swings fit
+  const all = [...p.A.xs, ...p.B.xs]; let lo = Math.min(...all, 0), hi = Math.max(...all, 0);
+  if (p.n === 'Raffle'){ lo = -3; hi = 4; }                                  // the $148 prize would flatten everything; clip the view
+  const L = 70, Rt = 930, T = 20, Bm = 260, X = n => L + Math.log10(n) / 4 * (Rt - L), Y = v => Bm - (clamp(v, lo, hi) - lo) / (hi - lo) * (Bm - T);
+  const st = niceStep((hi - lo) / 6);
+  for (let v = Math.ceil(lo / st) * st; v <= hi + 1e-9; v += st){ mk('line', { x1: L, y1: Y(v), x2: Rt, y2: Y(v), class: 'grid' }, svg); txt(svg, L - 8, Y(v) + 4, fmt(v, st), 'tl', { 'text-anchor': 'end' }); }
+  [1, 10, 100, 1000, 10000].forEach(n => { mk('line', { x1: X(n), y1: T, x2: X(n), y2: Bm, class: 'grid' }, svg); txt(svg, X(n), Bm + 18, n.toLocaleString(), 'tl', { 'text-anchor': 'middle' }); });
+  txt(svg, (L + Rt) / 2, 294, 'number of plays (stretched scale)', 'cap', { 'text-anchor': 'middle' });
+  txt(svg, 14, 14, `average ${p.u === '$' ? '$' : p.u} per play`, 'cap', {});
+  // expected values (dashed)
+  [[EA, 'var(--ca)', 'A'], [EB, 'var(--cb)', 'B']].forEach(([e, c, l], k) => {
+    mk('line', { x1: L, y1: Y(e), x2: Rt, y2: Y(e), style: `stroke:${c};stroke-width:1.8;stroke-dasharray:7 5` }, svg);
+    txt(svg, Rt - 4, Y(e) + (Math.abs(EA - EB) / (hi - lo) < 0.06 ? (k ? 16 : -6) : -6), `E(${l}) = ${money(e, p.u)}`, 'labS', { 'text-anchor': 'end', style: `fill:${c}` });
+  });
+  // running averages, thinned out for speed
+  const path = h => { let d = '', last = -1; for (let n = 1; n <= h.length; n++){ const x = X(n); if (x - last < 1.2 && n < h.length) continue; last = x; d += (d ? 'L' : 'M') + x.toFixed(1) + ' ' + Y(h[n - 1]).toFixed(1); } return d; };
+  if (RS.n){ [[RS.hA, 'var(--ca)'], [RS.hB, 'var(--cb)']].forEach(([h, c]) => mk('path', { d: path(h), style: `fill:none;stroke:${c};stroke-width:2.4` }, svg)); }
+  // side panels
+  const side = (o, s, e, last, col, l) => {
+    const avg = RS.n ? s / RS.n : null;
+    return `<h4 style="color:${col}">${l}: ${o.n}</h4>Outcomes: ${o.xs.map((x, k) => `${money(x, p.u)} (${frc(o.ps[k]).length > 7 ? num(o.ps[k], 3) : frc(o.ps[k])})`).join(', ')}<br>
+      E = <b>${money(e, p.u)}</b> per play · after ${RS.n.toLocaleString()} plays the average is <b>${avg === null ? '—' : money(avg, p.u)}</b>
+      <div class="strip">${last.map(v => `<span>${p.u === '$' ? money(v, '$') : show(v)}</span>`).join('')}</div>`;
+  };
+  $('rA').innerHTML = side(p.A, RS.sA, EA, RS.lastA, 'var(--ca)', 'A'); $('rB').innerHTML = side(p.B, RS.sB, EB, RS.lastB, 'var(--cb)', 'B');
+  const better = Math.abs(EA - EB) < 1e-9 ? 'The expected values are equal, so in the long run it makes no difference; the difference is risk: B swings much more.' : `In the long run <b>${EA > EB ? 'A' : 'B'}</b> is better by ${money(Math.abs(EA - EB), p.u)} per play.`;
+  const risk = p.B.xs.length > 1 && p.A.xs.length === 1 ? ' A is certain; B is a gamble, and its last results (the chips) jump around.' : '';
+  $('rOut').innerHTML = (RS.n ? `${RS.n.toLocaleString()} plays. ` : 'Press Play, or play a few at a time. ') + better + risk + (p.n === 'Raffle' ? ' (Graph cut off at ±$3–4: a win shows as a jump to the top.)' : '');
+}
+
+/* =====================================================================
+   4. TRAPS
+   ===================================================================== */
+function miniBeam(g, xs, ps, lo, hi, marks){
+  const L = 24, R = 276, X = v => L + (v - lo) / (hi - lo) * (R - L), yB = 110;
+  mk('line', { x1: L, y1: yB, x2: R, y2: yB, style: 'stroke:var(--ink);stroke-width:4;opacity:.8' }, g);
+  xs.forEach((x, k) => { const h = ps[k] * 120; mk('rect', { x: X(x) - 9, y: yB - 2 - h, width: 18, height: h, rx: 2, style: 'fill:var(--w)' }, g); txt(g, X(x), yB + 18, String(x), 'tl', { 'text-anchor': 'middle' }); });
+  marks.forEach(([v, lab, col, dy]) => { mk('path', { d: `M${X(v)} ${yB + 24} l-7 12 h14 z`, style: `fill:${col}` }, g); txt(g, X(v), yB + 52 + (dy || 0), lab, 'labS', { 'text-anchor': 'middle', style: `fill:${col}` }); });
+}
+function drawTraps(){
+  let g = $('tr1'); g.innerHTML = '';
+  miniBeam(g, [0, 10, 50], [1 / 2, 1 / 3, 1 / 6], -2, 52, [[35 / 3, 'E = 11.67 ✓', 'var(--ok)'], [20, '20 ✕', 'var(--bad)', 22]]);
+  txt(g, 150, 210, 'the beam balances at 11.67', 'cap', { 'text-anchor': 'middle' });
+  // forgetting the cost: winnings vs net gain
+  g = $('tr2'); g.innerHTML = '';
+  const bar = (x, v, lab, col) => { const y0 = 95, h = v * 28; mk('rect', { x, y: v >= 0 ? y0 - h : y0, width: 60, height: Math.abs(h), style: `fill:${col}` }, g); txt(g, x + 30, v >= 0 ? y0 - h - 6 : y0 - h + 15, money(v, '$'), 'labS', { 'text-anchor': 'middle' }); txt(g, x + 30, 184, lab, 'cap', { 'text-anchor': 'middle' }); };
+  mk('line', { x1: 20, y1: 95, x2: 280, y2: 95, style: 'stroke:var(--ink)' }, g);
+  bar(30, 10 / 6, 'won', 'var(--ok)'); bar(120, -2, 'paid', 'var(--bad)'); bar(210, 10 / 6 - 2, 'net gain', 'var(--e)');
+  txt(g, 150, 20, 'average per game', 'cap', { 'text-anchor': 'middle' });
+  txt(g, 150, 212, '1.67 − 2 = −0.33 per game', 'cap', { 'text-anchor': 'middle' });
+  // children per family: 1.7 is not a possible family
+  g = $('tr3'); g.innerHTML = '';
+  miniBeam(g, [0, 1, 2, 3, 4], [0.2, 0.25, 0.3, 0.15, 0.1], -0.3, 4.3, [[1.7, 'E = 1.7', 'var(--e)']]);
+  txt(g, 150, 196, 'balance point, not a family size', 'cap', { 'text-anchor': 'middle' });
+  txt(g, 150, 212, 'children per family', 'cap', { 'text-anchor': 'middle' });
+}
+
+/* =====================================================================
+   5. QUIZ
+   ===================================================================== */
+const Q = { right: 0, total: 0 };
+let qq = null;
+const qTitles = { comp: 'Compute the expected value', fair: 'Make it fair', cmp: 'Compare two choices', trap: 'Spot the trap' };
+function shuffle(a){ for (let i = a.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+function qReset(){ ['qChoice', 'qPic'].forEach(id => $(id).innerHTML = ''); $('qFb').className = 'feedback'; $('qFb').innerHTML = ''; $('qErr').textContent = ''; $('qIn').style.display = ''; $('q1').value = ''; }
+function qScore(ok){ if (qq.counted) return; qq.counted = true; Q.total++; if (ok) Q.right++; $('score').textContent = `Score: ${Q.right} / ${Q.total}`; }
+function qFeedback(ok, html){ $('qFb').className = 'feedback ' + (ok ? 'ok' : 'bad'); $('qFb').innerHTML = (ok ? '<b>Right.</b> ' : '<b>Not quite.</b> ') + html; }
+function qChoices(list, correctIdx, explain){
+  $('qIn').style.display = 'none'; qq.correctIdx = correctIdx; qq.explainFn = explain;
+  list.forEach((c, k) => { const b = document.createElement('button'); b.innerHTML = c; b.onclick = () => { const ok = k === correctIdx; qScore(ok); [...$('qChoice').children].forEach((x, j) => { x.classList.remove('right', 'wrong'); if (j === k) x.classList.add(ok ? 'right' : 'wrong'); }); qFeedback(ok, explain(k)); }; $('qChoice').appendChild(b); });
+}
+const tableHTML = (xs, ps, head) => `<table class="ev" style="margin:4px 0 8px"><tr><th>${head || 'value'}</th>${xs.map(x => `<td>${show(x)}</td>`).join('')}</tr><tr><th>probability</th>${ps.map(p => `<td>${frc(p)}</td>`).join('')}</tr></table>`;
+// --- compute E ---
+function qComp(){
+  const t = pick(['table', 'table', 'spin', 'shot', 'die']);
+  let s, xs, ps, u = '';
+  if (t === 'table'){
+    const n = ri(3, 4); xs = shuffle(range(8).map(i => i * pick([1, 2, 5]))).slice(0, n).sort((a, b) => a - b);
+    ps = shuffle(pick(n === 3 ? [[0.5, 0.3, 0.2], [0.25, 0.25, 0.5], [0.4, 0.4, 0.2], [0.1, 0.6, 0.3], [0.7, 0.2, 0.1]] : [[0.1, 0.2, 0.3, 0.4], [0.2, 0.2, 0.2, 0.4], [0.25, 0.25, 0.25, 0.25], [0.5, 0.1, 0.1, 0.3]]).slice());
+    s = 'A random variable <i>X</i> has this table. What is E(<i>X</i>)?'; $('qPic').innerHTML = tableHTML(xs, ps, 'value of X');
+  } else if (t === 'spin'){
+    const a = pick([2, 5, 10]), b = pick([20, 30, 50]); xs = [0, a, b]; ps = [1 / 2, 1 / 3, 1 / 6];
+    s = `A spinner pays 0 points half the time, ${a} points a third of the time and ${b} points a sixth of the time. What is the expected number of points per spin?`; u = 'points';
+  } else if (t === 'shot'){
+    const pc = pick([30, 35, 40, 45]); xs = [0, 3]; ps = [1 - pc / 100, pc / 100];
+    s = `A player makes ${pc}% of her three-point shots. What is the expected number of points per three-point attempt?`; u = 'points';
+  } else {
+    const w = pick([[1, 2, 3, 4, 5, 6], [2, 2, 4, 4, 6, 6], [0, 0, 0, 1, 1, 10]]); xs = [...new Set(w)]; ps = xs.map(x => w.filter(v => v === x).length / 6);
+    s = `A special die has faces ${w.join(', ')}. What is the expected value of one roll?`;
+  }
+  const E = E_of(xs, ps), avg = xs.reduce((a, b) => a + b, 0) / xs.length;
+  $('qText').innerHTML = s; $('qL1').textContent = 'E =';
+  Object.assign(qq, { ans: E, why: `E = ${xs.map((x, k) => `${show(x)} × ${frc(ps[k])}`).join(' + ')} = ${show(E)}${u ? ' ' + u : ''}.`,
+    traps: [[avg, 'That’s the plain average of the values. Weight each one by its probability.'], [xs.reduce((s, x, k) => s + x + ps[k], 0), 'Multiply each value by its probability, don’t add them.']] });
+}
+// --- fair game / missing value ---
+function qFair(){
+  const t = pick(['price', 'prize', 'missp']);
+  if (t === 'price'){
+    const k = pick([1, 2, 3]), d = pick([6, 6, 4, 10]), W = pick([6, 12, 18, 24, 30, 60]);
+    const p = k / d, fair = W * p;
+    $('qText').innerHTML = `A game pays a prize of $${W} with probability ${fr(k, d)}, and nothing otherwise. What price to play makes it a fair game?`; $('qL1').textContent = 'price = $';
+    Object.assign(qq, { ans: fair, why: `Fair means expected net gain 0, so the price must equal the expected winnings: ${W} × ${fr(k, d)} = $${show(fair)}.`, traps: [[W, 'That’s the prize itself; you only win it some of the time.'], [W * (1 - p), 'That uses the chance of losing. Multiply the prize by the chance of winning.']] });
+  } else if (t === 'prize'){
+    const c = pick([1, 2, 3, 5]), d = pick([4, 5, 6, 10]);
+    $('qText').innerHTML = `A game costs $${c} to play and you win with probability 1/${d}. What <b>net</b> prize (what you get beyond your $${c} back) makes it fair? Hint: lose $${c} with probability ${d - 1}/${d}.`; $('qL1').textContent = 'net prize = $';
+    const ans = c * (d - 1);
+    Object.assign(qq, { ans, why: `Fair: G × 1/${d} − ${c} × ${d - 1}/${d} = 0, so G = ${c} × ${d - 1} = $${ans}.`, traps: [[c * d, `$${c * d} is the total payout including your $${c} back. As a net prize it’s $${ans}.`], [c, 'Winning only your price back wouldn’t make up for all the times you lose.']] });
+  } else {
+    const xs = [0, pick([1, 2]), pick([5, 10])], p1 = pick([0.2, 0.3, 0.4]), p2 = pick([0.1, 0.2]), p0 = Number((1 - p1 - p2).toFixed(2));
+    $('qText').innerHTML = `A game pays ${xs[0]}, ${xs[1]} or ${xs[2]} points. P(${xs[1]}) = ${p1} and P(${xs[2]}) = ${p2}; the probability of 0 is missing. What is the expected number of points?`; $('qL1').textContent = 'E =';
+    const E = xs[1] * p1 + xs[2] * p2;
+    Object.assign(qq, { ans: E, why: `P(0) = 1 − ${p1} − ${p2} = ${p0}, but it’s multiplied by 0 anyway. E = 0 × ${p0} + ${xs[1]} × ${p1} + ${xs[2]} × ${p2} = ${show(E)}.`, traps: [[(xs[1] + xs[2]) / 3, 'That’s the plain average of the values. Weight by the probabilities.']] });
+  }
+}
+// --- compare choices ---
+function qCmp(){
+  const c = pick([
+    () => { const a = pick([45, 50, 55]), b = pick([30, 33, 35, 38, 40]); const EA = 2 * a / 100, EB = 3 * b / 100; return { s: `Player A makes ${a}% of two-pointers. Player B makes ${b}% of three-pointers. Who scores more per shot in the long run?`, EA, EB, nA: 'A, the two-pointers', nB: 'B, the three-pointers', why: `E(A) = 2 × ${a / 100} = ${show(EA)}, E(B) = 3 × ${b / 100} = ${show(EB)}.` }; },
+    () => { const p = pick([0.2, 0.3, 0.4]), cost = pick([3, 4, 5]); const EA = -1, EB = -cost * p; return { s: `Forecast: ${p * 100}% chance of rain. Carrying an umbrella costs 1 bother point; getting soaked costs ${cost}. Which choice has the better (less negative) expected value?`, EA, EB, nA: 'Carry the umbrella', nB: 'Leave it home', why: `Carry: −1 for sure. Leave it: −${cost} × ${p} = ${show(EB)}.` }; },
+    () => { const sure = pick([8, 10, 12]), big = pick([16, 20, 24, 30]), p = pick([0.4, 0.5, 0.6]); const EA = sure, EB = big * p; return { s: `Option A: ${sure} points for sure. Option B: ${big} points with probability ${p}, otherwise 0. Which has the higher expected value?`, EA, EB, nA: 'A, the sure thing', nB: 'B, the gamble', why: `E(A) = ${sure}. E(B) = ${big} × ${p} = ${show(EB)}.` }; },
+    () => { const k = pick([3, 4, 5]); const EA = 0, EB = 1 / (k - 1) * 1 + (k - 2) / (k - 1) * (-1 / (k - 1)); return { s: `A test question has ${k} options. Scoring: +1 right, −1/${k - 1} wrong, 0 if skipped. You can rule out one option and guess among the rest. Guess or skip?`, EA, EB, nA: 'Skip', nB: 'Guess', why: `Guessing among ${k - 1}: 1/${k - 1} × 1 + ${k - 2}/${k - 1} × (−1/${k - 1}) = ${frc(EB)} > 0, so guessing gains on average.` }; }
+  ])();
+  const eq = Math.abs(c.EA - c.EB) < 1e-9, idx = eq ? 2 : c.EA > c.EB ? 0 : 1;
+  $('qText').innerHTML = c.s;
+  qChoices([c.nA, c.nB, 'They’re the same'], idx, () => c.why + (eq ? ' Equal: the difference is only in risk.' : ` So <b>${[c.nA, c.nB][idx]}</b>.`));
+}
+// --- traps ---
+function qTrap(){
+  const c = pick([
+    () => ({ s: 'A game pays 0, 10 or 50 points with probabilities 1/2, 1/3 and 1/6. Kai says the expected value is (0 + 10 + 50) ÷ 3 = 20. What’s wrong?', ok: 'He ignored the probabilities; E = 11.67', bad: ['Nothing, 20 is right', 'He should divide by 6', 'E must be one of the values: 10'], why: 'A plain average treats the three values as equally likely. 0 happens half the time: E = 0 × ½ + 10 × ⅓ + 50 × ⅙ ≈ 11.67.' }),
+    () => ({ s: 'A fair die has expected value 3.5. What does that mean?', ok: 'Averaged over many rolls, the result is close to 3.5', bad: ['The next roll will probably be 3 or 4', 'Half the rolls will be 3.5', 'After rolling a 6, a low number is due'], why: 'E is the long-run average. It says nothing special about the next roll, and 3.5 can’t even be rolled.' }),
+    () => ({ s: 'A $5 raffle ticket has a 1 in 100 chance of winning $300. What is the expected net gain per ticket?', ok: '−$2', bad: ['+$3', '+$295', '$0'], why: 'Expected winnings: $300 × 1/100 = $3. Subtract the $5 cost: 3 − 5 = −$2 per ticket.' }),
+    () => ({ s: 'Option A gives 10 points for sure. Option B gives 0 or 20 points on a coin flip. Which is true?', ok: 'Same expected value, but B is riskier', bad: ['B is better because it can give 20', 'A is better because its expected value is higher', 'B’s expected value is 20'], why: 'E(B) = 0 × ½ + 20 × ½ = 10 = E(A). The difference is risk: B’s results spread far from 10.' }),
+    () => ({ s: 'A game has expected net gain 0. What does that mean?', ok: 'It’s a fair game: neither side gains in the long run', bad: ['You will break even every time', 'You can’t lose', 'The prize is 0'], why: 'Single games still win or lose. Fair means the wins and losses balance on average.' }),
+    () => ({ s: 'Probabilities 0.5, 0.3 and 0.3 are given for three outcomes. What’s wrong?', ok: 'They add to 1.1, so they can’t be a full set of probabilities', bad: ['Nothing', 'Probabilities can’t repeat', 'They should add to 3'], why: 'The probabilities of all the outcomes must add to exactly 1.' })
+  ])();
+  const opts = shuffle([c.ok, ...c.bad]), idx = opts.indexOf(c.ok);
+  $('qText').innerHTML = c.s; qChoices(opts, idx, () => c.why);
+}
+let lastType = null;
+function qNew(){
+  qReset();
+  let t; do { t = pick(['comp', 'fair', 'cmp', 'trap']); } while (t === lastType);
+  lastType = t; qq = { type: t, counted: false }; $('qTitle').textContent = qTitles[t];
+  ({ comp: qComp, fair: qFair, cmp: qCmp, trap: qTrap })[t]();
+}
+$('qCheck').onclick = () => {
+  $('qErr').textContent = '';
+  const raw = $('q1').value.replace(/\$/g, ''), v = parseNum(raw);
+  if (raw.trim() === '' || !isFinite(v)){ $('qErr').textContent = 'Type a number: a decimal (11.67) or a fraction (35/3).'; return; }
+  const tol = Math.max(0.006, Math.abs(qq.ans) * 0.002), ok = Math.abs(v - qq.ans) < tol; let why = qq.why;
+  if (!ok){ const t = (qq.traps || []).find(([x]) => isFinite(x) && Math.abs(x - qq.ans) > 1e-9 && Math.abs(v - x) < tol); if (t) why = t[1] + ' ' + why; }
+  qScore(ok); qFeedback(ok, why);
+};
+$('q1').addEventListener('keydown', e => { if (e.key === 'Enter') $('qCheck').click(); });
+$('q1').addEventListener('input', () => $('qErr').textContent = '');
+$('qShow').onclick = () => {
+  qScore(false);
+  if (qq.correctIdx !== undefined){ [...$('qChoice').children].forEach((b, j) => { if (j === qq.correctIdx) b.classList.add('right'); }); qFeedback(false, qq.explainFn(qq.correctIdx)); }
+  else { $('q1').value = show(qq.ans); $('qFb').className = 'feedback bad'; $('qFb').innerHTML = '<b>Answer filled in.</b> ' + qq.why; }
+};
+$('qNew').onclick = qNew;
+
+/* =====================================================================
+   6. START
+   ===================================================================== */
+selectOnFocus(['q1']);
+bPreset(0);
+$('rPresets').children[0].click();
+drawTraps();
+qNew();
+</script>
+<script src="../shared/toc.js"></script>
+<script src="../shared/nav.js"></script>
+</body></html>

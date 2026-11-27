@@ -158,7 +158,7 @@ window.MM_TOC = [
     { id: '9.B.2', title: 'Counting Outcomes', built: true, url: 'https://claude.ai/artifact/Hr4rPhSHiDmn2yDuFHZq5W' },
     { id: '9.B.3', title: 'And, Or, Not: Combining Events', built: true, url: 'https://claude.ai/artifact/Gtou8Rp2D8DGWWsqNUavKt' },
     { id: '9.B.4', title: 'Conditional Probability', built: true, url: 'https://claude.ai/artifact/ARCD2XMcAKLrv6mpjGBAG4' },
-    { id: '9.B.5', title: 'Expected Value' },
+    { id: '9.B.5', title: 'Expected Value', built: true, url: 'https://claude.ai/artifact/SDEvb3ZagppgcsUZ6eCzZp' },
     { id: '9.B.6', title: 'Simulating Chance' },
     { id: '9.U.1', title: 'Random Variables and Distributions' },
     { id: '9.U.2', title: 'Bayes\' Theorem' },
