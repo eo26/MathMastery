@@ -259,7 +259,7 @@ table.rt tr.now td{background:var(--k-soft)}
 <!-- ===================== §3 Steeper means bigger k: the race ===================== -->
 <section class="prose">
   <h2><span class="n">3</span>Steeper means a bigger <i class="sym" style="font-size:1em">k</i></h2>
-  <p>Put several proportional relationships on the same graph and you can compare them at a glance. Here a car (60 miles per hour), a bike (12 miles per hour) and a walker (3 miles per hour) all start at the same moment. Time goes across, distance goes up. Press Race and watch: the faster the traveler, the <b>steeper</b> their line. Add yourself at any speed you like.</p>
+  <p>Put several proportional relationships on the same graph and you can compare them at a glance. Here a car (60 miles per hour), a bike (12 miles per hour) and a walker (3 miles per hour) all start at the same moment. Time goes across, distance goes up. Press Race and watch: the faster the traveler, the <b>steeper</b> their line. Add yourself at any speed you like. The second graph turns the race sideways: speed goes across, so each traveler stands at their own <i class="sym">k</i>, and as the hours pass every dot climbs. At any moment the dots line up on a line through the origin, because distance = time × speed: at a fixed time, distance is proportional to speed too.</p>
 </section>
 <section class="wide">
   <div class="card" id="race">
@@ -280,6 +280,9 @@ table.rt tr.now td{background:var(--k-soft)}
         <div class="readout" id="raceOut" style="margin-top:10px"></div>
       </div>
     </div>
+    <div class="panel-label" style="margin-top:16px"><span>The same race, with speed across</span><span>each racer stands at its own <i class="sym">k</i></span></div>
+    <svg class="nl" id="raceK" viewBox="0 0 960 380" role="img" aria-label="Distance versus speed as the hours pass"></svg>
+    <div class="readout" id="raceOut2"></div>
   </div>
 </section>
 
@@ -643,11 +646,51 @@ function drawRace(){
       txt(c.g, c.X(lx) - 8, c.Y(r.k * lx) - 9, `${r.n}: k = ${fmt(r.k)}`, 'rlbl', { style: `fill:${r.col}`, 'text-anchor': 'end' });
     }
   });
+  drawRaceK(list, t);
   $('raceT').textContent = fmt(Math.round(t * 2) / 2);
   $('racers').innerHTML = list.map(r => `<div class="racer"><span style="color:${r.col};font-weight:600">${r.n}</span><b>${fmt(Math.round(r.k * t * 10) / 10)} mi</b></div>`).join('');
   $('raceOut').innerHTML = t >= 5
     ? `The steepest line belongs to the fastest traveler. Each line’s <i class="sym">k</i> is its speed: the height of the line at 1 hour.`
     : `Every line starts at the origin: at 0 hours, everyone has gone 0 miles.`;
+}
+// Second view: speed k across, distance up. At any moment every racer is at (k, t·k),
+// so the dots sit on one line through the origin whose slope is the time t.
+function drawRaceK(list, t){
+  const G = { xmax: 80, ymax: 400, xlab: '', ylab: '', xstep: 10, ystep: 50 };
+  const c = axes($('raceK'), G);
+  c.g.querySelector('.atX').style.fill = 'var(--ink)'; c.g.querySelector('.atY').style.fill = 'var(--ink)';
+  c.g.querySelector('.atX').innerHTML = '<tspan class="sym">k</tspan><tspan>  speed (miles per hour)</tspan>';
+  c.g.querySelector('.atY').innerHTML = '<tspan>distance so far (miles)</tspan>';
+  // one faint line per whole hour already passed: distance = h × k
+  for (let h = 1; h < t - 0.05; h++){
+    const xe = Math.min(G.xmax, G.ymax / h);
+    mk('line', { x1: c.X(0), y1: c.Y(0), x2: c.X(xe), y2: c.Y(h * xe), style: 'stroke:var(--muted);stroke-width:1.2;stroke-dasharray:4 4;opacity:.6' }, c.g);
+    txt(c.g, c.X(xe) + (xe < G.xmax ? 4 : -4), c.Y(h * xe) + (xe < G.xmax ? -4 : -6), `${h} h`, 'rlbl', { style: 'fill:var(--muted)', 'text-anchor': xe < G.xmax ? 'start' : 'end' });
+  }
+  // the live line: distance = t × k
+  if (t > 0){
+    const xe = Math.min(G.xmax, G.ymax / t);
+    mk('line', { x1: c.X(0), y1: c.Y(0), x2: c.X(xe), y2: c.Y(t * xe), style: 'stroke:var(--ink);stroke-width:2' }, c.g);
+    txt(c.g, c.X(xe) - 6, c.Y(t * xe) + (xe < G.xmax ? 16 : -10), `distance = ${fmt(Math.round(t * 10) / 10)} × k`, 'rlbl', { style: 'fill:var(--ink)', 'text-anchor': 'end' });
+  }
+  // each racer: a bar at its own k growing upward, with marks at every whole hour
+  list.forEach((r, i) => {
+    const d = r.k * t;
+    mk('line', { x1: c.X(r.k), y1: c.Y(0), x2: c.X(r.k), y2: c.Y(d), style: `stroke:${r.col};stroke-width:9;stroke-linecap:butt;opacity:.55` }, c.g);
+    for (let h = 1; h <= Math.floor(t + 1e-9); h++) mk('line', { x1: c.X(r.k) - 8, y1: c.Y(h * r.k), x2: c.X(r.k) + 8, y2: c.Y(h * r.k), style: `stroke:${r.col};stroke-width:2` }, c.g);
+    mk('circle', { cx: c.X(r.k), cy: c.Y(d), r: 7, class: 'rdot', style: `fill:${r.col}` }, c.g);
+    // a neighbour within 9 mi/h would collide: put the slower one's label on the left, the faster one's on the right
+    const nb = list.find((q, j) => j !== i && Math.abs(q.k - r.k) < 9), lab = `${r.n}: ${fmt(Math.round(d * 10) / 10)} mi`;
+    if (!nb) txt(c.g, c.X(r.k), c.Y(d) - 14, lab, 'rlbl', { style: `fill:${r.col}`, 'text-anchor': 'middle' });
+    else if (nb.k > r.k || (nb.k === r.k && list.indexOf(nb) > i)) txt(c.g, c.X(r.k) - 12, c.Y(d) - 6, lab, 'rlbl', { style: `fill:${r.col}`, 'text-anchor': 'end' });
+    else txt(c.g, c.X(r.k) + 12, c.Y(d) + 4, lab, 'rlbl', { style: `fill:${r.col}`, 'text-anchor': 'start' });
+  });
+  const tt = fmt(Math.round(t * 10) / 10);
+  $('raceOut2').innerHTML = t <= 0
+    ? 'Each racer gets a bar standing at its own speed <i class="sym">k</i>. Press Race: every hour, each bar grows by its own <i class="sym">k</i>.'
+    : t < 5
+    ? `After ${tt} hours every racer has gone ${tt} × <i class="sym">k</i> miles, so all the dots sit on one line through the origin with slope ${tt}. Each hour the line swings up (dashed: earlier whole hours) and each bar grows by its own <i class="sym">k</i>: the car by 60, the walker by 3.`
+    : `After 5 hours every dot sits on the line distance = 5 × <i class="sym">k</i>. At a fixed time, distance is <b>proportional to speed</b>, and the constant is the time. The tick marks on each bar are evenly spaced, one <i class="sym">k</i> apart: equal hours add equal distances.`;
 }
 function race(){
   if (RACE.playing) return;
