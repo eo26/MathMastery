@@ -14,7 +14,7 @@ window.MM_TOC = [
     { id: '1.B.7', title: 'Converting Customary and Metric Units',   built: true, url: 'https://claude.ai/artifact/FXQApxvApHWy3Y4ao9oF9o' },
     { id: '1.B.8', title: 'Proportional Reasoning: Solving Problems', built: true, url: 'https://claude.ai/artifact/5BczAcmrhUzUdGzmV9sUiN' },
     { id: '1.B.9', title: 'Why We Invented Each New Kind of Number', url: 'https://claude.ai/artifact/8eeikn9pY3hdakM8VL4MhU', built: true },
-    { id: '1.B.10', title: 'Primes, Factors and Multiples' },
+    { id: '1.B.10', title: 'Primes, Factors and Multiples', built: true, url: 'https://claude.ai/artifact/WgmWPPbsuYjwjV377Vxzgb' },
     { id: '1.B.11', title: 'Percentages' },
     { id: '1.B.12', title: 'Powers of Ten and Scientific Notation' },
     { id: '1.B.13', title: 'Estimation and Rounding' },
