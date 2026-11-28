@@ -160,7 +160,7 @@ window.MM_TOC = [
     { id: '9.B.4', title: 'Conditional Probability', built: true, url: 'https://claude.ai/artifact/ARCD2XMcAKLrv6mpjGBAG4' },
     { id: '9.B.5', title: 'Expected Value', built: true, url: 'https://claude.ai/artifact/SDEvb3ZagppgcsUZ6eCzZp' },
     { id: '9.B.6', title: 'Simulating Chance', built: true, url: 'https://claude.ai/artifact/CZM1u6ZCUpLkf8HKuw7Rqt' },
-    { id: '9.U.1', title: 'Random Variables and Distributions' },
+    { id: '9.U.1', title: 'Random Variables and Distributions', built: true, url: 'https://claude.ai/artifact/VCcGmCehtvfVTYRDWZofAA' },
     { id: '9.U.2', title: 'Bayes\' Theorem' },
     { id: '9.U.3', title: 'Discrete Distributions' },
     { id: '9.U.4', title: 'Continuous Distributions and the Normal Curve' },
