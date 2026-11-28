@@ -1,0 +1,900 @@
+<style>
+/* ===================== Page-specific styles (1.B.11) ===================== */
+/* part = teal, whole / 100% = blue, percent scale = purple, increase = green, decrease = red */
+:root{ --part:#1D9E75; --part-bg:#D6F1E7; --whole:#3A7BD5; --whole-bg:#DDE9FA; --pc:#7F55B5; --pc-bg:#EDE3F8; --up:#2F8F3A; --up-bg:#DCF0DE; --dn:#D8443A; --dn-bg:#FBE0DE; --base:#8A9BB0; }
+@media (prefers-color-scheme:dark){ :root{ --part:#5DCAA5; --part-bg:#173F33; --whole:#7FB0F0; --whole-bg:#1E3252; --pc:#C49BF0; --pc-bg:#36254A; --up:#6FCF7A; --up-bg:#1C3B20; --dn:#F07B72; --dn-bg:#4A2220; --base:#6E7F94; } }
+.kp{color:var(--part);font-weight:700}.kw{color:var(--whole);font-weight:700}.kc{color:var(--pc);font-weight:700}.ku{color:var(--up);font-weight:700}.kd{color:var(--dn);font-weight:700}
+svg{user-select:none;-webkit-user-select:none}
+svg text.lab,svg text.labS{fill:var(--ink)}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:10px;align-items:start}
+.split svg,.full svg{width:100%;height:auto;display:block;background:var(--bg);border:1px solid var(--line);border-radius:10px}
+.full{margin-top:12px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:8px 0 0}
+.chips .lbl{font:600 12px var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-right:4px}
+.chips button.on{background:var(--accent-bg);border-color:var(--accent);color:var(--accent)}
+.field input.found{background:var(--paper);border-style:dashed;font-weight:700}
+.forms{border:1px solid var(--line);border-radius:10px;background:var(--bg);padding:14px 16px;min-height:270px;box-sizing:border-box}
+.forms .three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px}
+.forms .three div{border:1px solid var(--line);border-radius:8px;padding:8px 10px;text-align:center;background:var(--paper)}
+.forms .three small{display:block;font:600 11px var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.forms .three b{font:700 19px var(--mono);color:var(--pc)}
+.forms .steps{font:15px/1.7 var(--mono)}
+.forms .steps .c{font:14px/1.5 var(--sans);color:var(--muted);margin-top:8px}
+pre.code{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:12px 16px;overflow-x:auto;font:13.5px/1.6 var(--mono);margin:10px 0 16px}
+.traps{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:8px}
+.traps .t{border:1px solid var(--line);border-radius:10px;background:var(--bg);padding:10px}
+.traps .t h4{margin:0 0 4px;font:600 15px var(--sans)}
+.traps .t p{margin:6px 0 0;font-size:14.5px;line-height:1.5;color:var(--muted)}
+.traps svg{width:100%;height:auto;display:block}
+.qtext{font:17px/1.55 var(--serif);margin:4px 0 10px}
+.choice{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 0}.choice button{min-width:110px;text-align:left}
+.choice button.right{border-color:var(--ok);background:var(--ok-bg);color:var(--ok)}.choice button.wrong{border-color:var(--bad);background:var(--bad-bg);color:var(--bad)}
+</style>
+
+<!-- ===================== Top bar ===================== -->
+<div class="topbar"><div class="topbar-in">
+  <span class="brand">Math<b>Mastery</b></span>
+  <span class="crumbs">Chapter 1 · Numbers &amp; Arithmetic › Basics</span>
+  <span class="pid">1.B.11</span>
+</div></div>
+
+<!-- ===================== Hero ===================== -->
+<header class="prose hero">
+  <div class="kicker">Chapter 1 · Numbers &amp; Arithmetic</div>
+  <h1>Percentages</h1>
+  <p class="dek">A percent is a fraction with a fixed bottom: out of 100. That one idea answers every percent question, as long as you keep track of what the 100% is.</p>
+  <div class="tiers" aria-label="Tier">
+    <span class="tier on">Basics <small>you are here</small></span>
+    <span class="tier">Undergraduate</span>
+    <span class="tier">Masters</span>
+  </div>
+  <div class="goals">
+    <h3>On this page</h3>
+    <ul>
+      <li>Read a <b>percent</b> as “out of 100” and switch between percents, fractions and decimals.</li>
+      <li>Answer all three kinds of question: find the <b>part</b>, the <b>percent</b>, or the <b>whole</b>.</li>
+      <li>Work out a <b>percent increase</b> or <b>decrease</b> with a single <b>multiplier</b>, and undo one.</li>
+      <li>See why <b>chained changes</b> multiply instead of adding, and why <b>percentage points</b> aren’t percents.</li>
+    </ul>
+  </div>
+</header>
+
+<main>
+<!-- ===================== §1 ===================== -->
+<section class="prose">
+  <h2><span class="n">1</span>Out of a hundred</h2>
+  <p><b>Percent</b> means “per hundred”: from the Latin <i>per centum</i>. 35% is 35 out of every 100, the same as the fraction 35/100 or the decimal 0.35. Draw a 10 × 10 grid and 35% is 35 of the 100 squares. Percents are popular because everything is out of the same 100, so they’re easy to compare: 42 right out of 50 and 18 out of 24 are hard to rank, but 84% and 75% aren’t.</p>
+  <p>Every percent statement has three numbers. The <b>whole</b> is the full amount, the thing that counts as 100%. The <b>part</b> is some piece of it. The <b>percent</b> says how big the part is, out of 100:</p>
+  <div class="math">\[ \text{part} = \frac{\text{percent}}{100} \times \text{whole}. \]</div>
+  <p>Know any two and you can find the third. It’s the proportion idea from 1.B.4–1.B.8 again: part is to whole as percent is to 100. The <b>double number line</b> below shows it: the whole lines up with 100%, and everything in between scales.</p>
+</section>
+<section class="wide">
+  <div class="card" id="pw">
+    <div class="card-h"><span class="tag">Explore</span><h3>Part, whole, percent</h3>
+      <span class="sub">Pick which number to find, then type the other two. Left: each square is 1% of the whole. Right: the same percent as a fraction and a decimal, and the working. Below: units on top, percents underneath, with the whole lined up at 100%.</span></div>
+    <div class="row" id="pPresets"></div>
+    <div class="desc" id="pDesc"></div>
+    <div class="chips" id="pFind"></div>
+    <div class="inputs">
+      <label class="field"><span>Part</span><input id="pPart" type="text" inputmode="decimal" autocomplete="off" style="border-color:var(--part)"></label>
+      <label class="field"><span>Whole (100%)</span><input id="pWhole" type="text" inputmode="decimal" autocomplete="off" style="border-color:var(--whole)"></label>
+      <label class="field"><span>Percent %</span><input id="pPct" type="text" inputmode="decimal" autocomplete="off" style="border-color:var(--pc)"></label>
+      <div class="row" style="margin:0 0 6px"><button class="primary" id="pPlay">Play: fill the squares</button><button id="pReset">Reset</button></div>
+    </div>
+    <div class="err" id="pErr"></div>
+    <div class="split"><svg id="pG" viewBox="0 0 470 300" role="img" aria-label="Hundred grid"></svg><div class="forms" id="pForms"></div></div>
+    <div class="full"><svg id="pL" viewBox="0 0 960 190" role="img" aria-label="Double number line"></svg></div>
+    <div class="readout" id="pOut"></div>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--part)"></i><span>the part</span></span>
+      <span><i class="sw" style="background:var(--whole)"></i><span>the whole = 100%</span></span>
+      <span><i class="sw" style="background:var(--pc)"></i><span>percents</span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §2 ===================== -->
+<section class="prose">
+  <h2><span class="n">2</span>Three questions, one picture</h2>
+  <ul>
+    <li><b>Find the part.</b> A 4,000 mAh battery shows 35%. How much charge is left? Turn the percent into a decimal and multiply: 0.35 × 4,000 = 1,400 mAh.</li>
+    <li><b>Find the percent.</b> 42 right out of 50. Divide part by whole, then multiply by 100: 42 ÷ 50 = 0.84 = 84%.</li>
+    <li><b>Find the whole.</b> A download has reached 240 MB, which is 60%. If 60% is 240, then 1% is 4 and 100% is 400 MB. In one step: 240 ÷ 0.60 = 400.</li>
+  </ul>
+  <p>To switch forms, remember that % means ÷ 100. 35% = 35/100 = 0.35 (move the decimal point two places left); 0.072 = 7.2%; 3/8 = 0.375 = 37.5%. Benchmarks help: 50% is a half, 25% a quarter, 10% a tenth, 1% a hundredth. To find 10% of anything, divide by 10; 5% is half of that.</p>
+  <p>Nothing stops a percent going over 100. If your daily step goal is 10,000 and you walk 15,000, you reached <b>150%</b> of the goal: one whole grid and half of another. 100% is just “the same as the whole”, not a ceiling.</p>
+
+  <h2><span class="n">3</span>Percent change: one multiplication</h2>
+  <p>A 40 cm plant grows 25%. The growth is 25% of 40 = 10 cm, so it’s now 50 cm. Faster: the new height is the old 100% plus 25%, which is 125% of the old height, so multiply by 1.25. A <b>percent increase</b> of <i>r</i>% multiplies by 1 + <i>r</i>/100; a <b>percent decrease</b> of <i>r</i>% multiplies by 1 − <i>r</i>/100 (a 60% slowdown keeps 40%: × 0.4). That number is the <b>multiplier</b>.</p>
+  <p>Going the other way, the <b>percent change</b> from an old value to a new one is</p>
+  <div class="math">\[ \text{percent change} = \frac{\text{new} - \text{old}}{\text{old}} \times 100\%. \]</div>
+  <p>Always divide by the <b>old</b> value: it’s the 100%, the thing being compared against. To find the <b>original</b> value before a change, divide by the multiplier. A sweater shrank 20% in the wash and is now 64 cm: it was 64 ÷ 0.8 = 80 cm.</p>
+</section>
+<section class="wide">
+  <div class="card" id="ch">
+    <div class="card-h"><span class="tag">Explore</span><h3>Percent change, one step at a time</h3>
+      <span class="sub">Type a start value and one or more changes, like <span style="font-family:var(--mono)">+50, -50</span>. Each bar is the value after one more change. Green is what a change adds, the red ghost is what it takes away. Each percent is a percent of the bar just before it.</span></div>
+    <div class="row" id="cPresets"></div>
+    <div class="desc" id="cDesc"></div>
+    <div class="inputs">
+      <label class="field"><span>Start</span><input id="cS" type="text" inputmode="decimal" autocomplete="off" style="border-color:var(--base)"></label>
+      <label class="field"><span>Changes (%)</span><input id="cC" type="text" autocomplete="off" style="width:250px"></label>
+      <div class="row" style="margin:0 0 6px"><button class="primary" id="cPlay">Play the changes</button><button id="cReset">Reset</button></div>
+    </div>
+    <div class="err" id="cErr"></div>
+    <div class="full"><svg id="cB" viewBox="0 0 960 330" role="img" aria-label="Bars for each step"></svg></div>
+    <div class="readout" id="cOut"></div>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--base)"></i><span>value carried over</span></span>
+      <span><i class="sw" style="background:var(--up)"></i><span>added by an increase</span></span>
+      <span><i class="sw" style="background:var(--dn);opacity:.5"></i><span>taken away by a decrease</span></span>
+      <span><i class="sw" style="background:var(--ink)"></i><span>start level</span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §4 ===================== -->
+<section class="prose">
+  <h2><span class="n">4</span>Changes multiply, they don’t add</h2>
+  <p>A plant grows 50% one month and then a snail eats 50% of it. Back to the start? No: 40 → 60 → 30. The 50% loss was 50% of the <em>bigger</em> plant. In multipliers, 1.5 × 0.5 = 0.75, a 25% loss overall. For <b>chained changes</b>, multiply the multipliers; never add the percents.</p>
+  <p>That’s also why undoing a change takes a different percent. Shrinking 20% multiplies by 0.8; to get back you need to multiply by 1/0.8 = 1.25, a 25% increase. Every percent is a percent <em>of something</em>, and after a change the something is different.</p>
+
+  <h2><span class="n">5</span>Percentage points</h2>
+  <p>When the values are themselves percents, “up 10%” becomes ambiguous. A free-throw rate going from 40% to 50% went up by 10 <b>percentage points</b>: a plain subtraction, 50 − 40. As a <em>percent change</em>, it went up 25%, because 10 is 25% of the old 40. A phone battery dropping from 80% to 60% lost 20 points of charge, which is 25% of the charge it had. News stories mix these up all the time; the honest way is to say which you mean.</p>
+
+  <h2><span class="n">6</span>Many small changes</h2>
+  <p>Small repeated changes pile up in surprising ways. A short simulation shows a plant that grows 1% a day, one that shrinks 1% a day, and one that alternates:</p>
+  <pre class="code"><code>up, down, wobble = 100.0, 100.0, 100.0      # three plants, each 100 mm tall to start
+for day in range(1, 366):                   # one year, a day at a time
+    up = up * 1.01                          # +1%: multiply by 1.01
+    down = down * 0.99                      # −1%: multiply by 0.99
+    if day % 2 == 1:                        # odd days...
+        wobble = wobble * 1.01              # ...grow 1%
+    else:                                   # even days...
+        wobble = wobble * 0.99              # ...shrink 1%
+print(round(up, 1))                         # 3778.3: about 38 times as tall
+print(round(down, 1))                       # 2.6: almost nothing left
+print(round(wobble, 1))                     # 99.2: +1% then −1% loses a little every time</code></pre>
+  <p>Adding the percents would say +365%, −365% (impossible: you can’t lose more than 100%) and 0%. Multiplying gives the truth: 1.01 × 0.99 = 0.9999, so every up-and-down pair loses 0.01%.</p>
+
+  <h2><span class="n">7</span>Traps</h2>
+</section>
+<section class="wide">
+  <div class="card" id="traps">
+    <div class="card-h"><span class="tag">Compare</span><h3>Easy to get wrong</h3></div>
+    <div class="traps">
+      <div class="t"><h4 style="color:var(--bad)">✕ +50% then −50% = no change</h4><svg id="tr1" viewBox="0 0 300 220"></svg><p>The 50% loss is taken from 150, not 100. 100 × 1.5 × 0.5 = 75: a 25% loss overall.</p></div>
+      <div class="t"><h4 style="color:var(--bad)">✕ 40% → 50% is “up 10%”</h4><svg id="tr2" viewBox="0 0 300 220"></svg><p>It’s up 10 percentage points. Measured against the old 40%, that’s a 25% increase. Say which one you mean.</p></div>
+      <div class="t"><h4 style="color:var(--bad)">✕ Undo −20% with +20%</h4><svg id="tr3" viewBox="0 0 300 220"></svg><p>80 shrinks 20% to 64. Adding 20% of 64 gives only 76.8. To undo, divide by 0.8: 64 ÷ 0.8 = 80, which is +25%.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §8 ===================== -->
+<section class="prose">
+  <h2><span class="n">8</span>Now, in symbols</h2>
+  <p>With part <i>P</i>, whole <i>W</i> and percent <i>p</i>:</p>
+  <div class="math">\[ p\% = \frac{p}{100}, \qquad P = \frac{p}{100}\,W, \qquad p = \frac{P}{W}\times 100, \qquad W = \frac{P}{p/100}. \]</div>
+  <p>A change of <i>r</i>% (negative for a decrease) multiplies by <i>m</i> = 1 + <i>r</i>/100. Chained changes multiply, and dividing undoes:</p>
+  <div class="math">\[ \text{new} = \text{old}\times\Big(1+\frac{r}{100}\Big), \qquad \frac{\text{new}-\text{old}}{\text{old}}\times 100 = r, \qquad m_{\text{total}} = m_1 m_2 \cdots m_n, \qquad \text{old} = \frac{\text{new}}{m}. \]</div>
+  <p>Two percents <i>a</i>% and <i>b</i>% differ by <i>b</i> − <i>a</i> percentage points, a relative change of (<i>b</i> − <i>a</i>)/<i>a</i> × 100%.</p>
+</section>
+
+<!-- ===================== §9 ===================== -->
+<section class="prose">
+  <h2><span class="n">9</span>Where this goes</h2>
+  <ul class="goes">
+    <li><b>Next:</b> 1.B.12 Powers of ten and scientific notation, for numbers far too big or small for percents.</li>
+    <li><b>Later in this book:</b> repeated multiplication by the same multiplier is exponential growth and decay (chapter 3); probabilities are often given as percents (chapter 9); and statistics uses percents for survey results, margins of error and relative error (chapter 10).</li>
+    <li><b>In the world:</b> battery and download bars, nutrition labels (% daily value), test scores and sports stats, weather forecasts (“40% chance of rain”), recipe scaling, and every headline that says something rose or fell “by X%”.</li>
+  </ul>
+</section>
+
+<!-- ===================== §10 ===================== -->
+<section class="prose">
+  <h2><span class="n">10</span>Words to know</h2>
+  <div class="vocab">
+    <div class="term"><b>Percent (%)</b>Per hundred: 35% = 35/100 = 0.35.</div>
+    <div class="term"><b>Whole</b>The full amount, the thing that counts as 100%. Also called the base.</div>
+    <div class="term"><b>Part</b>A piece of the whole, described by its percent.</div>
+    <div class="term"><b>Double number line</b>Two scales side by side, units and percents, with the whole lined up at 100%.</div>
+    <div class="term"><b>Percent increase / decrease</b>A change described as a percent of the old value.</div>
+    <div class="term"><b>Percent change</b>(new − old) ÷ old × 100%: positive for an increase, negative for a decrease.</div>
+    <div class="term"><b>Multiplier</b>The number a change multiplies by: +25% is × 1.25, −40% is × 0.6.</div>
+    <div class="term"><b>Original value</b>The value before a change: new ÷ multiplier.</div>
+    <div class="term"><b>Chained changes</b>Several changes one after another. Their multipliers multiply.</div>
+    <div class="term"><b>Percentage point</b>The plain difference between two percents: 40% to 50% is 10 points.</div>
+    <div class="term"><b>Over 100%</b>More than the whole: 150% of a goal is one and a half times the goal.</div>
+  </div>
+</section>
+
+<!-- ===================== Quiz ===================== -->
+<section class="prose"><h2><span class="n">11</span>Check yourself</h2>
+  <p>Four kinds of questions: part, whole and percent; percent change; converting between forms; and traps. Type numbers as decimals or fractions; a % sign is fine but not needed.</p>
+</section>
+<section class="wide">
+  <div class="card" id="quiz">
+    <div class="card-h"><span class="tag">Quiz</span><h3 id="qTitle"></h3><span class="score" id="score">Score: 0 / 0</span></div>
+    <div class="qtext" id="qText"></div>
+    <div class="choice" id="qChoice"></div>
+    <div class="inputs" id="qIn">
+      <label class="field"><span id="qL1">answer =</span><input id="q1" type="text" autocomplete="off" style="width:180px;border-color:var(--pc)"></label>
+      <div class="row" style="margin:0"><button class="primary" id="qCheck">Check</button></div>
+    </div>
+    <div class="row" style="margin:10px 0 0"><button id="qShow">Show answer</button><button id="qNew">New question</button></div>
+    <div class="err" id="qErr"></div>
+    <div class="feedback" id="qFb" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ===================== Pager (filled in by the shared navigation) ===================== -->
+<nav class="wide">
+  <div class="pager"></div>
+  <div class="meta">1.B.11 · Prerequisites: 1.B.3 (fractions and decimals), 1.B.4–1.B.8 (ratios and proportions) · Leads to: 1.B.12 (powers of ten), exponential growth (chapter 3), probability (chapter 9)</div>
+</nav>
+</main>
+
+<script>
+/* =====================================================================
+   1. HELPERS (shared with the other pages)
+   ===================================================================== */
+const NS = 'http://www.w3.org/2000/svg';
+const $ = id => document.getElementById(id);
+function mk(tag, attrs, parent){                           // create an SVG element with attributes
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function txt(parent, x, y, s, cls, extra){                 // create an SVG text element
+  extra = Object.assign({}, extra || {});
+  if (extra['text-anchor']){ extra.style = (extra.style ? extra.style + ';' : '') + 'text-anchor:' + extra['text-anchor']; delete extra['text-anchor']; }
+  const t = mk('text', Object.assign({ x, y, class: cls || '' }, extra), parent);
+  t.textContent = s;
+  return t;
+}
+// round for display, use a true minus sign, never show −0
+function num(x, d){ if (d === undefined) d = 2; const r = Math.round(x * Math.pow(10, d)) / Math.pow(10, d); return r === 0 ? '0' : (r < 0 ? '−' : '') + String(Math.abs(r)); }
+const pn = x => x < 0 ? `(${num(x)})` : num(x);              // wrap negatives in brackets when substituting
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const ri = (a, b) => a + Math.floor(Math.random() * (b - a + 1));   // random whole number from a to b
+const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+function parseNum(s){                                     // integers, decimals, minus, simple fractions
+  s = String(s).trim().replace(/[−–]/g, '-').replace(/\s+/g, '');
+  if (/^-?\d+(\.\d+)?$|^-?\.\d+$/.test(s)) return parseFloat(s);
+  const m = s.match(/^(-?\d+)\/(\d+)$/);
+  if (m && +m[2] !== 0) return +m[1] / +m[2];
+  return NaN;
+}
+function selectOnFocus(ids){ ids.forEach(id => $(id).addEventListener('focus', e => e.target.select())); }
+function buttons(boxId, list, onPick){                    // a row of preset buttons; returns a function that marks one as on
+  list.forEach((p, i) => { const b = document.createElement('button'); b.className = 'preset'; b.textContent = p.n; b.onclick = () => onPick(i); $(boxId).appendChild(b); });
+  return i => [...$(boxId).children].forEach((b, j) => b.classList.toggle('on', j === i));
+}
+function svgPt(svg, ev){                                  // mouse position in the SVG's own coordinates
+  const p = svg.createSVGPoint(); p.x = ev.clientX; p.y = ev.clientY;
+  return p.matrixTransform(svg.getScreenCTM().inverse());
+}
+const svgCss = document.createElement('style');
+svgCss.textContent = `
+  .grid{stroke:var(--line);stroke-width:1}
+  .axis{stroke:var(--ink);stroke-width:1.4;opacity:.7}
+  .tl{fill:var(--muted);font:500 11.5px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:3px}
+  .lab{font:700 14px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:5px}
+  .labS{font:600 12.5px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+  .cap{fill:var(--muted);font:600 12px var(--sans);letter-spacing:.06em;paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+  .oval{fill:var(--paper);stroke:var(--line);stroke-width:1.5}
+`;
+document.head.appendChild(svgCss);
+let clipN = 0;                                            // unique clip-path ids
+
+/* ---------- axes: a coordinate grid inside an SVG, with separate x and y scales ---------- */
+function axes(svg, W, H, b, o){
+  o = o || {};
+  svg.innerHTML = '';
+  const L = o.padL ?? 44, R = o.padR ?? 16, T = o.padT ?? 16, B = o.padB ?? 30;
+  const sx = (W - L - R) / (b.x1 - b.x0), sy = (H - T - B) / (b.y1 - b.y0);   // pixels per unit
+  const X = x => L + (x - b.x0) * sx, Y = y => T + (b.y1 - y) * sy;
+  const step = (s, px) => (o.half ? [0.5, 1, 2, 5, 10, 20, 50, 100] : [1, 2, 5, 10, 20, 50, 100]).find(k => k * s >= px) || 200;   // a round step at least px pixels wide
+  const xg = o.xg || step(sx, 9), yg = o.yg || step(sy, 9);        // grid-line spacing
+  const xt = o.xt || step(sx, 34), yt = o.yt || step(sy, 26);      // tick-label spacing
+  const gGrid = mk('g', {}, svg), id = 'clp' + (++clipN);
+  const cp = mk('clipPath', { id }, svg); mk('rect', { x: L, y: T, width: W - L - R, height: H - T - B }, cp);
+  const cg = mk('g', { 'clip-path': `url(#${id})` }, svg);         // clipped layer for curves
+  const m = mk('g', {}, svg), top = mk('g', {}, svg);              // free layer, then labels on top
+  const near = (v, s) => Math.abs(v / s - Math.round(v / s)) < 1e-6;
+  for (let x = Math.ceil(b.x0 / xg) * xg; x <= b.x1 + 1e-9; x += xg) mk('line', { x1: X(x), y1: T, x2: X(x), y2: H - B, class: 'grid' }, gGrid);
+  for (let y = Math.ceil(b.y0 / yg) * yg; y <= b.y1 + 1e-9; y += yg) mk('line', { x1: L, y1: Y(y), x2: W - R, y2: Y(y), class: 'grid' }, gGrid);
+  const ay = (b.y0 <= 0 && b.y1 >= 0) ? Y(0) : H - B;              // where the x-axis is drawn
+  const ax = (b.x0 <= 0 && b.x1 >= 0) ? X(0) : L;                  // where the y-axis is drawn
+  mk('line', { x1: L, y1: ay, x2: W - R, y2: ay, class: 'axis' }, gGrid);
+  mk('line', { x1: ax, y1: T, x2: ax, y2: H - B, class: 'axis' }, gGrid);
+  const fx = o.fx || (v => num(v)), fy = o.fy || (v => num(v));
+  for (let x = Math.ceil(b.x0 / xt) * xt; x <= b.x1 + 1e-9; x += xt){
+    if (Math.abs(x) < 1e-9 && ax === X(0) && !o.zeroX) continue;
+    txt(top, X(x), ay + 16, fx(x), 'tl', { 'text-anchor': 'middle' });
+  }
+  for (let y = Math.ceil(b.y0 / yt) * yt; y <= b.y1 + 1e-9; y += yt){
+    if (Math.abs(y) < 1e-9 && ay === Y(0)) continue;
+    txt(top, ax - 6, Y(y) + 4, fy(y), 'tl', { 'text-anchor': 'end' });
+  }
+  if (o.xT) txt(top, W - R - 2, ay - 8, o.xT, 'cap', { 'text-anchor': 'end' });
+  if (o.yT) txt(top, ax + 8, T + 12, o.yT, 'cap');
+  return { svg, X, Y, sx, sy, cg, m, top, b, L, R, T, B, W, H, ay, ax,
+           inv: (px, py) => [b.x0 + (px - L) / sx, b.y1 - (py - T) / sy] };
+}
+function dPath(P, pts){ return pts.map((p, i) => (i ? 'L' : 'M') + P.X(p[0]).toFixed(1) + ' ' + P.Y(p[1]).toFixed(1)).join(''); }
+// sample y = f(x) from a to b, breaking the curve where f is undefined or jumps
+function sample(f, a, b, n, ok){
+  const out = []; let cur = [];
+  for (let i = 0; i <= n; i++){
+    const x = a + (b - a) * i / n, y = (ok && !ok(x)) ? NaN : f(x);
+    if (!isFinite(y)){ if (cur.length > 1) out.push(cur); cur = []; continue; }
+    if (cur.length && Math.abs(y - cur[cur.length - 1][1]) > 40){ if (cur.length > 1) out.push(cur); cur = []; }
+    cur.push([x, y]);
+  }
+  if (cur.length > 1) out.push(cur);
+  return out;
+}
+function dot(P, x, y, col, o){                              // a filled (or open) point
+  o = o || {};
+  return mk('circle', { cx: P.X(x), cy: P.Y(y), r: o.r || 6, style: o.open ? `fill:var(--bg);stroke:${col};stroke-width:2.6` : `fill:${col};stroke:var(--bg);stroke-width:1.5` }, o.layer || P.m);
+}
+function vline(P, x, col, o){ o = o || {}; return mk('line', { x1: P.X(x), y1: o.y0 !== undefined ? P.Y(o.y0) : P.T, x2: P.X(x), y2: o.y1 !== undefined ? P.Y(o.y1) : P.H - P.B, style: `stroke:${col};stroke-width:${o.w || 2.5};${o.dash ? 'stroke-dasharray:' + o.dash : ''}` }, o.layer || P.m); }
+function hline(P, y, col, o){ o = o || {}; return mk('line', { x1: o.x0 !== undefined ? P.X(o.x0) : P.L, y1: P.Y(y), x2: o.x1 !== undefined ? P.X(o.x1) : P.W - P.R, y2: P.Y(y), style: `stroke:${col};stroke-width:${o.w || 2.5};${o.dash ? 'stroke-dasharray:' + o.dash : ''}` }, o.layer || P.m); }
+function arrowHead(g, x1, y1, x2, y2, col, size){            // a small triangle at (x2, y2) pointing away from (x1, y1)
+  const a = Math.atan2(y2 - y1, x2 - x1), s = size || 9;
+  const p = [[x2, y2], [x2 - s * Math.cos(a - 0.4), y2 - s * Math.sin(a - 0.4)], [x2 - s * Math.cos(a + 0.4), y2 - s * Math.sin(a + 0.4)]];
+  mk('polygon', { points: p.map(q => q.join(',')).join(' '), style: `fill:${col}` }, g);
+}
+
+/* ---------- arrow diagram: inputs in a left oval, outputs in a right oval, one arrow per pair ---------- */
+// pairs: [[in, out], ...]; o.ins / o.outs give the order (defaults: sorted values); o.fmt formats a value;
+// o.hl = input to highlight (others fade); o.lit = [in, out] arrow drawn thick; o.dead = inputs shown crossed out
+function arrowDiagram(svg, W, H, pairs, o){
+  o = o || {};
+  svg.innerHTML = '';
+  const fmt = o.fmt || (v => typeof v === 'number' ? num(v) : v);
+  const key = v => String(v);
+  const uniq = arr => { const s = new Set(), r = []; arr.forEach(v => { if (!s.has(key(v))){ s.add(key(v)); r.push(v); } }); return r; };
+  const srt = arr => arr.every(v => typeof v === 'number') ? arr.slice().sort((a, b) => a - b) : arr;
+  const ins = o.ins || srt(uniq(pairs.map(p => p[0]))), outs = o.outs || srt(uniq(pairs.map(p => p[1])));
+  const top = o.top ?? 34, bot = H - (o.bottom ?? 14);
+  const lx = W * 0.25, rx = W * 0.75, ow = Math.min(W * 0.17, 90);
+  mk('ellipse', { cx: lx, cy: (top + bot) / 2, rx: ow, ry: (bot - top) / 2, class: 'oval' }, svg);
+  mk('ellipse', { cx: rx, cy: (top + bot) / 2, rx: ow, ry: (bot - top) / 2, class: 'oval' }, svg);
+  txt(svg, lx, 18, o.inLab || 'INPUTS x', 'cap', { 'text-anchor': 'middle', style: 'fill:var(--in)' });
+  txt(svg, rx, 18, o.outLab || 'OUTPUTS y', 'cap', { 'text-anchor': 'middle', style: 'fill:var(--out)' });
+  const ypos = (i, n) => n === 1 ? (top + bot) / 2 : top + 26 + (bot - top - 52) * i / (n - 1);
+  const iy = {}, oy = {};
+  ins.forEach((v, i) => iy[key(v)] = ypos(i, ins.length));
+  outs.forEach((v, i) => oy[key(v)] = ypos(i, outs.length));
+  const cnt = {}; pairs.forEach(p => cnt[key(p[0])] = (cnt[key(p[0])] || 0) + 1);   // how many outputs each input has
+  const dx = Math.min(ow * 0.45, 34), fs = ins.length > 9 || outs.length > 9 ? 'labS' : 'lab';
+  const ga = mk('g', {}, svg), gd = mk('g', {}, svg);
+  pairs.forEach(p => {                                     // arrows
+    const k = key(p[0]), bad = cnt[k] > 1, faded = o.hl !== undefined && o.hl !== null && key(o.hl) !== k;
+    const lit = o.lit && key(o.lit[0]) === k && key(o.lit[1]) === key(p[1]);
+    const col = bad ? 'var(--no)' : 'var(--pt)';
+    const x1 = lx + dx + 8, y1 = iy[k], x2 = rx - dx - 9, y2 = oy[key(p[1])];
+    mk('line', { x1, y1, x2, y2, style: `stroke:${col};stroke-width:${lit ? 4.5 : 2.4};opacity:${faded ? .18 : 1}` }, ga);
+    if (!faded) arrowHead(ga, x1, y1, x2, y2, col, lit ? 12 : 10);
+  });
+  ins.forEach(v => {                                       // input dots and labels
+    const k = key(v), dead = o.dead && o.dead.map(key).includes(k), bad = cnt[k] > 1;
+    const faded = o.hl !== undefined && o.hl !== null && key(o.hl) !== k;
+    const col = dead ? 'var(--muted)' : bad ? 'var(--no)' : 'var(--in)';
+    mk('circle', { cx: lx + dx, cy: iy[k], r: o.hl !== undefined && key(o.hl) === k ? 8 : 6, style: `fill:${col};opacity:${faded ? .35 : 1}` }, gd);
+    const t = txt(gd, lx + dx - 12, iy[k] + 5, fmt(v), fs, { 'text-anchor': 'end', style: `fill:${col};opacity:${faded ? .45 : 1}${dead ? ';text-decoration:line-through' : ''}` });
+  });
+  outs.forEach(v => {                                      // output dots and labels
+    const k = key(v);
+    mk('circle', { cx: rx - dx, cy: oy[k], r: 6, style: 'fill:var(--out)' }, gd);
+    txt(gd, rx - dx + 12, oy[k] + 5, fmt(v), fs, { style: 'fill:var(--out)' });
+  });
+  return { ins, outs };
+}
+// group pairs by input: Map from input to its list of distinct outputs
+function byInput(pairs){
+  const m = new Map();
+  pairs.forEach(([x, y]) => { const k = String(x); if (!m.has(k)) m.set(k, { x, ys: [] }); const e = m.get(k); if (!e.ys.some(v => String(v) === String(y))) e.ys.push(y); });
+  return m;
+}
+const setStr = arr => '{' + arr.map(v => num(v)).join(', ') + '}';
+
+
+/* ---------- helpers for zoomable graphs (any scale) ---------- */
+const niceStep = raw => { const p = Math.pow(10, Math.floor(Math.log10(raw))), m = raw / p; return (m <= 1 ? 1 : m <= 2 ? 2 : m <= 5 ? 5 : 10) * p; };
+const decs = st => Math.max(0, -Math.floor(Math.log10(st) + 1e-9));
+function fmt(v, st){ const d = decs(st); const r = Number(v.toFixed(d)); return r === 0 ? '0' : (r < 0 ? '−' : '') + Math.abs(r).toFixed(d); }
+// a coordinate system with any box (tiny or huge), labelled ticks, a clipped layer for curves
+function ax2(svg, W, H, b, o){
+  o = o || {}; svg.innerHTML = '';
+  const L = o.padL ?? 52, R = o.padR ?? 14, T = o.padT ?? 14, B = o.padB ?? 28;
+  const sx = (W - L - R) / (b.x1 - b.x0), sy = (H - T - B) / (b.y1 - b.y0), X = x => L + (x - b.x0) * sx, Y = y => T + (b.y1 - y) * sy;
+  const gx = niceStep((b.x1 - b.x0) / 8), gy = niceStep((b.y1 - b.y0) / 7);
+  const g = mk('g', {}, svg), id = 'c' + Math.random().toString(36).slice(2);
+  const cp = mk('clipPath', { id }, svg); mk('rect', { x: L, y: T, width: W - L - R, height: H - T - B }, cp);
+  const cg = mk('g', { 'clip-path': `url(#${id})` }, svg), m = mk('g', {}, svg), top = mk('g', {}, svg);
+  for (let v = Math.ceil(b.x0 / gx) * gx; v <= b.x1 + gx * 1e-6; v += gx){ mk('line', { x1: X(v), y1: T, x2: X(v), y2: H - B, class: 'grid' }, g); txt(top, X(v), H - B + 16, o.fx ? o.fx(v) : fmt(v, gx), 'tl', { 'text-anchor': 'middle' }); }
+  for (let v = Math.ceil(b.y0 / gy) * gy; v <= b.y1 + gy * 1e-6; v += gy){ mk('line', { x1: L, y1: Y(v), x2: W - R, y2: Y(v), class: 'grid' }, g); txt(top, L - 6, Y(v) + 4, fmt(v, gy), 'tl', { 'text-anchor': 'end' }); }
+  if (b.y0 < 0 && b.y1 > 0) mk('line', { x1: L, y1: Y(0), x2: W - R, y2: Y(0), class: 'axis' }, g);
+  if (b.x0 < 0 && b.x1 > 0) mk('line', { x1: X(0), y1: T, x2: X(0), y2: H - B, class: 'axis' }, g);
+  mk('rect', { x: L, y: T, width: W - L - R, height: H - T - B, style: 'fill:none;stroke:var(--line2)' }, g);
+  if (o.xT) txt(top, W - R - 4, H - B - 6, o.xT, 'cap', { 'text-anchor': 'end' });
+  if (o.yT) txt(top, L + 6, T + 14, o.yT, 'cap');
+  return { X, Y, sx, sy, cg, m, top, b, L, R, T, B, W, H, inv: (px, py) => [b.x0 + (px - L) / sx, b.y1 - (py - T) / sy] };
+}
+// sample a curve across the box, breaking at undefined points, at listed jumps, and at big leaps
+function curve(P, f, o){
+  o = o || {}; const b = P.b, n = o.n || 900, brk = o.breaks || [], polys = []; let cur = [];
+  const lim = (b.y1 - b.y0) * 3;
+  for (let i = 0; i <= n; i++){
+    const x = b.x0 + (b.x1 - b.x0) * i / n, y = f(x);
+    const crossed = cur.length && brk.some(c => (cur[cur.length - 1][0] - c) * (x - c) <= 0);
+    if (!isFinite(y) || crossed || (cur.length && Math.abs(y - cur[cur.length - 1][1]) > lim)){ if (cur.length > 1) polys.push(cur); cur = []; if (!isFinite(y)) continue; }
+    cur.push([x, Math.max(b.y0 - lim, Math.min(b.y1 + lim, y))]);
+  }
+  if (cur.length > 1) polys.push(cur);
+  polys.forEach(p => mk('path', { d: dPath(P, p), style: `fill:none;stroke:${o.col || 'var(--cv)'};stroke-width:${o.w || 3};${o.dash ? 'stroke-dasharray:' + o.dash : ''}` }, P.cg));
+}
+const holeAt = (P, x, y, col) => mk('circle', { cx: P.X(x), cy: P.Y(y), r: 6, style: `fill:var(--bg);stroke:${col || 'var(--cv)'};stroke-width:2.5` }, P.m);
+const dotAt = (P, x, y, col, r) => mk('circle', { cx: P.X(x), cy: P.Y(y), r: r || 6, style: `fill:${col || 'var(--cv)'};stroke:var(--bg);stroke-width:1.5` }, P.m);
+const sig = v => !isFinite(v) ? (v > 0 ? '∞' : v < 0 ? '−∞' : 'undefined') : Math.abs(v) >= 1e5 ? v.toExponential(2).replace('-', '−') : num(v, 6);
+function parseLim(s){
+  const t = String(s).trim().toLowerCase().replace(/\s+/g, '').replace(/[−–]/g, '-');
+  if (/^(dne|none|doesnotexist|noLimit|nolimit|no)$/i.test(t)) return 'DNE';
+  if (/^\+?(inf|infinity|∞|oo)$/.test(t)) return Infinity;
+  if (/^-(inf|infinity|∞|oo)$/.test(t)) return -Infinity;
+  return parseNum(s);
+}
+
+const minus = s => String(s).replace(/(^|[\s(,=>→\/·+×])-(\d)/g, '$1−$2');
+const r4 = v => Number((Math.abs(v) < 1e-300 ? 0 : v).toPrecision(5));
+const SUP = k => String(k).replace(/-/g, '⁻').replace(/\d/g, d => '⁰¹²³⁴⁵⁶⁷⁸⁹'[d]);
+const sci = v => { if (v === 0) return '0'; const a = Math.abs(v); if (a >= 1e-3 && a < 1e7) return minus(String(r4(v))); let e = Math.floor(Math.log10(a)); if (Math.abs(v / Math.pow(10, e)) >= 9.995) e++; const m = v / Math.pow(10, e); return minus(`${m.toFixed(2)}×10${SUP(e)}`); };
+const gcd = (a, b) => b ? gcd(b, a % b) : Math.abs(a);
+function frc(x){ if (Math.abs(x - Math.round(x)) < 1e-9) return num(Math.round(x)); for (let d = 2; d <= 10000; d++){ const n = x * d; if (Math.abs(n - Math.round(n)) < 1e-9 * d && gcd(Math.round(n), d) === 1) return (x < 0 ? '−' : '') + Math.abs(Math.round(n)) + '/' + d; } return sci(x); }
+// a readable value: whole numbers with commas, otherwise 4–5 significant figures
+const big = v => Math.abs(v) >= 1e7 ? sci(v) : Math.abs(v - Math.round(v)) < 1e-9 ? Math.round(v).toLocaleString().replace('-', '−') : minus(String(r4(v)));
+
+const pct = p => num(p * 100, 1) + '%';                                    // 0.25 -> "25%"
+const dec = p => num(p, 3);                                                // 0.16666 -> "0.167"
+const fr = (k, n) => { const g = gcd(k, n) || 1; return n === 0 ? '0' : k === 0 ? '0' : k === n ? '1' : `${k / g}/${n / g}`; };   // reduced fraction
+function word(p){                                                          // the word on the probability scale
+  if (p <= 1e-12) return 'impossible'; if (p >= 1 - 1e-12) return 'certain';
+  if (Math.abs(p - 0.5) < 1e-12) return 'even chance'; return p < 0.5 ? 'unlikely' : 'likely';
+}
+// parse a probability typed as a fraction, a decimal or a percent
+function parseP(s){ s = String(s).trim().replace(/−/g, '-'); if (/%$/.test(s)){ const v = parseNum(s.slice(0, -1)); return v / 100; } return parseNum(s); }
+
+// the probability scale: a 0-to-1 bar with the five words and a marker at p
+function scaleBar(svg, W, p, o){
+  o = o || {}; svg.innerHTML = ''; const L = 18, R = W - 18, y = 34, X = v => L + v * (R - L);
+  mk('rect', { x: L, y: y - 7, width: R - L, height: 14, rx: 7, style: 'fill:var(--paper);stroke:var(--line)' }, svg);
+  mk('rect', { x: L, y: y - 7, width: (R - L) / 2, height: 14, rx: 7, style: 'fill:var(--line);opacity:.5' }, svg);
+  [[0, '0'], [0.25, '¼'], [0.5, '½'], [0.75, '¾'], [1, '1']].forEach(([v, l]) => { mk('line', { x1: X(v), y1: y - 10, x2: X(v), y2: y + 10, style: 'stroke:var(--muted);stroke-width:1.3' }, svg); txt(svg, X(v), y + 24, l, 'tl', { 'text-anchor': 'middle' }); });
+  [[0, 'impossible', 'start'], [0.25, 'unlikely', 'middle'], [0.5, 'even', 'middle'], [0.75, 'likely', 'middle'], [1, 'certain', 'end']].forEach(([v, l, a]) => txt(svg, X(v) + (a === 'start' ? -4 : a === 'end' ? 4 : 0), y + 44, l, 'cap', { 'text-anchor': a }));
+  if (p !== null && isFinite(p)){
+    const x = X(clamp(p, 0, 1));
+    mk('path', { d: `M${x} ${y - 8} l-8 -14 h16 z`, style: `fill:${o.col || 'var(--hit)'}` }, svg);
+    txt(svg, clamp(x, L + 14, R - 14), y - 25, o.lab || '', 'labS', { 'text-anchor': 'middle', style: `fill:${o.col || 'var(--hit)'}` });
+  }
+}
+
+/* ---------- small pictures: die faces, coins, cards, marbles ---------- */
+const PIPS = { 1: [[0, 0]], 2: [[-1, -1], [1, 1]], 3: [[-1, -1], [0, 0], [1, 1]], 4: [[-1, -1], [1, -1], [-1, 1], [1, 1]], 5: [[-1, -1], [1, -1], [0, 0], [-1, 1], [1, 1]], 6: [[-1, -1], [1, -1], [-1, 0], [1, 0], [-1, 1], [1, 1]] };
+function dieFace(g, cx, cy, s, n, o){                  // a die face of side s centred at (cx, cy)
+  o = o || {};
+  mk('rect', { x: cx - s / 2, y: cy - s / 2, width: s, height: s, rx: s * 0.18, style: `fill:${o.fill || 'var(--paper)'};stroke:${o.stroke || 'var(--ink)'};stroke-width:${o.sw || 1.6}` }, g);
+  (PIPS[n] || []).forEach(([a, b]) => mk('circle', { cx: cx + a * s * 0.26, cy: cy + b * s * 0.26, r: s * 0.085, style: `fill:${o.pip || 'var(--ink)'}` }, g));
+}
+function coin(g, cx, cy, r, face, o){                  // a coin showing H or T
+  o = o || {};
+  mk('circle', { cx, cy, r, style: `fill:${face === 'H' ? 'var(--yel)' : 'var(--paper)'};stroke:${o.stroke || 'var(--gold)'};stroke-width:${o.sw || 2}` }, g);
+  txt(g, cx, cy + r * 0.36, face, '', { 'text-anchor': 'middle', style: `font:700 ${r}px var(--sans);fill:var(--ink)` });
+}
+function marble(g, cx, cy, r, col){ mk('circle', { cx, cy, r, style: `fill:${col};stroke:var(--ink);stroke-width:1;opacity:.95` }, g); mk('circle', { cx: cx - r * 0.35, cy: cy - r * 0.35, r: r * 0.25, style: 'fill:#fff;opacity:.55' }, g); }
+const SUITS = ['♠', '♥', '♦', '♣'], RANKS = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+function card(g, x, y, w, h, r, s){                    // a playing card: rank r (0-12) of suit s (0-3)
+  const col = s === 1 || s === 2 ? 'var(--red)' : 'var(--ink)';
+  mk('rect', { x, y, width: w, height: h, rx: 4, style: 'fill:var(--paper);stroke:var(--muted);stroke-width:1' }, g);
+  txt(g, x + w / 2, y + h * 0.42, RANKS[r], '', { 'text-anchor': 'middle', style: `font:700 ${w * 0.34}px var(--sans);fill:${col}` });
+  txt(g, x + w / 2, y + h * 0.82, SUITS[s], '', { 'text-anchor': 'middle', style: `font:${w * 0.38}px var(--sans);fill:${col}` });
+}
+// a spinner: sectors [{p, col, l}], highlighted indices hi, optional pointer angle (radians, 0 = up, clockwise)
+function spinner(g, cx, cy, r, secs, o){
+  o = o || {}; let a = 0;
+  secs.forEach((s, i) => {
+    const a2 = a + s.p * 2 * Math.PI, P = t => [cx + r * Math.sin(t), cy - r * Math.cos(t)], [x1, y1] = P(a), [x2, y2] = P(a2);
+    const big = a2 - a > Math.PI ? 1 : 0, on = o.hi ? o.hi.has(i) : false;
+    const path = mk('path', { d: s.p >= 0.9999 ? `M${cx - r} ${cy}a${r} ${r} 0 1 0 ${2 * r} 0a${r} ${r} 0 1 0 ${-2 * r} 0` : `M${cx} ${cy}L${x1} ${y1}A${r} ${r} 0 ${big} 1 ${x2} ${y2}Z`, style: `fill:${s.col};stroke:${on ? 'var(--hit)' : 'var(--bg)'};stroke-width:${on ? 4 : 2};opacity:${o.hi && !on ? 0.3 : 0.9}` }, g);
+    if (o.click) { path.classList.add('cellg'); path.addEventListener('click', () => o.click(i)); }
+    const m = (a + a2) / 2, lr = r * (s.p < 0.2 ? 0.72 : 0.6);
+    if (s.l) txt(g, cx + lr * Math.sin(m), cy - lr * Math.cos(m) + 6, s.l, 'lab', { 'text-anchor': 'middle', style: 'pointer-events:none' });
+    a = a2;
+  });
+  if (o.ptr !== undefined && o.ptr !== null){
+    const t = o.ptr, px = cx + r * 0.92 * Math.sin(t), py = cy - r * 0.92 * Math.cos(t);
+    mk('line', { x1: cx, y1: cy, x2: px, y2: py, style: 'stroke:var(--ink);stroke-width:5;stroke-linecap:round' }, g);
+    arrowHead(g, cx, cy, px + 6 * Math.sin(t), py - 6 * Math.cos(t), 'var(--ink)', 12);
+    mk('circle', { cx, cy, r: 8, style: 'fill:var(--ink)' }, g);
+  }
+}
+
+const range = n => [...Array(n).keys()];                                    // [0, 1, ..., n-1]
+const fracK = (k, n) => fr(k, n) === `${k}/${n}` ? `${k}/${n}` : `${k}/${n} = ${fr(k, n)}`;   // "6/36 = 1/6"
+// a probability shown neatly: short decimals as decimals, others as a fraction (1/12)
+const fmtP = p => Math.abs(p * 1000 - Math.round(p * 1000)) < 1e-6 ? num(p, 3) : frc(p);
+// which of the four regions an outcome is in: both, A only, B only, neither
+const region = (inA, inB) => inA && inB ? 'ab' : inA ? 'a' : inB ? 'b' : 'n';
+// which regions each "show" option keeps bright
+const OPS = [
+  { k: 'A', n: 'A', on: ['ab', 'a'] }, { k: 'B', n: 'B', on: ['ab', 'b'] },
+  { k: 'and', n: 'A and B', on: ['ab'] }, { k: 'or', n: 'A or B', on: ['a', 'ab', 'b'] },
+  { k: 'notA', n: 'not A', on: ['b', 'n'] }, { k: 'neither', n: 'neither', on: ['n'] },
+  { k: 'one', n: 'exactly one', on: ['a', 'b'] }
+];
+const RCOL = { a: 'var(--a)', b: 'var(--b)', ab: 'var(--ab)', n: 'var(--nn)' };            // strong colours
+const RBG = { a: 'var(--a-bg)', b: 'var(--b-bg)', ab: 'var(--ab-bg)', n: 'var(--bg)' };    // light tints for grid cells
+// a row of chip buttons with a label; returns a function that marks one as on
+function chipRow(boxId, label, names, onPick){
+  const box = $(boxId); box.innerHTML = `<span class="lbl">${label}</span>`;
+  names.forEach((n, i) => { const b = document.createElement('button'); b.innerHTML = n; b.onclick = () => onPick(i); box.appendChild(b); });
+  return i => [...box.querySelectorAll('button')].forEach((b, j) => b.classList.toggle('on', j === i));
+}
+// the two-way table: v = {ab, a, b, n} region values, tot = {A, nA, B, nB, all}, on = regions to highlight, f = formatter
+function twTable(v, tot, nameA, nameB, on, f){
+  const td = r => `<td class="${on.includes(r) ? 'on-' + r : ''}">${f(v[r])}</td>`;
+  return `<table class="tw"><tr><th></th><th><span class="kb">B</span>${nameB ? ': ' + nameB : ''}</th><th>not B</th><th>Total</th></tr>
+    <tr><th><span class="ka">A</span>${nameA ? ': ' + nameA : ''}</th>${td('ab')}${td('a')}<td class="tot">${f(tot.A)}</td></tr>
+    <tr><th>not A</th>${td('b')}${td('n')}<td class="tot">${f(tot.nA)}</td></tr>
+    <tr><th>Total</th><td class="tot">${f(tot.B)}</td><td class="tot">${f(tot.nB)}</td><td class="tot">${f(tot.all)}</td></tr></table>`;
+}
+
+/* =====================================================================
+   2. NUMBER TOOLS
+   ===================================================================== */
+// display a number with thousands separators and at most d decimals
+const nf = (x, d) => { if (d === undefined) d = 2; const r = Math.round(x * Math.pow(10, d)) / Math.pow(10, d); return (r < 0 ? '−' : '') + Math.abs(r).toLocaleString('en-US', { maximumFractionDigits: d }); };
+// a percent as a reduced fraction: 12.5 -> "1/8"
+function pctFrac(p){ let k = 1; while (Math.abs(p * k - Math.round(p * k)) > 1e-9 && k < 1e4) k *= 10; const a = Math.round(p * k), b = 100 * k, g = gcd(Math.abs(a), b) || 1; return b / g === 1 ? String(a / g) : `${a / g}/${b / g}`; }
+const readP = s => parseNum(String(s).replace(/%/g, ''));      // allow a trailing % sign
+
+/* =====================================================================
+   3. PART, WHOLE, PERCENT
+   ===================================================================== */
+const P = { part: 1400, whole: 4000, pct: 35, find: 0, unit: 'mAh', shown: null, raf: 0 };
+const FINDS = ['part', 'whole', 'pct'];
+const pPre = [
+  { n: 'Battery', f: 0, whole: 4000, pct: 35, u: 'mAh', d: 'A 4,000 mAh phone battery shows 35%. How much charge is left? Find the part.' },
+  { n: 'Test score', f: 2, part: 42, whole: 50, u: 'questions', d: '42 right out of 50 questions. What percent is that? Find the percent.' },
+  { n: 'Free throws', f: 2, part: 18, whole: 24, u: 'shots', d: '18 free throws made out of 24 tries. What is the free-throw percentage?' },
+  { n: 'Download', f: 1, part: 240, pct: 60, u: 'MB', d: 'The bar says 60% and 240 MB have arrived. How big is the whole file? Find the whole.' },
+  { n: 'Juice drink', f: 0, whole: 2000, pct: 15, u: 'mL', d: 'A 2-litre (2,000 mL) carton of juice drink is 15% real juice. How much real juice is in it?' },
+  { n: 'Nutrition label', f: 1, part: 7, pct: 25, u: 'g', d: 'A cereal serving has 7 g of fibre, listed as 25% of the daily value. What is the full daily value?' },
+  { n: 'Phone storage', f: 2, part: 96, whole: 128, u: 'GB', d: '96 GB used on a 128 GB phone. What percent of the storage is full?' },
+  { n: 'Step goal', f: 2, part: 15000, whole: 10000, u: 'steps', d: '15,000 steps against a 10,000-step goal. Over 100%: one whole grid and half of another.' }
+];
+const markP = buttons('pPresets', pPre, i => { pStop(); const p = pPre[i]; markP(i); $('pDesc').textContent = p.d; P.unit = p.u; P.find = p.f;
+  if (p.f === 0){ P.whole = p.whole; P.pct = p.pct; } else if (p.f === 1){ P.part = p.part; P.pct = p.pct; } else { P.part = p.part; P.whole = p.whole; }
+  pSolve(); pFill(); markFind(P.find); pDraw(); });
+const markFind = chipRow('pFind', 'Find', ['the part', 'the whole', 'the percent'], i => { pStop(); P.find = i; markFind(i); pFill(); pDraw(); });
+function pSolve(){ if (P.find === 0) P.part = P.pct / 100 * P.whole; else if (P.find === 1) P.whole = P.part / (P.pct / 100); else P.pct = P.part / P.whole * 100; }
+function pFill(){                                           // put the numbers into the boxes; the one being found is read-only
+  const ids = ['pPart', 'pWhole', 'pPct'], v = [P.part, P.whole, P.pct];
+  ids.forEach((id, i) => { const el = $(id); el.value = i === P.find ? nf(v[i], 2).replace(/,/g, '') : String(+v[i].toFixed(4)); el.readOnly = i === P.find; el.classList.toggle('found', i === P.find); });
+  $('pErr').textContent = '';
+}
+function pInput(){
+  pStop(); markP(-1); $('pDesc').textContent = 'Your own numbers.'; P.unit = '';
+  const part = parseNum($('pPart').value), whole = parseNum($('pWhole').value), pct = readP($('pPct').value);
+  const need = [[0, part], [1, whole], [2, pct]].filter(([i]) => i !== P.find);
+  if (need.some(([, v]) => isNaN(v))){ $('pErr').textContent = 'Fill in both boxes with numbers.'; return; }
+  if (P.find !== 1 && !(whole > 0)){ $('pErr').textContent = 'The whole must be more than 0.'; return; }
+  if (P.find === 1 && !(pct > 0)){ $('pErr').textContent = 'The percent must be more than 0 to find the whole.'; return; }
+  if (need.some(([, v]) => v < 0)){ $('pErr').textContent = 'Use numbers that are 0 or more.'; return; }
+  if (P.find !== 0) P.part = part; if (P.find !== 1) P.whole = whole; if (P.find !== 2) P.pct = pct;
+  pSolve();
+  if (P.pct > 300){ $('pErr').textContent = 'Keep the percent at 300% or less so the grids fit.'; return; }
+  $('pErr').textContent = ''; $(['pPart', 'pWhole', 'pPct'][P.find]).value = nf([P.part, P.whole, P.pct][P.find], 2).replace(/,/g, ''); pDraw();
+}
+['pPart', 'pWhole', 'pPct'].forEach(id => $(id).addEventListener('input', pInput));
+
+function drawGrid(){
+  const svg = $('pG'); svg.innerHTML = '';
+  const pct = P.pct, sh = P.shown === null ? pct : P.shown, n = Math.max(1, Math.ceil(pct / 100 - 1e-9));
+  const gap = 16, cell = Math.min(22, (440 - (n - 1) * gap) / (10 * n)), gw = cell * 10, x0 = (470 - (n * gw + (n - 1) * gap)) / 2, y0 = 54;
+  for (let g = 0; g < n; g++){
+    const gx = x0 + g * (gw + gap);
+    for (let k = 0; k < 100; k++){
+      const cx = gx + (k % 10) * cell, cy = y0 + Math.floor(k / 10) * cell, f = clamp(sh - (g * 100 + k), 0, 1);
+      mk('rect', { x: cx + 0.75, y: cy + 0.75, width: cell - 1.5, height: cell - 1.5, rx: 2, style: 'fill:var(--bg);stroke:var(--line);stroke-width:1' }, svg);
+      if (f > 0) mk('rect', { x: cx + 0.75, y: cy + 0.75, width: (cell - 1.5) * f, height: cell - 1.5, rx: f > 0.9 ? 2 : 0, style: 'fill:var(--part);opacity:.85' }, svg);
+    }
+    mk('rect', { x: gx - 1, y: y0 - 1, width: gw + 2, height: gw + 2, rx: 3, style: `fill:none;stroke:var(--whole);stroke-width:${g === 0 ? 2.4 : 1.4};stroke-dasharray:${g === 0 ? 'none' : '5 3'}` }, svg);
+    txt(svg, gx + gw / 2, y0 + gw + 18, g === 0 ? '100% = the whole' : `another 100%`, 'tl', { 'text-anchor': 'middle', style: 'fill:var(--whole)' });
+  }
+  const u = P.unit ? ' ' + P.unit : '';
+  txt(svg, 235, 22, `${nf(sh, 2)}% shaded`, 'lab', { 'text-anchor': 'middle', style: 'fill:var(--part)' });
+  txt(svg, 235, 40, `each square = 1% = ${nf(P.whole / 100, 3)}${u}`, 'tl', { 'text-anchor': 'middle' });
+}
+function drawForms(){
+  const u = P.unit ? ' ' + P.unit : '', p = P.pct, d = p / 100;
+  let steps;
+  if (P.find === 0) steps = `<span class="kp">part</span> = ${nf(p)}% × ${nf(P.whole)}<br>= ${nf(d, 4)} × ${nf(P.whole)}<br>= <b class="kp">${nf(P.part)}${u}</b><div class="c">Percent to decimal (÷ 100), then multiply by the whole.</div>`;
+  else if (P.find === 1) steps = `<span class="kw">whole</span> = ${nf(P.part)} ÷ ${nf(p)}%<br>= ${nf(P.part)} ÷ ${nf(d, 4)}<br>= <b class="kw">${nf(P.whole)}${u}</b><div class="c">${nf(p)}% is ${nf(P.part)}, so 1% is ${nf(P.part / p, 3)} and 100% is ${nf(P.whole)}.</div>`;
+  else steps = `<span class="kc">percent</span> = ${nf(P.part)} ÷ ${nf(P.whole)} × 100%<br>= ${nf(P.part / P.whole, 4)} × 100%<br>= <b class="kc">${nf(p)}%</b><div class="c">Part over whole gives a decimal; × 100 turns it into a percent.</div>`;
+  $('pForms').innerHTML = `<div class="three"><div><small>Percent</small><b>${nf(p)}%</b></div><div><small>Fraction</small><b>${pctFrac(p)}</b></div><div><small>Decimal</small><b>${nf(d, 4)}</b></div></div><div class="steps">${steps}</div>`;
+}
+function drawLine(){
+  const svg = $('pL'); svg.innerHTML = '';
+  const pct = P.pct, sh = P.shown === null ? pct : P.shown, R = pct <= 100 ? 100 : Math.min(300, Math.ceil(pct / 50) * 50);
+  const x0 = 70, x1 = 920, X = q => x0 + (x1 - x0) * q / R, yT = 70, yB = 120, st = R <= 100 ? 10 : R <= 200 ? 25 : 50;
+  mk('line', { x1: x0, y1: yT, x2: x1, y2: yT, class: 'axis' }, svg); mk('line', { x1: x0, y1: yB, x2: x1, y2: yB, class: 'axis' }, svg);
+  txt(svg, x0 - 10, yT + 4, P.unit || 'amount', 'tl', { 'text-anchor': 'end' }); txt(svg, x0 - 10, yB + 4, 'percent', 'tl', { 'text-anchor': 'end', style: 'fill:var(--pc)' });
+  // shaded part, from 0 up to the percent, on both lines
+  mk('rect', { x: X(0), y: yT - 5, width: X(sh) - X(0), height: 10, style: 'fill:var(--part);opacity:.55' }, svg);
+  mk('rect', { x: X(0), y: yB - 5, width: X(sh) - X(0), height: 10, style: 'fill:var(--pc);opacity:.35' }, svg);
+  for (let q = 0; q <= R + 1e-9; q += st){
+    mk('line', { x1: X(q), y1: yT - 6, x2: X(q), y2: yT + 6, class: 'axis' }, svg); mk('line', { x1: X(q), y1: yB - 6, x2: X(q), y2: yB + 6, class: 'axis' }, svg);
+    if (Math.abs(q - pct) > st * 0.6 || q === 100) { txt(svg, X(q), yT - 12, nf(P.whole * q / 100, 2), 'tl', { 'text-anchor': 'middle' }); txt(svg, X(q), yB + 22, q + '%', 'tl', { 'text-anchor': 'middle', style: 'fill:var(--pc)' }); }
+  }
+  // the whole lines up with 100%
+  mk('line', { x1: X(100), y1: yT - 46, x2: X(100), y2: yB + 34, style: 'stroke:var(--whole);stroke-width:2.4' }, svg);
+  txt(svg, X(100) + (X(100) > 840 ? 4 : 0), yT - 50, `whole = ${nf(P.whole)}`, 'labS', { 'text-anchor': X(100) > 840 ? 'end' : 'middle', style: 'fill:var(--whole)' });
+  // the part, at its percent
+  mk('line', { x1: X(sh), y1: yT - 22, x2: X(sh), y2: yB + 30, style: 'stroke:var(--part);stroke-width:2.4' }, svg);
+  if (Math.abs(sh - 100) > 0.01){
+    const anc = X(sh) > 840 ? 'end' : sh > 100 ? 'start' : 'middle';
+    txt(svg, X(sh) + (anc === 'start' ? 6 : anc === 'end' ? -6 : 0), yT - 26, `part = ${nf(P.whole * sh / 100)}`, 'labS', { 'text-anchor': anc, style: 'fill:var(--part)' });
+    txt(svg, X(sh) + (anc === 'start' ? 6 : anc === 'end' ? -6 : 0), yB + 42, `${nf(sh)}%`, 'labS', { 'text-anchor': anc, style: 'fill:var(--pc)' });
+  }
+  // the 10% hop as a benchmark
+  mk('path', { d: `M${X(0)} ${yB + 52} Q ${(X(0) + X(10)) / 2} ${yB + 66} ${X(10)} ${yB + 52}`, style: 'fill:none;stroke:var(--muted);stroke-width:1.3' }, svg);
+  txt(svg, X(10) + 8, yB + 64, `10% = ${nf(P.whole / 10, 3)}, 1% = ${nf(P.whole / 100, 3)}`, 'tl', {});
+}
+function pReadout(){
+  const u = P.unit ? ' ' + P.unit : '';
+  let s = `<b class="kp">${nf(P.part)}${u}</b> is <b class="kc">${nf(P.pct)}%</b> of <b class="kw">${nf(P.whole)}${u}</b>. `;
+  if (P.pct > 100) s += `That’s more than the whole: ${nf(P.pct / 100, 3)} times it. Percents above 100 are fine.`;
+  else if (P.pct === 100) s += 'The part is the whole.';
+  else s += `As a fraction: ${pctFrac(P.pct)} of the whole. Every square, and every step along the number line, is the same size.`;
+  $('pOut').innerHTML = s;
+}
+function pDraw(){ drawGrid(); drawForms(); drawLine(); pReadout(); }
+function pStop(){ cancelAnimationFrame(P.raf); P.shown = null; }
+$('pPlay').onclick = () => { pStop(); const t0 = performance.now(), dur = 2200 + 600 * Math.max(0, P.pct / 100 - 1);
+  const tick = now => { const e = Math.min(1, (now - t0) / dur), k = e < 0.5 ? 2 * e * e : 1 - Math.pow(-2 * e + 2, 2) / 2; P.shown = P.pct * k; drawGrid(); drawLine(); if (e < 1) P.raf = requestAnimationFrame(tick); else { P.shown = null; pDraw(); } };
+  P.raf = requestAnimationFrame(tick); };
+$('pReset').onclick = () => { pStop(); pDraw(); };
+
+/* =====================================================================
+   4. PERCENT CHANGE
+   ===================================================================== */
+const C = { S: 40, ch: [25], unit: 'cm', anim: null, raf: 0, pts: false };
+const cPre = [
+  { n: 'Growing plant', S: 40, ch: [25], u: 'cm', d: 'A 40 cm plant grows 25%. The growth is 25% of 40 = 10 cm, so it’s 50 cm: × 1.25 in one step.' },
+  { n: 'Recipe for more', S: 250, ch: [50], u: 'g', d: 'A recipe uses 250 g of flour. Make 50% more: 250 × 1.5 = 375 g.' },
+  { n: 'Slower download', S: 50, ch: [-60], u: 'Mbps', d: 'Download speed drops 60%, from 50 Mbps. A 60% drop keeps 40%: 50 × 0.4 = 20 Mbps.' },
+  { n: 'Battery 80% → 60%', S: 80, ch: [-25], u: '%', pts: true, d: 'Battery goes from 80% to 60%: down 20 percentage points, but that’s a 25% decrease in the charge it had.' },
+  { n: 'Up 50%, down 50%', S: 40, ch: [50, -50], u: 'cm', d: 'A plant grows 50%, then a snail eats 50% of it. 40 → 60 → 30: not back to 40.' },
+  { n: 'Shrink, then undo', S: 80, ch: [-20, 25], u: 'cm', d: 'A sweater shrinks 20% in the wash, 80 → 64 cm. Stretching it back takes +25%, not +20%.' },
+  { n: '−20% three times', S: 500, ch: [-20, -20, -20], u: 'nits', d: 'Screen brightness drops 20% three times. 0.8 × 0.8 × 0.8 = 0.512: about a 49% drop, not 60%.' },
+  { n: 'Seedling triples', S: 5, ch: [200], u: 'cm', d: 'A 5 cm seedling grows 200%. That’s × 3, not × 2: it gains twice its height, ending at 15 cm.' }
+];
+const markC = buttons('cPresets', cPre, i => { cStop(); const p = cPre[i]; markC(i); $('cDesc').textContent = p.d; C.S = p.S; C.ch = p.ch.slice(); C.unit = p.u; C.pts = !!p.pts;
+  $('cS').value = p.S; $('cC').value = p.ch.map(c => (c > 0 ? '+' : '') + c).join(', '); $('cErr').textContent = ''; cDraw(); });
+function cParse(){
+  const S = parseNum($('cS').value), parts = $('cC').value.trim().split(/[,;\s]+/).filter(x => x), ch = parts.map(x => readP(x.replace(/^\+/, '')));
+  if (isNaN(S) || S <= 0) return 'Type a start value bigger than 0.';
+  if (!parts.length || ch.some(isNaN)) return 'Type the changes as percents separated by commas, like +50, -50.';
+  if (ch.length > 5) return 'Use at most 5 changes.';
+  if (ch.some(c => c <= -100)) return 'A decrease must be less than 100%: you can’t lose more than everything.';
+  if (ch.some(c => c > 500)) return 'Keep each increase at 500% or less.';
+  C.S = S; C.ch = ch; return '';
+}
+['cS', 'cC'].forEach(id => $(id).addEventListener('input', () => { cStop(); const e = cParse(); $('cErr').textContent = e; if (e) return; markC(-1); $('cDesc').textContent = 'Your own changes.'; C.unit = ''; C.pts = false; cDraw(); }));
+const mult = c => 1 + c / 100;
+function cVals(){ const v = [C.S]; C.ch.forEach(c => v.push(v[v.length - 1] * mult(c))); return v; }
+function cBars(prog){                                        // prog: how far the animation is, in steps (undefined = all)
+  const svg = $('cB'); svg.innerHTML = '';
+  const v = cVals(), n = v.length, ymax = Math.max(...v) * 1.18, yb = 270, top = 50, Y = q => yb - (yb - top) * q / ymax;
+  const slot = 860 / n, bw = Math.min(110, slot * 0.5), X = i => 70 + slot * (i + 0.5);
+  const u = C.unit === '%' ? '%' : (C.unit ? ' ' + C.unit : '');
+  mk('line', { x1: 40, y1: yb, x2: 930, y2: yb, class: 'axis' }, svg);
+  mk('line', { x1: 40, y1: Y(C.S), x2: 930, y2: Y(C.S), style: 'stroke:var(--ink);stroke-width:1.2;stroke-dasharray:6 4;opacity:.6' }, svg);
+  txt(svg, 44, Y(C.S) - 6, `start ${nf(C.S)}${u}`, 'tl', {});
+  const P2 = prog === undefined ? n : prog;
+  for (let i = 0; i < n; i++){
+    if (i > P2) break;
+    const e = i === 0 ? 1 : clamp(P2 - (i - 1), 0, 1);            // this bar's grow fraction
+    const prev = i ? v[i - 1] : v[0], cur = prev + (v[i] - prev) * e, x = X(i) - bw / 2;
+    if (i === 0) mk('rect', { x, y: Y(v[0]), width: bw, height: yb - Y(v[0]), rx: 3, style: 'fill:var(--base)' }, svg);
+    else if (v[i] >= prev){
+      mk('rect', { x, y: Y(prev), width: bw, height: yb - Y(prev), rx: 3, style: 'fill:var(--base)' }, svg);
+      mk('rect', { x, y: Y(cur), width: bw, height: Y(prev) - Y(cur), style: 'fill:var(--up)' }, svg);
+    } else {
+      mk('rect', { x, y: Y(prev), width: bw, height: Y(cur) - Y(prev), style: 'fill:var(--dn-bg);stroke:var(--dn);stroke-width:1.4;stroke-dasharray:4 3' }, svg);
+      mk('rect', { x, y: Y(cur), width: bw, height: yb - Y(cur), rx: 3, style: 'fill:var(--base)' }, svg);
+      if (e > 0.6 && Y(cur) - Y(prev) > 16) txt(svg, X(i), (Y(prev) + Y(cur)) / 2 + 5, '✕', 'labS', { 'text-anchor': 'middle', style: 'fill:var(--dn)' });
+    }
+    if (e >= 1 || i === 0){ const inside = yb - Y(v[i]) > 30; txt(svg, X(i), inside ? Y(v[i]) + 20 : Y(v[i]) - 8, nf(v[i]) + u, 'lab', { 'text-anchor': 'middle', style: inside ? 'fill:#fff;stroke:none' : '' }); }
+    txt(svg, X(i), yb + 18, i === 0 ? 'start' : `after step ${i}`, 'tl', { 'text-anchor': 'middle' });
+    if (i > 0){                                                       // the arrow from the previous bar, with the change and its multiplier
+      const c = C.ch[i - 1], ax = X(i - 1) + bw / 2 + 6, bx = X(i) - bw / 2 - 6, ay = Math.min(Y(prev), Y(v[i])) - 34, col = c >= 0 ? 'var(--up)' : 'var(--dn)';
+      mk('path', { d: `M${ax} ${ay + 10} Q ${(ax + bx) / 2} ${ay - 14} ${bx} ${ay + 10}`, style: `fill:none;stroke:${col};stroke-width:1.8` }, svg);
+      mk('path', { d: `M${bx - 7} ${ay + 3} L${bx} ${ay + 10} L${bx - 9} ${ay + 11}`, style: `fill:none;stroke:${col};stroke-width:1.8` }, svg);
+      txt(svg, (ax + bx) / 2, ay - 18, `${c > 0 ? '+' : ''}${nf(c)}%  (× ${nf(mult(c), 4)})`, 'labS', { 'text-anchor': 'middle', style: `fill:${col}` });
+      txt(svg, (ax + bx) / 2, ay - 2, `${nf(Math.abs(c))}% of ${nf(prev)} = ${nf(Math.abs(v[i] - prev))}`, 'tl', { 'text-anchor': 'middle' });
+    }
+  }
+  // what adding the percents would (wrongly) predict
+  if (C.ch.length > 1 && P2 >= n - 1){
+    const sum = C.ch.reduce((a, b) => a + b, 0), naive = C.S * (1 + sum / 100);
+    if (Math.abs(naive - v[n - 1]) > 1e-6 && naive > 0 && naive < ymax){
+      const x = X(n - 1);
+      mk('line', { x1: x - bw / 2 - 10, y1: Y(naive), x2: x + bw / 2 + 10, y2: Y(naive), style: 'stroke:var(--bad);stroke-width:2;stroke-dasharray:3 3' }, svg);
+      txt(svg, Math.min(x, 940 - 130), yb + 36, `red dots: adding the %s says ${nf(naive)} ✕`, 'tl', { 'text-anchor': 'middle', style: 'fill:var(--bad)' });
+    } else if (naive <= 0) txt(svg, Math.min(X(n - 1), 940 - 140), yb + 36, `adding the %s says ${nf(sum)}%: impossible ✕`, 'tl', { 'text-anchor': 'middle', style: 'fill:var(--bad)' });
+  }
+  txt(svg, 14, 20, 'EACH BAR = THE VALUE AFTER ONE MORE CHANGE', 'cap', {});
+}
+function cReadout(){
+  const v = cVals(), end = v[v.length - 1], m = end / C.S, pc = (m - 1) * 100, u = C.unit === '%' ? '%' : (C.unit ? ' ' + C.unit : '');
+  let s = `${nf(C.S)}${u} ${C.ch.map(c => `× ${nf(mult(c), 4)}`).join(' ')} = <b>${nf(end)}${u}</b>. `;
+  s += C.ch.length > 1 ? `Overall multiplier ${C.ch.map(c => nf(mult(c), 4)).join(' × ')} = <b>${nf(m, 4)}</b>: ` : `Multiplier <b>${nf(m, 4)}</b>: `;
+  s += Math.abs(pc) < 1e-9 ? 'no change overall.' : `<b class="${pc > 0 ? 'ku' : 'kd'}">${pc > 0 ? 'a ' + nf(pc) + '% increase' : 'a ' + nf(-pc) + '% decrease'}</b> overall.`;
+  if (C.ch.length > 1){ const sum = C.ch.reduce((a, b) => a + b, 0); if (Math.abs(sum - pc) > 1e-6) s += ` Adding the percents would say ${sum > 0 ? '+' : ''}${nf(sum)}%, which is wrong: each percent is of a different bar.`; }
+  if (Math.abs(m - 1) > 1e-9) s += `<br>To undo it, divide by ${nf(m, 4)}, which is × ${nf(1 / m, 4)}: a ${1 / m > 1 ? nf((1 / m - 1) * 100) + '% increase' : nf((1 - 1 / m) * 100) + '% decrease'}, not ${pc > 0 ? '−' : '+'}${nf(Math.abs(pc))}%.`;
+  if (C.unit === '%') s += `<br>These values are themselves percents: ${nf(C.S)}% → ${nf(end)}% is ${end > C.S ? 'up' : 'down'} <b>${nf(Math.abs(end - C.S))} percentage points</b>, but a <b>${nf(Math.abs(pc))}% ${end > C.S ? 'increase' : 'decrease'}</b> relative to where it started.`;
+  $('cOut').innerHTML = s;
+}
+function cDraw(){ cBars(); cReadout(); }
+function cStop(){ cancelAnimationFrame(C.raf); }
+$('cPlay').onclick = () => { cStop(); const t0 = performance.now(), per = 1100, n = C.ch.length;
+  const tick = now => { const p = (now - t0) / per; cBars(Math.min(n, p)); if (p < n) C.raf = requestAnimationFrame(tick); else cDraw(); };
+  C.raf = requestAnimationFrame(tick); };
+$('cReset').onclick = () => { cStop(); cDraw(); };
+
+/* =====================================================================
+   5. TRAPS
+   ===================================================================== */
+function trapBars(svg, vals, labels, cols, extra){
+  svg.innerHTML = ''; const yb = 185, mx = Math.max(...vals) * 1.15, Y = q => yb - 140 * q / mx, w = 46, gapX = 300 / vals.length;
+  mk('line', { x1: 10, y1: yb, x2: 290, y2: yb, class: 'axis' }, svg);
+  vals.forEach((q, i) => { const x = gapX * (i + 0.5) - w / 2;
+    mk('rect', { x, y: Y(q), width: w, height: yb - Y(q), rx: 3, style: `fill:${cols[i]}` }, svg);
+    txt(svg, x + w / 2, Y(q) - 6, labels[i], 'labS', { 'text-anchor': 'middle' }); });
+  if (extra) extra(svg, Y, gapX, w);
+  return Y;
+}
+function drawTraps(){
+  trapBars($('tr1'), [100, 150, 75], ['100', '150', '75'], ['var(--base)', 'var(--up)', 'var(--base)'], (s, Y, g) => {
+    mk('line', { x1: 10, y1: Y(100), x2: 290, y2: Y(100), style: 'stroke:var(--ink);stroke-dasharray:5 4;opacity:.6' }, s);
+    txt(s, g * 1, 205, '+50% ×1.5', 'tl', { 'text-anchor': 'middle', style: 'fill:var(--up)' }); txt(s, g * 2, 205, '−50% ×0.5', 'tl', { 'text-anchor': 'middle', style: 'fill:var(--dn)' });
+    txt(s, g * 2.5 - 6, Y(100) - 6, 'start', 'tl', { 'text-anchor': 'end' }); });
+  trapBars($('tr2'), [40, 50], ['40%', '50%'], ['var(--base)', 'var(--part)'], (s, Y, g, w) => {
+    const x = g * 1.5 - w / 2 - 8;
+    mk('line', { x1: g * 0.5 + w / 2, y1: Y(40), x2: x + 8, y2: Y(40), style: 'stroke:var(--muted);stroke-dasharray:3 3' }, s);
+    mk('path', { d: `M${x} ${Y(40)} L${x - 8} ${Y(40)} L${x - 8} ${Y(50)} L${x} ${Y(50)}`, style: 'fill:none;stroke:var(--pc);stroke-width:1.6' }, s);
+    txt(s, x - 12, (Y(40) + Y(50)) / 2 - 2, '+10 points', 'labS', { 'text-anchor': 'end', style: 'fill:var(--pc)' });
+    txt(s, x - 12, (Y(40) + Y(50)) / 2 + 14, '= +25% of 40', 'tl', { 'text-anchor': 'end' });
+    txt(s, g * 0.5, 205, 'before', 'tl', { 'text-anchor': 'middle' }); txt(s, g * 1.5, 205, 'after', 'tl', { 'text-anchor': 'middle' }); });
+  trapBars($('tr3'), [80, 64, 76.8], ['80', '64', '76.8'], ['var(--base)', 'var(--base)', 'var(--bad)'], (s, Y, g) => {
+    mk('line', { x1: 10, y1: Y(80), x2: 290, y2: Y(80), style: 'stroke:var(--ink);stroke-dasharray:5 4;opacity:.6' }, s);
+    txt(s, g * 1, 205, '−20%', 'tl', { 'text-anchor': 'middle', style: 'fill:var(--dn)' }); txt(s, g * 2, 205, '+20% of 64', 'tl', { 'text-anchor': 'middle', style: 'fill:var(--bad)' });
+    txt(s, 286, 18, 'to get back to 80: ×1.25', 'tl', { 'text-anchor': 'end' }); });
+}
+
+/* =====================================================================
+   6. QUIZ
+   ===================================================================== */
+const Q = { right: 0, total: 0 };
+let qq = null;
+const qTitles = { pwp: 'Part, whole or percent', chg: 'Percent change', conv: 'Convert', trap: 'Spot the trap' };
+function shuffle(a){ for (let i = a.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+function qReset(){ $('qChoice').innerHTML = ''; $('qFb').className = 'feedback'; $('qFb').innerHTML = ''; $('qErr').textContent = ''; $('qIn').style.display = ''; $('q1').value = ''; }
+function qScore(ok){ if (qq.counted) return; qq.counted = true; Q.total++; if (ok) Q.right++; $('score').textContent = `Score: ${Q.right} / ${Q.total}`; }
+function qFeedback(ok, html){ $('qFb').className = 'feedback ' + (ok ? 'ok' : 'bad'); $('qFb').innerHTML = (ok ? '<b>Right.</b> ' : '<b>Not quite.</b> ') + html; }
+function qChoices(list, correctIdx, explain){
+  $('qIn').style.display = 'none'; qq.correctIdx = correctIdx; qq.explainFn = explain;
+  list.forEach((c, k) => { const b = document.createElement('button'); b.innerHTML = c; b.onclick = () => { const ok = k === correctIdx; qScore(ok); [...$('qChoice').children].forEach((x, j) => { x.classList.remove('right', 'wrong'); if (j === k) x.classList.add(ok ? 'right' : 'wrong'); }); qFeedback(ok, explain(k)); }; $('qChoice').appendChild(b); });
+}
+const nice = x => Math.abs(x * 100 - Math.round(x * 100)) < 1e-9;       // at most 2 decimals
+// --- part, whole, percent ---
+function qPwp(){
+  const ctx = pick([
+    { s: 'battery', u: 'mAh', ws: [2000, 3000, 4000, 5000], tP: (a, b) => `A ${nf(b)} mAh battery is at ${a}%. How many mAh are left?`, tW: (a, c) => `A battery is at ${a}% and holds ${nf(c)} mAh right now. What is its full capacity?`, tC: (c, b) => `A ${nf(b)} mAh battery holds ${nf(c)} mAh. What percent is it at?` },
+    { s: 'test', u: 'points', ws: [20, 40, 50, 80, 120, 200], tP: (a, b) => `A test is worth ${nf(b)} points. You scored ${a}%. How many points is that?`, tW: (a, c) => `You scored ${nf(c)} points, which is ${a}% of the test. How many points is the test worth?`, tC: (c, b) => `You scored ${nf(c)} points out of ${nf(b)}. What percent is that?` },
+    { s: 'download', u: 'MB', ws: [50, 200, 400, 500, 800, 1200], tP: (a, b) => `A ${nf(b)} MB download is ${a}% done. How many MB have arrived?`, tW: (a, c) => `${nf(c)} MB have downloaded, and the bar says ${a}%. How big is the file?`, tC: (c, b) => `${nf(c)} MB of a ${nf(b)} MB file have arrived. What percent is done?` },
+    { s: 'juice', u: 'mL', ws: [200, 250, 500, 1000, 2000], tP: (a, b) => `A ${nf(b)} mL drink is ${a}% real juice. How many mL of juice is that?`, tW: (a, c) => `A drink contains ${nf(c)} mL of real juice, which is ${a}% of the drink. How big is the drink?`, tC: (c, b) => `A ${nf(b)} mL drink contains ${nf(c)} mL of juice. What percent juice is it?` },
+    { s: 'steps', u: 'steps', ws: [8000, 10000, 12000], ps: [80, 90, 110, 120, 125, 150], tP: (a, b) => `Your daily goal is ${nf(b)} steps and you reached ${a}% of it. How many steps did you walk?`, tW: (a, c) => `You walked ${nf(c)} steps, which is ${a}% of your daily goal. What is the goal?`, tC: (c, b) => `You walked ${nf(c)} steps against a goal of ${nf(b)}. What percent of the goal is that?` }
+  ]);
+  let W, p, Pt; do { W = pick(ctx.ws); p = pick(ctx.ps || [5, 10, 12.5, 15, 20, 25, 30, 40, 45, 60, 75, 80, 90]); Pt = W * p / 100; } while (!nice(Pt));
+  const t = pick(['P', 'W', 'C']);
+  if (t === 'P'){ $('qText').innerHTML = ctx.tP(nf(p), W); $('qL1').textContent = ctx.u + ' ='; Object.assign(qq, { ans: Pt, why: `${nf(p)}% × ${nf(W)} = ${nf(p / 100, 4)} × ${nf(W)} = ${nf(Pt)}.`, traps: [[W * p, 'Turn the percent into a decimal first: divide by 100.'], [W - Pt, 'That’s what’s left over, the other part. The question asks for the part itself.'], [W / p, 'Multiply by the percent (as a decimal), don’t divide.']] }); }
+  else if (t === 'W'){ $('qText').innerHTML = ctx.tW(nf(p), Pt); $('qL1').textContent = ctx.u + ' ='; Object.assign(qq, { ans: W, why: `${nf(p)}% of the whole is ${nf(Pt)}, so the whole is ${nf(Pt)} ÷ ${nf(p / 100, 4)} = ${nf(W)}. (1% is ${nf(Pt / p, 4)}, so 100% is ${nf(W)}.)`, traps: [[Pt * p / 100, `That’s ${nf(p)}% of ${nf(Pt)}. Here ${nf(Pt)} is the part, not the whole: divide by ${nf(p / 100, 4)}.`], [Pt * (1 + p / 100), `Adding ${nf(p)}% to the part doesn’t give the whole. Divide by ${nf(p / 100, 4)}.`]] }); }
+  else { $('qText').innerHTML = ctx.tC(Pt, W); $('qL1').textContent = '% ='; Object.assign(qq, { ans: p, why: `${nf(Pt)} ÷ ${nf(W)} = ${nf(p / 100, 4)} = ${nf(p)}%.`, traps: [[W / Pt * 100, 'You divided the whole by the part. Percent = part ÷ whole × 100.'], [p / 100, 'That’s the decimal. Multiply by 100 for the percent.']] }); }
+}
+// --- percent change ---
+function qChg(){
+  const t = pick(['new', 'pc', 'orig']);
+  if (t === 'new'){
+    const old = pick([40, 60, 80, 120, 150, 200, 250, 400]), r = pick([10, 20, 25, 30, 40, 50, -10, -20, -25, -40, -60, -75]), nw = old * mult(r);
+    const th = pick([`A plant is ${old} mm tall and grows ${r}%`, `A recipe uses ${old} g of rice; you change the amount by ${r > 0 ? '+' : ''}${r}%`, `A team scored ${old} points last season and ${r > 0 ? 'increased' : 'decreased'} that by ${Math.abs(r)}%`]).replace(`grows ${r}%`, r > 0 ? `grows ${r}%` : `shrinks ${-r}%`);
+    $('qText').innerHTML = `${th}. What is the new amount?`; $('qL1').textContent = 'new =';
+    Object.assign(qq, { ans: nw, why: `${r > 0 ? 'An increase' : 'A decrease'} of ${Math.abs(r)}% multiplies by ${nf(mult(r), 2)}: ${old} × ${nf(mult(r), 2)} = ${nf(nw)}.`, traps: [[Math.abs(old * r / 100), `That’s only the change. ${r > 0 ? 'Add it to' : 'Take it from'} the old amount.`], [old * (1 - r / 100), 'Wrong direction: an increase multiplies by more than 1, a decrease by less than 1.']] });
+  } else if (t === 'pc'){
+    const [old, nw] = pick([[40, 50], [50, 40], [80, 60], [60, 80], [20, 35], [25, 40], [200, 150], [120, 150], [16, 20], [40, 30], [30, 45]]), r = (nw - old) / old * 100;
+    $('qText').innerHTML = pick([`Download speed went from ${old} Mbps to ${nw} Mbps.`, `A seedling grew from ${old} mm to ${nw} mm.`, `A team’s goals went from ${old} one season to ${nw} the next.`]).replace('grew', nw > old ? 'grew' : 'shrank') + ' What is the percent change? (Use a minus sign for a decrease.)';
+    $('qL1').textContent = '% change =';
+    Object.assign(qq, { ans: r, why: `(new − old) ÷ old = (${nw} − ${old}) ÷ ${old} = ${nf((nw - old) / old, 4)} = ${nf(r)}%. Always divide by the old value.`, traps: [[(nw - old) / nw * 100, `You divided by the new value. The old value, ${old}, is the 100%.`], [-r, 'Check the sign: it went ' + (nw > old ? 'up' : 'down') + '.'], [nw - old, 'That’s the change in units. Divide it by the old value to get a percent.'], [(nw - old) / old, 'That’s the decimal. Multiply by 100.']] });
+  } else {
+    const r = pick([-20, -25, -10, -40, 20, 25, 50, 60]), orig = pick([40, 80, 120, 200, 400]), nw = orig * mult(r);
+    $('qText').innerHTML = r < 0 ? `After shrinking ${-r}% in the wash, a wool blanket is ${nf(nw)} cm long. How long was it before?` : `After growing ${r}%, a plant is ${nf(nw)} cm tall. How tall was it before?`;
+    $('qL1').textContent = 'original =';
+    Object.assign(qq, { ans: orig, why: `New = original × ${nf(mult(r), 2)}, so original = ${nf(nw)} ÷ ${nf(mult(r), 2)} = ${nf(orig)}.`, traps: [[nw * (1 - r / 100), `${r < 0 ? 'Adding' : 'Taking away'} ${Math.abs(r)}% of ${nf(nw)} uses the wrong base: the ${Math.abs(r)}% was of the original. Divide by ${nf(mult(r), 2)}.`], [nw * mult(r), 'That applies the change again. Undo it by dividing.']] });
+  }
+}
+// --- convert ---
+function qConv(){
+  const t = pick(['p2d', 'p2f', 'f2p', 'd2p']);
+  if (t === 'p2d'){ const p = pick([5, 8, 12.5, 30, 45, 2, 150, 0.5, 72]); $('qText').innerHTML = `Write <b>${nf(p)}%</b> as a decimal.`; $('qL1').textContent = 'decimal ='; Object.assign(qq, { ans: p / 100, why: `% means ÷ 100: ${nf(p)} ÷ 100 = ${nf(p / 100, 4)}.`, traps: [[p / 10, 'Move the decimal point two places, not one.'], [p, 'Divide by 100.']] }); }
+  else if (t === 'p2f'){ const p = pick([25, 75, 20, 40, 60, 5, 12.5, 37.5, 35, 80]); $('qText').innerHTML = `Write <b>${nf(p)}%</b> as a fraction in simplest form.`; $('qL1').textContent = 'fraction ='; Object.assign(qq, { ans: p / 100, frac: pctFrac(p), why: `${nf(p)}% = ${nf(p)}/100 = ${pctFrac(p)}.`, traps: [] }); }
+  else if (t === 'f2p'){ const [a, b] = pick([[1, 4], [3, 4], [1, 5], [2, 5], [3, 8], [1, 8], [7, 20], [9, 25], [3, 2], [1, 3]]); $('qText').innerHTML = `Write <b>${a}/${b}</b> as a percent${b === 3 ? ' (round to 1 decimal place)' : ''}.`; $('qL1').textContent = '% ='; Object.assign(qq, { ans: Math.round(a / b * 1000) / 10, tol: b === 3 ? 0.06 : undefined, why: `${a} ÷ ${b} = ${nf(a / b, 4)}, and × 100 gives ${nf(a / b * 100, 2)}%.`, traps: [[a / b, 'That’s the decimal. Multiply by 100 for the percent.'], [b / a * 100, 'Divide the top by the bottom, not the other way.']] }); }
+  else { const d = pick([0.4, 0.07, 0.125, 0.85, 1.2, 0.025, 0.6, 2.5]); $('qText').innerHTML = `Write the decimal <b>${d}</b> as a percent.`; $('qL1').textContent = '% ='; Object.assign(qq, { ans: d * 100, why: `× 100: ${d} × 100 = ${nf(d * 100, 3)}%.`, traps: [[d * 10, 'Move the decimal point two places, not one.'], [d, 'Multiply by 100.']] }); }
+}
+// --- traps ---
+function qTrap(){
+  const c = pick([
+    () => ({ s: 'A plant grows 50%, then shrinks 50%. Overall it is…', ok: '25% shorter than at the start', bad: ['back where it started', '50% shorter', '25% taller'], why: '× 1.5 then × 0.5 is × 0.75: the 50% loss is taken from the bigger plant.' }),
+    () => ({ s: 'A free-throw rate goes from 40% to 50%. Which is true?', ok: 'It rose 10 percentage points, a 25% increase', bad: ['It rose 10%', 'It rose 25 percentage points', 'It rose 50%'], why: '50 − 40 = 10 points. Relative to the old 40, 10 is 25%.' }),
+    () => ({ s: 'A sweater shrank 20% to 64 cm. How long was it?', ok: '80 cm', bad: ['76.8 cm', '84 cm', '51.2 cm'], why: '64 ÷ 0.8 = 80. Adding 20% of 64 gives 76.8: the 20% was of the original, not of 64.' }),
+    () => ({ s: 'Which is bigger: 30% of 70, or 70% of 30?', ok: 'They are equal', bad: ['30% of 70', '70% of 30', 'It depends on the units'], why: '0.30 × 70 = 21 and 0.70 × 30 = 21. Multiplication can be done in either order.' }),
+    () => ({ s: 'A seedling grows 200%. Its new height is…', ok: '3 times the old height', bad: ['2 times the old height', '200 times the old height', 'impossible: you can’t grow over 100%'], why: '+200% adds twice the old height to the old height: × 3.' }),
+    () => ({ s: 'Brightness drops 20% three times in a row. Overall it drops…', ok: 'about 49%', bad: ['60%', '20%', '80%'], why: '0.8 × 0.8 × 0.8 = 0.512, so 51.2% is left: a 48.8% drop. Chained changes multiply.' }),
+    () => ({ s: 'Speed went from 50 to 40. What is the percent change?', ok: '−20%', bad: ['−25%', '−10%', '+20%'], why: '(40 − 50) ÷ 50 = −0.2. Dividing by the new value (40) gives the wrong −25%.' }),
+    () => ({ s: 'Can a part be 120% of the whole?', ok: 'Yes: it’s 1.2 times the whole', bad: ['No: 100% is the maximum', 'Only for money', 'Only if the whole is negative'], why: '15,000 steps is 150% of a 10,000-step goal. 100% just means “the same as the whole”.' })
+  ])();
+  const opts = shuffle([c.ok, ...c.bad]), idx = opts.indexOf(c.ok);
+  $('qText').innerHTML = c.s; qChoices(opts, idx, () => c.why);
+}
+let lastType = null;
+function qNew(){
+  qReset();
+  let t; do { t = pick(['pwp', 'chg', 'conv', 'trap']); } while (t === lastType);
+  lastType = t; qq = { type: t, counted: false }; $('qTitle').textContent = qTitles[t];
+  ({ pwp: qPwp, chg: qChg, conv: qConv, trap: qTrap })[t]();
+}
+$('qCheck').onclick = () => {
+  $('qErr').textContent = '';
+  const raw = $('q1').value, v = readP(raw.replace(/,/g, ''));
+  if (raw.trim() === '' || !isFinite(v)){ $('qErr').textContent = 'Type a number: a decimal (0.35), a fraction (7/20), or a percent (35).'; return; }
+  const tol = qq.tol || Math.max(0.006, Math.abs(qq.ans) * 0.002); let ok = Math.abs(v - qq.ans) < tol, why = qq.why;
+  if (qq.frac){                                              // fraction answers must be simplest form
+    if (ok && !/^\s*\d+\s*\/\s*\d+\s*$/.test(raw)){ ok = false; why = 'That’s the right value, but write it as a fraction. ' + why; }
+    else if (ok){ const [a, b] = raw.split('/').map(x => +x.trim()); if (gcd(a, b) > 1){ ok = false; why = `Right value, but simplify: divide top and bottom by ${gcd(a, b)}. ` + why; } }
+  }
+  if (!ok && !qq.frac){ const t = (qq.traps || []).find(([x]) => isFinite(x) && Math.abs(x - qq.ans) > 1e-9 && Math.abs(v - x) < Math.max(0.006, Math.abs(x) * 0.002)); if (t) why = t[1] + ' ' + why; }
+  qScore(ok); qFeedback(ok, why);
+};
+$('q1').addEventListener('keydown', e => { if (e.key === 'Enter') $('qCheck').click(); });
+$('q1').addEventListener('input', () => $('qErr').textContent = '');
+$('qShow').onclick = () => {
+  qScore(false);
+  if (qq.correctIdx !== undefined){ [...$('qChoice').children].forEach((b, j) => { if (j === qq.correctIdx) b.classList.add('right'); }); qFeedback(false, qq.explainFn(qq.correctIdx)); }
+  else { $('q1').value = qq.frac || nf(qq.ans, 3).replace(/,/g, '').replace('−', '-'); $('qFb').className = 'feedback bad'; $('qFb').innerHTML = '<b>Answer filled in.</b> ' + qq.why; }
+};
+$('qNew').onclick = qNew;
+
+/* =====================================================================
+   7. START
+   ===================================================================== */
+selectOnFocus(['q1', 'pPart', 'pWhole', 'pPct', 'cS', 'cC']);
+$('pPresets').children[0].click();
+$('cPresets').children[0].click();
+drawTraps();
+qNew();
+</script>
+</body></html>

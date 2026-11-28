@@ -15,7 +15,7 @@ window.MM_TOC = [
     { id: '1.B.8', title: 'Proportional Reasoning: Solving Problems', built: true, url: 'https://claude.ai/artifact/5BczAcmrhUzUdGzmV9sUiN' },
     { id: '1.B.9', title: 'Why We Invented Each New Kind of Number', url: 'https://claude.ai/artifact/8eeikn9pY3hdakM8VL4MhU', built: true },
     { id: '1.B.10', title: 'Primes, Factors and Multiples', built: true, url: 'https://claude.ai/artifact/WgmWPPbsuYjwjV377Vxzgb' },
-    { id: '1.B.11', title: 'Percentages' },
+    { id: '1.B.11', title: 'Percentages', built: true, url: 'https://claude.ai/artifact/MVaqrXUHWLiobuV5fhZpgy' },
     { id: '1.B.12', title: 'Powers of Ten and Scientific Notation' },
     { id: '1.B.13', title: 'Estimation and Rounding' },
     { id: '1.U.1', title: 'Divisibility and the Euclidean Algorithm' },
