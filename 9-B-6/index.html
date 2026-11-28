@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>9.B.6 Simulating Chance · MathMastery</title>
+<!-- Fonts: a book serif for prose, a clean sans for UI, a mono for numbers -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<!-- MathJax renders the few formulas on the page (SVG output needs no external stylesheet) -->
+<script>
+  window.MathJax = { tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] }, svg: { fontCache: 'global' } };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<style>
+/* ===================== Theme ===================== */
+:root{
+  --bg:#f7f5ef; --paper:#ffffff; --ink:#1f1e1d; --muted:#6b6a66; --line:#e4e0d5; --line2:#c9c5b8;
+  --accent:#534AB7; --accent-bg:#EEEDFE;
+  --pos:#1D9E75; --neg:#D85A30; --pt:#7F77DD; --pt-soft:#AFA9EC; --pt-dark:#534AB7;
+  --pos-new:#9FE1CB; --neg-new:#F0997B; --ok:#3B6D11; --ok-bg:#EAF3DE; --bad:#A32D2D; --bad-bg:#FCEBEB; --note-bg:#FAF3E3; --note-line:#E7C98A;
+  --serif:"Source Serif 4", Georgia, "Times New Roman", serif;
+  --sans:"IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#191817; --paper:#232220; --ink:#ecebe6; --muted:#a3a29c; --line:#383733; --line2:#55534e;
+    --accent:#AFA9EC; --accent-bg:#2c2852; --pt-dark:#CECBF6; --pt-soft:#6f68b8; --pos-new:#5DCAA5; --neg-new:#F5C4B3;
+    --ok:#C0DD97; --ok-bg:#24400d; --bad:#F7C1C1; --bad-bg:#5a1c1c; --note-bg:#2b261b; --note-line:#6b5626;
+  }
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.7 var(--serif);-webkit-font-smoothing:antialiased}
+
+/* ===================== Layout ===================== */
+.topbar{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1000px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:14px;font:500 13px/1 var(--sans);color:var(--muted)}
+.brand{color:var(--ink);font-weight:600;letter-spacing:.02em}
+.brand b{color:var(--accent)}
+.crumbs{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pid{font-family:var(--mono);color:var(--accent);background:var(--accent-bg);padding:4px 8px;border-radius:6px}
+.prose{max-width:720px;margin:0 auto;padding:0 20px}
+.wide{max-width:1000px;margin:0 auto;padding:0 20px}
+
+/* ===================== Hero ===================== */
+.hero{padding:48px 0 12px}
+.kicker{font:600 13px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1{font:700 46px/1.1 var(--serif);margin:12px 0 14px;letter-spacing:-.01em}
+.dek{font-size:21px;color:var(--muted);margin:0 0 22px;font-style:italic}
+.tiers{display:flex;gap:6px;flex-wrap:wrap;font:500 13px/1 var(--sans);margin-bottom:8px}
+.tier{padding:7px 12px;border-radius:999px;border:1px solid var(--line2);color:var(--muted)}
+.tier.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.tier small{opacity:.7;margin-left:4px}
+
+/* ===================== Text elements ===================== */
+h2{font:700 28px/1.25 var(--serif);margin:56px 0 10px;display:flex;gap:12px;align-items:baseline}
+h2 .n{font:600 14px/1 var(--mono);color:var(--accent);min-width:28px}
+p{margin:0 0 16px}
+em.key{font-style:normal;background:linear-gradient(transparent 62%,var(--accent-bg) 62%);padding:0 2px}
+.goals{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:18px 22px;margin:22px 0 0;font:15.5px/1.6 var(--sans)}
+.goals h3{font:600 12px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
+.goals ul{margin:0;padding-left:20px}
+.note{background:var(--note-bg);border-left:4px solid var(--note-line);border-radius:0 10px 10px 0;padding:14px 18px;margin:20px 0;font:15.5px/1.6 var(--sans)}
+.note b{font-weight:600}
+.notice{list-style:none;padding:0;margin:8px 0 18px;counter-reset:n}
+.notice li{position:relative;padding:12px 0 12px 46px;border-top:1px solid var(--line)}
+.notice li:last-child{border-bottom:1px solid var(--line)}
+.notice li::before{counter-increment:n;content:counter(n);position:absolute;left:4px;top:13px;width:26px;height:26px;border-radius:50%;background:var(--accent-bg);color:var(--accent);font:600 13px/26px var(--mono);text-align:center}
+.goes{list-style:none;padding:0;margin:8px 0 18px}
+.goes li{padding:12px 0;border-top:1px solid var(--line)}
+.goes li:last-child{border-bottom:1px solid var(--line)}
+.math{overflow-x:auto;margin:12px 0 18px;padding:14px 18px;background:var(--paper);border:1px solid var(--line);border-radius:12px}
+.math .cap{font:14px/1.5 var(--sans);color:var(--muted);margin-top:4px}
+.mono{font-family:var(--mono);font-size:.92em;white-space:nowrap}
+.pos{color:var(--pos);font-weight:600}.neg{color:var(--neg);font-weight:600}.pt{color:var(--pt-dark);font-weight:600}
+
+/* ===================== Vocabulary ===================== */
+.vocab{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin:14px 0 8px}
+.term{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font:14.5px/1.5 var(--sans)}
+.term b{display:block;font:600 15px/1.3 var(--serif);margin-bottom:4px}
+
+/* ===================== Interactive cards ===================== */
+.card{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:18px 20px 20px;margin:26px 0;box-shadow:0 1px 0 var(--line),0 12px 32px -22px rgba(0,0,0,.25);font-family:var(--sans)}
+.card-h{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.card-h .tag{font:600 11px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--accent);background:var(--accent-bg);padding:5px 8px;border-radius:6px}
+.card-h h3{font:600 18px/1.3 var(--sans);margin:0}
+.card-h .sub{color:var(--muted);font-size:14.5px;flex-basis:100%}
+.panel-label{font:600 11px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:12px 0 4px;display:flex;justify-content:space-between}
+.panel-label span:last-child{letter-spacing:0;text-transform:none;font-weight:500}
+svg.nl{display:block;width:100%;height:auto;border:1px solid var(--line);border-radius:12px;background:var(--bg);touch-action:manipulation}
+svg.clickable{cursor:pointer}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:12px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0}
+button{font:500 14px/1 var(--sans);padding:9px 14px;border-radius:9px;border:1px solid var(--line2);background:var(--paper);color:var(--ink);cursor:pointer;transition:background .15s,border-color .15s}
+button:hover{border-color:var(--ink)}
+button.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+button.preset.on{background:var(--accent-bg);border-color:var(--accent);color:var(--accent)}
+button:disabled{opacity:.45;cursor:default}
+.desc{min-height:24px;color:var(--muted);font-size:14.5px;margin:2px 0 6px}
+.inputs{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;margin:12px 0 4px}
+.field{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.field input{width:92px;font:500 18px/1 var(--mono);padding:9px 10px;border-radius:9px;border:2px solid var(--line2);background:var(--bg);color:var(--ink);text-align:center}
+.field input:focus{outline:none;border-color:var(--accent)}
+.field i,.eq i,.sym{font:italic 600 1.15em var(--serif);text-transform:none;letter-spacing:0;color:var(--pt-dark)}
+.field.start input{border-color:var(--pt-soft)}
+.field.slide input{border-color:var(--pt)}
+.eq{font:500 20px/1 var(--mono);padding:10px 14px;background:var(--bg);border-radius:10px;border:1px solid var(--line)}
+.err{color:var(--bad);font-size:14px;min-height:20px;margin:2px 0}
+.readout{margin-top:12px;padding:12px 14px;background:var(--bg);border-radius:10px;border:1px solid var(--line);font-size:15px;line-height:1.55;min-height:48px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:12px;font-size:13px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{display:inline-block;width:14px;height:14px;border-radius:50%}
+.sw.pos{background:var(--pos)}.sw.neg{border:2.4px solid var(--neg)}
+.sw.x{position:relative;background:var(--pos);opacity:.45}.sw.x::after{content:'✕';position:absolute;inset:-1px 0 0 0;color:var(--neg);font:700 13px/1 var(--sans);text-align:center}
+.sw.posnew{background:var(--pos-new);border:1.5px solid var(--pos)}.sw.negnew{border:2.4px solid var(--neg-new)}.sw.pt{background:var(--pt)}
+.sw.mv{width:22px;height:4px;border-radius:2px;background:var(--pt-soft)}
+.sw.rl{width:22px;height:0;border-top:2px dashed var(--ink);border-radius:0;opacity:.7}
+.feedback{margin-top:10px;padding:12px 14px;border-radius:10px;font-size:15px;line-height:1.55;display:none}
+.feedback.ok{display:block;background:var(--ok-bg);color:var(--ok)}
+.feedback.bad{display:block;background:var(--bad-bg);color:var(--bad)}
+.feedback.info{display:block;background:var(--accent-bg);color:var(--accent)}
+.score{margin-left:auto;font:600 14px/1 var(--mono);color:var(--muted)}
+
+/* ===================== Footer nav ===================== */
+.pager{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:56px 0 18px;font-family:var(--sans)}
+.pager a,.pager div{display:block;padding:16px 18px;border:1px solid var(--line);border-radius:14px;background:var(--paper);color:var(--ink);text-decoration:none}
+.pager small{display:block;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.pager .next{text-align:right}
+.pager .soon{opacity:.6}
+.meta{font:13px/1.6 var(--sans);color:var(--muted);text-align:center;padding:10px 0 50px}
+
+@media (max-width:720px){
+  body{font-size:17px}
+  h1{font-size:34px}
+  .dek{font-size:18px}
+  h2{font-size:24px}
+  .card{padding:14px 12px 16px;border-radius:14px}
+  .crumbs{display:none}
+  svg.nl{min-width:640px}
+}
+</style>
+<meta name="mm-site" content="1">
+<link rel="stylesheet" href="../shared/nav.css">
+</head>
+<body>
+<style>
+/* ===================== Page-specific styles (9.B.6) ===================== */
+/* simulation results = teal, exact answers = purple, hits / the event = orange, misses = grey */
+:root{ --sim:#1D9E75; --th:#7F77DD; --hit:#D85A30; --hit-bg:#FBE3D9; --miss:#9AA0AA; --red:#D8443A; --yel:#E0A800; --gold:#C99700; --blue:#3A7BD5; }
+@media (prefers-color-scheme:dark){ :root{ --sim:#5DCAA5; --th:#AFA9EC; --hit:#FF9A6B; --hit-bg:#4A2A1C; --miss:#6B717B; --red:#F07B72; --yel:#FFD24D; --gold:#FFD24D; --blue:#7FB0F0; } }
+.ks{color:var(--sim);font-weight:700}.kt{color:var(--th);font-weight:700}.kh{color:var(--hit);font-weight:700}
+svg{user-select:none;-webkit-user-select:none}
+svg text.lab,svg text.labS{fill:var(--ink)}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:10px;align-items:start}
+.split svg{width:100%;height:auto;display:block;background:var(--bg);border:1px solid var(--line);border-radius:10px}
+pre.code{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:12px 16px;overflow-x:auto;font:13.5px/1.6 var(--mono);margin:10px 0 16px}
+.traps{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:8px}
+.traps .t{border:1px solid var(--line);border-radius:10px;background:var(--bg);padding:10px}
+.traps .t h4{margin:0 0 4px;font:600 15px var(--sans)}
+.traps .t p{margin:6px 0 0;font-size:14.5px;line-height:1.5;color:var(--muted)}
+.traps svg{width:100%;height:auto;display:block}
+.qtext{font:17px/1.55 var(--serif);margin:4px 0 10px}
+.choice{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 0}.choice button{min-width:110px;text-align:left}
+.choice button.right{border-color:var(--ok);background:var(--ok-bg);color:var(--ok)}.choice button.wrong{border-color:var(--bad);background:var(--bad-bg);color:var(--bad)}
+table.ev{border-collapse:collapse;font:14px var(--mono);margin:4px 0 8px}
+table.ev th,table.ev td{border:1px solid var(--line);padding:5px 12px;text-align:center}
+table.ev th{font:600 13px var(--sans);background:var(--paper)}
+</style>
+
+<!-- ===================== Top bar ===================== -->
+<div class="topbar"><div class="topbar-in">
+  <span class="brand">Math<b>Mastery</b></span>
+  <span class="crumbs">Chapter 9 · Probability › Basics</span>
+  <span class="pid">9.B.6</span>
+</div></div>
+
+<!-- ===================== Hero ===================== -->
+<header class="prose hero">
+  <div class="kicker">Chapter 9 · Probability</div>
+  <h1>Simulating Chance</h1>
+  <p class="dek">When a probability is too hard to count, let a computer play the game thousands of times and count how often things happen. More trials give a better estimate, but only slowly: 100 times the trials buys about 10 times the accuracy.</p>
+  <div class="tiers" aria-label="Tier">
+    <span class="tier on">Basics <small>you are here</small></span>
+    <span class="tier">Undergraduate</span>
+    <span class="tier">Masters</span>
+  </div>
+  <div class="goals">
+    <h3>On this page</h3>
+    <ul>
+      <li>Build a <b>simulation</b>: a <b>model</b> of each random piece, run as one <b>trial</b>, repeated many times.</li>
+      <li>Turn the results into an <b>estimate</b> of a probability (how often) or an expected value (the average).</li>
+      <li>See how the <b>typical error</b> shrinks as the <b>number of trials</b> grows, roughly like 1/√<i>n</i>.</li>
+      <li>Use the <b>Monte Carlo method</b>, random darts, to estimate π and areas with no simple formula.</li>
+    </ul>
+  </div>
+</header>
+
+<main>
+<!-- ===================== §1 ===================== -->
+<section class="prose">
+  <h2><span class="n">1</span>When counting gets hard</h2>
+  <p>How likely is it that two people in a class of 23 share a birthday? How many cereal boxes does it take to collect all six toys? Counting every case is possible but tricky. There’s another way: play it out. A computer can “roll” a 365-sided die for each of 23 people, check for a match, and repeat that 10,000 times in a blink. If a match turned up in about half of those classes, the probability is about ½. (It is: 0.507.)</p>
+  <p>A <b>simulation</b> needs a <b>model</b>: a way to produce each random piece with a random tool. A birthday is a random whole number from 1 to 365. A 70% free throw is a random number between 0 and 1 that counts as a make when it’s below 0.7. The computer’s source of these numbers is a <b>random number generator</b>. It is really <b>pseudo-random</b>: a clever formula whose output looks random and passes every test of randomness, starting from a number called the <b>seed</b>. The same seed replays exactly the same “random” run, which is handy for checking work.</p>
+
+  <h2><span class="n">2</span>The recipe</h2>
+  <p>1. Model each random piece. 2. Run one <b>trial</b> of the whole situation and record what happened. 3. Repeat many times. 4. The fraction of trials where the event happened <b>estimates</b> its probability; the average of a recorded number estimates its expected value. That’s just the <b>relative frequency</b> and <b>long-run average</b> from 9.B.1 and 9.B.5, with a computer doing the tedious part. Each problem below has an exact answer (found by cleverer counting), drawn as a purple line, so you can watch the estimate close in on it.</p>
+</section>
+<section class="wide">
+  <div class="card" id="lab">
+    <div class="card-h"><span class="tag">Explore</span><h3>Simulation lab</h3>
+      <span class="sub">Pick a problem and run trials. Left: the latest trial. Right: the running estimate (teal) closing in on the exact answer (purple). The shaded band shows how far off an estimate typically is after that many trials.</span></div>
+    <div class="row" id="lPresets"></div>
+    <div class="desc" id="lDesc"></div>
+    <div class="inputs" id="lIn"><label class="field"><span id="lParL">n</span><input id="lPar" type="text" inputmode="decimal" autocomplete="off"></label></div>
+    <div class="err" id="lErr"></div>
+    <div class="row" style="margin-top:4px"><button id="l1">1 trial</button><button id="l10">10 trials</button><button id="l100">100 trials</button><button class="primary" id="lPlay">Play</button><button id="lReset">Reset</button></div>
+    <div class="split"><svg id="lPic" viewBox="0 0 470 300" role="img" aria-label="The latest trial"></svg><svg id="lChart" viewBox="0 0 470 300" role="img" aria-label="Running estimate"></svg></div>
+    <div class="readout" id="lOut"></div>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--sim)"></i><span>simulation: running estimate</span></span>
+      <span><i class="sw" style="background:var(--th)"></i><span>exact answer</span></span>
+      <span><i class="sw" style="background:var(--th);opacity:.25"></i><span>typical-error band (±2 typical errors)</span></span>
+      <span><i class="sw" style="background:var(--hit)"></i><span>the event, in the latest trial</span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §3 ===================== -->
+<section class="prose">
+  <h2><span class="n">3</span>How many trials is enough?</h2>
+  <p>An estimate from a simulation is never exact, and running it again gives a slightly different answer. The question is how far off it typically is. After <i>n</i> trials, the <b>typical error</b> of an estimated probability <i>p</i> is about</p>
+  <div class="math">\[ \text{typical error} \approx \sqrt{\frac{p(1-p)}{n}}, \]</div>
+  <p>which shrinks like 1/√<i>n</i>. Four times the trials halves the error; a hundred times the trials cuts it to a tenth. With 100 trials an estimate near ½ is typically off by about 0.05; with 10,000 trials, by about 0.005. Accuracy is cheap at first and expensive later. In the lab above, the purple band narrows exactly this way, and the teal line usually stays inside it.</p>
+
+  <h2><span class="n">4</span>Random darts: the Monte Carlo method</h2>
+  <p>Simulation can find areas too. Throw darts at random into a square of known area. The fraction that lands inside a shape estimates the shape’s share of the square. A circle of radius 1 inside a 2-by-2 square takes up π/4 of it, so π ≈ 4 × (fraction inside). Methods that answer a question with random sampling are called <b>Monte Carlo methods</b>, after the famous casino. They were named in the 1940s by scientists who used them to design the first nuclear reactors, and today they estimate everything from the area under a bell curve to the light bouncing around a film scene.</p>
+</section>
+<section class="wide">
+  <div class="card" id="dart">
+    <div class="card-h"><span class="tag">Explore</span><h3>Throw darts</h3>
+      <span class="sub">Darts land at random in the board. Inside the shape: orange; outside: grey. Then repeat the whole experiment 100 times at three sizes to see how much the estimates spread out.</span></div>
+    <div class="row" id="dPresets"></div>
+    <div class="desc" id="dDesc"></div>
+    <div class="row" style="margin-top:8px"><button id="d100">+100 darts</button><button id="d1000">+1,000 darts</button><button class="primary" id="dPlay">Play</button><button id="dReset">Reset</button><button id="dRep">Repeat 100 experiments at each size</button></div>
+    <div class="split"><svg id="dB" viewBox="0 0 470 300" role="img" aria-label="Dart board"></svg><svg id="dS" viewBox="0 0 470 300" role="img" aria-label="Spread of repeated estimates"></svg></div>
+    <div class="readout" id="dOut"></div>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--hit)"></i><span>dart inside the shape</span></span>
+      <span><i class="sw" style="background:var(--miss)"></i><span>dart outside</span></span>
+      <span><i class="sw" style="background:var(--th)"></i><span>true value</span></span>
+      <span><i class="sw" style="background:var(--sim)"></i><span>one dot per repeated experiment</span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §5 ===================== -->
+<section class="prose">
+  <h2><span class="n">5</span>The birthday problem in Python</h2>
+  <p>Here is the whole birthday simulation. The answer surprises most people: with only 23 people, a shared birthday is more likely than not, because there are 253 different pairs who could match.</p>
+  <pre class="code"><code>import random                                          # Python's random-number tools
+random.seed(1)                                         # fix the seed so the run can be repeated exactly
+trials = 10_000                                        # how many classes to simulate
+matches = 0                                            # classes where two people share a birthday
+for _ in range(trials):                                # one trial = one class of 23
+    birthdays = [random.randint(1, 365) for _ in range(23)]   # model: each birthday is 1 to 365
+    if len(set(birthdays)) &lt; 23:                       # a set drops repeats; fewer than 23 means a match
+        matches += 1                                   # record the event
+p_hat = matches / trials                               # the estimate: about 0.507
+error = (p_hat * (1 - p_hat) / trials) ** 0.5          # typical error: about 0.005
+print(p_hat, "+/-", error)</code></pre>
+
+  <h2><span class="n">6</span>Traps</h2>
+</section>
+<section class="wide">
+  <div class="card" id="traps">
+    <div class="card-h"><span class="tag">Compare</span><h3>Easy to get wrong</h3></div>
+    <div class="traps">
+      <div class="t"><h4 style="color:var(--bad)">✕ Trusting a handful of trials</h4><svg id="tr1" viewBox="0 0 300 220"></svg><p>Ten trials of a 50–50 event can easily give 3 or 7 successes. Here are 20 separate 10-trial estimates of P = ½: they range widely. Small simulations are rough guesses.</p></div>
+      <div class="t"><h4 style="color:var(--bad)">✕ A model that doesn’t match</h4><svg id="tr2" viewBox="0 0 300 220"></svg><p>Simulating a 70% free-throw shooter with a coin flip assumes 50%. Every trial is then wrong in the same direction, and more trials only make the wrong answer look more certain.</p></div>
+      <div class="t"><h4 style="color:var(--bad)">✕ Treating the estimate as exact</h4><svg id="tr3" viewBox="0 0 300 220"></svg><p>Five runs of 1,000 trials for the birthday problem give five different answers. A simulation gives an estimate with a typical error; it doesn’t prove the exact value.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== §7 ===================== -->
+<section class="prose">
+  <h2><span class="n">7</span>Now, in symbols</h2>
+  <p>Run <i>n</i> independent trials. If the event happens in <i>k</i> of them, and a recorded number takes the values <i>x</i>₁, …, <i>x</i>ₙ:</p>
+  <div class="math">\[ \hat p = \frac{k}{n} \approx P(\text{event}), \qquad \bar x = \frac{x_1 + x_2 + \dots + x_n}{n} \approx E(X) \]</div>
+  <div class="math">\[ \text{typical error of } \hat p \approx \sqrt{\frac{\hat p\,(1-\hat p)}{n}}, \qquad \text{typical error of } \bar x \approx \frac{s}{\sqrt n} \]</div>
+  <div class="math">\[ \text{Monte Carlo area: } \text{area} \approx (\text{area of the board}) \times \frac{\text{darts inside}}{\text{darts thrown}} \]</div>
+  <p>Here <i>s</i> is how spread out the individual results are (the standard deviation, 10.B). The hat on <i>p̂</i> marks an estimate. The law of large numbers (9.U.7) guarantees <i>p̂</i> and <i>x̄</i> close in on the true values as <i>n</i> grows; the central limit theorem explains the 1/√<i>n</i>.</p>
+</section>
+
+<!-- ===================== §8 ===================== -->
+<section class="prose">
+  <h2><span class="n">8</span>Where this goes</h2>
+  <ul class="goes">
+    <li><b>Next:</b> the Basics tier of probability ends here. Chapter 10 (Statistics) runs the idea in reverse: from data, which is a lot like the results of a simulation, back to the probabilities behind it.</li>
+    <li><b>Later in this book:</b> random variables and distributions (9.U), the law of large numbers and central limit theorem behind the 1/√<i>n</i> (9.U.7), Markov chains and random walks (9.M.1–9.M.2), and Monte Carlo methods for hard integrals and models (9.M.4, chapter 12).</li>
+    <li><b>In the world:</b> weather and climate forecasts run as ensembles of simulations, testing game balance and sports strategies, planning hospital beds and queues, designing safe bridges and aircraft, and computer graphics.</li>
+  </ul>
+</section>
+
+<!-- ===================== §9 ===================== -->
+<section class="prose">
+  <h2><span class="n">9</span>Words to know</h2>
+  <div class="vocab">
+    <div class="term"><b>Simulation</b>Imitating a random situation with random numbers, over and over, to learn its probabilities.</div>
+    <div class="term"><b>Model</b>The rule that produces each random piece (a birthday = random number 1–365).</div>
+    <div class="term"><b>Trial</b>One complete run of the simulated situation.</div>
+    <div class="term"><b>Number of trials</b>How many times the simulation is repeated, <i>n</i>.</div>
+    <div class="term"><b>Estimate</b>A value worked out from the trials: <i>p̂</i> = <i>k</i>/<i>n</i>, or the average <i>x̄</i>.</div>
+    <div class="term"><b>Typical error</b>How far an estimate is usually off: about √(<i>p</i>(1 − <i>p</i>)/<i>n</i>) for a probability.</div>
+    <div class="term"><b>Random number generator</b>The tool that produces random numbers for a simulation.</div>
+    <div class="term"><b>Pseudo-random</b>Made by a formula but behaving as if random.</div>
+    <div class="term"><b>Seed</b>The starting number for a pseudo-random generator; the same seed repeats the same run.</div>
+    <div class="term"><b>Monte Carlo method</b>Answering a question (an area, a probability) with random sampling.</div>
+    <div class="term"><b>Relative frequency / long-run average</b>From 9.B.1 and 9.B.5: what a simulation measures.</div>
+  </div>
+</section>
+
+<!-- ===================== Quiz ===================== -->
+<section class="prose"><h2><span class="n">10</span>Check yourself</h2>
+  <p>Four kinds of questions: read a simulation, judge how many trials, design a simulation, and spot the trap. Type numbers as decimals, fractions or percents.</p>
+</section>
+<section class="wide">
+  <div class="card" id="quiz">
+    <div class="card-h"><span class="tag">Quiz</span><h3 id="qTitle"></h3><span class="score" id="score">Score: 0 / 0</span></div>
+    <div class="qtext" id="qText"></div>
+    <div id="qPic"></div>
+    <div class="choice" id="qChoice"></div>
+    <div class="inputs" id="qIn">
+      <label class="field"><span id="qL1">estimate =</span><input id="q1" type="text" autocomplete="off" style="width:160px;border-color:var(--sim)"></label>
+      <div class="row" style="margin:0"><button class="primary" id="qCheck">Check</button></div>
+    </div>
+    <div class="row" style="margin:10px 0 0"><button id="qShow">Show answer</button><button id="qNew">New question</button></div>
+    <div class="err" id="qErr"></div>
+    <div class="feedback" id="qFb" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ===================== Pager (filled in by the shared navigation) ===================== -->
+<nav class="wide">
+  <div class="pager"></div>
+  <div class="meta">9.B.6 · Prerequisites: 9.B.1 (relative frequency), 9.B.5 (expected value) · Leads to: 10.B (statistics), 9.U.7 (law of large numbers), 9.M.4 (Monte Carlo methods)</div>
+</nav>
+</main>
+
+<script>
+/* =====================================================================
+   1. HELPERS (shared with the other pages)
+   ===================================================================== */
+const NS = 'http://www.w3.org/2000/svg';
+const $ = id => document.getElementById(id);
+function mk(tag, attrs, parent){                           // create an SVG element with attributes
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function txt(parent, x, y, s, cls, extra){                 // create an SVG text element
+  extra = Object.assign({}, extra || {});
+  if (extra['text-anchor']){ extra.style = (extra.style ? extra.style + ';' : '') + 'text-anchor:' + extra['text-anchor']; delete extra['text-anchor']; }
+  const t = mk('text', Object.assign({ x, y, class: cls || '' }, extra), parent);
+  t.textContent = s;
+  return t;
+}
+// round for display, use a true minus sign, never show −0
+function num(x, d){ if (d === undefined) d = 2; const r = Math.round(x * Math.pow(10, d)) / Math.pow(10, d); return r === 0 ? '0' : (r < 0 ? '−' : '') + String(Math.abs(r)); }
+const pn = x => x < 0 ? `(${num(x)})` : num(x);              // wrap negatives in brackets when substituting
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const ri = (a, b) => a + Math.floor(Math.random() * (b - a + 1));   // random whole number from a to b
+const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+function parseNum(s){                                     // integers, decimals, minus, simple fractions
+  s = String(s).trim().replace(/[−–]/g, '-').replace(/\s+/g, '');
+  if (/^-?\d+(\.\d+)?$|^-?\.\d+$/.test(s)) return parseFloat(s);
+  const m = s.match(/^(-?\d+)\/(\d+)$/);
+  if (m && +m[2] !== 0) return +m[1] / +m[2];
+  return NaN;
+}
+function selectOnFocus(ids){ ids.forEach(id => $(id).addEventListener('focus', e => e.target.select())); }
+function buttons(boxId, list, onPick){                    // a row of preset buttons; returns a function that marks one as on
+  list.forEach((p, i) => { const b = document.createElement('button'); b.className = 'preset'; b.textContent = p.n; b.onclick = () => onPick(i); $(boxId).appendChild(b); });
+  return i => [...$(boxId).children].forEach((b, j) => b.classList.toggle('on', j === i));
+}
+function svgPt(svg, ev){                                  // mouse position in the SVG's own coordinates
+  const p = svg.createSVGPoint(); p.x = ev.clientX; p.y = ev.clientY;
+  return p.matrixTransform(svg.getScreenCTM().inverse());
+}
+const svgCss = document.createElement('style');
+svgCss.textContent = `
+  .grid{stroke:var(--line);stroke-width:1}
+  .axis{stroke:var(--ink);stroke-width:1.4;opacity:.7}
+  .tl{fill:var(--muted);font:500 11.5px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:3px}
+  .lab{font:700 14px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:5px}
+  .labS{font:600 12.5px var(--mono);paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+  .cap{fill:var(--muted);font:600 12px var(--sans);letter-spacing:.06em;paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+  .oval{fill:var(--paper);stroke:var(--line);stroke-width:1.5}
+`;
+document.head.appendChild(svgCss);
+let clipN = 0;                                            // unique clip-path ids
+
+/* ---------- axes: a coordinate grid inside an SVG, with separate x and y scales ---------- */
+function axes(svg, W, H, b, o){
+  o = o || {};
+  svg.innerHTML = '';
+  const L = o.padL ?? 44, R = o.padR ?? 16, T = o.padT ?? 16, B = o.padB ?? 30;
+  const sx = (W - L - R) / (b.x1 - b.x0), sy = (H - T - B) / (b.y1 - b.y0);   // pixels per unit
+  const X = x => L + (x - b.x0) * sx, Y = y => T + (b.y1 - y) * sy;
+  const step = (s, px) => (o.half ? [0.5, 1, 2, 5, 10, 20, 50, 100] : [1, 2, 5, 10, 20, 50, 100]).find(k => k * s >= px) || 200;   // a round step at least px pixels wide
+  const xg = o.xg || step(sx, 9), yg = o.yg || step(sy, 9);        // grid-line spacing
+  const xt = o.xt || step(sx, 34), yt = o.yt || step(sy, 26);      // tick-label spacing
+  const gGrid = mk('g', {}, svg), id = 'clp' + (++clipN);
+  const cp = mk('clipPath', { id }, svg); mk('rect', { x: L, y: T, width: W - L - R, height: H - T - B }, cp);
+  const cg = mk('g', { 'clip-path': `url(#${id})` }, svg);         // clipped layer for curves
+  const m = mk('g', {}, svg), top = mk('g', {}, svg);              // free layer, then labels on top
+  const near = (v, s) => Math.abs(v / s - Math.round(v / s)) < 1e-6;
+  for (let x = Math.ceil(b.x0 / xg) * xg; x <= b.x1 + 1e-9; x += xg) mk('line', { x1: X(x), y1: T, x2: X(x), y2: H - B, class: 'grid' }, gGrid);
+  for (let y = Math.ceil(b.y0 / yg) * yg; y <= b.y1 + 1e-9; y += yg) mk('line', { x1: L, y1: Y(y), x2: W - R, y2: Y(y), class: 'grid' }, gGrid);
+  const ay = (b.y0 <= 0 && b.y1 >= 0) ? Y(0) : H - B;              // where the x-axis is drawn
+  const ax = (b.x0 <= 0 && b.x1 >= 0) ? X(0) : L;                  // where the y-axis is drawn
+  mk('line', { x1: L, y1: ay, x2: W - R, y2: ay, class: 'axis' }, gGrid);
+  mk('line', { x1: ax, y1: T, x2: ax, y2: H - B, class: 'axis' }, gGrid);
+  const fx = o.fx || (v => num(v)), fy = o.fy || (v => num(v));
+  for (let x = Math.ceil(b.x0 / xt) * xt; x <= b.x1 + 1e-9; x += xt){
+    if (Math.abs(x) < 1e-9 && ax === X(0) && !o.zeroX) continue;
+    txt(top, X(x), ay + 16, fx(x), 'tl', { 'text-anchor': 'middle' });
+  }
+  for (let y = Math.ceil(b.y0 / yt) * yt; y <= b.y1 + 1e-9; y += yt){
+    if (Math.abs(y) < 1e-9 && ay === Y(0)) continue;
+    txt(top, ax - 6, Y(y) + 4, fy(y), 'tl', { 'text-anchor': 'end' });
+  }
+  if (o.xT) txt(top, W - R - 2, ay - 8, o.xT, 'cap', { 'text-anchor': 'end' });
+  if (o.yT) txt(top, ax + 8, T + 12, o.yT, 'cap');
+  return { svg, X, Y, sx, sy, cg, m, top, b, L, R, T, B, W, H, ay, ax,
+           inv: (px, py) => [b.x0 + (px - L) / sx, b.y1 - (py - T) / sy] };
+}
+function dPath(P, pts){ return pts.map((p, i) => (i ? 'L' : 'M') + P.X(p[0]).toFixed(1) + ' ' + P.Y(p[1]).toFixed(1)).join(''); }
+// sample y = f(x) from a to b, breaking the curve where f is undefined or jumps
+function sample(f, a, b, n, ok){
+  const out = []; let cur = [];
+  for (let i = 0; i <= n; i++){
+    const x = a + (b - a) * i / n, y = (ok && !ok(x)) ? NaN : f(x);
+    if (!isFinite(y)){ if (cur.length > 1) out.push(cur); cur = []; continue; }
+    if (cur.length && Math.abs(y - cur[cur.length - 1][1]) > 40){ if (cur.length > 1) out.push(cur); cur = []; }
+    cur.push([x, y]);
+  }
+  if (cur.length > 1) out.push(cur);
+  return out;
+}
+function dot(P, x, y, col, o){                              // a filled (or open) point
+  o = o || {};
+  return mk('circle', { cx: P.X(x), cy: P.Y(y), r: o.r || 6, style: o.open ? `fill:var(--bg);stroke:${col};stroke-width:2.6` : `fill:${col};stroke:var(--bg);stroke-width:1.5` }, o.layer || P.m);
+}
+function vline(P, x, col, o){ o = o || {}; return mk('line', { x1: P.X(x), y1: o.y0 !== undefined ? P.Y(o.y0) : P.T, x2: P.X(x), y2: o.y1 !== undefined ? P.Y(o.y1) : P.H - P.B, style: `stroke:${col};stroke-width:${o.w || 2.5};${o.dash ? 'stroke-dasharray:' + o.dash : ''}` }, o.layer || P.m); }
+function hline(P, y, col, o){ o = o || {}; return mk('line', { x1: o.x0 !== undefined ? P.X(o.x0) : P.L, y1: P.Y(y), x2: o.x1 !== undefined ? P.X(o.x1) : P.W - P.R, y2: P.Y(y), style: `stroke:${col};stroke-width:${o.w || 2.5};${o.dash ? 'stroke-dasharray:' + o.dash : ''}` }, o.layer || P.m); }
+function arrowHead(g, x1, y1, x2, y2, col, size){            // a small triangle at (x2, y2) pointing away from (x1, y1)
+  const a = Math.atan2(y2 - y1, x2 - x1), s = size || 9;
+  const p = [[x2, y2], [x2 - s * Math.cos(a - 0.4), y2 - s * Math.sin(a - 0.4)], [x2 - s * Math.cos(a + 0.4), y2 - s * Math.sin(a + 0.4)]];
+  mk('polygon', { points: p.map(q => q.join(',')).join(' '), style: `fill:${col}` }, g);
+}
+
+/* ---------- arrow diagram: inputs in a left oval, outputs in a right oval, one arrow per pair ---------- */
+// pairs: [[in, out], ...]; o.ins / o.outs give the order (defaults: sorted values); o.fmt formats a value;
+// o.hl = input to highlight (others fade); o.lit = [in, out] arrow drawn thick; o.dead = inputs shown crossed out
+function arrowDiagram(svg, W, H, pairs, o){
+  o = o || {};
+  svg.innerHTML = '';
+  const fmt = o.fmt || (v => typeof v === 'number' ? num(v) : v);
+  const key = v => String(v);
+  const uniq = arr => { const s = new Set(), r = []; arr.forEach(v => { if (!s.has(key(v))){ s.add(key(v)); r.push(v); } }); return r; };
+  const srt = arr => arr.every(v => typeof v === 'number') ? arr.slice().sort((a, b) => a - b) : arr;
+  const ins = o.ins || srt(uniq(pairs.map(p => p[0]))), outs = o.outs || srt(uniq(pairs.map(p => p[1])));
+  const top = o.top ?? 34, bot = H - (o.bottom ?? 14);
+  const lx = W * 0.25, rx = W * 0.75, ow = Math.min(W * 0.17, 90);
+  mk('ellipse', { cx: lx, cy: (top + bot) / 2, rx: ow, ry: (bot - top) / 2, class: 'oval' }, svg);
+  mk('ellipse', { cx: rx, cy: (top + bot) / 2, rx: ow, ry: (bot - top) / 2, class: 'oval' }, svg);
+  txt(svg, lx, 18, o.inLab || 'INPUTS x', 'cap', { 'text-anchor': 'middle', style: 'fill:var(--in)' });
+  txt(svg, rx, 18, o.outLab || 'OUTPUTS y', 'cap', { 'text-anchor': 'middle', style: 'fill:var(--out)' });
+  const ypos = (i, n) => n === 1 ? (top + bot) / 2 : top + 26 + (bot - top - 52) * i / (n - 1);
+  const iy = {}, oy = {};
+  ins.forEach((v, i) => iy[key(v)] = ypos(i, ins.length));
+  outs.forEach((v, i) => oy[key(v)] = ypos(i, outs.length));
+  const cnt = {}; pairs.forEach(p => cnt[key(p[0])] = (cnt[key(p[0])] || 0) + 1);   // how many outputs each input has
+  const dx = Math.min(ow * 0.45, 34), fs = ins.length > 9 || outs.length > 9 ? 'labS' : 'lab';
+  const ga = mk('g', {}, svg), gd = mk('g', {}, svg);
+  pairs.forEach(p => {                                     // arrows
+    const k = key(p[0]), bad = cnt[k] > 1, faded = o.hl !== undefined && o.hl !== null && key(o.hl) !== k;
+    const lit = o.lit && key(o.lit[0]) === k && key(o.lit[1]) === key(p[1]);
+    const col = bad ? 'var(--no)' : 'var(--pt)';
+    const x1 = lx + dx + 8, y1 = iy[k], x2 = rx - dx - 9, y2 = oy[key(p[1])];
+    mk('line', { x1, y1, x2, y2, style: `stroke:${col};stroke-width:${lit ? 4.5 : 2.4};opacity:${faded ? .18 : 1}` }, ga);
+    if (!faded) arrowHead(ga, x1, y1, x2, y2, col, lit ? 12 : 10);
+  });
+  ins.forEach(v => {                                       // input dots and labels
+    const k = key(v), dead = o.dead && o.dead.map(key).includes(k), bad = cnt[k] > 1;
+    const faded = o.hl !== undefined && o.hl !== null && key(o.hl) !== k;
+    const col = dead ? 'var(--muted)' : bad ? 'var(--no)' : 'var(--in)';
+    mk('circle', { cx: lx + dx, cy: iy[k], r: o.hl !== undefined && key(o.hl) === k ? 8 : 6, style: `fill:${col};opacity:${faded ? .35 : 1}` }, gd);
+    const t = txt(gd, lx + dx - 12, iy[k] + 5, fmt(v), fs, { 'text-anchor': 'end', style: `fill:${col};opacity:${faded ? .45 : 1}${dead ? ';text-decoration:line-through' : ''}` });
+  });
+  outs.forEach(v => {                                      // output dots and labels
+    const k = key(v);
+    mk('circle', { cx: rx - dx, cy: oy[k], r: 6, style: 'fill:var(--out)' }, gd);
+    txt(gd, rx - dx + 12, oy[k] + 5, fmt(v), fs, { style: 'fill:var(--out)' });
+  });
+  return { ins, outs };
+}
+// group pairs by input: Map from input to its list of distinct outputs
+function byInput(pairs){
+  const m = new Map();
+  pairs.forEach(([x, y]) => { const k = String(x); if (!m.has(k)) m.set(k, { x, ys: [] }); const e = m.get(k); if (!e.ys.some(v => String(v) === String(y))) e.ys.push(y); });
+  return m;
+}
+const setStr = arr => '{' + arr.map(v => num(v)).join(', ') + '}';
+
+
+/* ---------- helpers for zoomable graphs (any scale) ---------- */
+const niceStep = raw => { const p = Math.pow(10, Math.floor(Math.log10(raw))), m = raw / p; return (m <= 1 ? 1 : m <= 2 ? 2 : m <= 5 ? 5 : 10) * p; };
+const decs = st => Math.max(0, -Math.floor(Math.log10(st) + 1e-9));
+function fmt(v, st){ const d = decs(st); const r = Number(v.toFixed(d)); return r === 0 ? '0' : (r < 0 ? '−' : '') + Math.abs(r).toFixed(d); }
+// a coordinate system with any box (tiny or huge), labelled ticks, a clipped layer for curves
+function ax2(svg, W, H, b, o){
+  o = o || {}; svg.innerHTML = '';
+  const L = o.padL ?? 52, R = o.padR ?? 14, T = o.padT ?? 14, B = o.padB ?? 28;
+  const sx = (W - L - R) / (b.x1 - b.x0), sy = (H - T - B) / (b.y1 - b.y0), X = x => L + (x - b.x0) * sx, Y = y => T + (b.y1 - y) * sy;
+  const gx = niceStep((b.x1 - b.x0) / 8), gy = niceStep((b.y1 - b.y0) / 7);
+  const g = mk('g', {}, svg), id = 'c' + Math.random().toString(36).slice(2);
+  const cp = mk('clipPath', { id }, svg); mk('rect', { x: L, y: T, width: W - L - R, height: H - T - B }, cp);
+  const cg = mk('g', { 'clip-path': `url(#${id})` }, svg), m = mk('g', {}, svg), top = mk('g', {}, svg);
+  for (let v = Math.ceil(b.x0 / gx) * gx; v <= b.x1 + gx * 1e-6; v += gx){ mk('line', { x1: X(v), y1: T, x2: X(v), y2: H - B, class: 'grid' }, g); txt(top, X(v), H - B + 16, o.fx ? o.fx(v) : fmt(v, gx), 'tl', { 'text-anchor': 'middle' }); }
+  for (let v = Math.ceil(b.y0 / gy) * gy; v <= b.y1 + gy * 1e-6; v += gy){ mk('line', { x1: L, y1: Y(v), x2: W - R, y2: Y(v), class: 'grid' }, g); txt(top, L - 6, Y(v) + 4, fmt(v, gy), 'tl', { 'text-anchor': 'end' }); }
+  if (b.y0 < 0 && b.y1 > 0) mk('line', { x1: L, y1: Y(0), x2: W - R, y2: Y(0), class: 'axis' }, g);
+  if (b.x0 < 0 && b.x1 > 0) mk('line', { x1: X(0), y1: T, x2: X(0), y2: H - B, class: 'axis' }, g);
+  mk('rect', { x: L, y: T, width: W - L - R, height: H - T - B, style: 'fill:none;stroke:var(--line2)' }, g);
+  if (o.xT) txt(top, W - R - 4, H - B - 6, o.xT, 'cap', { 'text-anchor': 'end' });
+  if (o.yT) txt(top, L + 6, T + 14, o.yT, 'cap');
+  return { X, Y, sx, sy, cg, m, top, b, L, R, T, B, W, H, inv: (px, py) => [b.x0 + (px - L) / sx, b.y1 - (py - T) / sy] };
+}
+// sample a curve across the box, breaking at undefined points, at listed jumps, and at big leaps
+function curve(P, f, o){
+  o = o || {}; const b = P.b, n = o.n || 900, brk = o.breaks || [], polys = []; let cur = [];
+  const lim = (b.y1 - b.y0) * 3;
+  for (let i = 0; i <= n; i++){
+    const x = b.x0 + (b.x1 - b.x0) * i / n, y = f(x);
+    const crossed = cur.length && brk.some(c => (cur[cur.length - 1][0] - c) * (x - c) <= 0);
+    if (!isFinite(y) || crossed || (cur.length && Math.abs(y - cur[cur.length - 1][1]) > lim)){ if (cur.length > 1) polys.push(cur); cur = []; if (!isFinite(y)) continue; }
+    cur.push([x, Math.max(b.y0 - lim, Math.min(b.y1 + lim, y))]);
+  }
+  if (cur.length > 1) polys.push(cur);
+  polys.forEach(p => mk('path', { d: dPath(P, p), style: `fill:none;stroke:${o.col || 'var(--cv)'};stroke-width:${o.w || 3};${o.dash ? 'stroke-dasharray:' + o.dash : ''}` }, P.cg));
+}
+const holeAt = (P, x, y, col) => mk('circle', { cx: P.X(x), cy: P.Y(y), r: 6, style: `fill:var(--bg);stroke:${col || 'var(--cv)'};stroke-width:2.5` }, P.m);
+const dotAt = (P, x, y, col, r) => mk('circle', { cx: P.X(x), cy: P.Y(y), r: r || 6, style: `fill:${col || 'var(--cv)'};stroke:var(--bg);stroke-width:1.5` }, P.m);
+const sig = v => !isFinite(v) ? (v > 0 ? '∞' : v < 0 ? '−∞' : 'undefined') : Math.abs(v) >= 1e5 ? v.toExponential(2).replace('-', '−') : num(v, 6);
+function parseLim(s){
+  const t = String(s).trim().toLowerCase().replace(/\s+/g, '').replace(/[−–]/g, '-');
+  if (/^(dne|none|doesnotexist|noLimit|nolimit|no)$/i.test(t)) return 'DNE';
+  if (/^\+?(inf|infinity|∞|oo)$/.test(t)) return Infinity;
+  if (/^-(inf|infinity|∞|oo)$/.test(t)) return -Infinity;
+  return parseNum(s);
+}
+
+const minus = s => String(s).replace(/(^|[\s(,=>→\/·+×])-(\d)/g, '$1−$2');
+const r4 = v => Number((Math.abs(v) < 1e-300 ? 0 : v).toPrecision(5));
+const SUP = k => String(k).replace(/-/g, '⁻').replace(/\d/g, d => '⁰¹²³⁴⁵⁶⁷⁸⁹'[d]);
+const sci = v => { if (v === 0) return '0'; const a = Math.abs(v); if (a >= 1e-3 && a < 1e7) return minus(String(r4(v))); let e = Math.floor(Math.log10(a)); if (Math.abs(v / Math.pow(10, e)) >= 9.995) e++; const m = v / Math.pow(10, e); return minus(`${m.toFixed(2)}×10${SUP(e)}`); };
+const gcd = (a, b) => b ? gcd(b, a % b) : Math.abs(a);
+function frc(x){ if (Math.abs(x - Math.round(x)) < 1e-9) return num(Math.round(x)); for (let d = 2; d <= 10000; d++){ const n = x * d; if (Math.abs(n - Math.round(n)) < 1e-9 * d && gcd(Math.round(n), d) === 1) return (x < 0 ? '−' : '') + Math.abs(Math.round(n)) + '/' + d; } return sci(x); }
+// a readable value: whole numbers with commas, otherwise 4–5 significant figures
+const big = v => Math.abs(v) >= 1e7 ? sci(v) : Math.abs(v - Math.round(v)) < 1e-9 ? Math.round(v).toLocaleString().replace('-', '−') : minus(String(r4(v)));
+
+const pct = p => num(p * 100, 1) + '%';                                    // 0.25 -> "25%"
+const dec = p => num(p, 3);                                                // 0.16666 -> "0.167"
+const fr = (k, n) => { const g = gcd(k, n) || 1; return n === 0 ? '0' : k === 0 ? '0' : k === n ? '1' : `${k / g}/${n / g}`; };   // reduced fraction
+function word(p){                                                          // the word on the probability scale
+  if (p <= 1e-12) return 'impossible'; if (p >= 1 - 1e-12) return 'certain';
+  if (Math.abs(p - 0.5) < 1e-12) return 'even chance'; return p < 0.5 ? 'unlikely' : 'likely';
+}
+// parse a probability typed as a fraction, a decimal or a percent
+function parseP(s){ s = String(s).trim().replace(/−/g, '-'); if (/%$/.test(s)){ const v = parseNum(s.slice(0, -1)); return v / 100; } return parseNum(s); }
+
+// the probability scale: a 0-to-1 bar with the five words and a marker at p
+function scaleBar(svg, W, p, o){
+  o = o || {}; svg.innerHTML = ''; const L = 18, R = W - 18, y = 34, X = v => L + v * (R - L);
+  mk('rect', { x: L, y: y - 7, width: R - L, height: 14, rx: 7, style: 'fill:var(--paper);stroke:var(--line)' }, svg);
+  mk('rect', { x: L, y: y - 7, width: (R - L) / 2, height: 14, rx: 7, style: 'fill:var(--line);opacity:.5' }, svg);
+  [[0, '0'], [0.25, '¼'], [0.5, '½'], [0.75, '¾'], [1, '1']].forEach(([v, l]) => { mk('line', { x1: X(v), y1: y - 10, x2: X(v), y2: y + 10, style: 'stroke:var(--muted);stroke-width:1.3' }, svg); txt(svg, X(v), y + 24, l, 'tl', { 'text-anchor': 'middle' }); });
+  [[0, 'impossible', 'start'], [0.25, 'unlikely', 'middle'], [0.5, 'even', 'middle'], [0.75, 'likely', 'middle'], [1, 'certain', 'end']].forEach(([v, l, a]) => txt(svg, X(v) + (a === 'start' ? -4 : a === 'end' ? 4 : 0), y + 44, l, 'cap', { 'text-anchor': a }));
+  if (p !== null && isFinite(p)){
+    const x = X(clamp(p, 0, 1));
+    mk('path', { d: `M${x} ${y - 8} l-8 -14 h16 z`, style: `fill:${o.col || 'var(--hit)'}` }, svg);
+    txt(svg, clamp(x, L + 14, R - 14), y - 25, o.lab || '', 'labS', { 'text-anchor': 'middle', style: `fill:${o.col || 'var(--hit)'}` });
+  }
+}
+
+/* ---------- small pictures: die faces, coins, cards, marbles ---------- */
+const PIPS = { 1: [[0, 0]], 2: [[-1, -1], [1, 1]], 3: [[-1, -1], [0, 0], [1, 1]], 4: [[-1, -1], [1, -1], [-1, 1], [1, 1]], 5: [[-1, -1], [1, -1], [0, 0], [-1, 1], [1, 1]], 6: [[-1, -1], [1, -1], [-1, 0], [1, 0], [-1, 1], [1, 1]] };
+function dieFace(g, cx, cy, s, n, o){                  // a die face of side s centred at (cx, cy)
+  o = o || {};
+  mk('rect', { x: cx - s / 2, y: cy - s / 2, width: s, height: s, rx: s * 0.18, style: `fill:${o.fill || 'var(--paper)'};stroke:${o.stroke || 'var(--ink)'};stroke-width:${o.sw || 1.6}` }, g);
+  (PIPS[n] || []).forEach(([a, b]) => mk('circle', { cx: cx + a * s * 0.26, cy: cy + b * s * 0.26, r: s * 0.085, style: `fill:${o.pip || 'var(--ink)'}` }, g));
+}
+function coin(g, cx, cy, r, face, o){                  // a coin showing H or T
+  o = o || {};
+  mk('circle', { cx, cy, r, style: `fill:${face === 'H' ? 'var(--yel)' : 'var(--paper)'};stroke:${o.stroke || 'var(--gold)'};stroke-width:${o.sw || 2}` }, g);
+  txt(g, cx, cy + r * 0.36, face, '', { 'text-anchor': 'middle', style: `font:700 ${r}px var(--sans);fill:var(--ink)` });
+}
+function marble(g, cx, cy, r, col){ mk('circle', { cx, cy, r, style: `fill:${col};stroke:var(--ink);stroke-width:1;opacity:.95` }, g); mk('circle', { cx: cx - r * 0.35, cy: cy - r * 0.35, r: r * 0.25, style: 'fill:#fff;opacity:.55' }, g); }
+const SUITS = ['♠', '♥', '♦', '♣'], RANKS = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+function card(g, x, y, w, h, r, s){                    // a playing card: rank r (0-12) of suit s (0-3)
+  const col = s === 1 || s === 2 ? 'var(--red)' : 'var(--ink)';
+  mk('rect', { x, y, width: w, height: h, rx: 4, style: 'fill:var(--paper);stroke:var(--muted);stroke-width:1' }, g);
+  txt(g, x + w / 2, y + h * 0.42, RANKS[r], '', { 'text-anchor': 'middle', style: `font:700 ${w * 0.34}px var(--sans);fill:${col}` });
+  txt(g, x + w / 2, y + h * 0.82, SUITS[s], '', { 'text-anchor': 'middle', style: `font:${w * 0.38}px var(--sans);fill:${col}` });
+}
+// a spinner: sectors [{p, col, l}], highlighted indices hi, optional pointer angle (radians, 0 = up, clockwise)
+function spinner(g, cx, cy, r, secs, o){
+  o = o || {}; let a = 0;
+  secs.forEach((s, i) => {
+    const a2 = a + s.p * 2 * Math.PI, P = t => [cx + r * Math.sin(t), cy - r * Math.cos(t)], [x1, y1] = P(a), [x2, y2] = P(a2);
+    const big = a2 - a > Math.PI ? 1 : 0, on = o.hi ? o.hi.has(i) : false;
+    const path = mk('path', { d: s.p >= 0.9999 ? `M${cx - r} ${cy}a${r} ${r} 0 1 0 ${2 * r} 0a${r} ${r} 0 1 0 ${-2 * r} 0` : `M${cx} ${cy}L${x1} ${y1}A${r} ${r} 0 ${big} 1 ${x2} ${y2}Z`, style: `fill:${s.col};stroke:${on ? 'var(--hit)' : 'var(--bg)'};stroke-width:${on ? 4 : 2};opacity:${o.hi && !on ? 0.3 : 0.9}` }, g);
+    if (o.click) { path.classList.add('cellg'); path.addEventListener('click', () => o.click(i)); }
+    const m = (a + a2) / 2, lr = r * (s.p < 0.2 ? 0.72 : 0.6);
+    if (s.l) txt(g, cx + lr * Math.sin(m), cy - lr * Math.cos(m) + 6, s.l, 'lab', { 'text-anchor': 'middle', style: 'pointer-events:none' });
+    a = a2;
+  });
+  if (o.ptr !== undefined && o.ptr !== null){
+    const t = o.ptr, px = cx + r * 0.92 * Math.sin(t), py = cy - r * 0.92 * Math.cos(t);
+    mk('line', { x1: cx, y1: cy, x2: px, y2: py, style: 'stroke:var(--ink);stroke-width:5;stroke-linecap:round' }, g);
+    arrowHead(g, cx, cy, px + 6 * Math.sin(t), py - 6 * Math.cos(t), 'var(--ink)', 12);
+    mk('circle', { cx, cy, r: 8, style: 'fill:var(--ink)' }, g);
+  }
+}
+
+const range = n => [...Array(n).keys()];                                    // [0, 1, ..., n-1]
+const fracK = (k, n) => fr(k, n) === `${k}/${n}` ? `${k}/${n}` : `${k}/${n} = ${fr(k, n)}`;   // "6/36 = 1/6"
+// a probability shown neatly: short decimals as decimals, others as a fraction (1/12)
+const fmtP = p => Math.abs(p * 1000 - Math.round(p * 1000)) < 1e-6 ? num(p, 3) : frc(p);
+// which of the four regions an outcome is in: both, A only, B only, neither
+const region = (inA, inB) => inA && inB ? 'ab' : inA ? 'a' : inB ? 'b' : 'n';
+// which regions each "show" option keeps bright
+const OPS = [
+  { k: 'A', n: 'A', on: ['ab', 'a'] }, { k: 'B', n: 'B', on: ['ab', 'b'] },
+  { k: 'and', n: 'A and B', on: ['ab'] }, { k: 'or', n: 'A or B', on: ['a', 'ab', 'b'] },
+  { k: 'notA', n: 'not A', on: ['b', 'n'] }, { k: 'neither', n: 'neither', on: ['n'] },
+  { k: 'one', n: 'exactly one', on: ['a', 'b'] }
+];
+const RCOL = { a: 'var(--a)', b: 'var(--b)', ab: 'var(--ab)', n: 'var(--nn)' };            // strong colours
+const RBG = { a: 'var(--a-bg)', b: 'var(--b-bg)', ab: 'var(--ab-bg)', n: 'var(--bg)' };    // light tints for grid cells
+// a row of chip buttons with a label; returns a function that marks one as on
+function chipRow(boxId, label, names, onPick){
+  const box = $(boxId); box.innerHTML = `<span class="lbl">${label}</span>`;
+  names.forEach((n, i) => { const b = document.createElement('button'); b.innerHTML = n; b.onclick = () => onPick(i); box.appendChild(b); });
+  return i => [...box.querySelectorAll('button')].forEach((b, j) => b.classList.toggle('on', j === i));
+}
+// the two-way table: v = {ab, a, b, n} region values, tot = {A, nA, B, nB, all}, on = regions to highlight, f = formatter
+function twTable(v, tot, nameA, nameB, on, f){
+  const td = r => `<td class="${on.includes(r) ? 'on-' + r : ''}">${f(v[r])}</td>`;
+  return `<table class="tw"><tr><th></th><th><span class="kb">B</span>${nameB ? ': ' + nameB : ''}</th><th>not B</th><th>Total</th></tr>
+    <tr><th><span class="ka">A</span>${nameA ? ': ' + nameA : ''}</th>${td('ab')}${td('a')}<td class="tot">${f(tot.A)}</td></tr>
+    <tr><th>not A</th>${td('b')}${td('n')}<td class="tot">${f(tot.nA)}</td></tr>
+    <tr><th>Total</th><td class="tot">${f(tot.B)}</td><td class="tot">${f(tot.nB)}</td><td class="tot">${f(tot.all)}</td></tr></table>`;
+}
+
+const show = v => Math.abs(v - Math.round(v)) < 1e-9 ? num(Math.round(v)) : num(v, 3);
+const choose = (n, k) => { let r = 1; for (let i = 1; i <= k; i++) r = r * (n - k + i) / i; return r; };
+
+/* =====================================================================
+   2. SIMULATION LAB
+   ===================================================================== */
+// exact answers, found by counting cleverly
+const exBirthday = n => { let q = 1; for (let k = 0; k < n; k++) q *= (365 - k) / 365; return 1 - q; };
+const exCollect = k => { let s = 0; for (let i = 1; i <= k; i++) s += k / i; return s; };
+function exStreak(n, L){                                                   // P(a run of L or more heads-or-tails in n flips)
+  // q[j] = probability that the current run has length j and no run of L has happened yet
+  let q = Array(L).fill(0); q[1] = 1;
+  for (let t = 2; t <= n; t++){ const nq = Array(L).fill(0); for (let j = 1; j < L; j++){ nq[1] += q[j] / 2; if (j + 1 < L) nq[j + 1] += q[j] / 2; } q = nq; }
+  return 1 - q.reduce((a, b) => a + b, 0);
+}
+const exSeries = p => { let s = 0; for (let k = 4; k <= 7; k++) s += choose(7, k) * Math.pow(p, k) * Math.pow(1 - p, 7 - k); return s; };
+const exWalk = n => n % 2 ? 0 : choose(n, n / 2) / Math.pow(2, n);
+
+const LP = [
+  { n: 'Shared birthday', d: 'A class of n people, birthdays random from 365 days (ignoring 29 February). Event: at least two share a birthday.', par: ['people in the room, n', 23, 2, 100], kind: 'p', what: 'P(a shared birthday)',
+    run: n => { const b = range(n).map(() => ri(1, 365)), seen = {}; b.forEach(d => seen[d] = (seen[d] || 0) + 1); const hit = b.some(d => seen[d] > 1); return { v: hit ? 1 : 0, hit, pic: { b, seen } }; }, exact: exBirthday },
+  { n: 'Collect them all', d: 'Each cereal box holds one of k toys, all equally likely. Record how many boxes it takes to get every toy.', par: ['different toys, k', 6, 2, 20], kind: 'm', what: 'average boxes needed',
+    run: k => { const got = new Set(), seq = []; while (got.size < k){ const t = ri(1, k); seq.push([t, !got.has(t)]); got.add(t); } return { v: seq.length, pic: { seq, k } }; }, exact: exCollect },
+  { n: 'Streak of 5', d: 'Flip a fair coin n times. Event: somewhere there are 5 or more of the same side in a row.', par: ['flips, n', 20, 5, 100], kind: 'p', what: 'P(a streak of 5 or more)',
+    run: n => { const f = range(n).map(() => Math.random() < 0.5 ? 'H' : 'T'); let best = 1, bs = 0, cur = 1; for (let i = 1; i < n; i++){ cur = f[i] === f[i - 1] ? cur + 1 : 1; if (cur > best){ best = cur; bs = i - cur + 1; } } const hit = best >= 5; return { v: hit ? 1 : 0, hit, pic: { f, best, bs } }; }, exact: n => exStreak(n, 5) },
+  { n: 'Monty Hall', d: 'A prize is behind one of 3 doors. You pick one; the host, who knows, opens another door with nothing behind it and offers a switch. Event: switching wins.', kind: 'p', what: 'P(switching wins)',
+    run: () => { const car = ri(0, 2), pickD = ri(0, 2), opts = [0, 1, 2].filter(d => d !== pickD && d !== car), open = pick(opts), sw = [0, 1, 2].find(d => d !== pickD && d !== open), hit = sw === car; return { v: hit ? 1 : 0, hit, pic: { car, pickD, open, sw } }; }, exact: () => 2 / 3 },
+  { n: 'Best-of-7 series', d: 'A team wins each game with probability p, independently. First to 4 wins takes the series. Event: the team wins the series.', par: ['P(win one game), p', '0.6', 0, 1], kind: 'p', what: 'P(win the series)', real: true,
+    run: p => { const g = []; let w = 0, l = 0; while (w < 4 && l < 4){ const win = Math.random() < p; g.push(win); win ? w++ : l++; } const hit = w === 4; return { v: hit ? 1 : 0, hit, pic: { g } }; }, exact: exSeries },
+  { n: 'Wait for a 6', d: 'Roll a die until the first 6. Record how many rolls it took.', kind: 'm', what: 'average rolls needed',
+    run: () => { const r = []; do { r.push(ri(1, 6)); } while (r[r.length - 1] !== 6 && r.length < 200); return { v: r.length, pic: { r } }; }, exact: () => 6 },
+  { n: 'Random walk home', d: 'A walker takes n steps along a street, each one block left or right at random. Event: ending exactly back where they started.', par: ['steps, n', 20, 1, 60], kind: 'p', what: 'P(back home)',
+    run: n => { const pos = [0]; for (let i = 0; i < n; i++) pos.push(pos[i] + (Math.random() < 0.5 ? -1 : 1)); const hit = pos[n] === 0; return { v: hit ? 1 : 0, hit, pic: { pos } }; }, exact: exWalk }
+];
+const LMAX = 20000;
+const LS = { i: 0, par: null, ok: true, n: 0, sum: 0, sum2: 0, hist: [], last: null, timer: 0 };
+const lMark = buttons('lPresets', LP, i => { lStop(); LS.i = i; lMark(i); const p = LP[i]; $('lDesc').textContent = p.d;
+  $('lIn').style.display = p.par ? '' : 'none'; if (p.par){ $('lParL').textContent = p.par[0]; $('lPar').value = p.par[1]; } lRead(); });
+function lRead(){
+  const p = LP[LS.i]; let err = '';
+  if (p.par){
+    const v = p.real ? parseP($('lPar').value) : parseNum($('lPar').value);
+    if (!isFinite(v)) err = 'Type a number.';
+    else if (!p.real && (v !== Math.round(v) || v < p.par[2] || v > p.par[3])) err = `Use a whole number from ${p.par[2]} to ${p.par[3]}.`;
+    else if (p.real && (v < 0 || v > 1)) err = 'A probability runs from 0 to 1.';
+    LS.par = v;
+  } else LS.par = null;
+  $('lErr').textContent = err; LS.ok = !err; lReset();
+}
+$('lPar').addEventListener('input', () => { lStop(); lRead(); });
+function lReset(){ Object.assign(LS, { n: 0, sum: 0, sum2: 0, hist: [], last: null }); lDraw(); }
+function lTrial(){ const r = LP[LS.i].run(LS.par); LS.n++; LS.sum += r.v; LS.sum2 += r.v * r.v; LS.hist.push(LS.sum / LS.n); LS.last = r; }
+function lRun(m){ if (!LS.ok) return; for (let q = 0; q < m && LS.n < LMAX; q++) lTrial(); lDraw(); }
+function lStop(){ clearTimeout(LS.timer); LS.timer = 0; $('lPlay').textContent = 'Play'; }
+$('l1').onclick = () => { lStop(); lRun(1); }; $('l10').onclick = () => { lStop(); lRun(10); }; $('l100').onclick = () => { lStop(); lRun(100); };
+$('lReset').onclick = () => { lStop(); lReset(); };
+$('lPlay').onclick = () => {
+  if (LS.timer){ lStop(); return; }
+  if (!LS.ok) return; if (LS.n >= LMAX) lReset();
+  $('lPlay').textContent = 'Pause';
+  const tick = () => { lRun(Math.max(1, Math.ceil(LS.n * 0.05))); if (LS.n < LMAX) LS.timer = setTimeout(tick, 40); else lStop(); };
+  tick();
+};
+// --- picture of the latest trial ---
+function lPic(){
+  const svg = $('lPic'); svg.innerHTML = ''; const p = LP[LS.i], r = LS.last;
+  if (!r){ txt(svg, 235, 150, 'Run a trial to see it here.', 'cap', { 'text-anchor': 'middle' }); return; }
+  const P = r.pic;
+  if (p.n === 'Shared birthday'){
+    // 365 days as a 25 x 15 grid; people as dots; shared days in orange
+    for (let d = 1; d <= 365; d++){
+      const c = (d - 1) % 25, row = Math.floor((d - 1) / 25), x = 22 + c * 17, y = 30 + row * 17, k = P.seen[d] || 0;
+      mk('rect', { x, y, width: 15, height: 15, rx: 2, style: `fill:${k > 1 ? 'var(--hit)' : k ? 'var(--sim)' : 'var(--paper)'};stroke:var(--line);opacity:${k ? 1 : 0.8}` }, svg);
+      if (k > 1) txt(svg, x + 7.5, y + 11.5, String(k), '', { 'text-anchor': 'middle', style: 'font:700 10px var(--mono);fill:#fff' });
+    }
+    const shared = Object.values(P.seen).filter(k => k > 1).length;
+    txt(svg, 22, 18, `365 days of the year · ${P.b.length} people`, 'cap', {});
+    txt(svg, 235, 292, r.hit ? `${shared} shared day${shared > 1 ? 's' : ''} (orange): event happened` : 'No two share a birthday this time', 'labS', { 'text-anchor': 'middle', style: `fill:${r.hit ? 'var(--hit)' : 'var(--muted)'}` });
+  } else if (p.n === 'Collect them all'){
+    const k = P.k, n = P.seq.length, per = 24, sz = Math.min(18, 430 / per - 1);
+    txt(svg, 20, 20, `Boxes opened in order (new toys in orange): ${n} boxes`, 'cap', {});
+    P.seq.slice(0, 240).forEach(([t, isNew], i) => { const x = 20 + (i % per) * (sz + 1.5), y = 30 + Math.floor(i / per) * (sz + 3);
+      mk('rect', { x, y, width: sz, height: sz, rx: 3, style: `fill:${isNew ? 'var(--hit)' : 'var(--paper)'};stroke:${isNew ? 'var(--hit)' : 'var(--line)'}` }, svg);
+      txt(svg, x + sz / 2, y + sz / 2 + 4, String(t), '', { 'text-anchor': 'middle', style: `font:600 ${k > 9 ? 8.5 : 10}px var(--mono);fill:${isNew ? '#fff' : 'var(--muted)'}` }); });
+    if (n > 240) txt(svg, 235, 250, `… and ${n - 240} more`, 'cap', { 'text-anchor': 'middle' });
+    txt(svg, 235, 288, `The last few toys take longest: most late boxes are repeats.`, 'cap', { 'text-anchor': 'middle' });
+  } else if (p.n === 'Streak of 5'){
+    const n = P.f.length, per = 20, s = 20;
+    P.f.forEach((c, i) => { const x = 22 + (i % per) * (s + 1.4), y = 40 + Math.floor(i / per) * (s + 8), inRun = i >= P.bs && i < P.bs + P.best;
+      mk('circle', { cx: x + s / 2, cy: y + s / 2, r: s / 2, style: `fill:${c === 'H' ? 'var(--yel)' : 'var(--paper)'};stroke:${inRun ? 'var(--hit)' : 'var(--gold)'};stroke-width:${inRun ? 3 : 1.2}` }, svg);
+      txt(svg, x + s / 2, y + s / 2 + 4, c, '', { 'text-anchor': 'middle', style: 'font:700 11px var(--sans);fill:var(--ink)' }); });
+    txt(svg, 22, 24, `${n} flips · longest streak (circled): ${P.best}`, 'cap', {});
+    txt(svg, 235, 288, r.hit ? 'A streak of 5 or more: event happened' : 'Longest streak under 5 this time', 'labS', { 'text-anchor': 'middle', style: `fill:${r.hit ? 'var(--hit)' : 'var(--muted)'}` });
+  } else if (p.n === 'Monty Hall'){
+    [0, 1, 2].forEach(d => { const x = 50 + d * 140, y = 50;
+      mk('rect', { x, y, width: 100, height: 160, rx: 8, style: `fill:${d === P.open ? 'var(--bg)' : 'var(--paper)'};stroke:${d === P.sw ? 'var(--hit)' : 'var(--ink)'};stroke-width:${d === P.sw ? 3 : 1.4};${d === P.open ? 'stroke-dasharray:6 4' : ''}` }, svg);
+      txt(svg, x + 50, y + 90, d === P.car ? 'prize' : d === P.open ? 'empty' : '', 'lab', { 'text-anchor': 'middle', style: `fill:${d === P.car ? 'var(--sim)' : 'var(--muted)'}` });
+      txt(svg, x + 50, y + 186, d === P.pickD ? 'your first pick' : d === P.open ? 'host opens' : 'switch to this', 'cap', { 'text-anchor': 'middle' }); });
+    txt(svg, 235, 30, 'Doors 1, 2, 3', 'cap', { 'text-anchor': 'middle' });
+    txt(svg, 235, 284, r.hit ? 'Switching wins this time' : 'Staying would have won this time', 'labS', { 'text-anchor': 'middle', style: `fill:${r.hit ? 'var(--hit)' : 'var(--muted)'}` });
+  } else if (p.n === 'Best-of-7 series'){
+    P.g.forEach((w, i) => { const x = 30 + i * 60, y = 110;
+      mk('rect', { x, y, width: 50, height: 50, rx: 6, style: `fill:${w ? 'var(--sim)' : 'var(--paper)'};stroke:var(--line)` }, svg);
+      txt(svg, x + 25, y + 32, w ? 'W' : 'L', '', { 'text-anchor': 'middle', style: `font:700 20px var(--sans);fill:${w ? '#fff' : 'var(--muted)'}` });
+      txt(svg, x + 25, y + 70, 'game ' + (i + 1), 'cap', { 'text-anchor': 'middle' }); });
+    const w = P.g.filter(Boolean).length, l = P.g.length - w;
+    txt(svg, 235, 60, `${w}–${l} after ${P.g.length} games`, 'lab', { 'text-anchor': 'middle' });
+    txt(svg, 235, 260, r.hit ? 'The team wins the series' : 'The team loses the series', 'labS', { 'text-anchor': 'middle', style: `fill:${r.hit ? 'var(--hit)' : 'var(--muted)'}` });
+  } else if (p.n === 'Wait for a 6'){
+    const per = 12;
+    P.r.slice(0, 96).forEach((v, i) => dieFace(svg, 36 + (i % per) * 36, 50 + Math.floor(i / per) * 36, 28, v, { fill: v === 6 ? 'var(--hit-bg)' : 'var(--paper)', stroke: v === 6 ? 'var(--hit)' : 'var(--ink)', sw: v === 6 ? 2.5 : 1.2 }));
+    txt(svg, 20, 22, `${P.r.length} roll${P.r.length > 1 ? 's' : ''} until the first 6`, 'cap', {});
+  } else {
+    // random walk: position against step
+    const n = P.pos.length - 1, m = Math.max(4, ...P.pos.map(Math.abs)), X = i => 40 + i / n * 410, Y = v => 150 - v / m * 115;
+    mk('line', { x1: 40, y1: Y(0), x2: 450, y2: Y(0), style: 'stroke:var(--ink);stroke-dasharray:5 4;opacity:.6' }, svg);
+    txt(svg, 36, Y(0) + 4, 'home', 'tl', { 'text-anchor': 'end' });
+    mk('path', { d: P.pos.map((v, i) => (i ? 'L' : 'M') + X(i) + ' ' + Y(v)).join(''), style: 'fill:none;stroke:var(--sim);stroke-width:2.4' }, svg);
+    mk('circle', { cx: X(n), cy: Y(P.pos[n]), r: 6, style: `fill:${r.hit ? 'var(--hit)' : 'var(--sim)'}` }, svg);
+    txt(svg, 20, 22, `${n} steps · position (blocks from home) after each step`, 'cap', {});
+    txt(svg, 235, 288, r.hit ? 'Back home: event happened' : `Ended ${Math.abs(P.pos[n])} block${Math.abs(P.pos[n]) > 1 ? 's' : ''} from home`, 'labS', { 'text-anchor': 'middle', style: `fill:${r.hit ? 'var(--hit)' : 'var(--muted)'}` });
+  }
+}
+// --- running estimate with the typical-error band ---
+function lChart(){
+  const svg = $('lChart'); svg.innerHTML = ''; const p = LP[LS.i];
+  if (!LS.ok) return;
+  const ex = p.exact(LS.par), isP = p.kind === 'p';
+  let lo, hi;
+  if (isP){ lo = 0; hi = 1; } else { lo = 0; hi = Math.max(ex * 2, ...LS.hist.slice(0, 50)) ; }
+  const L = 48, R = 456, T = 18, B = 258, X = n => L + Math.log10(n) / Math.log10(LMAX) * (R - L), Y = v => B - (clamp(v, lo, hi) - lo) / (hi - lo) * (B - T);
+  const st = niceStep((hi - lo) / 5);
+  for (let v = lo; v <= hi + 1e-9; v += st){ mk('line', { x1: L, y1: Y(v), x2: R, y2: Y(v), class: 'grid' }, svg); txt(svg, L - 6, Y(v) + 4, fmt(v, st), 'tl', { 'text-anchor': 'end' }); }
+  [1, 10, 100, 1000, 10000].forEach(n => { mk('line', { x1: X(n), y1: T, x2: X(n), y2: B, class: 'grid' }, svg); txt(svg, X(n), B + 16, n.toLocaleString(), 'tl', { 'text-anchor': 'middle' }); });
+  txt(svg, (L + R) / 2, 292, 'number of trials (stretched scale)', 'cap', { 'text-anchor': 'middle' });
+  // spread of a single result: from the exact p, or from the trials so far
+  const sd = isP ? Math.sqrt(ex * (1 - ex)) : LS.n > 5 ? Math.sqrt(Math.max(0, LS.sum2 / LS.n - Math.pow(LS.sum / LS.n, 2))) : ex;
+  const band = []; for (let k = 0; k <= 60; k++){ const n = Math.pow(LMAX, k / 60); band.push([n, ex + 2 * sd / Math.sqrt(n)]); }
+  const bandLo = band.map(([n]) => [n, ex - 2 * sd / Math.sqrt(n)]).reverse();
+  mk('path', { d: [...band, ...bandLo].map(([n, v], i) => (i ? 'L' : 'M') + X(n).toFixed(1) + ' ' + Y(v).toFixed(1)).join('') + 'Z', style: 'fill:var(--th);opacity:.16' }, svg);
+  mk('line', { x1: L, y1: Y(ex), x2: R, y2: Y(ex), style: 'stroke:var(--th);stroke-width:2' }, svg);
+  txt(svg, R - 4, Y(ex) - 6, `exact ${show(ex)}`, 'labS', { 'text-anchor': 'end', style: 'fill:var(--th)' });
+  if (LS.n){
+    let d = '', last = -1; for (let n = 1; n <= LS.n; n++){ const x = X(n); if (x - last < 1 && n < LS.n) continue; last = x; d += (d ? 'L' : 'M') + x.toFixed(1) + ' ' + Y(LS.hist[n - 1]).toFixed(1); }
+    mk('path', { d, style: 'fill:none;stroke:var(--sim);stroke-width:2.2' }, svg);
+  }
+  txt(svg, 10, 12, p.what, 'cap', {});
+  return { ex, sd };
+}
+function lDraw(){
+  lPic(); const c = lChart(); if (!c) return;
+  const p = LP[LS.i];
+  if (!LS.n){ $('lOut').innerHTML = `Exact answer: ${p.what} = ${show(c.ex)}. Run some trials and see how close a simulation gets.`; return; }
+  const est = LS.sum / LS.n, err = c.sd / Math.sqrt(LS.n);
+  $('lOut').innerHTML = `After <b>${LS.n.toLocaleString()}</b> trials: estimate <b class="ks">${show(est)}</b>${p.kind === 'p' ? ` (${LS.sum.toLocaleString()} of ${LS.n.toLocaleString()})` : ''}, typical error about ±${num(err, 3)}. Exact: <b class="kt">${show(c.ex)}</b>, so this run is off by ${num(Math.abs(est - c.ex), 3)}.` +
+    (LS.n < 100 ? ' With so few trials, expect big jumps.' : '');
+}
+
+/* =====================================================================
+   3. THROW DARTS
+   ===================================================================== */
+const bell = x => Math.exp(-x * x);
+const DP = [
+  { n: 'Circle: estimate π', d: 'A circle of radius 1 inside a 2 × 2 square (area 4). π ≈ 4 × (fraction inside).', box: [-1, 1, -1, 1], inside: (x, y) => x * x + y * y <= 1, truth: Math.PI, name: 'π',
+    shape: (P, g) => mk('circle', { cx: P.X(0), cy: P.Y(0), r: P.X(1) - P.X(0), style: 'fill:none;stroke:var(--ink);stroke-width:2' }, g) },
+  { n: 'Under y = x²', d: 'The area under y = x² from 0 to 1, inside a 1 × 1 square. (Chapter 8 proves it is exactly 1/3.)', box: [0, 1, 0, 1], inside: (x, y) => y <= x * x, truth: 1 / 3, name: 'area',
+    shape: (P, g) => mk('path', { d: range(41).map(i => { const x = i / 40; return (i ? 'L' : 'M') + P.X(x) + ' ' + P.Y(x * x); }).join(''), style: 'fill:none;stroke:var(--ink);stroke-width:2' }, g) },
+  { n: 'Under a bell curve', d: 'The area under the bell curve y = e^(−x²) from −2 to 2, in a 4 × 1 box. No simple formula gives it; it is about 1.764.', box: [-2, 2, 0, 1], inside: (x, y) => y <= bell(x), truth: 1.76416278, name: 'area',
+    shape: (P, g) => mk('path', { d: range(81).map(i => { const x = -2 + i / 20; return (i ? 'L' : 'M') + P.X(x) + ' ' + P.Y(bell(x)); }).join(''), style: 'fill:none;stroke:var(--ink);stroke-width:2' }, g) },
+  { n: 'Overlap of two circles', d: 'Two circles of radius 1 whose centres are 1 apart, in a 3 × 2 box. Estimate the area where they overlap (exactly 2π/3 − √3/2 ≈ 1.228).', box: [-1, 2, -1, 1], inside: (x, y) => x * x + y * y <= 1 && (x - 1) * (x - 1) + y * y <= 1, truth: 2 * Math.PI / 3 - Math.sqrt(3) / 2, name: 'area',
+    shape: (P, g) => [0, 1].forEach(c => mk('circle', { cx: P.X(c), cy: P.Y(0), r: P.X(1) - P.X(0), style: 'fill:none;stroke:var(--ink);stroke-width:2' }, g)) }
+];
+const DS = { i: 0, n: 0, k: 0, timer: 0, rep: null };
+const dMark = buttons('dPresets', DP, i => { dStop(); DS.i = i; dMark(i); $('dDesc').textContent = DP[i].d; DS.rep = null; dReset(); });
+const boxArea = p => (p.box[1] - p.box[0]) * (p.box[3] - p.box[2]);
+function dGeom(){
+  const p = DP[DS.i], [x0, x1, y0, y1] = p.box, s = Math.min(430 / (x1 - x0), 260 / (y1 - y0)), w = s * (x1 - x0), h = s * (y1 - y0), ox = (470 - w) / 2, oy = (300 - h) / 2 + 6;
+  return { X: x => ox + (x - x0) * s, Y: y => oy + (y1 - y) * s, ox, oy, w, h };
+}
+function dReset(){
+  DS.n = 0; DS.k = 0; const svg = $('dB'); svg.innerHTML = ''; const P = dGeom(), p = DP[DS.i];
+  mk('rect', { x: P.ox, y: P.oy, width: P.w, height: P.h, style: 'fill:var(--paper);stroke:var(--ink);stroke-width:1.4' }, svg);
+  DS.layer = mk('g', {}, svg); p.shape(P, mk('g', {}, svg));
+  dSpread(); dOut();
+}
+function dThrow(m){
+  const p = DP[DS.i], P = dGeom(), [x0, x1, y0, y1] = p.box;
+  for (let q = 0; q < m && DS.n < 50000; q++){
+    const x = x0 + Math.random() * (x1 - x0), y = y0 + Math.random() * (y1 - y0), ins = p.inside(x, y);
+    DS.n++; if (ins) DS.k++;
+    if (DS.n <= 6000) mk('circle', { cx: P.X(x).toFixed(1), cy: P.Y(y).toFixed(1), r: DS.n > 2000 ? 1.3 : 2, style: `fill:${ins ? 'var(--hit)' : 'var(--miss)'};opacity:.85` }, DS.layer);
+  }
+  dOut();
+}
+function dOut(){
+  const p = DP[DS.i], A = boxArea(p);
+  if (!DS.n){ $('dOut').innerHTML = `True ${p.name}: ${num(p.truth, 4)}. Throw some darts.`; return; }
+  const est = A * DS.k / DS.n, f = DS.k / DS.n, err = A * Math.sqrt(f * (1 - f) / DS.n);
+  $('dOut').innerHTML = `${DS.n.toLocaleString()} darts, ${DS.k.toLocaleString()} inside: fraction ${num(f, 4)}. Estimate of ${p.name === 'π' ? 'π' : 'the area'}: ${A} × ${num(f, 4)} = <b class="ks">${num(est, 4)}</b> (typical error ±${num(err, 3)}). True: <b class="kt">${num(p.truth, 4)}</b>.` + (DS.n > 6000 ? ' (Only the first 6,000 darts are drawn.)' : '');
+}
+function dStop(){ clearTimeout(DS.timer); DS.timer = 0; $('dPlay').textContent = 'Play'; }
+$('d100').onclick = () => { dStop(); dThrow(100); }; $('d1000').onclick = () => { dStop(); dThrow(1000); };
+$('dReset').onclick = () => { dStop(); dReset(); };
+$('dPlay').onclick = () => {
+  if (DS.timer){ dStop(); return; }
+  $('dPlay').textContent = 'Pause';
+  const tick = () => { dThrow(Math.max(20, Math.ceil(DS.n * 0.06))); if (DS.n < 20000) DS.timer = setTimeout(tick, 40); else dStop(); };
+  tick();
+};
+// repeat the whole experiment 100 times at three sizes
+$('dRep').onclick = () => {
+  const p = DP[DS.i], A = boxArea(p), [x0, x1, y0, y1] = p.box;
+  DS.rep = [100, 1000, 10000].map(n => range(100).map(() => { let k = 0; for (let q = 0; q < n; q++){ if (p.inside(x0 + Math.random() * (x1 - x0), y0 + Math.random() * (y1 - y0))) k++; } return A * k / n; }));
+  dSpread();
+};
+function dSpread(){
+  const svg = $('dS'); svg.innerHTML = ''; const p = DP[DS.i];
+  if (!DS.rep){ txt(svg, 235, 140, 'Press “Repeat 100 experiments at each size”', 'cap', { 'text-anchor': 'middle' }); txt(svg, 235, 160, 'to compare 100, 1,000 and 10,000 darts.', 'cap', { 'text-anchor': 'middle' }); return; }
+  const all = DS.rep.flat(), lo = Math.min(...all, p.truth), hi = Math.max(...all, p.truth), pad = (hi - lo) * 0.05;
+  const L = 96, R = 452, X = v => L + (v - lo + pad) / (hi - lo + 2 * pad) * (R - L);
+  const st = niceStep((hi - lo + 2 * pad) / 5);
+  for (let v = Math.ceil((lo - pad) / st) * st; v <= hi + pad; v += st){ mk('line', { x1: X(v), y1: 24, x2: X(v), y2: 250, class: 'grid' }, svg); txt(svg, X(v), 268, fmt(v, st), 'tl', { 'text-anchor': 'middle' }); }
+  mk('line', { x1: X(p.truth), y1: 20, x2: X(p.truth), y2: 254, style: 'stroke:var(--th);stroke-width:2.2' }, svg);
+  txt(svg, X(p.truth), 14, `true ${num(p.truth, 3)}`, 'labS', { 'text-anchor': 'middle', style: 'fill:var(--th)' });
+  DS.rep.forEach((ests, r) => {
+    const yc = 60 + r * 75, sd = Math.sqrt(ests.reduce((s, v) => s + (v - p.truth) ** 2, 0) / ests.length);
+    txt(svg, L - 10, yc - 2, ['100', '1,000', '10,000'][r], 'labS', { 'text-anchor': 'end' }); txt(svg, L - 10, yc + 13, 'darts', 'cap', { 'text-anchor': 'end' });
+    ests.forEach(v => mk('circle', { cx: X(v), cy: yc + (Math.random() - 0.5) * 30, r: 2.6, style: 'fill:var(--sim);opacity:.7' }, svg));
+    txt(svg, R, yc + 30, `typical miss ±${num(sd, 3)}`, 'cap', { 'text-anchor': 'end' });
+  });
+  txt(svg, 235, 292, 'each dot: one experiment’s estimate', 'cap', { 'text-anchor': 'middle' });
+  $('dOut').innerHTML = `100 experiments at each size. 10 times the darts shrinks the spread by about √10 ≈ 3.2; 100 times the darts, by about 10.`;
+}
+
+/* =====================================================================
+   4. TRAPS
+   ===================================================================== */
+function drawTraps(){
+  // 1: twenty 10-trial estimates of p = 1/2
+  let g = $('tr1'); g.innerHTML = '';
+  const X = v => 24 + v * 252;
+  [0, 0.5, 1].forEach(v => { mk('line', { x1: X(v), y1: 20, x2: X(v), y2: 170, class: 'grid' }, g); txt(g, X(v), 186, v === 0.5 ? '½' : String(v), 'tl', { 'text-anchor': 'middle' }); });
+  mk('line', { x1: X(0.5), y1: 20, x2: X(0.5), y2: 170, style: 'stroke:var(--th);stroke-width:2' }, g);
+  const ten = [3, 6, 5, 7, 4, 5, 8, 4, 6, 5, 2, 6, 5, 7, 4, 6, 3, 5, 6, 7];               // a fixed, typical run
+  ten.forEach((k, i) => mk('circle', { cx: X(k / 10), cy: 28 + i * 7, r: 3.4, style: 'fill:var(--sim)' }, g));
+  txt(g, 150, 206, 'each dot: estimate from 10 trials', 'cap', { 'text-anchor': 'middle' });
+  // 2: wrong model: coin flip for a 70% shooter
+  g = $('tr2'); g.innerHTML = '';
+  const Y = v => 170 - v * 140;
+  [0, 0.5, 0.7, 1].forEach(v => { mk('line', { x1: 30, y1: Y(v), x2: 280, y2: Y(v), class: 'grid' }, g); txt(g, 26, Y(v) + 4, String(v), 'tl', { 'text-anchor': 'end' }); });
+  mk('line', { x1: 30, y1: Y(0.7), x2: 280, y2: Y(0.7), style: 'stroke:var(--th);stroke-width:2' }, g);
+  txt(g, 278, Y(0.7) - 6, 'true 0.7', 'labS', { 'text-anchor': 'end', style: 'fill:var(--th)' });
+  const wrong = [0.6, 0.45, 0.53, 0.49, 0.51, 0.502, 0.499, 0.5];
+  mk('path', { d: wrong.map((v, i) => (i ? 'L' : 'M') + (30 + i * 35) + ' ' + Y(v)).join(''), style: 'fill:none;stroke:var(--bad);stroke-width:2.4' }, g);
+  txt(g, 150, Y(0.5) + 22, 'coin-flip model settles on 0.5', 'labS', { 'text-anchor': 'middle', style: 'fill:var(--bad)' });
+  txt(g, 150, 206, 'more trials → more confidently wrong', 'cap', { 'text-anchor': 'middle' });
+  // 3: five runs of 1,000 birthday trials
+  g = $('tr3'); g.innerHTML = '';
+  const runs = [0.494, 0.521, 0.507, 0.488, 0.515], X3 = v => 30 + (v - 0.46) / 0.08 * 240;
+  [0.47, 0.49, 0.51, 0.53].forEach(v => { mk('line', { x1: X3(v), y1: 20, x2: X3(v), y2: 160, class: 'grid' }, g); txt(g, X3(v), 176, String(v), 'tl', { 'text-anchor': 'middle' }); });
+  mk('line', { x1: X3(0.507), y1: 20, x2: X3(0.507), y2: 160, style: 'stroke:var(--th);stroke-width:2' }, g);
+  runs.forEach((v, i) => { mk('circle', { cx: X3(v), cy: 34 + i * 26, r: 5, style: 'fill:var(--sim)' }, g); txt(g, X3(v) + (v > 0.507 ? 10 : -10), 38 + i * 26, `run ${i + 1}: ${v}`, 'cap', { 'text-anchor': v > 0.507 ? 'start' : 'end' }); });
+  txt(g, 150, 200, 'exact 0.507 (purple)', 'cap', { 'text-anchor': 'middle' });
+}
+
+/* =====================================================================
+   5. QUIZ
+   ===================================================================== */
+const Q = { right: 0, total: 0 };
+let qq = null;
+const qTitles = { read: 'Read a simulation', trials: 'How many trials?', design: 'Design a simulation', trap: 'Spot the trap' };
+function shuffle(a){ for (let i = a.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+function qReset(){ ['qChoice', 'qPic'].forEach(id => $(id).innerHTML = ''); $('qFb').className = 'feedback'; $('qFb').innerHTML = ''; $('qErr').textContent = ''; $('qIn').style.display = ''; $('q1').value = ''; }
+function qScore(ok){ if (qq.counted) return; qq.counted = true; Q.total++; if (ok) Q.right++; $('score').textContent = `Score: ${Q.right} / ${Q.total}`; }
+function qFeedback(ok, html){ $('qFb').className = 'feedback ' + (ok ? 'ok' : 'bad'); $('qFb').innerHTML = (ok ? '<b>Right.</b> ' : '<b>Not quite.</b> ') + html; }
+function qChoices(list, correctIdx, explain){
+  $('qIn').style.display = 'none'; qq.correctIdx = correctIdx; qq.explainFn = explain;
+  list.forEach((c, k) => { const b = document.createElement('button'); b.innerHTML = c; b.onclick = () => { const ok = k === correctIdx; qScore(ok); [...$('qChoice').children].forEach((x, j) => { x.classList.remove('right', 'wrong'); if (j === k) x.classList.add(ok ? 'right' : 'wrong'); }); qFeedback(ok, explain(k)); }; $('qChoice').appendChild(b); });
+}
+// --- read a simulation ---
+function qRead(){
+  const t = pick(['prob', 'prob', 'mean', 'dart']);
+  if (t === 'prob'){
+    const n = pick([200, 400, 500, 1000, 2000]), sc = pick([['a class of 30 had a shared birthday', 0.706], ['a team won a best-of-7 series', 0.71], ['20 coin flips contained a streak of 5', 0.46], ['switching won at Monty Hall', 0.667]]);
+    const k = Math.round(n * (sc[1] + (Math.random() - 0.5) * 0.04));
+    $('qText').innerHTML = `A simulation ran ${n.toLocaleString()} trials. In ${k.toLocaleString()} of them, ${sc[0]}. What is the estimated probability?`; $('qL1').textContent = 'estimate =';
+    Object.assign(qq, { ans: k / n, why: `Relative frequency: ${k} ÷ ${n} = ${num(k / n, 4)}.`, traps: [[(n - k) / n, 'That’s the fraction where it did <b>not</b> happen.'], [k / 100, 'Divide by the number of trials, ' + n + '.']] });
+  } else if (t === 'mean'){
+    const vals = [6, 7, 8, 9, 10, 12, 15], cnt = [5, 9, 12, 10, 7, 5, 2], N = cnt.reduce((a, b) => a + b, 0), s = vals.reduce((a, v, i) => a + v * cnt[i], 0);
+    const sc = pick([[0, 'cereal boxes needed to collect all 4 toys'], [1, 'minutes a commuter waited for the bus']]);
+    $('qText').innerHTML = `A simulation recorded the number of ${sc[1]} in ${N} trials. What is the estimated average?`; $('qL1').textContent = 'average =';
+    $('qPic').innerHTML = `<table class="ev"><tr><th>result</th>${vals.map(v => `<td>${v}</td>`).join('')}</tr><tr><th>how many trials</th>${cnt.map(v => `<td>${v}</td>`).join('')}</tr></table>`;
+    Object.assign(qq, { ans: s / N, why: `Total of all results ÷ number of trials: (${vals.map((v, i) => `${v}×${cnt[i]}`).join(' + ')}) ÷ ${N} = ${s} ÷ ${N} ≈ ${num(s / N, 3)}.`, traps: [[vals.reduce((a, b) => a + b, 0) / vals.length, 'That averages the different results without counting how often each happened.']] });
+  } else {
+    const n = pick([400, 800, 1000, 2000]), k = Math.round(n * Math.PI / 4 * (1 + (Math.random() - 0.5) * 0.02));
+    $('qText').innerHTML = `${n.toLocaleString()} darts were thrown at random into a 2 × 2 square with a circle of radius 1 inside. ${k.toLocaleString()} landed inside the circle. What is the estimate of π?`; $('qL1').textContent = 'π ≈';
+    Object.assign(qq, { ans: 4 * k / n, why: `The square has area 4, so π ≈ 4 × ${k}/${n} = ${num(4 * k / n, 4)}.`, traps: [[k / n, 'That’s the fraction inside. Multiply by the square’s area, 4.']] });
+  }
+}
+// --- how many trials ---
+function qTrials(){
+  const c = pick([
+    () => ({ s: 'With 100 trials, a simulated probability is typically off by about 0.05. Roughly how far off with 10,000 trials?', ok: 'About 0.005', bad: ['About 0.0005', 'About 0.05', 'Exactly 0'], why: '100 times the trials divides the error by √100 = 10: 0.05 ÷ 10 = 0.005.' }),
+    () => ({ s: 'To cut the typical error of a simulation in half, you need about…', ok: '4 times as many trials', bad: ['2 times as many trials', '10 times as many trials', 'half as many trials'], why: 'The error shrinks like 1/√n. Halving it needs √(4) = 2, so 4 times the trials.' }),
+    () => ({ s: 'Two students estimate P(shared birthday in a class of 23). Ana ran 50 trials and got 0.62. Ben ran 5,000 trials and got 0.51. Which estimate should you trust more?', ok: 'Ben’s, because it uses far more trials', bad: ['Ana’s, because it’s more surprising', 'Both equally: they’re both simulations', 'Neither: simulations can’t estimate probabilities'], why: 'With 50 trials the typical error is about √(0.25/50) ≈ 0.07; with 5,000, about 0.007. Ben’s 0.51 is close to the exact 0.507.' }),
+    () => ({ s: 'A simulation with 400 trials estimates a probability of 0.5. About how big is its typical error?', ok: 'About 0.025', bad: ['About 0.25', 'About 0.0025', 'About 0.1'], why: '√(0.5 × 0.5 / 400) = √(0.000625) = 0.025.' }),
+    () => ({ s: 'Running a simulation again with a different seed gives a slightly different answer. What does that mean?', ok: 'Normal: each run is a random estimate with some typical error', bad: ['The program has a bug', 'The first answer was exact', 'The probability changed'], why: 'Different random numbers give different estimates. More trials make runs agree more closely.' })
+  ])();
+  const opts = shuffle([c.ok, ...c.bad]), idx = opts.indexOf(c.ok);
+  $('qText').innerHTML = c.s; qChoices(opts, idx, () => c.why);
+}
+// --- design a simulation ---
+function qDesign(){
+  const c = pick([
+    () => ({ s: 'How would you simulate one free throw by a player who makes 70% of them?', ok: 'Pick a random number from 0 to 1; a make if it’s below 0.7', bad: ['Flip a coin: heads is a make', 'Roll a die: 1–3 is a make', 'Pick a random number from 1 to 70'], why: 'A random number from 0 to 1 is below 0.7 exactly 70% of the time. A coin or 1–3 on a die gives 50%.' }),
+    () => ({ s: 'How would you simulate the birthdays of a class of 25?', ok: '25 random whole numbers from 1 to 365', bad: ['One random number from 1 to 365, used for everyone', '25 random numbers from 1 to 12', '25 random numbers from 1 to 25'], why: 'Each person gets their own birthday, any of 365 days. Months (1–12) would make matches far too likely.' }),
+    () => ({ s: 'A spinner lands on red 1/4 of the time, blue 1/4 and green 1/2. Which tool models one spin?', ok: 'Pick a random number from 0 to 1: under 0.25 red, 0.25–0.5 blue, above 0.5 green', bad: ['Roll a die: 1–2 red, 3–4 blue, 5–6 green', 'Pick a colour at random from {red, blue, green}', 'Roll a die: 1 red, 2 blue, 3–6 green'], why: 'Splitting 0 to 1 into lengths ¼, ¼, ½ matches the probabilities. The 1–2 / 3–4 / 5–6 die and picking a colour give ⅓ each; the other die gives ⅙, ⅙, ⅔. (Two coin flips would also work: HH and TT are ¼ each, and HT or TH is ½.)' }),
+    () => ({ s: 'To estimate the average number of rolls to get a 6, what does one trial do, and what is recorded?', ok: 'Roll until a 6 appears; record how many rolls it took', bad: ['Roll once; record whether it’s a 6', 'Roll 6 times; record how many 6s', 'Roll until a 6; record the last roll'], why: 'Each trial must play out the whole situation, and record the number you want the average of.' }),
+    () => ({ s: 'In a simulation of a best-of-7 series, why are the games simulated one at a time until a team reaches 4 wins?', ok: 'Because the series stops as soon as one team has 4 wins', bad: ['Because 7 games are always played', 'To make the simulation slower', 'Because each game depends on the previous one'], why: 'The trial should copy the real rules. (Playing all 7 anyway gives the same winner, so either works, but stopping matches reality.)' })
+  ])();
+  const opts = shuffle([c.ok, ...c.bad]), idx = opts.indexOf(c.ok);
+  $('qText').innerHTML = c.s; qChoices(opts, idx, () => c.why);
+}
+// --- traps ---
+function qTrap(){
+  const c = pick([
+    () => ({ s: 'Sam flips a coin 10 times, gets 7 heads, and concludes P(heads) = 0.7. What’s the problem?', ok: '10 trials is far too few; 7 heads is quite likely with a fair coin', bad: ['Nothing: that’s the relative frequency', 'He should have counted tails', 'Coins can’t be simulated'], why: 'With 10 flips the typical error is about √(0.25/10) ≈ 0.16, so 0.7 is well within normal wobble around 0.5.' }),
+    () => ({ s: 'A simulation of 1,000,000 trials models a 70% free-throw shooter with a coin flip. Which is true?', ok: 'Its answer is precisely wrong: more trials can’t fix a bad model', bad: ['With a million trials it must be right', 'It will settle on 0.7 anyway', 'It’s fine because coins are random'], why: 'The simulation settles on the coin’s 0.5, not 0.7. The model has to match reality first.' }),
+    () => ({ s: 'A simulation gives P ≈ 0.507 for a shared birthday among 23 people. Does that prove the probability is exactly 0.507?', ok: 'No: it’s an estimate with a typical error; the exact value comes from counting', bad: ['Yes, simulations are exact', 'Yes, if the seed is fixed', 'No: simulations can only give whole numbers'], why: 'A simulation estimates. (The exact value happens to be 0.5073, found by multiplying 365/365 × 364/365 × … .)' }),
+    () => ({ s: 'At Monty Hall, many people say switching can’t matter because two doors are left, so it’s 50–50. A simulation shows switching wins about 2/3 of the time. Which is right?', ok: 'The simulation: two doors left doesn’t mean equally likely', bad: ['50–50: two doors means equal chances', 'The simulation is buggy', 'It depends on the seed'], why: 'Your first pick is right 1/3 of the time, and switching wins in all the other 2/3, because the host always opens an empty door. Two outcomes doesn’t mean 50–50 (9.B.1).' })
+  ])();
+  const opts = shuffle([c.ok, ...c.bad]), idx = opts.indexOf(c.ok);
+  $('qText').innerHTML = c.s; qChoices(opts, idx, () => c.why);
+}
+let lastType = null;
+function qNew(){
+  qReset();
+  let t; do { t = pick(['read', 'trials', 'design', 'trap']); } while (t === lastType);
+  lastType = t; qq = { type: t, counted: false }; $('qTitle').textContent = qTitles[t];
+  ({ read: qRead, trials: qTrials, design: qDesign, trap: qTrap })[t]();
+}
+$('qCheck').onclick = () => {
+  $('qErr').textContent = '';
+  const raw = $('q1').value, v = parseP(raw);
+  if (raw.trim() === '' || !isFinite(v)){ $('qErr').textContent = 'Type a number: a decimal (0.62), a fraction (31/50) or a percent (62%).'; return; }
+  const tol = Math.max(0.0015, Math.abs(qq.ans) * 0.002), ok = Math.abs(v - qq.ans) < tol; let why = qq.why;
+  if (!ok){ const t = (qq.traps || []).find(([x]) => isFinite(x) && Math.abs(x - qq.ans) > 1e-9 && Math.abs(v - x) < tol); if (t) why = t[1] + ' ' + why; }
+  qScore(ok); qFeedback(ok, why);
+};
+$('q1').addEventListener('keydown', e => { if (e.key === 'Enter') $('qCheck').click(); });
+$('q1').addEventListener('input', () => $('qErr').textContent = '');
+$('qShow').onclick = () => {
+  qScore(false);
+  if (qq.correctIdx !== undefined){ [...$('qChoice').children].forEach((b, j) => { if (j === qq.correctIdx) b.classList.add('right'); }); qFeedback(false, qq.explainFn(qq.correctIdx)); }
+  else { $('q1').value = num(qq.ans, 4); $('qFb').className = 'feedback bad'; $('qFb').innerHTML = '<b>Answer filled in.</b> ' + qq.why; }
+};
+$('qNew').onclick = qNew;
+
+/* =====================================================================
+   6. START
+   ===================================================================== */
+selectOnFocus(['q1', 'lPar']);
+$('lPresets').children[0].click();
+$('dPresets').children[0].click();
+drawTraps();
+qNew();
+</script>
+<script src="../shared/toc.js"></script>
+<script src="../shared/nav.js"></script>
+</body></html>
